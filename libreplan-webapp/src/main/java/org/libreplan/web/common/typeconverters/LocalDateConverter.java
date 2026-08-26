@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2012 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,8 +22,9 @@ package org.libreplan.web.common.typeconverters;
 
 import org.joda.time.LocalDate;
 import org.libreplan.web.common.Util;
+import org.zkoss.bind.BindContext;
+import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zkplus.databind.TypeConverter;
 
 /**
  * Converter for the type java.util.LocalDate
@@ -30,15 +32,15 @@ import org.zkoss.zkplus.databind.TypeConverter;
  * @author Susana Montes Pedreira smontes@wirelessgalicia.com
  *
  */
-public class LocalDateConverter implements TypeConverter {
+public class LocalDateConverter implements Converter<Object, Object, Component> {
 
     @Override
-    public Object coerceToBean(Object arg0, Component arg1) {
+    public Object coerceToBean(Object value, Component component, BindContext ctx) {
         return null;
     }
 
     @Override
-    public Object coerceToUi(Object object, Component component) {
+    public Object coerceToUi(Object object, Component component, BindContext ctx) {
         return Util.formatDate((LocalDate) object);
     }
 }

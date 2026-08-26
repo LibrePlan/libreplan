@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app id="WebApp_ID" version="2.4"
-         xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+<web-app id="WebApp_ID" version="5.0"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd">
 
     <display-name>libreplan-webapp</display-name>
 
@@ -24,12 +24,12 @@
         </param-value>
     </context-param>
 
-    <!-- DSP -->
-    <servlet>
-        <description><![CDATA[The servlet loads the DSP pages.]]></description>
-        <servlet-name>dspLoader</servlet-name>
-        <servlet-class>org.zkoss.web.servlet.dsp.InterpreterServlet</servlet-class>
-    </servlet>
+    <!--
+        DSP (org.zkoss.web.servlet.dsp.InterpreterServlet) removed: the servlet class itself was
+        dropped from ZK's zweb jar starting at 9.6.x (present through 8.6.x, confirmed absent from
+        both 9.6.0.2 and 10.3.0.1-jakarta), causing ClassNotFoundException at webapp startup. No
+        .dsp files exist anywhere in this app's webapp resources, so this was unused dead config.
+    -->
 
     <servlet>
         <description><![CDATA[Callback Servlet]]></description>
@@ -41,11 +41,6 @@
     <servlet-mapping>
         <servlet-name>callbackServlet</servlet-name>
         <url-pattern>/callback/*</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>dspLoader</servlet-name>
-        <url-pattern>*.dsp</url-pattern>
     </servlet-mapping>
 
     <!-- Spring security -->
@@ -63,12 +58,7 @@
         <listener-class>org.libreplan.web.LoggingConfiguration</listener-class>
     </listener>
 
-    <!-- ZK -->
-    <listener>
-        <description>Used to cleanup when a session is destroyed</description>
-        <display-name>ZK Session Cleaner</display-name>
-        <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
-    </listener>
+    <!-- ZK Session Cleaner listener: now provided by zkwebfragment's own web-fragment.xml. -->
 
     <!-- Spring listeners -->
     <listener>
@@ -84,41 +74,14 @@
         <listener-class>org.libreplan.web.bootstrap.BootstrapListener</listener-class>
     </listener>
 
-    <servlet>
-        <description>ZK loader for ZUML pages</description>
-        <servlet-name>zkLoader</servlet-name>
-        <servlet-class>org.zkoss.zk.ui.http.DHtmlLayoutServlet</servlet-class>
-        <!--
-            Specifies URI of the update engine (DHtmlUpdateServlet).
-            It must be the same as <url-pattern> for the update engine.
-        -->
-        <init-param>
-            <param-name>update-uri</param-name>
-            <param-value>/zkau</param-value>
-        </init-param>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>zkLoader</servlet-name>
-        <url-pattern>*.zul</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>zkLoader</servlet-name>
-        <url-pattern>*.zhtml</url-pattern>
-    </servlet-mapping>
-
-    <servlet>
-        <description>The asynchronous update engine for ZK</description>
-        <servlet-name>auEngine</servlet-name>
-        <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>auEngine</servlet-name>
-        <url-pattern>/zkau/*</url-pattern>
-    </servlet-mapping>
+    <!--
+        The ZK page loader (DHtmlLayoutServlet, *.zul/*.zhtml, update-uri=/zkau) and the ZK
+        asynchronous update engine (DHtmlUpdateServlet, /zkau/*) used to be declared here by hand.
+        ZK 10's zkwebfragment jar now auto-registers identical servlets via its own
+        META-INF/web-fragment.xml, and Jetty enforces that a URL pattern maps to exactly one
+        servlet - keeping both here throws IllegalStateException: Multiple servlets map to path
+        /zkau/* at startup. Removed; zkwebfragment provides them.
+    -->
 
     <!-- CXF -->
     <servlet>

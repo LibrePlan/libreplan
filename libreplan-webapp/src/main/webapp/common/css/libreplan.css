@@ -1,4 +1,12 @@
-body {
+/*
+    ZK 10's sapphire skin no longer ships an html/body height:100% rule (confirmed absent from
+    the served zk.wcs skin bundle - only .z-calendar-body{height:100%} exists, easy to mistake
+    for a bare "body" rule at a glance). Without it, html and body both compute to 0px height in
+    standards mode, so the whole app (borderlayout, the .z-page root, everything) collapses to
+    zero height and the page renders blank despite every component existing correctly in the DOM.
+*/
+html, body {
+    height: 100%;
     margin: 0;
 }
 

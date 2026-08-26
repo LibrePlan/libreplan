@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Bericht über Arbeit und Fortschritt je Projekt</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="bericht-uber-arbeit-und-fortschritt-je-projekt">
+<h1 class="title">Bericht über Arbeit und Fortschritt je Projekt</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#zweck" id="toc-entry-1">Zweck</a></li>
+<li><a class="reference internal" href="#eingabeparameter-und-filter" id="toc-entry-2">Eingabeparameter und Filter</a></li>
+<li><a class="reference internal" href="#ausgabe" id="toc-entry-3">Ausgabe</a><ul>
+<li><a class="reference internal" href="#uberschrift" id="toc-entry-4">Überschrift</a></li>
+<li><a class="reference internal" href="#fuszzeile" id="toc-entry-5">Fußzeile</a></li>
+<li><a class="reference internal" href="#hauptteil" id="toc-entry-6">Hauptteil</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="zweck">
+<h1><a class="toc-backref" href="#toc-entry-1">Zweck</a></h1>
+<p>Dieser Bericht bietet einen Überblick über den Status von Projekten, wobei sowohl Fortschritt als auch Kosten berücksichtigt werden.</p>
+<p>Er analysiert den aktuellen Fortschritt jedes Projekts und vergleicht ihn mit dem geplanten Fortschritt und der erledigten Arbeit.</p>
+<p>Der Bericht zeigt außerdem mehrere Kennzahlen zu Projektkosten und vergleicht die aktuelle Leistung mit der geplanten Leistung.</p>
+</div>
+<div class="section" id="eingabeparameter-und-filter">
+<h1><a class="toc-backref" href="#toc-entry-2">Eingabeparameter und Filter</a></h1>
+<p>Es gibt mehrere Pflichtparameter:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Referenzdatum:</strong> Dies ist das Datum, das als Referenzpunkt für den Vergleich des geplanten Projektstatus mit der tatsächlichen Leistung verwendet wird. <em>Der Standardwert für dieses Feld ist das aktuelle Datum</em>.</li>
+<li><strong>Fortschrittstyp:</strong> Dies ist der Fortschrittstyp, der zur Messung des Projektfortschritts verwendet wird. Die Anwendung ermöglicht es, ein Projekt gleichzeitig mit verschiedenen Fortschrittstypen zu messen. Der vom Benutzer im Dropdown-Menü ausgewählte Typ wird zur Berechnung der Berichtsdaten verwendet. Der Standardwert für den <em>Fortschrittstyp</em> ist <em>spread</em> (verteilt), ein spezieller Fortschrittstyp, der die für jedes WBS-Element konfigurierte bevorzugte Methode zur Messung des Fortschritts verwendet.</li>
+</ul>
+</blockquote>
+<p>Die optionalen Parameter sind:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Startdatum:</strong> Dies ist das früheste Startdatum für Projekte, die in den Bericht aufgenommen werden sollen. Wenn dieses Feld leer gelassen wird, gibt es kein Mindeststartdatum für die Projekte.</li>
+<li><strong>Enddatum:</strong> Dies ist das späteste Enddatum für Projekte, die in den Bericht aufgenommen werden sollen. Alle Projekte, die nach dem <em>Enddatum</em> enden, werden ausgeschlossen.</li>
+<li><strong>Nach Projekten filtern:</strong> Dieser Filter ermöglicht es Benutzern, die spezifischen Projekte auszuwählen, die in den Bericht aufgenommen werden sollen. Wenn dem Filter keine Projekte hinzugefügt werden, enthält der Bericht alle Projekte in der Datenbank. Ein durchsuchbares Dropdown-Menü ist vorhanden, um das gewünschte Projekt zu finden. Projekte werden dem Filter durch Klicken auf die Schaltfläche <em>Hinzufügen</em> hinzugefügt.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="ausgabe">
+<h1><a class="toc-backref" href="#toc-entry-3">Ausgabe</a></h1>
+<p>Das Ausgabeformat ist wie folgt:</p>
+<div class="section" id="uberschrift">
+<h2><a class="toc-backref" href="#toc-entry-4">Überschrift</a></h2>
+<p>Die Berichtskopfzeile zeigt die folgenden Felder:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Startdatum:</strong> Das Filterstartdatum. Wird nicht angezeigt, wenn der Bericht nicht nach diesem Feld gefiltert wird.</li>
+<li><strong>Enddatum:</strong> Das Filterenddatum. Wird nicht angezeigt, wenn der Bericht nicht nach diesem Feld gefiltert wird.</li>
+<li><strong>Fortschrittstyp:</strong> Der für den Bericht verwendete Fortschrittstyp.</li>
+<li><strong>Projekte:</strong> Gibt die gefilterten Projekte an, für die der Bericht erstellt wird. Es wird die Zeichenfolge <em>Alle</em> angezeigt, wenn der Bericht alle Projekte enthält, die die anderen Filter erfüllen.</li>
+<li><strong>Referenzdatum:</strong> Das obligatorische Eingabe-Referenzdatum, das für den Bericht ausgewählt wurde.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="fuszzeile">
+<h2><a class="toc-backref" href="#toc-entry-5">Fußzeile</a></h2>
+<p>Die Fußzeile zeigt das Datum an, an dem der Bericht erstellt wurde.</p>
+</div>
+<div class="section" id="hauptteil">
+<h2><a class="toc-backref" href="#toc-entry-6">Hauptteil</a></h2>
+<p>Der Hauptteil des Berichts besteht aus einer Liste von Projekten, die anhand der Eingabefilter ausgewählt wurden.</p>
+<p>Filter funktionieren durch das Hinzufügen von Bedingungen, außer für die Kombination aus den Datumsfiltern (<em>Startdatum</em>, <em>Enddatum</em>) und dem <em>Filter nach Projekten</em>. In diesem Fall, wenn einer oder beide Datumsfilter ausgefüllt sind und der <em>Filter nach Projekten</em> eine Liste ausgewählter Projekte enthält, hat letzterer Filter Vorrang. Das bedeutet, dass die im Bericht enthaltenen Projekte diejenigen sind, die durch den <em>Filter nach Projekten</em> angegeben wurden, unabhängig von den Datumsfiltern.</p>
+<p>Es ist wichtig zu beachten, dass der Fortschritt im Bericht als Bruch der Einheit berechnet wird und zwischen 0 und 1 liegt.</p>
+<p>Für jedes für die Berichtsausgabe ausgewählte Projekt werden die folgenden Informationen angezeigt:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Projektname</em>.</li>
+<li><dl class="first docutils">
+<dt><em>Gesamtstunden</em>. Die Gesamtstunden für das Projekt werden durch Addition der Stunden für jede Aufgabe angezeigt. Es werden zwei Arten von Gesamtstunden angezeigt:</dt>
+<dd><ul class="first last">
+<li><em>Geschätzt (TE)</em>. Dies ist die Summe aller geschätzten Stunden im WBS des Projekts. Sie gibt die Gesamtanzahl der zur Fertigstellung des Projekts geschätzten Stunden an.</li>
+<li><em>Geplant (TP)</em>. In <em>LibrePlan</em> ist es möglich, zwei verschiedene Mengen zu haben: die geschätzte Anzahl von Stunden für eine Aufgabe (die anfänglich zur Fertigstellung der Aufgabe geschätzte Stundenanzahl) und die geplanten Stunden (die im Plan zur Fertigstellung der Aufgabe zugeteilten Stunden). Die geplanten Stunden können gleich, kleiner oder größer als die geschätzten Stunden sein und werden in einer späteren Phase, dem Zuweisungsvorgang, festgelegt. Daher sind die gesamten geplanten Stunden für ein Projekt die Summe aller zugeteilten Stunden für seine Aufgaben.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Fortschritt</em>. Es werden drei Messungen zum Gesamtfortschritt des im Fortschritts-Eingabefilter angegebenen Typs für jedes Projekt zum Referenzdatum angezeigt:</dt>
+<dd><ul class="first last">
+<li><em>Gemessen (PM)</em>. Dies ist der Gesamtfortschritt unter Berücksichtigung der Fortschrittsmessungen mit einem Datum, das früher als das <em>Referenzdatum</em> in den Eingabeparametern des Berichts liegt. Alle Aufgaben werden berücksichtigt, und die Summe wird nach der Anzahl der Stunden für jede Aufgabe gewichtet.</li>
+<li><em>Zugerechnet (PI)</em>. Dies ist der Fortschritt unter der Annahme, dass die Arbeit im gleichen Tempo wie die abgeschlossenen Stunden einer Aufgabe fortgesetzt wird. Wenn X von Y Stunden einer Aufgabe abgeschlossen sind, wird der zugerechnete Gesamtfortschritt als X/Y betrachtet.</li>
+<li><em>Geplant (PP)</em>. Dies ist der Gesamtfortschritt des Projekts gemäß dem geplanten Zeitplan zum Referenzdatum. Wenn alles genau wie geplant verlaufen wäre, sollte der gemessene Fortschritt dem geplanten Fortschritt entsprechen.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Stunden bis Datum</em>. Es gibt zwei Felder, die die Anzahl der Stunden bis zum Referenzdatum aus zwei Perspektiven zeigen:</dt>
+<dd><ul class="first last">
+<li><em>Geplant (HP)</em>. Diese Zahl ist die Summe der Stunden, die einer beliebigen Aufgabe im Projekt mit einem Datum kleiner oder gleich dem <em>Referenzdatum</em> zugeordnet sind.</li>
+<li><em>Tatsächlich (HR)</em>. Diese Zahl ist die Summe der in den Arbeitsberichten für alle Aufgaben im Projekt gemeldeten Stunden mit einem Datum kleiner oder gleich dem <em>Referenzdatum</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Differenz</em>. Unter dieser Überschrift befinden sich mehrere Kostenkennzahlen:</dt>
+<dd><ul class="first last">
+<li><em>Kosten</em>. Dies ist die Differenz in Stunden zwischen der Anzahl der aufgewendeten Stunden unter Berücksichtigung des gemessenen Fortschritts und den bis zum Referenzdatum abgeschlossenen Stunden. Die Formel lautet: <em>PM*TP - HR</em>.</li>
+<li><em>Geplant</em>. Dies ist die Differenz zwischen den aufgewendeten Stunden gemäß dem gemessenen Gesamtprojektfortschritt und der bis zum <em>Referenzdatum</em> geplanten Anzahl. Es misst den Vor- oder Rückstand in der Zeit. Die Formel lautet: <em>PM*TP - HP</em>.</li>
+<li><em>Kostenverhältnis</em>. Wird durch Division von <em>PM</em> / <em>PI</em> berechnet. Wenn es größer als 1 ist, bedeutet das, dass das Projekt an diesem Punkt rentabel ist. Wenn es kleiner als 1 ist, bedeutet das, dass das Projekt Verluste macht.</li>
+<li><em>Planungsverhältnis</em>. Wird durch Division von <em>PM</em> / <em>PP</em> berechnet. Wenn es größer als 1 ist, bedeutet das, dass das Projekt im Zeitplan voraus ist. Wenn es kleiner als 1 ist, bedeutet das, dass das Projekt hinter dem Zeitplan zurückliegt.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

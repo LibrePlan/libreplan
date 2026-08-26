@@ -1,0 +1,686 @@
+- generic [ref=f164e4]:
+  - generic [ref=f164e5]:
+    - table [ref=f164e6]:
+      - rowgroup [ref=f164e7]:
+        - row [ref=f164e142]:
+          - cell [ref=f164e9]:
+            - link [ref=f164e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f164e143]:
+            - table [ref=f164e13]:
+              - rowgroup [ref=f164e14]:
+                - row [ref=f164e144]:
+                  - cell [ref=f164e145]:
+                    - generic [ref=f164e17]:
+                      - menubar [ref=f164e18]:
+                        - menuitem "Planning" [ref=f164e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f164e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f164e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f164e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f164e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f164e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f164e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f164e33]:
+                        - rowgroup [ref=f164e34]:
+                          - row [ref=f164e146]:
+                            - cell [ref=f164e147]:
+                              - table [ref=f164e37]:
+                                - rowgroup [ref=f164e38]:
+                                  - row [ref=f164e148]:
+                                    - cell [ref=f164e40]
+                                    - cell [ref=f164e41]:
+                                      - strong [ref=f164e42]: START
+                                    - cell [ref=f164e43]
+                                    - cell [ref=f164e149]:
+                                      - table [ref=f164e150]:
+                                        - rowgroup [ref=f164e151]:
+                                          - row [ref=f164e152]:
+                                            - cell [ref=f164e153]:
+                                              - table [ref=f164e154]:
+                                                - rowgroup [ref=f164e155]:
+                                                  - row [ref=f164e156]:
+                                                    - cell [ref=f164e157]
+                                                    - cell [ref=f164e159]
+                                                    - cell "Planning" [ref=f164e160]
+                                                    - cell [ref=f164e161]
+                                                    - cell [ref=f164e162]
+                                                    - cell [ref=f164e164]
+                                                    - cell "Projects List" [ref=f164e165]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f164e44]:
+                              - generic [ref=f164e45]:
+                                - link "Help" [ref=f164e46] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f164e48]
+                                - img "Info" [ref=f164e50]
+    - table [ref=f164e52]:
+      - rowgroup [ref=f164e53]:
+        - row [ref=f164e54]:
+          - cell [ref=f164e55]
+          - 'cell "user: admin" [ref=f164e56]'
+          - cell [ref=f164e57]:
+            - link "[Log out]" [ref=f164e58] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:  
+  - generic [ref=f164e59]:
+    - table [ref=f164e60]:
+      - rowgroup [ref=f164e61]:
+        - row [ref=f164e62]:
+          - cell [ref=f164e63]:
+            - table [ref=f164e64]:
+              - rowgroup [ref=f164e65]:
+                - row [ref=f164e66]:
+                  - cell [ref=f164e67]:
+                    - table [ref=f164e68]:
+                      - rowgroup [ref=f164e69]:
+                        - row [ref=f164e70]:
+                          - cell [ref=f164e71]:
+                            - table [ref=f164e72]:
+                              - rowgroup [ref=f164e73]:
+                                - row [ref=f164e74]:
+                                  - cell [ref=f164e75]:
+                                    - button "Create New Project" [ref=f164e76] [cursor=pointer]
+                - row [ref=f164e78]:
+                  - cell [ref=f164e79]
+                - row [ref=f164e80]:
+                  - cell [ref=f164e81]:
+                    - table [ref=f164e82]:
+                      - rowgroup [ref=f164e83]:
+                        - row [ref=f164e84]:
+                          - cell [ref=f164e85]:
+                            - table [ref=f164e86]:
+                              - rowgroup [ref=f164e87]:
+                                - row [ref=f164e88]:
+                                  - cell [ref=f164e89]:
+                                    - button "Projects Planning" [ref=f164e90] [cursor=pointer]
+                                - row [ref=f164e91]:
+                                  - cell [ref=f164e92]
+                                - row:
+                                  - cell
+                                - row [ref=f164e93]:
+                                  - cell [ref=f164e94]
+                                - row [ref=f164e95]:
+                                  - cell [ref=f164e96]:
+                                    - button "Projects List" [active] [ref=f164e97] [cursor=pointer]
+                                - row [ref=f164e98]:
+                                  - cell [ref=f164e99]
+                                - row:
+                                  - cell
+                                - row [ref=f164e100]:
+                                  - cell [ref=f164e101]
+                                - row [ref=f164e102]:
+                                  - cell [ref=f164e103]:
+                                    - button "Resources Load" [ref=f164e104] [cursor=pointer]
+                                - row [ref=f164e105]:
+                                  - cell [ref=f164e106]
+                                - row:
+                                  - cell
+                                - row [ref=f164e107]:
+                                  - cell [ref=f164e108]
+                                - row [ref=f164e109]:
+                                  - cell [ref=f164e110]:
+                                    - button "Queue-based Resources Planning" [ref=f164e111] [cursor=pointer]
+                                - row [ref=f164e112]:
+                                  - cell [ref=f164e113]
+                                - row:
+                                  - cell
+                                - row [ref=f164e114]:
+                                  - cell [ref=f164e115]
+                                - row [ref=f164e116]:
+                                  - cell [ref=f164e117]:
+                                    - button "Logs" [ref=f164e118] [cursor=pointer]
+                                - row [ref=f164e119]:
+                                  - cell [ref=f164e120]
+                                - row:
+                                  - cell
+                                - row [ref=f164e121]:
+                                  - cell [ref=f164e122]
+                                - row [ref=f164e123]:
+                                  - cell [ref=f164e124]:
+                                    - button "Pipeline" [ref=f164e125] [cursor=pointer]
+                                - row [ref=f164e126]:
+                                  - cell [ref=f164e127]
+                                - row:
+                                  - cell
+    - text:  
+    - generic [ref=f164e167]:
+      - table [ref=f164e168]:
+        - rowgroup [ref=f164e169]:
+          - row [ref=f164e170]:
+            - cell [ref=f164e171]:
+              - table [ref=f164e172]:
+                - rowgroup [ref=f164e173]:
+                  - row [ref=f164e174]:
+                    - cell [ref=f164e175]:
+                      - table [ref=f164e176]:
+                        - rowgroup [ref=f164e177]:
+                          - row [ref=f164e178]:
+                            - cell [ref=f164e179]:
+                              - table [ref=f164e180]:
+                                - rowgroup [ref=f164e181]:
+                                  - row [ref=f164e182]:
+                                    - cell [ref=f164e183]:
+                                      - table [ref=f164e184]:
+                                        - rowgroup [ref=f164e185]:
+                                          - row [ref=f164e186]:
+                                            - cell [ref=f164e187]:
+                                              - table [ref=f164e188]:
+                                                - rowgroup [ref=f164e189]:
+                                                  - row [ref=f164e190]:
+                                                    - cell "Project" [ref=f164e191]
+                                                    - cell [ref=f164e192]
+                                                    - cell [ref=f164e193]:
+                                                      - textbox [ref=f164e194]
+                                                    - cell [ref=f164e195]
+                                                    - cell "with" [ref=f164e196]
+                                                    - cell [ref=f164e197]
+                                                    - cell [ref=f164e198]:
+                                                      - combobox [ref=f164e200]:
+                                                        - textbox [ref=f164e201]
+                                                        - button [ref=f164e202] [cursor=pointer]:
+                                                          - generic [ref=f164e203]: 
+                                                    - cell [ref=f164e204]
+                                                    - cell "from" [ref=f164e205]
+                                                    - cell [ref=f164e206]
+                                                    - cell [ref=f164e207]:
+                                                      - combobox [ref=f164e208]:
+                                                        - textbox [ref=f164e209]
+                                                        - button [ref=f164e210] [cursor=pointer]:
+                                                          - generic [ref=f164e211]: 
+                                                        - text:    
+                                                    - cell [ref=f164e212]
+                                                    - cell "to" [ref=f164e213]
+                                                    - cell [ref=f164e214]
+                                                    - cell [ref=f164e215]:
+                                                      - combobox [ref=f164e216]:
+                                                        - textbox [ref=f164e217]
+                                                        - button [ref=f164e218] [cursor=pointer]:
+                                                          - generic [ref=f164e219]: 
+                                                        - text:    
+                                                    - cell [ref=f164e220]
+                                                    - cell "Exclude finished projects" [ref=f164e221]
+                                                    - cell [ref=f164e222]
+                                                    - cell [ref=f164e223]:
+                                                      - checkbox [ref=f164e225] [cursor=pointer]
+                                                    - cell [ref=f164e226]
+                                                    - cell [ref=f164e227]:
+                                                      - button "Apply filtering to tasks satisfying required criteria" [ref=f164e228] [cursor=pointer]
+                                    - cell [ref=f164e230]
+                                    - cell [ref=f164e231]:
+                                      - button "Delete all projects" [ref=f164e232] [cursor=pointer]
+                    - cell [ref=f164e233]
+      - text:  
+      - generic [ref=f164e234]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - grid [ref=f164e237]:
+          - rowgroup [ref=f164e249]:
+            - columnheader "Name" [ref=f164e250]
+            - columnheader "Code" [ref=f164e252]
+            - columnheader "Starting date" [ref=f164e254]
+            - columnheader "Deadline" [ref=f164e256]
+            - columnheader "Customer" [ref=f164e258]
+            - columnheader "Total Budget" [ref=f164e260]
+            - columnheader "Planned Budget" [ref=f164e262]
+            - columnheader "Hours" [ref=f164e264]
+            - columnheader "State" [ref=f164e266]
+            - columnheader "Operations" [ref=f164e268]
+          - rowgroup [ref=f164e281]:
+            - gridcell "RealFixTest2" [ref=f164e282]
+            - gridcell "ORDER0095" [ref=f164e284]
+            - gridcell "Aug 21, 2026" [ref=f164e286]
+            - gridcell [ref=f164e288]
+            - gridcell [ref=f164e291]
+            - gridcell "0 €" [ref=f164e294]
+            - gridcell "0 €" [ref=f164e296]
+            - gridcell "0" [ref=f164e298]
+            - gridcell "PRE-SALES" [ref=f164e300]
+            - gridcell [ref=f164e302]:
+              - table [ref=f164e304]:
+                - rowgroup [ref=f164e305]:
+                  - row [ref=f164e306]:
+                    - cell [ref=f164e307]:
+                      - table [ref=f164e308]:
+                        - rowgroup [ref=f164e309]:
+                          - row [ref=f164e310]:
+                            - cell [ref=f164e311]:
+                              - button "Edit" [ref=f164e312] [cursor=pointer]
+                            - cell [ref=f164e314]
+                            - cell [ref=f164e315]:
+                              - button "Delete" [ref=f164e316] [cursor=pointer]
+                            - cell [ref=f164e318]
+                            - cell [ref=f164e319]:
+                              - button "See scheduling" [ref=f164e320] [cursor=pointer]
+                            - cell [ref=f164e322]
+                            - cell [ref=f164e323]:
+                              - button "Create Template" [ref=f164e324] [cursor=pointer]
+            - gridcell "RealFixTest" [ref=f164e326]
+            - gridcell "ORDER0094" [ref=f164e328]
+            - gridcell "Aug 21, 2026" [ref=f164e330]
+            - gridcell [ref=f164e332]
+            - gridcell [ref=f164e335]
+            - gridcell "0 €" [ref=f164e338]
+            - gridcell "0 €" [ref=f164e340]
+            - gridcell "0" [ref=f164e342]
+            - gridcell "PRE-SALES" [ref=f164e344]
+            - gridcell [ref=f164e346]:
+              - table [ref=f164e348]:
+                - rowgroup [ref=f164e349]:
+                  - row [ref=f164e350]:
+                    - cell [ref=f164e351]:
+                      - table [ref=f164e352]:
+                        - rowgroup [ref=f164e353]:
+                          - row [ref=f164e354]:
+                            - cell [ref=f164e355]:
+                              - button "Edit" [ref=f164e356] [cursor=pointer]
+                            - cell [ref=f164e358]
+                            - cell [ref=f164e359]:
+                              - button "Delete" [ref=f164e360] [cursor=pointer]
+                            - cell [ref=f164e362]
+                            - cell [ref=f164e363]:
+                              - button "See scheduling" [ref=f164e364] [cursor=pointer]
+                            - cell [ref=f164e366]
+                            - cell [ref=f164e367]:
+                              - button "Create Template" [ref=f164e368] [cursor=pointer]
+            - gridcell "ReorderFixTest" [ref=f164e370]
+            - gridcell "ORDER0093" [ref=f164e372]
+            - gridcell "Aug 21, 2026" [ref=f164e374]
+            - gridcell [ref=f164e376]
+            - gridcell [ref=f164e379]
+            - gridcell "0 €" [ref=f164e382]
+            - gridcell "0 €" [ref=f164e384]
+            - gridcell "0" [ref=f164e386]
+            - gridcell "PRE-SALES" [ref=f164e388]
+            - gridcell [ref=f164e390]:
+              - table [ref=f164e392]:
+                - rowgroup [ref=f164e393]:
+                  - row [ref=f164e394]:
+                    - cell [ref=f164e395]:
+                      - table [ref=f164e396]:
+                        - rowgroup [ref=f164e397]:
+                          - row [ref=f164e398]:
+                            - cell [ref=f164e399]:
+                              - button "Edit" [ref=f164e400] [cursor=pointer]
+                            - cell [ref=f164e402]
+                            - cell [ref=f164e403]:
+                              - button "Delete" [ref=f164e404] [cursor=pointer]
+                            - cell [ref=f164e406]
+                            - cell [ref=f164e407]:
+                              - button "See scheduling" [ref=f164e408] [cursor=pointer]
+                            - cell [ref=f164e410]
+                            - cell [ref=f164e411]:
+                              - button "Create Template" [ref=f164e412] [cursor=pointer]
+            - gridcell "TraceTest2" [ref=f164e414]
+            - gridcell "ORDER0092" [ref=f164e416]
+            - gridcell "Aug 21, 2026" [ref=f164e418]
+            - gridcell [ref=f164e420]
+            - gridcell [ref=f164e423]
+            - gridcell "0 €" [ref=f164e426]
+            - gridcell "0 €" [ref=f164e428]
+            - gridcell "0" [ref=f164e430]
+            - gridcell "PRE-SALES" [ref=f164e432]
+            - gridcell [ref=f164e434]:
+              - table [ref=f164e436]:
+                - rowgroup [ref=f164e437]:
+                  - row [ref=f164e438]:
+                    - cell [ref=f164e439]:
+                      - table [ref=f164e440]:
+                        - rowgroup [ref=f164e441]:
+                          - row [ref=f164e442]:
+                            - cell [ref=f164e443]:
+                              - button "Edit" [ref=f164e444] [cursor=pointer]
+                            - cell [ref=f164e446]
+                            - cell [ref=f164e447]:
+                              - button "Delete" [ref=f164e448] [cursor=pointer]
+                            - cell [ref=f164e450]
+                            - cell [ref=f164e451]:
+                              - button "See scheduling" [ref=f164e452] [cursor=pointer]
+                            - cell [ref=f164e454]
+                            - cell [ref=f164e455]:
+                              - button "Create Template" [ref=f164e456] [cursor=pointer]
+            - gridcell "PreSaveFixTest" [ref=f164e458]
+            - gridcell "ORDER0091" [ref=f164e460]
+            - gridcell "Aug 21, 2026" [ref=f164e462]
+            - gridcell [ref=f164e464]
+            - gridcell [ref=f164e467]
+            - gridcell "0 €" [ref=f164e470]
+            - gridcell "0 €" [ref=f164e472]
+            - gridcell "0" [ref=f164e474]
+            - gridcell "PRE-SALES" [ref=f164e476]
+            - gridcell [ref=f164e478]:
+              - table [ref=f164e480]:
+                - rowgroup [ref=f164e481]:
+                  - row [ref=f164e482]:
+                    - cell [ref=f164e483]:
+                      - table [ref=f164e484]:
+                        - rowgroup [ref=f164e485]:
+                          - row [ref=f164e486]:
+                            - cell [ref=f164e487]:
+                              - button "Edit" [ref=f164e488] [cursor=pointer]
+                            - cell [ref=f164e490]
+                            - cell [ref=f164e491]:
+                              - button "Delete" [ref=f164e492] [cursor=pointer]
+                            - cell [ref=f164e494]
+                            - cell [ref=f164e495]:
+                              - button "See scheduling" [ref=f164e496] [cursor=pointer]
+                            - cell [ref=f164e498]
+                            - cell [ref=f164e499]:
+                              - button "Create Template" [ref=f164e500] [cursor=pointer]
+            - gridcell "MergeFixTest" [ref=f164e502]
+            - gridcell "ORDER0090" [ref=f164e504]
+            - gridcell "Aug 21, 2026" [ref=f164e506]
+            - gridcell [ref=f164e508]
+            - gridcell [ref=f164e511]
+            - gridcell "0 €" [ref=f164e514]
+            - gridcell "0 €" [ref=f164e516]
+            - gridcell "0" [ref=f164e518]
+            - gridcell "PRE-SALES" [ref=f164e520]
+            - gridcell [ref=f164e522]:
+              - table [ref=f164e524]:
+                - rowgroup [ref=f164e525]:
+                  - row [ref=f164e526]:
+                    - cell [ref=f164e527]:
+                      - table [ref=f164e528]:
+                        - rowgroup [ref=f164e529]:
+                          - row [ref=f164e530]:
+                            - cell [ref=f164e531]:
+                              - button "Edit" [ref=f164e532] [cursor=pointer]
+                            - cell [ref=f164e534]
+                            - cell [ref=f164e535]:
+                              - button "Delete" [ref=f164e536] [cursor=pointer]
+                            - cell [ref=f164e538]
+                            - cell [ref=f164e539]:
+                              - button "See scheduling" [ref=f164e540] [cursor=pointer]
+                            - cell [ref=f164e542]
+                            - cell [ref=f164e543]:
+                              - button "Create Template" [ref=f164e544] [cursor=pointer]
+            - gridcell "jeroen2" [ref=f164e546]
+            - gridcell "ORDER0089" [ref=f164e548]
+            - gridcell "Aug 21, 2026" [ref=f164e550]
+            - gridcell [ref=f164e552]
+            - gridcell [ref=f164e555]
+            - gridcell "0 €" [ref=f164e558]
+            - gridcell "0 €" [ref=f164e560]
+            - gridcell "0" [ref=f164e562]
+            - gridcell "PRE-SALES" [ref=f164e564]
+            - gridcell [ref=f164e566]:
+              - table [ref=f164e568]:
+                - rowgroup [ref=f164e569]:
+                  - row [ref=f164e570]:
+                    - cell [ref=f164e571]:
+                      - table [ref=f164e572]:
+                        - rowgroup [ref=f164e573]:
+                          - row [ref=f164e574]:
+                            - cell [ref=f164e575]:
+                              - button "Edit" [ref=f164e576] [cursor=pointer]
+                            - cell [ref=f164e578]
+                            - cell [ref=f164e579]:
+                              - button "Delete" [ref=f164e580] [cursor=pointer]
+                            - cell [ref=f164e582]
+                            - cell [ref=f164e583]:
+                              - button "See scheduling" [ref=f164e584] [cursor=pointer]
+                            - cell [ref=f164e586]
+                            - cell [ref=f164e587]:
+                              - button "Create Template" [ref=f164e588] [cursor=pointer]
+            - gridcell "jeroen1" [ref=f164e590]
+            - gridcell "ORDER0088" [ref=f164e592]
+            - gridcell "Aug 21, 2026" [ref=f164e594]
+            - gridcell [ref=f164e596]
+            - gridcell [ref=f164e599]
+            - gridcell "0 €" [ref=f164e602]
+            - gridcell "0 €" [ref=f164e604]
+            - gridcell "0" [ref=f164e606]
+            - gridcell "PRE-SALES" [ref=f164e608]
+            - gridcell [ref=f164e610]:
+              - table [ref=f164e612]:
+                - rowgroup [ref=f164e613]:
+                  - row [ref=f164e614]:
+                    - cell [ref=f164e615]:
+                      - table [ref=f164e616]:
+                        - rowgroup [ref=f164e617]:
+                          - row [ref=f164e618]:
+                            - cell [ref=f164e619]:
+                              - button "Edit" [ref=f164e620] [cursor=pointer]
+                            - cell [ref=f164e622]
+                            - cell [ref=f164e623]:
+                              - button "Delete" [ref=f164e624] [cursor=pointer]
+                            - cell [ref=f164e626]
+                            - cell [ref=f164e627]:
+                              - button "See scheduling" [ref=f164e628] [cursor=pointer]
+                            - cell [ref=f164e630]
+                            - cell [ref=f164e631]:
+                              - button "Create Template" [ref=f164e632] [cursor=pointer]
+            - gridcell "VersionFixTest" [ref=f164e634]
+            - gridcell "ORDER0087" [ref=f164e636]
+            - gridcell "Aug 21, 2026" [ref=f164e638]
+            - gridcell [ref=f164e640]
+            - gridcell [ref=f164e643]
+            - gridcell "0 €" [ref=f164e646]
+            - gridcell "0 €" [ref=f164e648]
+            - gridcell "0" [ref=f164e650]
+            - gridcell "PRE-SALES" [ref=f164e652]
+            - gridcell [ref=f164e654]:
+              - table [ref=f164e656]:
+                - rowgroup [ref=f164e657]:
+                  - row [ref=f164e658]:
+                    - cell [ref=f164e659]:
+                      - table [ref=f164e660]:
+                        - rowgroup [ref=f164e661]:
+                          - row [ref=f164e662]:
+                            - cell [ref=f164e663]:
+                              - button "Edit" [ref=f164e664] [cursor=pointer]
+                            - cell [ref=f164e666]
+                            - cell [ref=f164e667]:
+                              - button "Delete" [ref=f164e668] [cursor=pointer]
+                            - cell [ref=f164e670]
+                            - cell [ref=f164e671]:
+                              - button "See scheduling" [ref=f164e672] [cursor=pointer]
+                            - cell [ref=f164e674]
+                            - cell [ref=f164e675]:
+                              - button "Create Template" [ref=f164e676] [cursor=pointer]
+            - gridcell "LabelTestProject" [ref=f164e678]
+            - gridcell "ORDER0086" [ref=f164e680]
+            - gridcell "Aug 21, 2026" [ref=f164e682]
+            - gridcell [ref=f164e684]
+            - gridcell [ref=f164e687]
+            - gridcell "0 €" [ref=f164e690]
+            - gridcell "0 €" [ref=f164e692]
+            - gridcell "0" [ref=f164e694]
+            - gridcell "PRE-SALES" [ref=f164e696]
+            - gridcell [ref=f164e698]:
+              - table [ref=f164e700]:
+                - rowgroup [ref=f164e701]:
+                  - row [ref=f164e702]:
+                    - cell [ref=f164e703]:
+                      - table [ref=f164e704]:
+                        - rowgroup [ref=f164e705]:
+                          - row [ref=f164e706]:
+                            - cell [ref=f164e707]:
+                              - button "Edit" [ref=f164e708] [cursor=pointer]
+                            - cell [ref=f164e710]
+                            - cell [ref=f164e711]:
+                              - button "Delete" [ref=f164e712] [cursor=pointer]
+                            - cell [ref=f164e714]
+                            - cell [ref=f164e715]:
+                              - button "See scheduling" [ref=f164e716] [cursor=pointer]
+                            - cell [ref=f164e718]
+                            - cell [ref=f164e719]:
+                              - button "Create Template" [ref=f164e720] [cursor=pointer]
+            - gridcell "TrulyFinalProject" [ref=f164e722]
+            - gridcell "ORDER0085" [ref=f164e724]
+            - gridcell "Aug 21, 2026" [ref=f164e726]
+            - gridcell [ref=f164e728]
+            - gridcell [ref=f164e731]
+            - gridcell "0 €" [ref=f164e734]
+            - gridcell "0 €" [ref=f164e736]
+            - gridcell "32" [ref=f164e738]
+            - gridcell "PRE-SALES" [ref=f164e740]
+            - gridcell [ref=f164e742]:
+              - table [ref=f164e744]:
+                - rowgroup [ref=f164e745]:
+                  - row [ref=f164e746]:
+                    - cell [ref=f164e747]:
+                      - table [ref=f164e748]:
+                        - rowgroup [ref=f164e749]:
+                          - row [ref=f164e750]:
+                            - cell [ref=f164e751]:
+                              - button "Edit" [ref=f164e752] [cursor=pointer]
+                            - cell [ref=f164e754]
+                            - cell [ref=f164e755]:
+                              - button "Delete" [ref=f164e756] [cursor=pointer]
+                            - cell [ref=f164e758]
+                            - cell [ref=f164e759]:
+                              - button "See scheduling" [ref=f164e760] [cursor=pointer]
+                            - cell [ref=f164e762]
+                            - cell [ref=f164e763]:
+                              - button "Create Template" [ref=f164e764] [cursor=pointer]
+            - gridcell "Final2Project" [ref=f164e766]
+            - gridcell "ORDER0084" [ref=f164e768]
+            - gridcell "Aug 21, 2026" [ref=f164e770]
+            - gridcell [ref=f164e772]
+            - gridcell [ref=f164e775]
+            - gridcell "0 €" [ref=f164e778]
+            - gridcell "0 €" [ref=f164e780]
+            - gridcell "8" [ref=f164e782]
+            - gridcell "PRE-SALES" [ref=f164e784]
+            - gridcell [ref=f164e786]:
+              - table [ref=f164e788]:
+                - rowgroup [ref=f164e789]:
+                  - row [ref=f164e790]:
+                    - cell [ref=f164e791]:
+                      - table [ref=f164e792]:
+                        - rowgroup [ref=f164e793]:
+                          - row [ref=f164e794]:
+                            - cell [ref=f164e795]:
+                              - button "Edit" [ref=f164e796] [cursor=pointer]
+                            - cell [ref=f164e798]
+                            - cell [ref=f164e799]:
+                              - button "Delete" [ref=f164e800] [cursor=pointer]
+                            - cell [ref=f164e802]
+                            - cell [ref=f164e803]:
+                              - button "See scheduling" [ref=f164e804] [cursor=pointer]
+                            - cell [ref=f164e806]
+                            - cell [ref=f164e807]:
+                              - button "Create Template" [ref=f164e808] [cursor=pointer]
+            - gridcell "CleanVerifyProject" [ref=f164e810]
+            - gridcell "ORDER0083" [ref=f164e812]
+            - gridcell "Aug 21, 2026" [ref=f164e814]
+            - gridcell [ref=f164e816]
+            - gridcell [ref=f164e819]
+            - gridcell "0 €" [ref=f164e822]
+            - gridcell "0 €" [ref=f164e824]
+            - gridcell "24" [ref=f164e826]
+            - gridcell "PRE-SALES" [ref=f164e828]
+            - gridcell [ref=f164e830]:
+              - table [ref=f164e832]:
+                - rowgroup [ref=f164e833]:
+                  - row [ref=f164e834]:
+                    - cell [ref=f164e835]:
+                      - table [ref=f164e836]:
+                        - rowgroup [ref=f164e837]:
+                          - row [ref=f164e838]:
+                            - cell [ref=f164e839]:
+                              - button "Edit" [ref=f164e840] [cursor=pointer]
+                            - cell [ref=f164e842]
+                            - cell [ref=f164e843]:
+                              - button "Delete" [ref=f164e844] [cursor=pointer]
+                            - cell [ref=f164e846]
+                            - cell [ref=f164e847]:
+                              - button "See scheduling" [ref=f164e848] [cursor=pointer]
+                            - cell [ref=f164e850]
+                            - cell [ref=f164e851]:
+                              - button "Create Template" [ref=f164e852] [cursor=pointer]
+            - gridcell "FixVerifyProject" [ref=f164e854]
+            - gridcell "ORDER0082" [ref=f164e856]
+            - gridcell "Aug 21, 2026" [ref=f164e858]
+            - gridcell [ref=f164e860]
+            - gridcell [ref=f164e863]
+            - gridcell "0 €" [ref=f164e866]
+            - gridcell "0 €" [ref=f164e868]
+            - gridcell "32" [ref=f164e870]
+            - gridcell "PRE-SALES" [ref=f164e872]
+            - gridcell [ref=f164e874]:
+              - table [ref=f164e876]:
+                - rowgroup [ref=f164e877]:
+                  - row [ref=f164e878]:
+                    - cell [ref=f164e879]:
+                      - table [ref=f164e880]:
+                        - rowgroup [ref=f164e881]:
+                          - row [ref=f164e882]:
+                            - cell [ref=f164e883]:
+                              - button "Edit" [ref=f164e884] [cursor=pointer]
+                            - cell [ref=f164e886]
+                            - cell [ref=f164e887]:
+                              - button "Delete" [ref=f164e888] [cursor=pointer]
+                            - cell [ref=f164e890]
+                            - cell [ref=f164e891]:
+                              - button "See scheduling" [ref=f164e892] [cursor=pointer]
+                            - cell [ref=f164e894]
+                            - cell [ref=f164e895]:
+                              - button "Create Template" [ref=f164e896] [cursor=pointer]
+            - gridcell "ClaudeDebugTest" [ref=f164e898]
+            - gridcell "ORDER0081" [ref=f164e900]
+            - gridcell "Aug 20, 2026" [ref=f164e902]
+            - gridcell [ref=f164e904]
+            - gridcell [ref=f164e907]
+            - gridcell "0 €" [ref=f164e910]
+            - gridcell "0 €" [ref=f164e912]
+            - gridcell "16" [ref=f164e914]
+            - gridcell "PRE-SALES" [ref=f164e916]
+            - gridcell [ref=f164e918]:
+              - table [ref=f164e920]:
+                - rowgroup [ref=f164e921]:
+                  - row [ref=f164e922]:
+                    - cell [ref=f164e923]:
+                      - table [ref=f164e924]:
+                        - rowgroup [ref=f164e925]:
+                          - row [ref=f164e926]:
+                            - cell [ref=f164e927]:
+                              - button "Edit" [ref=f164e928] [cursor=pointer]
+                            - cell [ref=f164e930]
+                            - cell [ref=f164e931]:
+                              - button "Delete" [ref=f164e932] [cursor=pointer]
+                            - cell [ref=f164e934]
+                            - cell [ref=f164e935]:
+                              - button "See scheduling" [ref=f164e936] [cursor=pointer]
+                            - cell [ref=f164e938]
+                            - cell [ref=f164e939]:
+                              - button "Create Template" [ref=f164e940] [cursor=pointer]
+          - navigation [ref=f164e943]:
+            - button "First" [disabled] [ref=f164e944]:
+              - generic [ref=f164e945]: 
+            - button "Prev" [disabled] [ref=f164e946]:
+              - generic [ref=f164e947]: 
+            - textbox "Current" [ref=f164e948]: "1"
+            - text: / 4
+            - button "Next" [ref=f164e949] [cursor=pointer]:
+              - generic [ref=f164e950]: 
+            - button "Last" [ref=f164e951] [cursor=pointer]:
+              - generic [ref=f164e952]: 
+            - generic [ref=f164e953]: "[ 1 - 15 / 59 ]"
+  - table [ref=f164e130]:
+    - rowgroup [ref=f164e131]:
+      - row [ref=f164e132]:
+        - cell [ref=f164e133]:
+          - generic [ref=f164e135]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f164e136] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f164e137]
+  - text:  

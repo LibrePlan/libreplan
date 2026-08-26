@@ -1,0 +1,140 @@
+- generic [ref=f42e4]:
+  - generic [ref=f42e5]:
+    - table [ref=f42e6]:
+      - rowgroup [ref=f42e7]:
+        - row [ref=f42e8]:
+          - cell [ref=f42e9]:
+            - link [ref=f42e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f42e12]:
+            - table [ref=f42e13]:
+              - rowgroup [ref=f42e14]:
+                - row [ref=f42e15]:
+                  - cell [ref=f42e16]:
+                    - generic [ref=f42e17]:
+                      - menubar [ref=f42e18]:
+                        - menuitem "Planning" [ref=f42e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f42e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f42e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f42e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f42e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f42e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f42e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f42e33]:
+                        - rowgroup [ref=f42e34]:
+                          - row [ref=f42e35]:
+                            - cell [ref=f42e36]:
+                              - table [ref=f42e37]:
+                                - rowgroup [ref=f42e38]:
+                                  - row [ref=f42e39]:
+                                    - cell [ref=f42e40]
+                                    - cell [ref=f42e41]:
+                                      - strong [ref=f42e42]: START
+                                    - cell [ref=f42e43]
+                                    - cell [ref=f42e44]:
+                                      - table [ref=f42e45]:
+                                        - rowgroup [ref=f42e46]:
+                                          - row [ref=f42e47]:
+                                            - cell [ref=f42e48]:
+                                              - table [ref=f42e49]:
+                                                - rowgroup [ref=f42e50]:
+                                                  - row [ref=f42e51]:
+                                                    - cell [ref=f42e52]
+                                                    - cell [ref=f42e54]
+                                                    - cell "Planning" [ref=f42e55]
+                                                    - cell [ref=f42e56]
+                                                    - cell [ref=f42e57]
+                                                    - cell [ref=f42e59]
+                                                    - cell "Import project" [ref=f42e60]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f42e61]:
+                              - generic [ref=f42e62]:
+                                - link "Help" [ref=f42e63] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f42e65]
+                                - img "Info" [ref=f42e67]
+    - table [ref=f42e69]:
+      - rowgroup [ref=f42e70]:
+        - row [ref=f42e71]:
+          - cell [ref=f42e72]
+          - 'cell "user: admin" [ref=f42e73]'
+          - cell [ref=f42e74]:
+            - link "[Log out]" [ref=f42e75] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:  
+  - generic [ref=f42e76]:
+    - text:  
+    - generic [ref=f42e77]:
+      - generic [ref=f42e78]: Import Project
+      - generic [ref=f42e79]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - text: The formats supported for import are MPP and PLANNER files.The imported data are Gantt projects with their tasks, constraints, dependencies and milestones and there is also the option to upload calendars.
+        - table [ref=f42e80]:
+          - rowgroup [ref=f42e81]:
+            - row [ref=f42e82]:
+              - cell [ref=f42e83]:
+                - table [ref=f42e84]:
+                  - rowgroup [ref=f42e85]:
+                    - row [ref=f42e86]:
+                      - cell "Your project could only partially be imported." [ref=f42e87]
+        - generic [ref=f42e88]:
+          - generic [ref=f42e89]: Options
+          - generic [ref=f42e92]:
+            - text: "Select the elements to import into LibrePlan:"
+            - table [ref=f42e93]:
+              - rowgroup [ref=f42e94]:
+                - row [ref=f42e95]:
+                  - cell [ref=f42e96]:
+                    - table [ref=f42e97]:
+                      - rowgroup [ref=f42e98]:
+                        - row [ref=f42e99]:
+                          - cell [ref=f42e100]:
+                            - radiogroup [ref=f42e101]:
+                              - generic [ref=f42e102]:
+                                - radio "Calendars" [ref=f42e103] [cursor=pointer]
+                                - text: Calendars
+                              - generic [ref=f42e104]:
+                                - radio "Gantt charts" [checked] [active] [ref=f42e105] [cursor=pointer]
+                                - text: Gantt charts
+                              - generic [ref=f42e106]:
+                                - radio "Both calendars and gantt charts" [ref=f42e107] [cursor=pointer]
+                                - text: Both calendars and gantt charts
+        - table [ref=f42e108]:
+          - rowgroup [ref=f42e109]:
+            - row [ref=f42e110]:
+              - cell [ref=f42e111]:
+                - table [ref=f42e112]:
+                  - rowgroup [ref=f42e113]:
+                    - row [ref=f42e114]:
+                      - cell [ref=f42e115]:
+                        - button "Upload Project" [ref=f42e116] [cursor=pointer]
+                        - generic:
+                          - generic:
+                            - button "Choose File"
+  - table [ref=f42e118]:
+    - rowgroup [ref=f42e119]:
+      - row [ref=f42e120]:
+        - cell [ref=f42e121]:
+          - generic [ref=f42e123]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f42e124] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f42e125]
+  - text:  

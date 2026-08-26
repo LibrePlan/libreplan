@@ -1,0 +1,135 @@
+- generic [ref=f601e4]:
+  - generic [ref=f601e5]:
+    - table [ref=f601e6]:
+      - rowgroup [ref=f601e7]:
+        - row [ref=f601e8]:
+          - cell [ref=f601e9]:
+            - link [ref=f601e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f601e12]:
+            - table [ref=f601e13]:
+              - rowgroup [ref=f601e14]:
+                - row [ref=f601e15]:
+                  - cell [ref=f601e16]:
+                    - generic [ref=f601e17]:
+                      - menubar [ref=f601e18]:
+                        - menuitem "Planning" [ref=f601e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f601e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f601e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f601e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f601e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f601e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f601e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f601e33]:
+                        - rowgroup [ref=f601e34]:
+                          - row [ref=f601e35]:
+                            - cell [ref=f601e36]:
+                              - table [ref=f601e37]:
+                                - rowgroup [ref=f601e38]:
+                                  - row [ref=f601e39]:
+                                    - cell [ref=f601e40]
+                                    - cell [ref=f601e41]:
+                                      - strong [ref=f601e42]: START
+                                    - cell [ref=f601e43]
+                                    - cell [ref=f601e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f601e45]:
+                                        - rowgroup [ref=f601e46]:
+                                          - row [ref=f601e47]:
+                                            - cell [ref=f601e48]:
+                                              - table [ref=f601e49]:
+                                                - rowgroup [ref=f601e50]:
+                                                  - row [ref=f601e51]:
+                                                    - cell [ref=f601e52]:
+                                                      - table [ref=f601e53]:
+                                                        - rowgroup [ref=f601e54]:
+                                                          - row [ref=f601e55]:
+                                                            - cell [ref=f601e56]:
+                                                              - table [ref=f601e57]:
+                                                                - rowgroup [ref=f601e58]:
+                                                                  - row [ref=f601e59]:
+                                                                    - cell [ref=f601e60]
+                                                                    - cell [ref=f601e63]
+                                                                    - cell "Cost" [ref=f601e64]
+                                                    - cell [ref=f601e65]
+                                                    - cell [ref=f601e66]:
+                                                      - table [ref=f601e67]:
+                                                        - rowgroup [ref=f601e68]:
+                                                          - row [ref=f601e69]:
+                                                            - cell [ref=f601e70]:
+                                                              - table [ref=f601e71]:
+                                                                - rowgroup [ref=f601e72]:
+                                                                  - row [ref=f601e73]:
+                                                                    - cell [ref=f601e74]
+                                                                    - cell [ref=f601e77]
+                                                                    - cell "Expenses" [ref=f601e78]
+                            - cell [ref=f601e79]:
+                              - generic [ref=f601e80]:
+                                - link "Help" [ref=f601e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f601e83]
+                                - img "Info" [ref=f601e85]
+    - table [ref=f601e87]:
+      - rowgroup [ref=f601e88]:
+        - row [ref=f601e89]:
+          - cell [ref=f601e90]
+          - 'cell "user: admin" [ref=f601e91]'
+          - cell [ref=f601e92]:
+            - link "[Log out]" [ref=f601e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f601e94]:
+    - text:    
+    - generic [ref=f601e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f601e97]:
+        - generic [ref=f601e98]: Expense Sheets List
+        - generic [ref=f601e99]:
+          - table [ref=f601e101]:
+            - rowgroup [ref=f601e102]:
+              - row [ref=f601e103]:
+                - cell [ref=f601e104]:
+                  - table [ref=f601e105]:
+                    - rowgroup [ref=f601e106]:
+                      - row [ref=f601e107]:
+                        - cell [ref=f601e108]:
+                          - button "New expense sheet" [ref=f601e109] [cursor=pointer]
+          - separator [ref=f601e110]
+          - grid [ref=f601e111]:
+            - rowgroup [ref=f601e120]:
+              - columnheader "First expense" [ref=f601e121]
+              - columnheader "Last expense" [ref=f601e123]
+              - columnheader "Total" [ref=f601e125]
+              - columnheader "Code" [ref=f601e127]
+              - columnheader "Description" [ref=f601e129]
+              - columnheader "Type" [ref=f601e131]
+              - columnheader "Operations" [ref=f601e133]
+            - generic [ref=f601e143]:    
+      - text:            
+  - table [ref=f601e144]:
+    - rowgroup [ref=f601e145]:
+      - row [ref=f601e146]:
+        - cell [ref=f601e147]:
+          - generic [ref=f601e149]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f601e150] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f601e151]
+  - text:    

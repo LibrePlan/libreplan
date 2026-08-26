@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,10 +26,11 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.Validate;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
@@ -54,20 +56,24 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
     @Override
     public List<CostCategory> findActive() {
 
-        Criteria c = getSession().createCriteria(CostCategory.class);
-        c.add(Restrictions.eq("enabled", true));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CostCategory> cq = cb.createQuery(CostCategory.class);
+        Root<CostCategory> root = cq.from(CostCategory.class);
+        cq.where(cb.equal(root.get("enabled"), true));
 
         List<CostCategory> list = new ArrayList<CostCategory>();
-        list.addAll(c.list());
+        list.addAll(getSession().createQuery(cq).getResultList());
         return list;
     }
 
     @Override
     public CostCategory findUniqueByName(String name)
     throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(CostCategory.class).
-        add(Restrictions.eq("name", name).ignoreCase());
-        CostCategory costCategory = (CostCategory) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CostCategory> cq = cb.createQuery(CostCategory.class);
+        Root<CostCategory> root = cq.from(CostCategory.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.toLowerCase()));
+        CostCategory costCategory = getSession().createQuery(cq).uniqueResult();
 
         if (costCategory == null) {
             throw new InstanceNotFoundException(name,
@@ -82,9 +88,11 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
             throws InstanceNotFoundException {
         Validate.notNull(code);
 
-        Criteria c = getSession().createCriteria(CostCategory.class).add(
-                Restrictions.eq("code", code).ignoreCase());
-        CostCategory costCategory = (CostCategory) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CostCategory> cq = cb.createQuery(CostCategory.class);
+        Root<CostCategory> root = cq.from(CostCategory.class);
+        cq.where(cb.equal(cb.lower(root.get("code")), code.toLowerCase()));
+        CostCategory costCategory = getSession().createQuery(cq).uniqueResult();
 
         if (costCategory == null) {
             throw new InstanceNotFoundException(code, CostCategory.class
@@ -118,9 +126,11 @@ public class CostCategoryDAO extends IntegrationEntityDAO<CostCategory>
     @Transactional(readOnly=true)
     public CostCategory findByNameCaseInsensitive(String name)
             throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(CostCategory.class);
-        c.add(Restrictions.ilike("name", name, MatchMode.EXACT));
-        CostCategory result = (CostCategory) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CostCategory> cq = cb.createQuery(CostCategory.class);
+        Root<CostCategory> root = cq.from(CostCategory.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.toLowerCase()));
+        CostCategory result = getSession().createQuery(cq).uniqueResult();
 
         if (result == null) {
             throw new InstanceNotFoundException(name,

@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>專案儀表板</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">專案儀表板</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">進度績效指標</a><ul>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">專案進度百分比</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">任務狀態</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">成本指標</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">資源</a><ul>
+<li><a class="reference internal" href="#section-7" id="toc-entry-6">已完成任務估算偏差直方圖</a></li>
+<li><a class="reference internal" href="#section-8" id="toc-entry-7">加班比率</a></li>
+<li><a class="reference internal" href="#section-9" id="toc-entry-8">可用性比率</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#section-10" id="toc-entry-9">時間</a><ul>
+<li><a class="reference internal" href="#section-11" id="toc-entry-10">任務完成提前或延後</a></li>
+<li><a class="reference internal" href="#section-12" id="toc-entry-11">截止日期違反</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>專案儀表板是 <em>LibrePlan</em> 的一個視角，包含一組**關鍵績效指標（KPI）**，可協助評估專案在以下方面的表現：</p>
+<blockquote>
+<ul class="simple">
+<li>工作進度</li>
+<li>成本</li>
+<li>已分配資源的狀態</li>
+<li>時間限制</li>
+</ul>
+</blockquote>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">進度績效指標</a></h1>
+<p>計算兩個指標：專案進度百分比和任務狀態。</p>
+<div class="section" id="section-3">
+<h2><a class="toc-backref" href="#toc-entry-2">專案進度百分比</a></h2>
+<p>此圖表顯示專案的整體進度，並與基於 <em>Gantt</em> 圖的預期進度進行比較。</p>
+<p>進度由兩個長條表示：</p>
+<blockquote>
+<ul class="simple">
+<li><em>當前進度：</em> 根據已採取的測量值得出的當前進度。</li>
+<li><em>預期進度：</em> 根據專案計劃，專案此時應達到的進度。</li>
+</ul>
+</blockquote>
+<p>若要查看每個長條的實際測量值，請將滑鼠游標懸停在長條上。</p>
+<p>整體專案進度使用幾種不同的方法估算，因為沒有單一、普遍正確的方法：</p>
+<blockquote>
+<ul class="simple">
+<li><strong>擴散進度：</strong> 這是在專案層級設定為擴散進度的進度類型。在此情況下，無法計算預期值，僅顯示當前長條。</li>
+<li><strong>依所有任務工時：</strong> 所有專案任務的進度取平均值以計算整體值。這是考量分配給每個任務工時數的加權平均值。</li>
+<li><strong>依關鍵路徑工時：</strong> 屬於任何專案關鍵路徑的任務進度取平均值以獲得整體值。這是考量每個相關任務總分配工時的加權平均值。</li>
+<li><strong>依關鍵路徑持續時間：</strong> 屬於任何關鍵路徑的任務進度使用加權平均值取平均，但這次考量的是每個相關任務的持續時間而非分配的工時。</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-4">
+<h2><a class="toc-backref" href="#toc-entry-3">任務狀態</a></h2>
+<p>圓餅圖顯示不同狀態的專案任務百分比。定義的狀態為：</p>
+<blockquote>
+<ul class="simple">
+<li><strong>已完成：</strong> 以100%進度值識別的已完成任務。</li>
+<li><strong>進行中：</strong> 目前正在進行的任務。這些任務的進度值不為0%或100%，或已追蹤了一些工作時間。</li>
+<li><strong>準備開始：</strong> 進度為0%、無追蹤工時、所有*結束到開始*依賴任務均已*完成*，且所有*開始到開始*依賴任務均已*完成*或*進行中*的任務。</li>
+<li><strong>已封鎖：</strong> 進度為0%、無追蹤工時，且前置依賴任務既不*進行中*也不在*準備開始*狀態的任務。</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="section-5">
+<h1><a class="toc-backref" href="#toc-entry-4">成本指標</a></h1>
+<p>計算幾個*實獲值管理*成本指標：</p>
+<blockquote>
+<ul>
+<li><p class="first"><strong>CV（成本差異）：</strong> 目前時刻*實獲值曲線*與*實際成本曲線*之間的差異。正值表示收益，負值表示損失。</p>
+</li>
+<li><p class="first"><strong>ACWP（已執行工作的實際成本）：</strong> 目前時刻專案中已追蹤的總工時數。</p>
+</li>
+<li><p class="first"><strong>CPI（成本績效指數）：</strong> <a href="#system-message-1"><span class="problematic" id="problematic-1">*</span></a>實獲值/實際成本*比率。</p>
+<div class="system-message" id="system-message-1">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">17-1-project-dashboard.rst</tt>, line 54); <em><a href="#problematic-1">backlink</a></em></p>
+<p>Inline emphasis start-string without end-string.</p>
+</div>
+<blockquote>
+<ul class="simple">
+<li>&gt; 100 為有利，表示專案低於預算。</li>
+<li>= 100 也為有利，表示成本完全符合計劃。</li>
+<li>&lt; 100 為不利，表示完成工作的成本高於計劃。</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>ETC（完工估算）：</strong> 完成專案所剩餘的時間。</p>
+</li>
+<li><p class="first"><strong>BAC（完工預算）：</strong> 專案計劃中分配的總工作量。</p>
+</li>
+<li><p class="first"><strong>EAC（完工時的估算）：</strong> 經理根據 <em>CPI</em> 對專案完成時總成本的預測。</p>
+</li>
+<li><p class="first"><strong>VAC（完工差異）：</strong> <em>BAC</em> 與 <em>EAC</em> 之間的差異。</p>
+<blockquote>
+<ul class="simple">
+<li>&lt; 0 表示專案超出預算。</li>
+<li>&gt; 0 表示專案低於預算。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-6">
+<h1><a class="toc-backref" href="#toc-entry-5">資源</a></h1>
+<p>若要從資源角度分析專案，提供兩個比率和一個直方圖。</p>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-6">已完成任務估算偏差直方圖</a></h2>
+<p>此直方圖計算分配給專案任務的工時數與實際投入工時數之間的偏差。</p>
+<p>偏差以百分比計算所有已完成任務，並在直方圖中表示計算出的偏差。縱軸顯示每個偏差區間內的任務數量。動態計算六個偏差區間。</p>
+</div>
+<div class="section" id="section-8">
+<h2><a class="toc-backref" href="#toc-entry-7">加班比率</a></h2>
+<p>此比率彙總分配給專案任務的資源超載情況。使用公式計算：<strong>加班比率 = 超載 / (負載 + 超載)</strong>。</p>
+<blockquote>
+<ul class="simple">
+<li>= 0 為有利，表示資源未超載。</li>
+<li>&gt; 0 為不利，表示資源超載。</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-9">
+<h2><a class="toc-backref" href="#toc-entry-8">可用性比率</a></h2>
+<p>此比率彙總目前分配給專案的資源的空閒容量。因此，它衡量資源在不超載的情況下接受更多分配的可用性。計算公式為：<strong>可用性比率 = (1 - 負載/容量) * 100</strong></p>
+<blockquote>
+<ul class="simple">
+<li>可能的值介於0%（完全分配）到100%（未分配）之間。</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="section-10">
+<h1><a class="toc-backref" href="#toc-entry-9">時間</a></h1>
+<p>包含兩個圖表：專案任務完成時間偏差的直方圖和截止日期違反的圓餅圖。</p>
+<div class="section" id="section-11">
+<h2><a class="toc-backref" href="#toc-entry-10">任務完成提前或延後</a></h2>
+<p>此計算確定專案任務的計劃結束時間與實際結束時間之間的天數差異。計劃完成日期取自 <em>Gantt</em> 圖，實際完成日期取自任務的最後一次追蹤工時。</p>
+<p>任務完成的延後或提前以直方圖表示。縱軸顯示提前/延後天數差值對應橫坐標天數區間的任務數量。計算六個動態任務完成偏差區間。</p>
+<blockquote>
+<ul class="simple">
+<li>負值表示提前完成。</li>
+<li>正值表示延後完成。</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-12">
+<h2><a class="toc-backref" href="#toc-entry-11">截止日期違反</a></h2>
+<p>本節計算與專案截止日期（若已設定）的差距。此外，圓餅圖顯示符合截止日期的任務百分比。圖表中包含三種類型的值：</p>
+<blockquote>
+<ul class="simple">
+<li>未設定截止日期的任務百分比。</li>
+<li>實際結束日期晚於其截止日期的已結束任務百分比。實際結束日期取自任務的最後一次追蹤工時。</li>
+<li>實際結束日期早於其截止日期的已結束任務百分比。</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

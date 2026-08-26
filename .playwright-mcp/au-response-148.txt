@@ -1,0 +1,352 @@
+{"rs":[["rm",["jFvEfl"]],["rm",["jFvEgl"]],["rm",["jFvEhl"]],["rm",["jFvEil"]],["addChd",["jFvEt4",[
+['ganttz.Planner','jFvE95',{id:'planner',sclass:'parentPlanner scroll\-collapse',style:'display: block; height: 100%;',prolog:' '},{},[
+['zul.layout.Borderlayout','jFvEa5',{width:'auto',sclass:'plannerlayout'},{},[
+['zul.layout.North','jFvEb5',{$$0onSize:true,height:'30px',sclass:'toolbar\-box',border:'none'},{},[
+['zul.box.Box','jFvEc5',{id:'toolbar',sclass:'filtering\-area',cssflex:false,align:'center'},{},[
+['zul.wgt.Separator','jFvEd5',{orient:'horizontal'},{},[]],
+['zul.wgt.Button','jFvEe5',{visible:false,$onClick:true,tooltiptext:'Refresh',image:'\/common\/img\/ico_refresh.png'},{},[],'trendy'],
+['zul.box.Box','jFvEf5',{id:'plannerButtonsInsertionPoint',cssflex:false},{},[],'horizontal'],
+['zul.wgt.Button','jFvEg5',{id:'btnPrint',$onClick:true,style:'background: none; box\-shadow: none;',tooltiptext:'Print',image:'\/common\/img\/ico_print.png'},{},[],'trendy'],
+['zul.wgt.Separator','jFvEh5',{orient:'horizontal'},{},[]],
+['zul.wgt.Space','jFvEi5',{orient:'vertical',bar:true},{},[]],
+['zul.sel.Select','jFvEj5',{id:'listZoomLevels',$$0onDataLoading:true,$$0onAnchorPos:true,$$0onCheckSelectAll:true,$onSelect:true,$$0onInnerWidth:true,$$0onAcrossPage:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,rows:1},{},[
+['zul.sel.Option','jFvEtr',{_loaded:true,_index:0},{},[
+['zul.sel.Listcell','jFvEss',{label:'Year'},{},[]]],'select'],
+['zul.sel.Option','jFvEvr',{_loaded:true,_index:1},{},[
+['zul.sel.Listcell','jFvEts',{label:'Quarter'},{},[]]],'select'],
+['zul.sel.Option','jFvExr',{_loaded:true,_index:2},{},[
+['zul.sel.Listcell','jFvEus',{label:'Month'},{},[]]],'select'],
+['zul.sel.Option','jFvEzr',{_loaded:true,_index:3},{},[
+['zul.sel.Listcell','jFvEvs',{label:'Week'},{},[]]],'select'],
+['zul.sel.Option','jFvE0s',{_loaded:true,_index:4},{},[
+['zul.sel.Listcell','jFvEws',{label:'Day'},{},[]]],'select']],'select'],
+['zul.wgt.Button','jFvEu5',{id:'showCriticalPath',visible:false,$onClick:true,tooltiptext:'Show\/Hide critical path',image:'\/common\/img\/ico_criticalpath.png'},{},[],'trendy'],
+['zul.wgt.Button','jFvEv5',{id:'showAllLabels',$onClick:true,sclass:'planner\-command show\-labels clicked',tooltiptext:'Show\/Hide labels',image:'\/common\/img\/ico_labels.png'},{},[],'trendy'],
+['zul.wgt.Button','jFvEw5',{id:'showAllResources',visible:false,$onClick:true,sclass:'planner\-command show\-resources',tooltiptext:'Show\/Hide resources',image:'\/common\/img\/ico_resources.png'},{},[],'trendy'],
+['zul.wgt.Button','jFvEx5',{id:'expandAll',visible:false,$onClick:true,sclass:'planner\-command',tooltiptext:'Expand\/Collapse all',image:'\/common\/img\/ico_expand.png'},{},[],'trendy'],
+['zul.wgt.Button','jFvEy5',{id:'flattenTree',visible:false,$onClick:true,sclass:'planner\-command',tooltiptext:'Flatten\/Unflatten tree',image:'\/common\/img\/ico_flatten.png'},{},[],'trendy'],
+['zul.box.Box','jFvEz5',{sclass:'show\-advances',cssflex:false,align:'center'},{},[
+['zul.wgt.Button','jFvE_6',{id:'showAdvances',$onClick:true,sclass:'planner\-command clicked',style:'width:46px; margin\-right: \-5px;',tooltiptext:'Hide progress',image:'\/common\/img\/ico_progress.png'},{},[],'trendy'],
+['zul.inp.Combobox','jFvE06',{id:'cbProgressTypes',$$0onError:true,$$1onChange:true,$onSelect:true,$$0onSelect:true,$$0onOpen:true,width:'1px',sclass:'progress\-types',_value:'Progress with all tasks by hours',selectedItemUuid_:'jFvEys'},{},[
+['zul.inp.Comboitem','jFvExs',{label:'Spreading progress'},{},[]],
+['zul.inp.Comboitem','jFvEys',{label:'Progress with all tasks by hours'},{},[]],
+['zul.inp.Comboitem','jFvEzs',{label:'Progress with critical path tasks by hours'},{},[]],
+['zul.inp.Comboitem','jFvE_t',{label:'Progress with critical path tasks by duration'},{},[]]]]],'horizontal'],
+['zul.wgt.Button','jFvE16',{id:'showReportedHours',$onClick:true,sclass:'planner\-command clicked',tooltiptext:'Hide reported hours',image:'\/common\/img\/ico_costs.png'},{},[],'trendy'],
+['zul.wgt.Separator','jFvE26',{orient:'horizontal'},{},[]],
+['zul.wgt.Button','jFvE36',{id:'showMoneyCostBar',visible:false,$onClick:true,sclass:'planner\-command',tooltiptext:'Show\/Hide money cost bar',image:'\/common\/img\/ico_money_cost_bar.png'},{},[],'trendy'],
+['zul.wgt.Separator','jFvE46',{orient:'horizontal'},{},[]],
+['zul.box.Box','jFvE56',{id:'orderFilter',cssflex:false},{},[
+['zul.box.Box','jFvEk6',{sclass:'filtering\-area',cssflex:false,align:'center'},{},[
+['zul.wgt.Label','jFvEl6',{tooltiptext:'Select required criteria set and press filter button',value:'Project'},{},[]],
+['zul.inp.Textbox','jFvEm6',{id:'filterProjectName',$$0onError:true,$onChange:true,$$1onChange:true,$onOK:true,width:'100px'},{},[]],
+['zul.wgt.Label','jFvEn6',{value:' with'},{},[]],
+['zk.Macro','jFvEo6',{id:'bdFilters'},{},[
+['zul.inp.Bandbox','jFvEp6',{id:'bandbox',$$0onError:true,$$1onChange:true,$onCtrlKey:true,$$0onOpen:true,$onChanging:true,$$0onChanging:true,width:'260px',ctrlKeys:'#down',autodrop:true},{},[
+['zul.inp.Bandpopup','jFvEq6',{},{},[
+['zul.box.Box','jFvEr6',{height:'170px',prolog:' ',cssflex:false},{},[
+['zul.sel.Listbox','jFvEs6',{id:'listbox',$$0onDataLoading:true,$$0onAnchorPos:true,$$0onCheckSelectAll:true,$onOK:true,$$0onInnerWidth:true,$$0onAcrossPage:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,listeners:{onClick:function(event){
+closeBandbox(this.$f('bandbox').parent);
+}},width:'550px',height:'150px',sclass:'bandbox\-search',model:true,_topPad:0,_totalSize:11,_offset:0},{},[
+['zul.sel.Listhead','jFvEt6',{id:'listhead'},{},[]],
+['zul.sel.Listitem','jFvE2s',{_loaded:true,_index:0},{},[
+['zul.sel.Listcell','jFvE0t',{label:'1 ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvE1t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvE4s',{_loaded:true,_index:1},{},[
+['zul.sel.Listcell','jFvE2t',{label:'Medium urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvE3t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvE6s',{_loaded:true,_index:2},{},[
+['zul.sel.Listcell','jFvE4t',{label:'Low urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvE5t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvE8s',{_loaded:true,_index:3},{},[
+['zul.sel.Listcell','jFvE6t',{label:'High urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvE7t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvEas',{_loaded:true,_index:4},{},[
+['zul.sel.Listcell','jFvE8t',{label:'2 ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvE9t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvEcs',{_loaded:true,_index:5},{},[
+['zul.sel.Listcell','jFvEat',{label:'Very Low urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvEbt',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvEes',{_loaded:true,_index:6},{},[
+['zul.sel.Listcell','jFvEct',{label:'3 ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvEdt',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvEgs',{_loaded:true,_index:7},{},[
+['zul.sel.Listcell','jFvEet',{label:'Welding Machine  ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvEft',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvEis',{_loaded:true,_index:8},{},[
+['zul.sel.Listcell','jFvEgt',{label:'Grinnding Machine ( Priority )'},{},[]],
+['zul.sel.Listcell','jFvEht',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','jFvEks',{_loaded:true,_index:9},{},[
+['zul.sel.Listcell','jFvEit',{label:'Junior worker ( CATEGORY )'},{},[]],
+['zul.sel.Listcell','jFvEjt',{label:'Criterion ( worker )'},{},[]]]],
+['zul.sel.Listitem','jFvEms',{_loaded:true,_index:10},{},[
+['zul.sel.Listcell','jFvEkt',{label:'...'},{},[]],
+['zul.sel.Listcell','jFvElt',{label:'...'},{},[]]]]]]],'vertical']]]]]]],
+['zul.wgt.Label','jFvEf7',{value:'from'},{},[]],
+['zul.db.Datebox','jFvEg7',{format:'MMM d, y',id:'filterStartDate',$$0onError:true,$onChange:true,$$1onChange:true,$$0onTimeZoneChange:true,_value:jq.j2d('2025.12.31.23.0.0.0'),cols:11,timeZone:'Europe\/Amsterdam',position:'after_start',localizedFormat:'MMM d, y',todayLinkLabel:'Today'},{},[]],
+['zul.wgt.Label','jFvEh7',{value:'to'},{},[]],
+['zul.db.Datebox','jFvEi7',{format:'MMM d, y',id:'filterFinishDate',$$0onError:true,$onChange:true,$$1onChange:true,$$0onTimeZoneChange:true,_value:jq.j2d('2027.6.25.22.0.0.0'),cols:11,timeZone:'Europe\/Amsterdam',position:'after_start',localizedFormat:'MMM d, y',todayLinkLabel:'Today'},{},[]],
+['zul.wgt.Label','jFvEj7',{value:' Exclude finished projects'},{},[]],
+['zul.wgt.Checkbox','jFvEk7',{id:'filterExcludeFinishedProject',$$1onCheck:true},{},[]],
+['zul.wgt.Button','jFvEl7',{$onClick:true,style:'margin\-top: \-4px',tooltiptext:'Apply filtering to tasks satisfying required criteria',image:'\/common\/img\/ico_filter.png'},{},[],'trendy']],'horizontal']],'vertical'],
+['zul.box.Box','jFvE66',{id:'orderElementFilter',cssflex:false},{},[],'vertical'],
+['zul.wgt.Separator','jFvE76',{orient:'horizontal'},{},[]]],'horizontal']]],
+['zul.layout.Center','jFvE86',{$$0onSize:true,border:'none'},{},[
+['zul.layout.Borderlayout','jFvE96',{height:'100%',sclass:'plannerlayout_center'},{},[
+['zul.layout.West','jFvEa6',{id:'taskdetailsContainer',$onSize:true,$$0onSize:true,width:'375px',vflex:'0',sclass:'taskdetailsContainer',splittable:true,collapsible:true},{},[
+['zul.wgt.Div','jFvEb6',{id:'insertionPointLeftPanel',sclass:'leftpanelgap'},{},[
+['zk.Macro','jFvE78',{},{},[
+['zul.wgt.Div','jFvE88',{id:'listdetails_container'},{},[
+['zk.Macro','jFvE98',{sclass:'listdetails'},{},[
+['zul.wgt.Div','jFvEa8',{},{},[
+['zul.sel.Tree','jFvEb8',{id:'tasksTree',$$0onAnchorPos:true,$$0onCheckSelectAll:true,$$0onSelect:true,$$0onInnerWidth:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,hflex:'1',sclass:'taskTreeCols',prolog:' ',model:true,z$rod0:false},{},[
+['zul.sel.Treecols','jFvEc8',{height:'33px'},{},[
+['zul.sel.Treecol','jFvEd8',{$onSort:true,$$0onSort:true,sclass:'tree\-text',label:'Name'},{},[]],
+['zul.sel.Treecol','jFvEe8',{$onSort:true,$$0onSort:true,width:'60px',label:'Start'},{},[]],
+['zul.sel.Treecol','jFvEf8',{$onSort:true,$$0onSort:true,width:'60px',label:'End'},{},[]],
+['zul.sel.Treecol','jFvEg8',{$onSort:true,$$0onSort:true,width:'55px',label:'T \/ M'},{},[]]]],
+['zul.sel.Treechildren','jFvEgc',{},{},[
+['zul.sel.Treeitem','jFvEmt',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEnt',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEot',{},{},[
+['zul.wgt.Label','jFvEpt',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'THE_Testproject #2',prolog:' ',value:'THE_Testproject #2'},{},[]]]],
+['zul.sel.Treecell','jFvEqt',{},{},[
+['zul.wgt.Label','jFvErt',{sclass:'order\-startdate',prolog:' ',value:'1\/1\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEst',{},{},[
+['zul.wgt.Label','jFvEtt',{sclass:'order\-enddate',prolog:' ',value:'1\/6\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEut',{},{},[
+['zul.box.Hlayout','jFvEvt',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEwt',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvExt',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEyt',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEzt',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvE_u',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvE0u',{},{},[
+['zul.wgt.Label','jFvE1u',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'Test project Libre Palan',prolog:' ',value:'Test project Libre Palan'},{},[]]]],
+['zul.sel.Treecell','jFvE2u',{},{},[
+['zul.wgt.Label','jFvE3u',{sclass:'order\-startdate',prolog:' ',value:'5\/18\/26'},{},[]]]],
+['zul.sel.Treecell','jFvE4u',{},{},[
+['zul.wgt.Label','jFvE5u',{sclass:'order\-enddate',prolog:' ',value:'5\/19\/26'},{},[]]]],
+['zul.sel.Treecell','jFvE6u',{},{},[
+['zul.box.Hlayout','jFvE7u',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvE8u',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvE9u',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEau',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEbu',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEcu',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEdu',{},{},[
+['zul.wgt.Label','jFvEeu',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'miniGrav prototype',prolog:' ',value:'miniGrav prototype'},{},[]]]],
+['zul.sel.Treecell','jFvEfu',{},{},[
+['zul.wgt.Label','jFvEgu',{sclass:'order\-startdate',prolog:' ',value:'5\/18\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEhu',{},{},[
+['zul.wgt.Label','jFvEiu',{sclass:'order\-enddate',prolog:' ',value:'7\/14\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEju',{},{},[
+['zul.box.Hlayout','jFvEku',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvElu',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEmu',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEnu',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEou',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEpu',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEqu',{},{},[
+['zul.wgt.Label','jFvEru',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'new test project',prolog:' ',value:'new test project'},{},[]]]],
+['zul.sel.Treecell','jFvEsu',{},{},[
+['zul.wgt.Label','jFvEtu',{sclass:'order\-startdate',prolog:' ',value:'5\/19\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEuu',{},{},[
+['zul.wgt.Label','jFvEvu',{sclass:'order\-enddate',prolog:' ',value:'5\/19\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEwu',{},{},[
+['zul.box.Hlayout','jFvExu',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEyu',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEzu',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvE_v',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvE0v',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvE1v',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvE2v',{},{},[
+['zul.wgt.Label','jFvE3v',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'GAS stations',prolog:' ',value:'GAS stations'},{},[]]]],
+['zul.sel.Treecell','jFvE4v',{},{},[
+['zul.wgt.Label','jFvE5v',{sclass:'order\-startdate',prolog:' ',value:'5\/24\/26'},{},[]]]],
+['zul.sel.Treecell','jFvE6v',{},{},[
+['zul.wgt.Label','jFvE7v',{sclass:'order\-enddate',prolog:' ',value:'8\/24\/26'},{},[]]]],
+['zul.sel.Treecell','jFvE8v',{},{},[
+['zul.box.Hlayout','jFvE9v',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEav',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEbv',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEcv',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEdv',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEev',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEfv',{},{},[
+['zul.wgt.Label','jFvEgv',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'OpenWeb',prolog:' ',value:'OpenWeb'},{},[]]]],
+['zul.sel.Treecell','jFvEhv',{},{},[
+['zul.wgt.Label','jFvEiv',{sclass:'order\-startdate',prolog:' ',value:'5\/26\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEjv',{},{},[
+['zul.wgt.Label','jFvEkv',{sclass:'order\-enddate',prolog:' ',value:'6\/26\/27'},{},[]]]],
+['zul.sel.Treecell','jFvElv',{},{},[
+['zul.box.Hlayout','jFvEmv',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEnv',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEov',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEpv',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEqv',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvErv',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEsv',{},{},[
+['zul.wgt.Label','jFvEtv',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'Projet UT',prolog:' ',value:'Projet UT'},{},[]]]],
+['zul.sel.Treecell','jFvEuv',{},{},[
+['zul.wgt.Label','jFvEvv',{sclass:'order\-startdate',prolog:' ',value:'5\/27\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEwv',{},{},[
+['zul.wgt.Label','jFvExv',{sclass:'order\-enddate',prolog:' ',value:'5\/27\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEyv',{},{},[
+['zul.box.Hlayout','jFvEzv',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvE_w',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvE0w',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvE1w',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvE2w',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvE3w',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvE4w',{},{},[
+['zul.wgt.Label','jFvE5w',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'rebuild motor',prolog:' ',value:'rebuild motor'},{},[]]]],
+['zul.sel.Treecell','jFvE6w',{},{},[
+['zul.wgt.Label','jFvE7w',{sclass:'order\-startdate',prolog:' ',value:'6\/4\/26'},{},[]]]],
+['zul.sel.Treecell','jFvE8w',{},{},[
+['zul.wgt.Label','jFvE9w',{sclass:'order\-enddate',prolog:' ',value:'6\/11\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEaw',{},{},[
+['zul.box.Hlayout','jFvEbw',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEcw',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEdw',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEew',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEfw',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEgw',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEhw',{},{},[
+['zul.wgt.Label','jFvEiw',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'test1',prolog:' ',value:'test1'},{},[]]]],
+['zul.sel.Treecell','jFvEjw',{},{},[
+['zul.wgt.Label','jFvEkw',{sclass:'order\-startdate',prolog:' ',value:'6\/8\/26'},{},[]]]],
+['zul.sel.Treecell','jFvElw',{},{},[
+['zul.wgt.Label','jFvEmw',{sclass:'order\-enddate',prolog:' ',value:'6\/10\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEnw',{},{},[
+['zul.box.Hlayout','jFvEow',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEpw',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEqw',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvErw',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEsw',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEtw',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEuw',{},{},[
+['zul.wgt.Label','jFvEvw',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'THE_Testproject #1',prolog:' ',value:'THE_Testproject #1'},{},[]]]],
+['zul.sel.Treecell','jFvEww',{},{},[
+['zul.wgt.Label','jFvExw',{sclass:'order\-startdate',prolog:' ',value:'6\/9\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEyw',{},{},[
+['zul.wgt.Label','jFvEzw',{sclass:'order\-enddate',prolog:' ',value:'6\/16\/26'},{},[]]]],
+['zul.sel.Treecell','jFvE_x',{},{},[
+['zul.box.Hlayout','jFvE0x',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvE1x',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvE2x',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvE3x',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvE4x',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvE5x',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvE6x',{},{},[
+['zul.wgt.Label','jFvE7x',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'stadium',prolog:' ',value:'stadium'},{},[]]]],
+['zul.sel.Treecell','jFvE8x',{},{},[
+['zul.wgt.Label','jFvE9x',{sclass:'order\-startdate',prolog:' ',value:'6\/19\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEax',{},{},[
+['zul.wgt.Label','jFvEbx',{sclass:'order\-enddate',prolog:' ',value:'10\/19\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEcx',{},{},[
+['zul.box.Hlayout','jFvEdx',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvEex',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEfx',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEgx',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','jFvEhx',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','jFvEix',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','jFvEjx',{},{},[
+['zul.wgt.Label','jFvEkx',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'Konstrukca',prolog:' ',value:'Konstrukca'},{},[]]]],
+['zul.sel.Treecell','jFvElx',{},{},[
+['zul.wgt.Label','jFvEmx',{sclass:'order\-startdate',prolog:' ',value:'8\/12\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEnx',{},{},[
+['zul.wgt.Label','jFvEox',{sclass:'order\-enddate',prolog:' ',value:'8\/18\/26'},{},[]]]],
+['zul.sel.Treecell','jFvEpx',{},{},[
+['zul.box.Hlayout','jFvEqx',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','jFvErx',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','jFvEsx',{value:'\/'},{},[]],
+['zul.wgt.Div','jFvEtx',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]]]]]]]]]]]]]]]]]],
+['zul.layout.Center','jFvEc6',{$$0onSize:true,sclass:'taskspanel'},{},[
+['zul.layout.Borderlayout','jFvEd6',{},{},[
+['zul.layout.North','jFvEe6',{$$0onSize:true,height:'32px',vflex:'min',border:'none'},{},[
+['zul.wgt.Div','jFvEf6',{id:'insertionPointTimetracker',sclass:'timetrackergap'},{},[
+['ganttz.TimeTracker','jFvEja',{},{},[
+['zul.wgt.Div','jFvE0h',{},{},[
+['#stub','jFvE1h',{id:'timetrackerheader'},{},[
+['zul.box.Box','jFvE2h',{cssflex:false},{},[
+['zul.grid.Grid','jFvE3h',{id:'firstleveldetails',$$0onDataLoading:true,$$0onInnerWidth:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,width:'1800px;',_topPad:0,emptyMessage:null,_totalSize:0,_offset:0},{},[
+['zul.grid.Columns','jFvE4h',{},{},[
+['zul.grid.Column','jFvE5h',{$onSort:true,$$0onSort:true,width:'300px',label:'2025,H2'},{},[]],
+['zul.grid.Column','jFvE6h',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H1'},{},[]],
+['zul.grid.Column','jFvE7h',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H2'},{},[]],
+['zul.grid.Column','jFvE8h',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H1'},{},[]],
+['zul.grid.Column','jFvE9h',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H2'},{},[]],
+['zul.grid.Column','jFvEah',{$onSort:true,$$0onSort:true,width:'300px',label:'2028,H1'},{},[]]]]]],
+['#stub','jFvEbh',{},{},[]]],'vertical']]]]]]]]]]],
+['zul.layout.Center','jFvEg6',{$$0onSize:true,sclass:'rightpanel\-layout',border:'none',autoscroll:true},{},[
+['zul.wgt.Div','jFvEh6',{id:'insertionPointRightPanel',sclass:'taskspanel\-gap'},{},[
+['ganttz.GanttPanel','jFvEh8',{},{},[
+['ganttz.TimeTracker','jFvEi8',{},{},[
+['zul.wgt.Div','jFvEpg',{},{},[
+['#stub','jFvEqg',{id:'timetracker'},{},[
+['zul.box.Box','jFvErg',{cssflex:false},{},[
+['zul.grid.Grid','jFvEsg',{id:'firstleveldetails',$$0onDataLoading:true,$$0onInnerWidth:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,width:'1800px;',_topPad:0,emptyMessage:null,_totalSize:0,_offset:0},{},[
+['zul.grid.Columns','jFvEtg',{},{},[
+['zul.grid.Column','jFvEug',{$onSort:true,$$0onSort:true,width:'300px',label:'2025,H2'},{},[]],
+['zul.grid.Column','jFvEvg',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H1'},{},[]],
+['zul.grid.Column','jFvEwg',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H2'},{},[]],
+['zul.grid.Column','jFvExg',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H1'},{},[]],
+['zul.grid.Column','jFvEyg',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H2'},{},[]],
+['zul.grid.Column','jFvEzg',{$onSort:true,$$0onSort:true,width:'300px',label:'2028,H1'},{},[]]]]]],
+['#stub','jFvE_h',{},{},[]]],'vertical']]]]]]],
+['ganttz.TaskList','jFvEj8',{},{},[
+['ganttz.TaskRow','jFvEl8',{},{},[
+['ganttz.TaskComponent','jFvEm8',{style:'position : absolute',_tooltipText:'<strong>THE_Testproject #2<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 1000 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'193f359c\-367e\-4819\-897e\-48524552e254',$onDoubleClick:true,width:'9px',height:'10px',left:'302px',sclass:'box standard\-task assigned',context:'uuid(jFvEn8)'},{},[]]]],
+['ganttz.TaskRow','jFvEq8',{},{},[
+['ganttz.TaskComponent','jFvEr8',{style:'position : absolute',_tooltipText:'<strong>Test project Libre Palan<\/strong><br\/>Progress: 0.00% , Hours invested: 44.00% <br\/>Budget: 500 €, Consumed: 240 € (48%)<br\/>Hours cost: 240 €, Expenses cost: 0 €',id:'3681ba0b\-1cf7\-4572\-ad30\-bc1af560a79a',$onDoubleClick:true,width:'1px',height:'10px',left:'527px',sclass:'box standard\-task unassigned',context:'uuid(jFvEs8)'},{},[]]]],
+['ganttz.TaskRow','jFvEv8',{},{},[
+['ganttz.TaskComponent','jFvEw8',{style:'position : absolute',_tooltipText:'<strong>miniGrav prototype<\/strong><br\/>Progress: 0.00% , Hours invested: 3.00% <br\/>Budget: 0 €, Consumed: 490 € (0%)<br\/>Hours cost: 490 €, Expenses cost: 0 €',id:'1e443a7f\-f4a5\-4cf9\-a7a3\-28e2ed07a4c4',$onDoubleClick:true,width:'94px',height:'10px',left:'527px',sclass:'box standard\-task assigned',context:'uuid(jFvEx8)'},{},[]]]],
+['ganttz.TaskRow','jFvE_9',{},{},[
+['ganttz.TaskComponent','jFvE09',{style:'position : absolute',_tooltipText:'<strong>new test project<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'ea8f4981\-13e7\-4421\-b8bd\-3ab727429f51',$onDoubleClick:true,width:'0px',height:'10px',left:'528px',sclass:'box standard\-task unassigned',context:'uuid(jFvE19)'},{},[]]]],
+['ganttz.TaskRow','jFvE49',{},{},[
+['ganttz.TaskComponent','jFvE59',{style:'position : absolute',_tooltipText:'<strong>GAS stations<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'5981e892\-b466\-4713\-8772\-8f17239afe35',$onDoubleClick:true,width:'151px',height:'10px',left:'537px',sclass:'box standard\-task unassigned',context:'uuid(jFvE69)'},{},[]]]],
+['ganttz.TaskRow','jFvE99',{},{},[
+['ganttz.TaskComponent','jFvEa9',{style:'position : absolute',_tooltipText:'<strong>OpenWeb<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'9d98900f\-b0bb\-4478\-b165\-58b803e9819e',$onDoubleClick:true,width:'650px',height:'10px',left:'540px',sclass:'box standard\-task unassigned',context:'uuid(jFvEb9)'},{},[]]]],
+['ganttz.TaskRow','jFvEe9',{},{},[
+['ganttz.TaskComponent','jFvEf9',{style:'position : absolute',_tooltipText:'<strong>Projet UT<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'5bdfbadc\-8f73\-41da\-a4b9\-cfd033a544a0',$onDoubleClick:true,width:'0px',height:'10px',left:'541px',sclass:'box standard\-task unassigned',context:'uuid(jFvEg9)'},{},[]]]],
+['ganttz.TaskRow','jFvEj9',{},{},[
+['ganttz.TaskComponent','jFvEk9',{style:'position : absolute',_tooltipText:'<strong>rebuild motor<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'092df7b5\-5ace\-4ff3\-9bdb\-c53fa5ce7c76',$onDoubleClick:true,width:'11px',height:'10px',left:'555px',sclass:'box standard\-task unassigned',context:'uuid(jFvEl9)'},{},[]]]],
+['ganttz.TaskRow','jFvEo9',{},{},[
+['ganttz.TaskComponent','jFvEp9',{style:'position : absolute',_tooltipText:'<strong>test1<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'1c05dadc\-f41c\-40ae\-9a45\-965c0e6a4b48',$onDoubleClick:true,width:'4px',height:'10px',left:'561px',sclass:'box standard\-task unassigned',context:'uuid(jFvEq9)'},{},[]]]],
+['ganttz.TaskRow','jFvEt9',{},{},[
+['ganttz.TaskComponent','jFvEu9',{style:'position : absolute',_tooltipText:'<strong>THE_Testproject #1<\/strong><br\/>Progress: 0.00% , Hours invested: 113.00% <br\/>Budget: 3000 €, Consumed: 540 € (18%)<br\/>Hours cost: 540 €, Expenses cost: 0 €',id:'8dec14f5\-3b59\-4de0\-90b4\-f5020ef3314b',$onDoubleClick:true,width:'12px',height:'10px',left:'563px',sclass:'box standard\-task assigned',context:'uuid(jFvEv9)'},{},[]]]],
+['ganttz.TaskRow','jFvEy9',{},{},[
+['ganttz.TaskComponent','jFvEz9',{style:'position : absolute',_tooltipText:'<strong>stadium<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'df10a5e5\-eb22\-48b1\-81a9\-d7be22e97df0',$onDoubleClick:true,width:'201px',height:'10px',left:'579px',sclass:'box standard\-task unassigned',context:'uuid(jFvE_a)'},{},[]]]],
+['ganttz.TaskRow','jFvE2a',{},{},[
+['ganttz.TaskComponent','jFvE3a',{style:'position : absolute',_tooltipText:'<strong>Konstrukca<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'4bb762f5\-ce75\-474a\-b196\-46bd184a9cdd',$onDoubleClick:true,width:'10px',height:'10px',left:'668px',sclass:'box standard\-task unassigned',context:'uuid(jFvE4a)'},{},[]]]]]],
+['ganttz.DependencyList','jFvEk8',{},{},[]]]]]]]]]]]]]]]],
+['zul.layout.South','jFvEi6',{id:'graphics',$onOpen:true,$$0onSize:true,height:'200px',sclass:'scheduling\-graphics',title:'Graphics',collapsible:true},{},[
+['zul.wgt.Div','jFvEj6',{id:'insertionPointChart'},{},[
+['zul.tab.Tabbox','jFvEwa',{height:'240px',orient:'left'},{},[
+['zul.tab.Tabs','jFvExa',{width:'124px'},{},[
+['zul.tab.Tab','jFvEya',{$onSelect:false,$onClose:true,label:'Load',selected:true},{},[]],
+['zul.tab.Tab','jFvEza',{$onSelect:true,$onClose:true,label:'Earned value'},{},[]]]],
+['zul.tab.Tabpanels','jFvE_b',{},{},[
+['zul.tab.Tabpanel','jFvE0b',{},{},[
+['zul.box.Box','jFvE1b',{cssflex:false},{},[
+['zul.box.Box','jFvE2b',{sclass:'legend\-container',cssflex:false,align:'center',pack:'center'},{},[
+['zul.box.Box','jFvE3b',{sclass:'legend',cssflex:false},{},[
+['zul.box.Box','jFvE4b',{sclass:'legend\-row',cssflex:false,pack:'center'},{},[
+['#stub','jFvE5b',{},{},[]],
+['#stub','jFvE6b',{},{},[]]],'horizontal'],
+['zul.box.Box','jFvE7b',{sclass:'legend\-row resources\-full\-load',cssflex:false,pack:'center'},{},[
+['#stub','jFvE8b',{},{},[]],
+['#stub','jFvE9b',{},{},[]]],'horizontal'],
+['zul.box.Box','jFvEab',{sclass:'legend\-row',cssflex:false,pack:'center'},{},[
+['#stub','jFvEbb',{},{},[]],
+['#stub','jFvEcb',{},{},[]]],'horizontal'],
+['zul.box.Box','jFvEdb',{sclass:'legend\-row',cssflex:false,pack:'center'},{},[
+['#stub','jFvEeb',{},{},[]],
+['#stub','jFvEfb',{},{},[]]],'horizontal']],'vertical']],'horizontal'],
+['zul.wgt.Div','jFvEgb',{sclass:'plannergraph'},{},[
+['zul.wgt.Div','jFvEhb',{width:'1800px',height:'190px'},{},[]]]]],'horizontal']]]]]]]]]]]]]]]]]],["addChd",["jFvEj3",[
+['zul.wgt.Image','jFvEos',{src:'\/common\/img\/migas_separacion.gif'},{},[]]],[
+['zul.wgt.Label','jFvEps',{value:'Planning'},{},[]]],[
+['zul.wgt.Image','jFvEqs',{src:'\/common\/img\/migas_separacion.gif'},{},[]]],[
+['zul.wgt.Label','jFvErs',{value:'Projects Planning'},{},[]]]]],["clearBusy",null]],"rid":4}

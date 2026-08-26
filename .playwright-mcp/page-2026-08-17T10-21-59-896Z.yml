@@ -1,0 +1,243 @@
+- generic [ref=f170e1]:
+  - generic [ref=f170e4]:
+    - generic [ref=f170e5]:
+      - table [ref=f170e6]:
+        - rowgroup [ref=f170e7]:
+          - row [ref=f170e8]:
+            - cell [ref=f170e9]:
+              - link [ref=f170e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f170e12]:
+              - table [ref=f170e13]:
+                - rowgroup [ref=f170e14]:
+                  - row [ref=f170e15]:
+                    - cell [ref=f170e16]:
+                      - generic [ref=f170e17]:
+                        - menubar [ref=f170e18]:
+                          - menuitem "Planning" [ref=f170e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f170e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f170e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f170e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f170e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f170e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f170e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f170e33]:
+                          - rowgroup [ref=f170e34]:
+                            - row [ref=f170e35]:
+                              - cell [ref=f170e36]:
+                                - table [ref=f170e37]:
+                                  - rowgroup [ref=f170e38]:
+                                    - row [ref=f170e39]:
+                                      - cell [ref=f170e40]
+                                      - cell [ref=f170e41]:
+                                        - strong [ref=f170e42]: START
+                                      - cell [ref=f170e43]
+                                      - cell [ref=f170e44]:
+                                        - table [ref=f170e45]:
+                                          - rowgroup [ref=f170e46]:
+                                            - row [ref=f170e47]:
+                                              - cell [ref=f170e48]:
+                                                - table [ref=f170e49]:
+                                                  - rowgroup [ref=f170e50]:
+                                                    - row [ref=f170e51]:
+                                                      - cell [ref=f170e52]
+                                                      - cell [ref=f170e54]
+                                                      - cell "Planning" [ref=f170e55]
+                                                      - cell [ref=f170e56]
+                                                      - cell [ref=f170e57]
+                                                      - cell [ref=f170e59]
+                                                      - cell "Projects Planning" [ref=f170e60]
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell [ref=f170e61]:
+                                - generic [ref=f170e62]:
+                                  - link "Help" [ref=f170e63] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f170e65]
+                                  - img "Info" [ref=f170e67]
+      - table [ref=f170e69]:
+        - rowgroup [ref=f170e70]:
+          - row [ref=f170e71]:
+            - cell [ref=f170e72]
+            - 'cell "user: admin" [ref=f170e73]'
+            - cell [ref=f170e74]:
+              - link "[Log out]" [ref=f170e75] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f170e76]:
+      - table [ref=f170e77]:
+        - rowgroup [ref=f170e78]:
+          - row [ref=f170e79]:
+            - cell [ref=f170e80]:
+              - table [ref=f170e81]:
+                - rowgroup [ref=f170e82]:
+                  - row [ref=f170e83]:
+                    - cell [ref=f170e84]:
+                      - table [ref=f170e85]:
+                        - rowgroup [ref=f170e86]:
+                          - row [ref=f170e87]:
+                            - cell [ref=f170e88]:
+                              - table [ref=f170e89]:
+                                - rowgroup [ref=f170e90]:
+                                  - row [ref=f170e91]:
+                                    - cell [ref=f170e92]:
+                                      - button "Create New Project" [ref=f170e93] [cursor=pointer]
+                  - row [ref=f170e95]:
+                    - cell [ref=f170e96]
+                  - row [ref=f170e97]:
+                    - cell [ref=f170e98]:
+                      - table [ref=f170e99]:
+                        - rowgroup [ref=f170e100]:
+                          - row [ref=f170e101]:
+                            - cell [ref=f170e102]:
+                              - table [ref=f170e103]:
+                                - rowgroup [ref=f170e104]:
+                                  - row [ref=f170e105]:
+                                    - cell [ref=f170e106]:
+                                      - button "Projects Planning" [ref=f170e107] [cursor=pointer]
+                                  - row [ref=f170e108]:
+                                    - cell [ref=f170e109]
+                                  - row:
+                                    - cell
+                                  - row [ref=f170e110]:
+                                    - cell [ref=f170e111]
+                                  - row [ref=f170e112]:
+                                    - cell [ref=f170e113]:
+                                      - button "Projects List" [ref=f170e114] [cursor=pointer]
+                                  - row [ref=f170e115]:
+                                    - cell [ref=f170e116]
+                                  - row:
+                                    - cell
+                                  - row [ref=f170e117]:
+                                    - cell [ref=f170e118]
+                                  - row [ref=f170e119]:
+                                    - cell [ref=f170e120]:
+                                      - button "Resources Load" [ref=f170e121] [cursor=pointer]
+                                  - row [ref=f170e122]:
+                                    - cell [ref=f170e123]
+                                  - row:
+                                    - cell
+                                  - row [ref=f170e124]:
+                                    - cell [ref=f170e125]
+                                  - row [ref=f170e126]:
+                                    - cell [ref=f170e127]:
+                                      - button "Queue-based Resources Planning" [ref=f170e128] [cursor=pointer]
+                                  - row [ref=f170e129]:
+                                    - cell [ref=f170e130]
+                                  - row:
+                                    - cell
+                                  - row [ref=f170e131]:
+                                    - cell [ref=f170e132]
+                                  - row [ref=f170e133]:
+                                    - cell [ref=f170e134]:
+                                      - button "Logs" [ref=f170e135] [cursor=pointer]
+                                  - row [ref=f170e136]:
+                                    - cell [ref=f170e137]
+                                  - row:
+                                    - cell
+                                  - row [ref=f170e138]:
+                                    - cell [ref=f170e139]
+                                  - row [ref=f170e140]:
+                                    - cell [ref=f170e141]:
+                                      - button "Pipeline" [ref=f170e142] [cursor=pointer]
+                                  - row [ref=f170e143]:
+                                    - cell [ref=f170e144]
+                                  - row:
+                                    - cell
+      - text:    
+      - generic [ref=f170e739]:
+        - table [ref=f170e740]:
+          - rowgroup [ref=f170e741]:
+            - row [ref=f170e742]:
+              - cell [ref=f170e743]:
+                - table [ref=f170e744]:
+                  - rowgroup [ref=f170e745]:
+                    - row [ref=f170e746]:
+                      - cell [ref=f170e747]:
+                        - button "Save Project" [ref=f170e748] [cursor=pointer]
+                      - cell [ref=f170e750]
+                      - cell [ref=f170e751]:
+                        - button "Cancel editing" [ref=f170e752] [cursor=pointer]
+                      - cell [ref=f170e754]
+                      - text:           
+                      - cell:
+                        - table:
+                          - rowgroup:
+                            - row:
+                              - cell:
+                                - table
+        - text:    
+        - generic [ref=f170e755]:
+          - table:
+            - rowgroup:
+              - row:
+                - cell:
+                  - table
+          - grid [ref=f170e758]:
+            - rowgroup [ref=f170e770]:
+              - columnheader "Name" [ref=f170e771]
+              - columnheader "Code" [ref=f170e773]
+              - columnheader [ref=f170e775]:
+                - generic [ref=f170e776] [cursor=pointer]:
+                  - generic [ref=f170e777]: 
+                  - text: Starting date
+              - columnheader "Deadline" [ref=f170e779]
+              - columnheader "Customer" [ref=f170e781]
+              - columnheader "Total Budget" [ref=f170e783]
+              - columnheader "Planned Budget" [ref=f170e785]
+              - columnheader "Hours" [ref=f170e787]
+              - columnheader "State" [ref=f170e789]
+              - columnheader "Operations" [ref=f170e791]
+            - generic [ref=f170e804]: No projects
+            - generic [ref=f170e805]:    
+    - table [ref=f170e731]:
+      - rowgroup [ref=f170e732]:
+        - row [ref=f170e733]:
+          - cell [ref=f170e734]:
+            - generic [ref=f170e736]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f170e737] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f170e738]
+    - text:    
+  - generic [ref=f170e806]:
+    - generic [ref=f170e807]: "LibrePlan: Runtime Error"
+    - generic [ref=f170e809]:
+      - generic [ref=f170e810]: Message - TEMPORARY TEST EXCEPTION 2 for server-log investigation
+      - generic [ref=f170e813]:
+        - grid [ref=f170e814]:
+          - rowgroup [ref=f170e818]:
+            - gridcell "Exception type" [ref=f170e819]
+            - gridcell "class java.lang.RuntimeException" [ref=f170e821]
+            - gridcell "Status code" [ref=f170e823]
+            - gridcell "500" [ref=f170e825]
+            - gridcell "Stacktrace" [ref=f170e827]
+            - gridcell [ref=f170e829]:
+              - textbox [active] [ref=f170e831]: "java.lang.RuntimeException: TEMPORARY TEST EXCEPTION 2 for server-log investigation at org.libreplan.web.orders.OrderCRUDController.getOrders(OrderCRUDController.java:806) at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) at java.base/java.lang.reflect.Method.invoke(Method.java:565) at org.zkoss.zel.BeanELResolver.getValue(BeanELResolver.java:104) at org.zkoss.zel.CompositeELResolver.getValue(CompositeELResolver.java:66) at org.zkoss.zel.CompositeELResolver.getValue(CompositeELResolver.java:66) at org.zkoss.xel.zel.XelELResolver.getValue(XelELResolver.java:97) at org.zkoss.bind.xel.zel.BindELResolver.getValue(BindELResolver.java:125) at org.zkoss.zel.impl.parser.AstValue.getValue(AstValue.java:188) at org.zkoss.zel.impl.ValueExpressionImpl.getValue(ValueExpressionImpl.java:184) at org.zkoss.xel.zel.ELXelExpression.evaluate(ELXelExpression.java:41) at org.zkoss.bind.impl.BindEvaluatorXImpl.getValue(BindEvaluatorXImpl.java:49) at org.zkoss.bind.impl.LoadPropertyBindingImpl.load(LoadPropertyBindingImpl.java:58) at org.zkoss.bind.impl.PropertyBindingHandler.doLoadBinding(PropertyBindingHandler.java:140) at org.zkoss.bind.impl.PropertyBindingHandler.doLoad(PropertyBindingHandler.java:346) at org.zkoss.bind.impl.BinderImpl.loadComponentProperties0(BinderImpl.java:2595) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2562) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent(BinderImpl.java:2497) at org.libreplan.web.common.Util.reloadBindings(Util.java:155) at org.libreplan.web.common.Util.reloadBindings(Util.java:147) at org.libreplan.web.planner.tabs.OrdersTabCreator$1.create(OrdersTabCreator.java:74) at org.libreplan.web.planner.tabs.CreatedOnDemandTab.show(CreatedOnDemandTab.java:81) at org.libreplan.web.planner.tabs.TabOnModeType.show(TabOnModeType.java:134) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:65) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:59) at org.zkoss.ganttz.TabsRegistry.lambda$registerAtMenu$0(TabsRegistry.java:101) at org.libreplan.web.common.CustomMenuController.lambda$doNotCallTwice$0(CustomMenuController.java:741) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f170e832]:
+          - rowgroup [ref=f170e833]:
+            - row [ref=f170e834]:
+              - cell [ref=f170e835]:
+                - table [ref=f170e836]:
+                  - rowgroup [ref=f170e837]:
+                    - row [ref=f170e838]:
+                      - cell [ref=f170e839]:
+                        - button "Continue" [ref=f170e840] [cursor=pointer]
+                      - cell [ref=f170e841]
+                      - cell [ref=f170e842]:
+                        - button "Reload" [ref=f170e843] [cursor=pointer]
+                      - cell [ref=f170e844]
+                      - cell [ref=f170e845]:
+                        - button "Exit session" [ref=f170e846] [cursor=pointer]

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,7 +40,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.easymock.EasyMock;
 import org.hibernate.SessionFactory;
@@ -61,7 +62,10 @@ import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.TaskSource;
+import org.libreplan.business.planner.daos.ISubcontractedTaskDataDAO;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
+import org.libreplan.business.planner.entities.SubcontractedTaskData;
+import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.requirements.entities.CriterionRequirement;
 import org.libreplan.business.requirements.entities.DirectCriterionRequirement;
 import org.libreplan.business.resources.daos.ICriterionDAO;
@@ -73,6 +77,7 @@ import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 import org.libreplan.business.scenarios.entities.Scenario;
 import org.libreplan.web.calendars.BaseCalendarModel;
+import org.libreplan.web.planner.order.ISubcontractModel;
 import org.libreplan.web.planner.order.PlanningStateCreator;
 import org.libreplan.web.planner.order.PlanningStateCreator.PlanningState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -165,6 +170,12 @@ public class OrderModelTest {
     @Autowired
     private PlanningStateCreator planningStateCreator;
 
+    @Autowired
+    private ISubcontractedTaskDataDAO subcontractedTaskDataDAO;
+
+    @Autowired
+    private ISubcontractModel subcontractModel;
+
     private Criterion criterion;
 
     private Desktop mockDesktop() {
@@ -212,6 +223,15 @@ public class OrderModelTest {
                 UUID.randomUUID().toString());
 
         externalCompanyDAO.save(externalCompany);
+
+        // orderModel.save() runs inside its own new transaction (SaveCommandBuilder's
+        // transactionService.runOnTransaction), so by the time it flushes, this externalCompany
+        // instance is a real detached entity as far as that session is concerned. Without this,
+        // BaseEntity.getVersion() keeps lying and reporting null (see isNewObject()), and
+        // Hibernate 6 rejects that combination outright: "Detached entity with generated id ...
+        // has an uninitialized version value 'null'". Same fix pattern as
+        // TaskSource.RealPersistence.save() - flip right after the real save.
+        externalCompany.dontPoseAsTransientObjectAnymore();
         return externalCompany;
     }
 
@@ -272,6 +292,99 @@ public class OrderModelTest {
         assertTrue(orderDAO.exists(order.getId()));
         TaskSource lineTaskSource = line.getTaskSource();
         assertTrue(taskSourceDAO.exists(lineTaskSource.getId()));
+    }
+
+    /**
+     * Regression test for a bug where saving a brand-new order with several scheduled lines at
+     * once (no prior TaskElement/TaskSource rows for any of them) threw "insert or update on
+     * table task_source violates foreign key constraint ... Key (id)=(N) is not present in table
+     * task_element". {@link #createOrderWithScheduledOrderLine()} above only exercises a single
+     * new line and never caught this - the bug only manifests with 2+ new sibling tasks pending
+     * in the same save, since Hibernate's own flush-time insert ordering doesn't reliably
+     * interleave the task_element/task_source pairs across siblings. See
+     * SaveCommandBuilder.saveTaskSources(), which now explicitly saves and flushes each
+     * taskElement before its taskSource.
+     */
+    @Test
+    @Transactional
+    public void createOrderWithSeveralScheduledOrderLinesAtOnce() {
+        Order order = givenOrderFromPrepareForCreate();
+
+        List<OrderElement> lines = new java.util.ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
+            order.add(line);
+            line.setName(UUID.randomUUID().toString());
+            line.setCode(UUID.randomUUID().toString());
+            assert line.getSchedulingState().isSomewhatScheduled();
+            lines.add(line);
+        }
+
+        orderModel.save();
+
+        assertTrue(orderDAO.exists(order.getId()));
+        for (OrderElement line : lines) {
+            TaskSource lineTaskSource = line.getTaskSource();
+            assertTrue(
+                    "TaskSource for line " + line.getName() + " was never actually persisted",
+                    taskSourceDAO.exists(lineTaskSource.getId()));
+        }
+    }
+
+    /**
+     * Regression test for a bug where {@code SubcontractModel.confirm()} was wrongly marked
+     * {@code @Transactional(readOnly = true)} while genuinely needing to insert a brand-new
+     * {@link SubcontractedTaskData} (same failure shape as
+     * AssignedCriterionRequirementToOrderElementModel.confirm() - see that class's comment):
+     * readOnly let the legacy increment id-generator burn a real id while discarding the INSERT,
+     * so the later, real project save found an id already set and issued a wrong UPDATE instead
+     * of an INSERT. Exercises the exact two-step shape from production: SubcontractModel.confirm()
+     * (called from the task-properties dialog's Accept button) followed later by the real
+     * orderModel.save() (the project's Save button).
+     */
+    @Test
+    @Transactional
+    public void confirmSubcontractOnNewlyScheduledTaskThenSaveDoesNotFailWithFkOrVersionError()
+            throws ValidationException {
+
+        Order order = givenOrderFromPrepareForCreate();
+        OrderElement line = OrderLine.createOrderLineWithUnfixedPercentage(20);
+        order.add(line);
+        line.setName(UUID.randomUUID().toString());
+        line.setCode(UUID.randomUUID().toString());
+
+        // First save creates the real TaskElement/TaskSource for this line.
+        orderModel.save();
+
+        Task task = (Task) line.getTaskSource().getTask();
+
+        ExternalCompany subcontractor = createValidExternalCompany();
+        subcontractor.setSubcontractor(true);
+
+        // NOTE: in production, confirm() runs as its own, separate, already-committed
+        // transaction (the task-properties dialog's Accept button), well before the later Save
+        // Project click - that distinction is what let readOnly on confirm() silently corrupt an
+        // id in the original bug (Spring only honors a @Transactional method's own readOnly
+        // attribute when the call actually starts a new physical transaction, not when it joins
+        // an already-active one). Faithfully reproducing that exact multi-transaction ordering
+        // here would need a genuinely separate transaction/session for this block, which in turn
+        // can't see this test's own not-yet-committed data (confirmed empirically: wrapping this
+        // in adHocTransaction.runOnAnotherTransaction(...) throws a *different* FK violation,
+        // because the subcontractor company created above isn't visible across that transaction
+        // boundary). Not chasing that further - this still locks in the correct end state
+        // (confirm() then a later real save persists the data without error) and would catch a
+        // plain regression in the save/cascade logic, just not the specific readOnly-vs-join
+        // subtlety of the original bug.
+        subcontractModel.init(task, EasyMock.createNiceMock(org.zkoss.ganttz.data.Task.class));
+        subcontractModel.setExternalCompany(subcontractor);
+        subcontractModel.confirm();
+
+        SubcontractedTaskData subcontractedTaskData = subcontractModel.getSubcontractedTaskData();
+
+        // Second, real save - this is where the bug used to surface.
+        orderModel.save();
+
+        assertTrue(subcontractedTaskDataDAO.exists(subcontractedTaskData.getId()));
     }
 
     @Test

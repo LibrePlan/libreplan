@@ -1,0 +1,247 @@
+- generic [ref=f844e4]:
+  - generic [ref=f844e5]:
+    - table [ref=f844e6]:
+      - rowgroup [ref=f844e7]:
+        - row [ref=f844e8]:
+          - cell [ref=f844e9]:
+            - link [ref=f844e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f844e12]:
+            - table [ref=f844e13]:
+              - rowgroup [ref=f844e14]:
+                - row [ref=f844e15]:
+                  - cell [ref=f844e16]:
+                    - generic [ref=f844e17]:
+                      - menubar [ref=f844e18]:
+                        - menuitem "Planning" [ref=f844e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f844e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f844e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f844e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f844e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f844e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f844e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f844e33]:
+                        - rowgroup [ref=f844e34]:
+                          - row [ref=f844e35]:
+                            - cell [ref=f844e36]:
+                              - table [ref=f844e37]:
+                                - rowgroup [ref=f844e38]:
+                                  - row [ref=f844e39]:
+                                    - cell [ref=f844e40]
+                                    - cell [ref=f844e41]:
+                                      - strong [ref=f844e42]: START
+                                    - cell [ref=f844e43]
+                                    - cell [ref=f844e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f844e45]:
+                                        - rowgroup [ref=f844e46]:
+                                          - row [ref=f844e47]:
+                                            - cell [ref=f844e48]:
+                                              - table [ref=f844e49]:
+                                                - rowgroup [ref=f844e50]:
+                                                  - row [ref=f844e51]:
+                                                    - cell [ref=f844e52]:
+                                                      - table [ref=f844e53]:
+                                                        - rowgroup [ref=f844e54]:
+                                                          - row [ref=f844e55]:
+                                                            - cell [ref=f844e56]:
+                                                              - table [ref=f844e57]:
+                                                                - rowgroup [ref=f844e58]:
+                                                                  - row [ref=f844e59]:
+                                                                    - cell [ref=f844e60]
+                                                                    - cell [ref=f844e63]
+                                                                    - cell "Cost" [ref=f844e64]
+                                                    - cell [ref=f844e65]
+                                                    - cell [ref=f844e66]:
+                                                      - table [ref=f844e67]:
+                                                        - rowgroup [ref=f844e68]:
+                                                          - row [ref=f844e69]:
+                                                            - cell [ref=f844e70]:
+                                                              - table [ref=f844e71]:
+                                                                - rowgroup [ref=f844e72]:
+                                                                  - row [ref=f844e73]:
+                                                                    - cell [ref=f844e74]
+                                                                    - cell [ref=f844e77]
+                                                                    - cell "Timesheets" [ref=f844e78]
+                            - cell [ref=f844e79]:
+                              - generic [ref=f844e80]:
+                                - link "Help" [ref=f844e81] [cursor=pointer]:
+                                  - /url: /help/en/09-partes.html#id3
+                                - img "Axuda" [ref=f844e83]
+                                - img "Info" [ref=f844e85]
+    - table [ref=f844e87]:
+      - rowgroup [ref=f844e88]:
+        - row [ref=f844e89]:
+          - cell [ref=f844e90]
+          - 'cell "user: admin" [ref=f844e91]'
+          - cell [ref=f844e92]:
+            - link "[Log out]" [ref=f844e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f844e94]:
+    - text:    
+    - generic [ref=f844e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f844e97]:
+        - generic [ref=f844e98]: Timesheets List
+        - generic [ref=f844e99]:
+          - table [ref=f844e100]:
+            - rowgroup [ref=f844e101]:
+              - row [ref=f844e102]:
+                - cell [ref=f844e103]:
+                  - table [ref=f844e104]:
+                    - rowgroup [ref=f844e105]:
+                      - row [ref=f844e106]:
+                        - cell [ref=f844e107]:
+                          - table [ref=f844e108]:
+                            - rowgroup [ref=f844e109]:
+                              - row [ref=f844e110]:
+                                - cell [ref=f844e111]:
+                                  - table [ref=f844e112]:
+                                    - rowgroup [ref=f844e113]:
+                                      - row [ref=f844e114]:
+                                        - cell "Filter timesheet by:" [ref=f844e115]
+                                        - cell [ref=f844e116]
+                                        - cell "Template" [ref=f844e117]
+                                        - cell [ref=f844e118]
+                                        - cell "Show all" [ref=f844e119]:
+                                          - combobox [ref=f844e120]:
+                                            - option "Show all" [selected]
+                                            - option "Default"
+                                            - option "Personal timesheets"
+                                            - option "JIRA timesheets"
+                                            - option "THE_Test_#1"
+                                        - cell [ref=f844e121]
+                                        - cell "from" [ref=f844e122]
+                                        - cell [ref=f844e123]
+                                        - cell [ref=f844e124]:
+                                          - combobox [ref=f844e125]:
+                                            - textbox [ref=f844e126]
+                                            - button [ref=f844e127] [cursor=pointer]:
+                                              - generic [ref=f844e128]: 
+                                            - text:    
+                                        - cell [ref=f844e129]
+                                        - cell "to" [ref=f844e130]
+                                        - cell [ref=f844e131]
+                                        - cell [ref=f844e132]:
+                                          - combobox [ref=f844e133]:
+                                            - textbox [ref=f844e134]
+                                            - button [ref=f844e135] [cursor=pointer]:
+                                              - generic [ref=f844e136]: 
+                                            - text:    
+                                        - cell [ref=f844e137]
+                                        - cell [ref=f844e138]:
+                                          - button "Filter" [ref=f844e139] [cursor=pointer]
+          - separator [ref=f844e140]
+          - grid [ref=f844e141]:
+            - rowgroup [ref=f844e149]:
+              - columnheader "Date Start" [ref=f844e150]
+              - columnheader "Date Finish" [ref=f844e152]
+              - columnheader "Template" [ref=f844e154]
+              - columnheader "Total work" [ref=f844e156]
+              - columnheader "Code" [ref=f844e158]
+              - columnheader "Actions" [ref=f844e160]
+            - rowgroup [ref=f844e169]:
+              - gridcell "May 19, 2026" [ref=f844e170]
+              - gridcell "May 19, 2026" [ref=f844e172]
+              - gridcell "JIRA timesheets" [ref=f844e174]
+              - gridcell "11" [ref=f844e176]
+              - gridcell "WORK_REPORT0003" [ref=f844e178]
+              - gridcell [ref=f844e180]:
+                - table [ref=f844e182]:
+                  - rowgroup [ref=f844e183]:
+                    - row [ref=f844e184]:
+                      - cell [ref=f844e185]:
+                        - table [ref=f844e186]:
+                          - rowgroup [ref=f844e187]:
+                            - row [ref=f844e188]:
+                              - cell [ref=f844e189]:
+                                - button "Edit" [ref=f844e190] [cursor=pointer]
+                              - cell [ref=f844e192]
+                              - cell [ref=f844e193]:
+                                - button "Remove" [ref=f844e194] [cursor=pointer]
+              - gridcell "Jun 9, 2026" [ref=f844e196]
+              - gridcell "Jun 9, 2026" [ref=f844e198]
+              - gridcell "Default" [ref=f844e200]
+              - gridcell "18" [ref=f844e202]
+              - gridcell "WORK_REPORT0012" [ref=f844e204]
+              - gridcell [ref=f844e206]:
+                - table [ref=f844e208]:
+                  - rowgroup [ref=f844e209]:
+                    - row [ref=f844e210]:
+                      - cell [ref=f844e211]:
+                        - table [ref=f844e212]:
+                          - rowgroup [ref=f844e213]:
+                            - row [ref=f844e214]:
+                              - cell [ref=f844e215]:
+                                - button "Edit" [ref=f844e216] [cursor=pointer]
+                              - cell [ref=f844e218]
+                              - cell [ref=f844e219]:
+                                - button "Remove" [ref=f844e220] [cursor=pointer]
+              - gridcell "Jun 17, 2026" [ref=f844e222]
+              - gridcell "Jun 18, 2026" [ref=f844e224]
+              - gridcell "JIRA timesheets" [ref=f844e226]
+              - gridcell "10" [ref=f844e228]
+              - gridcell "WORK_REPORT0015" [ref=f844e230]
+              - gridcell [ref=f844e232]:
+                - table [ref=f844e234]:
+                  - rowgroup [ref=f844e235]:
+                    - row [ref=f844e236]:
+                      - cell [ref=f844e237]:
+                        - table [ref=f844e238]:
+                          - rowgroup [ref=f844e239]:
+                            - row [ref=f844e240]:
+                              - cell [ref=f844e241]:
+                                - button "Edit" [ref=f844e242] [cursor=pointer]
+                              - cell [ref=f844e244]
+                              - cell [ref=f844e245]:
+                                - button "Remove" [ref=f844e246] [cursor=pointer]
+            - generic [ref=f844e248]:    
+          - separator [ref=f844e249]
+          - table [ref=f844e251]:
+            - rowgroup [ref=f844e252]:
+              - row [ref=f844e253]:
+                - cell [ref=f844e254]:
+                  - table [ref=f844e255]:
+                    - rowgroup [ref=f844e256]:
+                      - row [ref=f844e257]:
+                        - cell "Select template:" [ref=f844e258]
+                        - cell [ref=f844e259]
+                        - cell "JIRA timesheets" [ref=f844e260]:
+                          - combobox [ref=f844e261]:
+                            - option "Default"
+                            - option "Personal timesheets"
+                            - option "JIRA timesheets" [selected]
+                            - option "THE_Test_#1"
+                        - cell [ref=f844e262]
+                        - cell [ref=f844e263]:
+                          - button "New timesheet" [ref=f844e264] [cursor=pointer]
+          - text:      
+      - text:                 
+  - table [ref=f844e265]:
+    - rowgroup [ref=f844e266]:
+      - row [ref=f844e267]:
+        - cell [ref=f844e268]:
+          - generic [ref=f844e270]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f844e271] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f844e272]
+  - text:    

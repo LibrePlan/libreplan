@@ -1,0 +1,4 @@
+[     342ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://127.0.0.1:8080/common/layout/login.zul:0
+[    1351ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[    1457ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[   12404ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8080/excetiondays/exceptionDayTypes.zul?continue:0

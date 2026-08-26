@@ -1,0 +1,239 @@
+- generic [active] [ref=f274e1]:
+  - generic [ref=f274e4]:
+    - generic [ref=f274e5]:
+      - table [ref=f274e6]:
+        - rowgroup [ref=f274e7]:
+          - row [ref=f274e8]:
+            - cell [ref=f274e9]:
+              - link [ref=f274e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f274e12]:
+              - table [ref=f274e13]:
+                - rowgroup [ref=f274e14]:
+                  - row [ref=f274e15]:
+                    - cell [ref=f274e16]:
+                      - generic [ref=f274e17]:
+                        - menubar [ref=f274e18]:
+                          - menuitem "Planning" [ref=f274e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f274e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f274e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f274e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f274e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f274e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f274e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f274e33]:
+                          - rowgroup [ref=f274e34]:
+                            - row [ref=f274e35]:
+                              - cell [ref=f274e36]:
+                                - table [ref=f274e37]:
+                                  - rowgroup [ref=f274e38]:
+                                    - row [ref=f274e39]:
+                                      - cell [ref=f274e40]
+                                      - cell [ref=f274e41]:
+                                        - strong [ref=f274e42]: START
+                                      - cell [ref=f274e43]
+                                      - cell [ref=f274e44]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f274e45]:
+                                          - rowgroup [ref=f274e46]:
+                                            - row [ref=f274e47]:
+                                              - cell [ref=f274e48]:
+                                                - table [ref=f274e49]:
+                                                  - rowgroup [ref=f274e50]:
+                                                    - row [ref=f274e51]:
+                                                      - cell [ref=f274e52]:
+                                                        - table [ref=f274e53]:
+                                                          - rowgroup [ref=f274e54]:
+                                                            - row [ref=f274e55]:
+                                                              - cell [ref=f274e56]:
+                                                                - table [ref=f274e57]:
+                                                                  - rowgroup [ref=f274e58]:
+                                                                    - row [ref=f274e59]:
+                                                                      - cell [ref=f274e60]
+                                                                      - cell [ref=f274e63]
+                                                                      - cell "Resources" [ref=f274e64]
+                                                      - cell [ref=f274e65]
+                                                      - cell [ref=f274e66]:
+                                                        - table [ref=f274e67]:
+                                                          - rowgroup [ref=f274e68]:
+                                                            - row [ref=f274e69]:
+                                                              - cell [ref=f274e70]:
+                                                                - table [ref=f274e71]:
+                                                                  - rowgroup [ref=f274e72]:
+                                                                    - row [ref=f274e73]:
+                                                                      - cell [ref=f274e74]
+                                                                      - cell [ref=f274e77]
+                                                                      - cell "Material Units" [ref=f274e78]
+                              - cell [ref=f274e79]:
+                                - generic [ref=f274e80]:
+                                  - link "Help" [ref=f274e81] [cursor=pointer]:
+                                    - /url: /help/en/11-materiales.html#administraci-n-de-materiais
+                                  - img "Axuda" [ref=f274e83]
+                                  - img "Info" [ref=f274e85]
+      - table [ref=f274e87]:
+        - rowgroup [ref=f274e88]:
+          - row [ref=f274e89]:
+            - cell [ref=f274e90]
+            - 'cell "user: admin" [ref=f274e91]'
+            - cell [ref=f274e92]:
+              - link "[Log out]" [ref=f274e93] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f274e94]:
+      - text:    
+      - generic [ref=f274e96]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f274e97]:
+          - generic [ref=f274e98]: Material Units List
+          - generic [ref=f274e99]:
+            - grid [ref=f274e318]:
+              - rowgroup [ref=f274e322]:
+                - columnheader [ref=f274e323]:
+                  - generic [ref=f274e324] [cursor=pointer]:
+                    - generic [ref=f274e325]: 
+                    - text: Material Unit
+                - columnheader "Operations" [ref=f274e327]
+              - rowgroup [ref=f274e332]:
+                - gridcell "kg" [ref=f274e333]
+                - gridcell [ref=f274e335]:
+                  - table [ref=f274e337]:
+                    - rowgroup [ref=f274e338]:
+                      - row [ref=f274e339]:
+                        - cell [ref=f274e340]:
+                          - table [ref=f274e341]:
+                            - rowgroup [ref=f274e342]:
+                              - row [ref=f274e343]:
+                                - cell [ref=f274e344]:
+                                  - button "Edit" [ref=f274e345] [cursor=pointer]
+                                - cell [ref=f274e347]
+                                - cell [ref=f274e348]:
+                                  - button "Remove" [ref=f274e349] [cursor=pointer]
+                - gridcell "km" [ref=f274e351]
+                - gridcell [ref=f274e353]:
+                  - table [ref=f274e355]:
+                    - rowgroup [ref=f274e356]:
+                      - row [ref=f274e357]:
+                        - cell [ref=f274e358]:
+                          - table [ref=f274e359]:
+                            - rowgroup [ref=f274e360]:
+                              - row [ref=f274e361]:
+                                - cell [ref=f274e362]:
+                                  - button "Edit" [ref=f274e363] [cursor=pointer]
+                                - cell [ref=f274e365]
+                                - cell [ref=f274e366]:
+                                  - button "Remove" [ref=f274e367] [cursor=pointer]
+                - gridcell "l" [ref=f274e369]
+                - gridcell [ref=f274e371]:
+                  - table [ref=f274e373]:
+                    - rowgroup [ref=f274e374]:
+                      - row [ref=f274e375]:
+                        - cell [ref=f274e376]:
+                          - table [ref=f274e377]:
+                            - rowgroup [ref=f274e378]:
+                              - row [ref=f274e379]:
+                                - cell [ref=f274e380]:
+                                  - button "Edit" [ref=f274e381] [cursor=pointer]
+                                - cell [ref=f274e383]
+                                - cell [ref=f274e384]:
+                                  - button "Remove" [ref=f274e385] [cursor=pointer]
+                - gridcell "m" [ref=f274e387]
+                - gridcell [ref=f274e389]:
+                  - table [ref=f274e391]:
+                    - rowgroup [ref=f274e392]:
+                      - row [ref=f274e393]:
+                        - cell [ref=f274e394]:
+                          - table [ref=f274e395]:
+                            - rowgroup [ref=f274e396]:
+                              - row [ref=f274e397]:
+                                - cell [ref=f274e398]:
+                                  - button "Edit" [ref=f274e399] [cursor=pointer]
+                                - cell [ref=f274e401]
+                                - cell [ref=f274e402]:
+                                  - button "Remove" [disabled] [ref=f274e403]
+                - gridcell "m2" [ref=f274e405] [cursor=pointer]
+                - gridcell [ref=f274e407] [cursor=pointer]:
+                  - table [ref=f274e409]:
+                    - rowgroup [ref=f274e410]:
+                      - row [ref=f274e411]:
+                        - cell [ref=f274e412]:
+                          - table [ref=f274e413]:
+                            - rowgroup [ref=f274e414]:
+                              - row [ref=f274e415]:
+                                - cell [ref=f274e416]:
+                                  - button "Edit" [ref=f274e417]
+                                - cell [ref=f274e419]
+                                - cell [ref=f274e420]:
+                                  - button "Remove" [ref=f274e421]
+                - gridcell "m3" [ref=f274e423]
+                - gridcell [ref=f274e425]:
+                  - table [ref=f274e427]:
+                    - rowgroup [ref=f274e428]:
+                      - row [ref=f274e429]:
+                        - cell [ref=f274e430]:
+                          - table [ref=f274e431]:
+                            - rowgroup [ref=f274e432]:
+                              - row [ref=f274e433]:
+                                - cell [ref=f274e434]:
+                                  - button "Edit" [ref=f274e435] [cursor=pointer]
+                                - cell [ref=f274e437]
+                                - cell [ref=f274e438]:
+                                  - button "Remove" [ref=f274e439] [cursor=pointer]
+                - gridcell "tn" [ref=f274e441]
+                - gridcell [ref=f274e443]:
+                  - table [ref=f274e445]:
+                    - rowgroup [ref=f274e446]:
+                      - row [ref=f274e447]:
+                        - cell [ref=f274e448]:
+                          - table [ref=f274e449]:
+                            - rowgroup [ref=f274e450]:
+                              - row [ref=f274e451]:
+                                - cell [ref=f274e452]:
+                                  - button "Edit" [ref=f274e453] [cursor=pointer]
+                                - cell [ref=f274e455]
+                                - cell [ref=f274e456]:
+                                  - button "Remove" [ref=f274e457] [cursor=pointer]
+                - gridcell "units" [ref=f274e459]
+                - gridcell [ref=f274e461]:
+                  - table [ref=f274e463]:
+                    - rowgroup [ref=f274e464]:
+                      - row [ref=f274e465]:
+                        - cell [ref=f274e466]:
+                          - table [ref=f274e467]:
+                            - rowgroup [ref=f274e468]:
+                              - row [ref=f274e469]:
+                                - cell [ref=f274e470]:
+                                  - button "Edit" [ref=f274e471] [cursor=pointer]
+                                - cell [ref=f274e473]
+                                - cell [ref=f274e474]:
+                                  - button "Remove" [disabled] [ref=f274e475]
+              - generic [ref=f274e477]:    
+            - button "Create" [ref=f274e260] [cursor=pointer]
+        - text:  
+    - table [ref=f274e261]:
+      - rowgroup [ref=f274e262]:
+        - row [ref=f274e263]:
+          - cell [ref=f274e264]:
+            - generic [ref=f274e266]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f274e267] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f274e268]
+    - text:    
+  - text:  

@@ -1,0 +1,1230 @@
+/* Cosmetic declarations removed from libreplan_zk.css for the Breeze migration. */
+
+/*
+ * libreplan_zk.css LibrePlan
+ *
+ * This stylesheet contains declarations for ZK overriden components
+ * according to the ZK Style Guides [http://www.zkoss.org/doc/styleguide]
+ * to integrate the custom appearance of the web application.
+ */
+
+table {
+    border: 0;
+}
+
+.errorbox {
+    border: solid 1px red;
+}
+
+.warningbox {
+    border: solid 1px #FDBE13;
+}
+
+/* Buttons styles */
+
+.icono .z-button-cm,
+body .z-window-embedded .icono .z-button-cm,
+body .z-window-modal .icono .z-button-cm,
+body .advanced-allocation-layout .icono .z-button-cm {
+    color: #007bbe;
+    border: 0 solid #007bbe;
+}
+
+/* Perspective and planner buttons */
+.perspectives-column {
+    border-right: 0;
+}
+
+.toolbar-box {
+    border: 0;
+}
+
+.sub_menu .z-button-cm {
+    background-color: transparent !important;
+    border: 0;
+    color: #EDF2F7;
+}
+
+.sub_menu_active.z-button {
+    color: #3b89b7;
+    background-color: #FFFFFF;
+}
+
+.sub_menu_active.z-button td,
+.sub_menu.z-button td {
+    background-image: none;
+}
+
+/* Global action button styles
+--------------------------------------------------- */
+.global-action.z-button,
+.save-button.z-button[disabled],
+.create-button.z-button[disabled] {
+    background-repeat: no-repeat;
+    background-position: 5%;
+    background-color: #E4F3D9;
+}
+
+.global-action.z-button:active,
+.global-action.z-button:hover,
+.global-action.z-button:focus {
+    border-bottom: 0;
+    background-repeat: no-repeat;
+}
+
+.save-button.z-button {
+    background-image: url(../img/bt_ok.png) !important;
+}
+
+.create-button.z-button {
+    background-image: url(../img/bt_create.png) !important;
+}
+
+.saveandcontinue-button.z-button {
+    background-image: url(../img/bt_ok_continue.png);
+}
+
+.cancel-button.z-button {
+    background-image: url(../img/bt_cancel.png) !important;
+}
+
+.back-button.z-button {
+    background-image: url(../img/bt_back.png);
+}
+
+/* Embed tabbpanels button destyling */
+.z-tabpanel .global-action.z-button .z-button-cm {
+    background-image: none;
+}
+
+/* --- END -- Button styles --
+=================================================== */
+
+.vertical_separator {
+    background-image: url("../img/sub_separacion.gif");
+}
+
+/* ------------- OrderElement tree  -------------  */
+.orderTree input {
+    border-bottom: 0;
+    border-top: 0;
+    border-left: 1px dotted #7EAAC6;
+    border-right: 0;
+}
+
+/* These constants may be reviewed when testing with 3 digit tasknumbers */
+.orderTree .depth_1 input,
+.orderTree .depth_2 input,
+.orderTree .depth_3 input,
+.orderTree .depth_4 input,
+.orderTree .depth_5 input,
+.orderTree .depth_6 input {
+    border-right: 0;
+}
+
+.z-window-embedded-hl,.z-window-embedded-hm {
+    background-image: none;
+}
+
+.z-window-embedded-hr {
+    background: none;
+}
+
+.z-window.z-window-noborder.z-window-embedded {
+    background: none;
+    border-radius: 5px 5px 0 0;
+}
+
+.message_ERROR, .message_INFO {
+    border-radius: 10px;
+}
+
+.message_WARNING {
+    border-radius: 10px;
+}
+
+.message_ERROR {
+    color: #ee0000;
+    border: solid 1px #ee0000;
+    background-color: #eecccc;
+}
+
+.message_WARNING {
+    color: #CC5013;
+    border: solid 1px #CC5013;
+    background-color: #FDCA87;
+}
+
+.message_INFO {
+    color: #006600;
+    border: solid 1px #006600;
+    background-color: #cceecc;
+}
+
+div.z-errbox {
+    background-color: #EECCCC;
+    color: red;
+    border: solid 1px red;
+    border-radius: 10px;
+}
+
+h4.message_WARNING {
+    border-radius: 10px;
+}
+
+.main-area .z-center-body > .z-div > .z-window-embedded {
+    background: none;
+}
+
+.subtitulo {
+    color: #007bbe;
+}
+
+.z-textbox-disabled, .z-decimalbox-disabled, .z-intbox-disabled, .z-longbox-disabled, .z-doublebox-disabled,
+.z-textbox-disabled *, .z-decimalbox-disabled *, .z-intbox-disabled *, .z-longbox-disabled *, .z-doublebox-disabled * {
+    color: #333333 !important;
+}
+
+.z-window-embedded-tl,.z-window-highlighted-tl,.z-window-overlapped-tl,.z-window-popup-tl {
+    background: none;
+}
+
+.z-window-embedded-tl {
+    background-image: none;
+}
+
+.z-window-popup-tl {
+    background-image: none;
+}
+
+.z-window-embedded-tr,.z-window-highlighted-tr,.z-window-overlapped-tr,.z-window-popup-tr {
+    background: none;
+}
+
+.z-window-embedded-tr {
+    background-image: none;
+}
+
+.z-window-popup-tr {
+    background-image: none;
+}
+
+.z-window-embedded-hl, .z-window-highlighted-hl,
+.z-window-overlapped-hl, .z-window-popup-hl {
+    background: none;
+}
+
+.z-window-embedded-hl {
+    background-image: none;
+}
+
+.z-window-popup-hl {
+    background-image: none;
+}
+
+.z-window-embedded-hr,.z-window-highlighted-hr,
+.z-window-overlapped-hr,.z-window-popup-hr {
+    background: none;
+}
+
+.z-window-embedded-hr,.z-window-embedded-hr-noborder {
+    background-image: none;
+}
+
+/*
+Only if header is embedded than we should use header with bullet ico.
+Else we will use header with blue image. (.z-window-header)
+*/
+.z-window-embedded .z-window-popup-header,
+.z-window-embedded .z-window-highlighted-header,
+.z-window-embedded .z-window-overlapped-header,
+.z-window-embedded .z-window-header {
+    color: #0081C3;
+    background: #FFFFFF url(../img/header_bullet.gif) no-repeat 0 8px;
+}
+
+.z-tabs-scroll .z-tabs-content {
+    background: #FAFDFE none repeat scroll 0 0;
+    border-bottom: 1px solid #7EAAC6;
+}
+
+tr.z-treerow td.z-treerow-focus {
+    background-image: none;
+}
+
+.z-tabs .z-tabs-content {
+    background: none;
+    border-bottom: 0;
+    border-bottom: 1px solid #7EAAC6;
+}
+
+.z-tabs-scroll {
+    background: #F2FBFF none repeat scroll 0 0;
+    border: 0 solid #000000;
+}
+
+.z-tabpanel,.z-tabbox-ver .z-tabpanels {
+    border-bottom: 1px solid #7EAAC6;
+}
+
+.message_INFO {
+    background-color: #CCEECC;
+    border: 1px solid #006600;
+    color: #006600;
+}
+
+div.z-grid {
+    border: 1px solid #ABC6DE;
+}
+
+#timetrackerheader div.z-grid {
+    border: 0;
+}
+
+#timetrackerheader th,
+#timetracker th {
+    border-top: 0;
+}
+
+#timetrackerheader th {
+    border-top: 0;
+}
+
+#timetrackerheader .second_level_ td {
+    border-bottom: solid 1px #9EB6CE;
+}
+
+.listdetails div {
+    border: 0;
+}
+
+.z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
+.z-listbox .z-longbox,.z-listbox .z-doublebox {
+    border-collapse: collapse;
+}
+
+.orderTree td {
+    border-bottom: 1px dotted #7EAAC6;
+}
+
+.orderTree td td {
+    border-bottom: 0;
+}
+
+.orderTree .icono td {
+    border: none;
+}
+
+.orderelements-tab .z-datebox-focus .z-datebox-input {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.orderelements-tab .z-datebox .z-datebox-img {
+    background-color: #DAE7F6;
+}
+
+.listdetails .z-datebox-focus .z-datebox-input {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+/* Highlight advanced allocation grouping row */
+.resources-load .taskspanel-gap .z-grid-body tr:first-child {
+    background-color: #E8E8E8;
+}
+
+.resources-load .taskspanel-gap .z-grid-body tr.z-row td {
+    background-color: transparent;
+}
+
+/* ------- Chart legends  ------- */
+.legend {
+    border: solid 1px #000000;
+    background-color: #FFFFFF;
+}
+
+.legend-container {
+    background-color: #E8E8E8;
+}
+
+.legend-gap {
+    background-color: #E8E8E8;
+    border: 0;
+}
+
+.plannerlayout .z-west-nested {
+    border-left: 0;
+}
+
+.scheduling-graphics,
+.scheduling-graphics .z-tabs-scroll {
+    border: 0;
+}
+
+.legend .capability {
+    border-top: solid 2px #000000;
+}
+
+.legend .overload {
+    background-color: #FF5A11;
+}
+
+.legend .overload-other {
+    background-color: #FFD4C2;
+}
+
+.legend .load {
+    background-color: #98D471;
+}
+
+.legend .load-other {
+    background-color: #E0F3D3;
+}
+
+.legend .full-load {
+    background-color: #FDBE13;
+}
+
+.z-panel-body {
+    background: none;
+    border: 1px solid #B1CBD5;
+}
+
+.z-panel-children {
+    border-style: none none none;
+}
+
+div.z-grid-pgi-b,
+div.z-listbox-pgi-b {
+    border-top: none;
+}
+
+.orderTree .not-scheduled span.scheduling-state,
+.orderTree .partially-scheduled span.scheduling-state,
+.orderTree .completely-scheduled span.scheduling-state {
+    border-radius: 1px 6px 1px 6px;
+    border: 1px solid #888888;
+    color: #888888;
+}
+
+.orderTree .not-scheduled,
+.orderTree .partially-scheduled,
+.orderTree .completely-scheduled {
+    border-bottom: dotted #EEEEEE 1px;
+}
+
+.partially-scheduled span.scheduling-state,
+span.partially-scheduled {
+    background-color: #fddf9b;
+}
+
+.completely-scheduled span.scheduling-state,
+span.completely-scheduled {
+    background-color: #bee5a9;
+}
+
+/* --- START -- menus and toolbar --
+=================================================== */
+
+.z-menubar-horizontal, .z-menubar-ver {
+    background: none;
+}
+
+.z-menu-text {
+    text-shadow: none;
+    color: #005782;
+}
+
+.z-menu-selected > .z-menu-content > .z-menu-text,
+.current-section  > .z-menu-content > .z-menu-text,
+.z-menu-content:hover > .z-menu-text {
+    color: #FFFFFF;
+}
+
+.z-menubar-horizontal {
+    border-top: none;
+    border-bottom: 3px solid #2a83b4;
+}
+
+.z-menubar-horizontal li {
+    background-color: #d4e1ef;
+    border-radius: 10px 10px 0 0;
+}
+
+.current-section {
+    background-image: none;
+    background-color: #2a83b4 !important;
+}
+
+.current-section .z-menu-content:focus,
+.current-section .z-menu-content:active {
+    background-color: #2a83b4 !important;
+}
+
+.z-menu-content:focus ,
+.z-menu-content:active {
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+    background-color: #d4e1ef !important;
+    border-radius: 10px 10px 0 0;
+}
+
+.z-menu-content:focus > .z-menu-text,
+.z-menu-content:active > .z-menu-text {
+    color: #fff;
+}
+
+.z-menu-selected > .z-menu-content,
+.z-menu-content:hover {
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+    background-color: #2a83b4;
+    border-radius: 10px 10px 0 0;
+}
+
+.current-section .z-menu {
+    background-color: #2a83b4;
+}
+
+.z-menu-body-over .z-menu-inner-l,
+.z-menu-body-over .z-menu-inner-m,
+.z-menu-body-over .z-menu-inner-r {
+    background-image: none;
+}
+
+.z-menu-body-seld .z-menu-inner-l,
+.z-menu-body-seld .z-menu-inner-m,
+.z-menu-body-seld .z-menu-inner-r {
+    background-image: none;
+}
+
+.z-menu-body .z-menu-inner-m div {
+    background-image: none;
+}
+
+.migas_linea {
+    border: 0;
+}
+
+.perspective ,
+.perspective-active {
+    background: no-repeat 18px 10px;
+}
+
+.perspective {
+    border: 1px solid #FFFFFF;
+    background-color: #FFFFFF;
+    color: #005782;
+    background-repeat: no-repeat;
+}
+
+.perspective-active,
+.perspective-active:hover,
+.perspective-active:active,
+.perspective:hover,
+.perspective:active {
+    border: 1px solid #CCCCCC;
+}
+
+.perspective-active,
+.perspective-active:focus,
+.perspective-active:hover,
+.perspective-active:active {
+    color: #FFFFFF;
+    background-color: #71B0D4;
+}
+
+.perspective-active {
+    text-shadow: none;
+    border-color: #006699 #DFF5FE #DFF5FE #006699;
+}
+
+.perspective:hover {
+    background-color: #E6F2F9;
+    text-shadow: none;
+}
+
+.taskdetailsContainer, .resourceload-details-container {
+    border-left: 0;
+    border-top: 0;
+}
+
+.perspective.company-scheduling ,
+.perspective-active.company-scheduling {
+    background-image: url(../img/ico_company-scheduling.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.company-load ,
+.perspective-active.company-load {
+    background-image: url(../img/ico_company-load.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.orders ,
+.perspective-active.orders {
+    background-image: url(../img/ico_orders.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.order-scheduling ,
+.perspective-active.order-scheduling {
+    background-image: url(../img/ico_order-scheduling.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.order-load ,
+.perspective-active.order-load {
+    background-image: url(../img/ico_order-load.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.limiting-resources,
+.perspective-active.limiting-resources {
+    background-image: url(../img/ico_limiting-resources.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.order-data,
+.perspective-active.order-data {
+    background-image: url(../img/ico_order-data.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.advanced-allocation,
+.perspective-active.advanced-allocation {
+    background-image: url(../img/ico_advanced-allocation.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.montecarlo-simulation,
+.perspective-active.montecarlo-simulation {
+    background-image: url(../img/ico_montecarlo-simulation.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.global-dashboard,
+.perspective-active.global-dashboard {
+    background-image: url(../img/ico_global-pipeline.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.order-dashboard ,
+.perspective-active.order-dashboard {
+    background-image: url(../img/ico_order-dashboard.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.label-highlight:hover {
+    background-color: #aacbff;
+}
+
+.perspective.logs-global ,
+.perspective-active.logs-global {
+    background-image: url(../img/ico_logs-global.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.logs-order ,
+.perspective-active.logs-order {
+    background-image: url(../img/ico_logs-order.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.toolbar-box .z-label {
+    color: #0068B1;
+}
+
+.z-button {
+    background-image: none;
+}
+
+.toolbar-box .z-button {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.toolbar-box .z-button.z-button-disd .z-button {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.toolbar-box {
+    background: transparent url(../img/toolbar-hm.png) repeat-x scroll 0 0;
+    border-bottom: 1px solid #9ECAD8;
+}
+
+.toolbar-box table.z-button-disd:active {
+    border-color: transparent;
+}
+
+.toolbar-box .z-button {
+    color: #0068B1;
+}
+
+.orderslayout .z-north {
+    border-bottom: 1px solid #9ECAD8;
+}
+
+.z-treerow.z-treerow-selected > .z-treecell,
+.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected:hover > .z-treecell,
+.z-listitem.z-listitem-selected > .z-listcell,
+.z-listitem.z-listitem-selected:hover > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus:hover > .z-listcell {
+    border-left: none;
+}
+
+.z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
+    background: transparent url(../img/borderlayout-hm.png) repeat-x scroll 0 0;
+}
+
+.timeplot-grid-label {
+    color: transparent;
+}
+
+.migas_linea span.scheduling-state {
+    border-radius: 6px;
+    border: 1px solid #888888;
+    color: #888888;
+    opacity: 0.7;
+    background-color: transparent;
+}
+
+.submenu .z-menupopup-content .z-menuitem-content:hover .z-menuitem-image {
+    background-image: url(../img/ico_submenu.png);
+}
+
+.timeTrackedTableWithLeftPane input[value="0"] {
+    color: #DDDDDD;
+}
+
+.advanced-allocation-layout #timeTracker {
+    background-color: #CDE6F5;
+}
+
+/* Resource allocation */
+.allocation-not-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-not-satisfied tr.z-grid-odd {
+    background-color: #EECCCC;
+}
+
+.assignedresources .allocation-not-satisfied td.z-row-inner {
+    background-color: #EECCCC;
+}
+
+.allocation-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-satisfied tr.z-grid-odd {
+    background-color: transparent;
+}
+
+.allocation-satisfied td.z-row-inner {
+    background-color: transparent;
+}
+
+.assignedresources .allocation-satisfied td.z-row-inner {
+    background-color: transparent;
+}
+
+.timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    background-color: #f9f9f9;
+}
+
+.clickable-rows tr.z-row:hover .z-row-inner {
+    background-color: #E9F2FB;
+}
+
+.clickable-rows tr.z-row:hover .z-row-content {
+    color: #000000;
+}
+
+tr.z-tree-row-seld td.z-row-inner {
+    background-color: #2A83B4;
+}
+
+tr.z-tree-row-seld .z-row-content {
+    color: #FFFFFF;
+}
+
+/* color code for order state */
+.order-open-unassigned {
+    color: #AACCEE;
+}
+
+.order-open-assigned {
+    color: #007BBE;
+}
+
+.order-closed {
+    color: #000000;
+}
+
+/* ----------- Limiting Resources window ------- */
+.not-workable-hours {
+    background-color: #CCCCCC;
+}
+
+.readonly .z-grid-body .z-row-inner {
+    background-color: #CCCCCC;
+}
+
+.z-fieldset legend {
+    color: #0F3B82;
+}
+
+.z-fieldset {
+    border: solid 1px #B1CBD5;
+}
+
+.z-band-popup td.z-list-cell {
+    border-right: dotted 1px #cccccc;
+}
+
+.edit-task-window .z-tabpanel-accordion {
+    border: 0;
+}
+
+.filter-more-options .z-groupbox-content {
+    background-color: #F0FAFF;
+}
+
+.filter-more-options .z-groupbox-body .z-groupbox-content {
+    border-top: solid 1px #B2CCD9 !important;
+}
+
+.filter-more-options .z-groupbox-header {
+    border-radius: 4px;
+}
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column {
+    border-right: solid 1px #F2F2F2 !important;
+}
+
+#ganttpanel .second_level_ #watermark .bankHoliday {
+    border-right: solid 1px #F2D8D8 !important;
+}
+
+.color-sample {
+    border: solid 1px black;
+}
+
+.progress-types.z-combobox .z-combobox-inp {
+    color: transparent;
+    background: transparent;
+    border-width: 0;
+    outline: none;
+}
+
+.progress-types.z-combobox .z-combobox-button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.advanced-allocation-layout .second_level_ td {
+    border-right: solid 1px #ABC6DE;
+    border-bottom: solid 1px #ABC6DE;
+}
+
+.advanced-allocation-layout div.z-grid {
+    border-top: 0;
+}
+
+.advanced-allocation-layout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    background-color: #F2F2F2;
+}
+
+.advanced-assignment-area td .z-intbox,
+.advanced-assignment-area td .z-textbox {
+    background: #3C90BE;
+    color: white;
+    border-right: solid 1px white;
+}
+
+.advanced-assignment-area td .z-intbox[value="0"],
+.advanced-assignment-area td .z-textbox[value="0"] {
+    background: #ABCDE1;
+    color: #555555;
+}
+
+.advanced-assignment-area td .limiting.z-intbox,
+.advanced-assignment-area td .limiting.z-textbox {
+    background: #61B598;
+    border-right: solid 1px white;
+    opacity: 1;
+}
+
+.advanced-assignment-area td .limiting.z-intbox[value="0"],
+.advanced-assignment-area td .limiting.z-textbox[value="0"] {
+    background: #C1D9D1;
+}
+
+input.z-spinner-text-disd {
+    color: #000000 !important;
+}
+
+.z-calendar .z-calendar-outside {
+    color: #CCC;
+}
+
+.toolbar-box .z-button tbody,
+.toolbar-box .z-button tbody:hover,
+.toolbar-box .z-button tbody:active {
+    background-color: transparent;
+}
+
+.toolbar-box .z-button-cm {
+    border-left: solid 1px transparent;
+    border-top: solid 1px transparent;
+    border-right: solid 1px transparent;
+}
+
+.toolbar-box .z-button-clk .z-button-cm {
+    background-color: #71B0D4;
+}
+
+.perspectives-column .z-button-cm,
+.toolbar-box .z-button-cm {
+    border-radius: 2px;
+}
+
+.z-button.icono tbody, .z-button.icono tbody:hover, .z-button.icono tbody:active {
+    background-color: transparent;
+}
+
+.planner-command.z-button tbody, .planner-command.z-button tbody:hover, .planner-command.z-button tbody:active {
+    background-color: transparent;
+}
+
+.z-button .z-button-cm {
+    background-image: none;
+}
+
+.z-button tbody {
+    background-color: #E4F3D9;
+}
+
+.z-button tbody:hover {
+    background-color: #C3EAAF;
+}
+
+.z-button tbody:active {
+    background-color: #A1D586;
+}
+
+.z-button .z-button-tl, .z-button .z-button-tr,
+.z-button .z-button-bl, .z-button .z-button-br {
+    background-image: url(../img/btn-corner-green.gif);
+}
+
+.z-button .z-button-tm, .z-button .z-button-bm {
+    background-image: url(../img/btn-x-green.gif);
+}
+
+.z-button .z-button-cl, .z-button .z-button-cr {
+    background-image: url(../img/btn-y-green.gif);
+}
+
+.z-button .z-button-tl, .z-button .z-button-bl,
+.z-button .z-button-tr, .z-button .z-button-tr {
+    background-color: #FFFFFF;
+}
+
+/* Bugfix for default 3D mold */
+.z-button-clk .z-button-tl {
+    background-position: -18px 0;
+}
+
+.z-button-clk .z-button-bl {
+    background-position: -18px -3px;
+}
+
+.z-button-clk .z-button-tr {
+    background-position: -21px 0;
+}
+
+.z-button-clk .z-button-br {
+    background-position: -21px -3px;
+}
+
+.z-button-clk .z-button-cl {
+    background-position: -18px 0;
+}
+
+.z-button-clk .z-button-cr {
+    background-position: -21px 0;
+}
+
+.workerwindow .calendar-tabbox .z-tabpanel {
+    border: 0;
+}
+
+.workerwindow .calendar-tabbox .calendar-options-tabbox .z-tabpanel {
+    border: solid 1px #7EAAC6;
+}
+
+.day-details .z-datebox-disd input {
+    border: 0;
+    background: transparent;
+    color: black !important;
+}
+
+.day-details .z-datebox-disd * {
+    color: black !important;
+}
+
+.day-details .z-datebox-disd {
+    opacity: 1;
+}
+
+.materials-accordion.z-tabbox-accordion .z-tabpanel-accordion {
+    border: 0;
+}
+
+.z-separator-vertical-bar {
+    border-right: 1px solid #9ECAD8;
+    border-left: 1px solid #d9f3ff;
+}
+
+.z-borderlayout {
+    background-color: transparent;
+}
+
+.scheduling-graphics .z-tabs-space {
+    border: 0;
+}
+
+.entity-sequences-grid tr.z-row td.z-row-inner {
+    border-bottom: 0;
+    border-top: 0;
+}
+
+.entity-sequences-grid tr.separator td.z-row-inner {
+    border-top: 1px solid #AAAAAA;
+}
+
+.remarked {
+    color: #0F3B82;
+}
+
+.issueLog-priority-color-red {
+    background: #FF4000 !important;
+}
+
+.issueLog-priority-color-yellow {
+    background: #FFA500 !important;
+}
+
+.issueLog-priority-color-green {
+    background: #AAFFAA !important;
+}
+
+.riskLog-score-color-1 {
+    background: #BAF109 !important;
+}
+
+.riskLog-score-color-2 {
+    background: #A3D307 !important;
+}
+
+.riskLog-score-color-3 {
+    background: #FFAF04 !important;
+}
+
+.riskLog-score-color-4 {
+    background: #FF9000 !important;
+}
+
+.riskLog-score-color-6 {
+    background: #FF4B00 !important;
+}
+
+.riskLog-score-color-9 {
+    background: #EA0024 !important;
+}
+
+.icono {
+    border: 1px solid transparent !important;
+}
+
+.icono:hover {
+    background-image: none !important;
+}
+
+.icono:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    background: none;
+}
+
+/* Made for create buttons, because default ZK css is not work correctly for create button */
+.add-button {
+    background-color: #E4F3D9;
+    background-image: none !important;
+}
+
+.add-button:hover {
+    background: none;
+    background-color: #C3EAAF;
+}
+
+.add-button:focus {
+    background: none;
+    background-color: #C3EAAF;
+}
+
+.add-button:disabled {
+    background: none;
+    background-color: #C3EAAF !important;
+}
+
+.z-center {
+    border: 1px solid #9ECAD8;
+}
+
+/*
+ Made for grid rows.
+ It makes possible to define on hover background of rows.
+ If row is pair then background equals grey.
+ Else if row is odd then background equals white.
+ So, it removes default ZK hover effect for grid.
+*/
+.z-row:hover:nth-child(odd)>.z-row-inner, .z-row:hover>.z-cell {
+    background: none;
+}
+
+.z-row:hover:nth-child(even)>.z-row-inner, .z-row:hover>.z-cell {
+    background: #F0FBFF;
+}
+
+.z-row:hover:nth-child(odd)>.z-row-inner .z-row-content,
+.z-row:hover:nth-child(even)>.z-row-inner .z-row-content {
+    color: #00547a;
+}
+
+.z-row .z-row-inner, .z-row .z-cell {
+    border: none;
+    border-right: 1px solid rgb(204, 204, 204);
+    border-bottom: 1px solid rgb(207, 207, 207);
+}
+
+.z-column {
+    border: none;
+    border-right: 1px solid rgb(207, 207, 207);
+}
+
+/* Synchronization window ( Job Scheduling ) */
+.job-scheduling-manual-header .z-window-header {
+    color: white;
+    border-radius: 5px 5px 0 0;
+}
+
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected:hover > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell > .z-treecell-content {
+    color: black;
+}
+
+/* Correct border line for auxheader(grid) in edit task */
+.z-auxhead .z-auxheader {
+    border-right: 1px solid rgb(204, 204, 204);
+    border-left: none;
+}
+
+.z-datebox-input {
+    color: #000000 !important;
+}
+
+.z-button[disabled] {
+    background: none;
+    opacity: 0.3;
+}
+
+.z-textbox:focus, .z-decimalbox:focus, .z-intbox:focus, .z-longbox:focus, .z-doublebox:focus {
+    border: 1px solid #90BCE6 !important;
+}
+
+/* For correct display button icon when it clicked and unclicked */
+.planner-command:focus {
+    background-image: none;
+    box-shadow: none;
+}
+
+.planner-command.clicked.z-button,
+.planner-command.clicked.z-button:focus {
+    background-color: #E6F2F9;
+    border-left: 1px solid #006699;
+}
+
+/* This style for buttons when you want to delete something */
+.z-messagebox-button,
+.z-messagebox-btn {
+    background-color: #E4F3D9;
+    background-image: none !important;
+}
+
+.z-messagebox-button:hover,
+.z-messagebox-btn:hover {
+    background: #C3EAAF none;
+}
+
+.z-messagebox-button:focus,
+.z-messagebox-btn:focus {
+    background: #C3EAAF none;
+}
+
+.z-messagebox-button:disabled,
+.z-messagebox-btn:disabled {
+    background: none;
+    background-color: #C3EAAF !important;
+}
+
+/* It needs for nice view timetracker in sapphire theme, because native background is looked very awful */
+.z-grid-header.timetracker-secondlevel {
+    background: #ffffff !important;
+}
+
+.z-treerow:hover > .z-treecell,
+.z-listitem:hover > .z-listcell {
+    background: #Dae7f6;
+}
+
+.z-treerow:hover > .z-treecell > .z-treecell-content,
+.z-listitem:hover > .z-listcell > .z-listcell-content,
+.z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell > .z-treecell-content,
+.z-listitem.z-listitem-selected > .z-listcell > .z-listcell-content,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell > .z-listcell-content {
+    color: #00547a;
+}
+
+.z-comboitem-selected,
+.z-comboitem-selected:hover {
+    background: #97BAC9;
+}
+
+.z-comboitem-selected .z-comboitem-text {
+    text-shadow: none;
+}
+
+.remove-detailrow-background td,tr {
+    background: none !important;
+}

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Ressourcenverwaltung</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ressourcenverwaltung">
+<h1 class="title">Ressourcenverwaltung</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#personalressourcen" id="toc-entry-1">Personalressourcen</a></li>
+<li><a class="reference internal" href="#maschinenressourcen" id="toc-entry-2">Maschinenressourcen</a></li>
+<li><a class="reference internal" href="#ressourcen-verwalten" id="toc-entry-3">Ressourcen verwalten</a><ul>
+<li><a class="reference internal" href="#mitarbeiter-verwalten" id="toc-entry-4">Mitarbeiter verwalten</a></li>
+<li><a class="reference internal" href="#maschinen-verwalten" id="toc-entry-5">Maschinen verwalten</a></li>
+<li><a class="reference internal" href="#virtuelle-mitarbeitergruppen" id="toc-entry-6">Virtuelle Mitarbeitergruppen</a></li>
+<li><a class="reference internal" href="#warteschlangenbasierte-ressourcen" id="toc-entry-7">Warteschlangenbasierte Ressourcen</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Das Programm verwaltet zwei verschiedene Arten von Ressourcen: Personal und Maschinen.</p>
+<div class="section" id="personalressourcen">
+<h1><a class="toc-backref" href="#toc-entry-1">Personalressourcen</a></h1>
+<p>Personalressourcen repräsentieren die Mitarbeiter des Unternehmens. Ihre wichtigsten Merkmale sind:</p>
+<ul class="simple">
+<li>Sie erfüllen ein oder mehrere generische oder mitarbeiterspezifische Kriterien.</li>
+<li>Sie können einer Aufgabe spezifisch zugewiesen werden.</li>
+<li>Sie können einer Aufgabe, die ein Ressourcenkriterium erfordert, generisch zugewiesen werden.</li>
+<li>Sie können nach Bedarf einen Standard- oder spezifischen Kalender haben.</li>
+</ul>
+</div>
+<div class="section" id="maschinenressourcen">
+<h1><a class="toc-backref" href="#toc-entry-2">Maschinenressourcen</a></h1>
+<p>Maschinenressourcen repräsentieren die Maschinen des Unternehmens. Ihre wichtigsten Merkmale sind:</p>
+<ul class="simple">
+<li>Sie erfüllen ein oder mehrere generische oder maschinenspezifische Kriterien.</li>
+<li>Sie können einer Aufgabe spezifisch zugewiesen werden.</li>
+<li>Sie können einer Aufgabe, die ein Maschinenkriterium erfordert, generisch zugewiesen werden.</li>
+<li>Sie können nach Bedarf einen Standard- oder spezifischen Kalender haben.</li>
+<li>Das Programm enthält einen Konfigurationsbildschirm, auf dem ein <em>Alpha</em>-Wert definiert werden kann, um das Maschinen-/Mitarbeiterverhältnis darzustellen.<ul>
+<li>Der <em>Alpha</em>-Wert gibt die Menge an Mitarbeiterzeit an, die für den Betrieb der Maschine erforderlich ist. Zum Beispiel bedeutet ein Alpha-Wert von 0,5, dass jede 8 Stunden Maschinenbetrieb 4 Stunden Mitarbeiterzeit erfordert.</li>
+<li>Benutzer können einem Mitarbeiter spezifisch einen <em>Alpha</em>-Wert zuweisen und diesen Mitarbeiter für diesen Prozentsatz der Zeit für den Maschinenbetrieb designieren.</li>
+<li>Benutzer können auch eine generische Zuweisung basierend auf einem Kriterium vornehmen, sodass allen Ressourcen, die dieses Kriterium erfüllen und verfügbare Zeit haben, ein Nutzungsprozentsatz zugewiesen wird.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="ressourcen-verwalten">
+<h1><a class="toc-backref" href="#toc-entry-3">Ressourcen verwalten</a></h1>
+<p>Benutzer können Mitarbeiter und Maschinen im Unternehmen erstellen, bearbeiten und deaktivieren (aber nicht dauerhaft löschen), indem sie zum Bereich „Ressourcen&quot; navigieren. Dieser Bereich bietet die folgenden Funktionen:</p>
+<ul class="simple">
+<li><strong>Liste der Mitarbeiter:</strong> Zeigt eine nummerierte Liste von Mitarbeitern an, mit der Benutzer deren Details verwalten können.</li>
+<li><strong>Liste der Maschinen:</strong> Zeigt eine nummerierte Liste von Maschinen an, mit der Benutzer deren Details verwalten können.</li>
+</ul>
+<div class="section" id="mitarbeiter-verwalten">
+<h2><a class="toc-backref" href="#toc-entry-4">Mitarbeiter verwalten</a></h2>
+<p>Die Mitarbeiterverwaltung erfolgt, indem Sie zum Bereich „Ressourcen&quot; gehen und dann „Liste der Mitarbeiter&quot; auswählen. Benutzer können jeden Mitarbeiter in der Liste bearbeiten, indem sie auf das Standard-Bearbeitungssymbol klicken.</p>
+<p>Beim Bearbeiten eines Mitarbeiters können Benutzer auf die folgenden Registerkarten zugreifen:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Mitarbeiterdaten:</strong> Diese Registerkarte ermöglicht es Benutzern, die grundlegenden Identifikationsdaten des Mitarbeiters zu bearbeiten:</p>
+<ul class="simple">
+<li>Vorname</li>
+<li>Nachname(n)</li>
+<li>Nationale Ausweisdokumentnummer (DNI)</li>
+<li>Warteschlangenbasierte Ressource (siehe Abschnitt zu warteschlangenbasierten Ressourcen)</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Persönliche Daten von Mitarbeitern bearbeiten</p>
+</div>
+</li>
+<li><p class="first"><strong>Kriterien:</strong> Diese Registerkarte wird verwendet, um die Kriterien zu konfigurieren, die ein Mitarbeiter erfüllt. Benutzer können alle Mitarbeiter- oder generischen Kriterien zuweisen, die sie für angemessen halten. Es ist entscheidend, dass Mitarbeiter Kriterien erfüllen, um die Funktionalität des Programms zu maximieren. So weisen Sie Kriterien zu:</p>
+<ol class="lowerroman simple">
+<li>Klicken Sie auf die Schaltfläche „Kriterien hinzufügen&quot;.</li>
+<li>Suchen Sie nach dem hinzuzufügenden Kriterium und wählen Sie das am besten geeignete aus.</li>
+<li>Klicken Sie auf die Schaltfläche „Hinzufügen&quot;.</li>
+<li>Wählen Sie das Startdatum aus, ab dem das Kriterium gilt.</li>
+<li>Wählen Sie das Enddatum für die Anwendung des Kriteriums auf die Ressource aus. Dieses Datum ist optional, wenn das Kriterium als unbefristet gilt.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Kriterien mit Mitarbeitern verknüpfen</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalender:</strong> Diese Registerkarte ermöglicht es Benutzern, einen spezifischen Kalender für den Mitarbeiter zu konfigurieren. Allen Mitarbeitern ist ein Standardkalender zugewiesen; es ist jedoch möglich, jedem Mitarbeiter basierend auf einem vorhandenen Kalender einen spezifischen Kalender zuzuweisen.</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Kalender-Registerkarte für eine Ressource</p>
+</div>
+</li>
+<li><p class="first"><strong>Kostenkategorie:</strong> Diese Registerkarte ermöglicht es Benutzern, die Kostenkategorie zu konfigurieren, die ein Mitarbeiter während eines bestimmten Zeitraums erfüllt. Diese Informationen werden verwendet, um die mit einem Mitarbeiter in einem Projekt verbundenen Kosten zu berechnen.</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Kostenkategorie-Registerkarte für eine Ressource</p>
+</div>
+</li>
+</ol>
+<p>Die Ressourcenzuweisung wird im Abschnitt „Ressourcenzuweisung&quot; erläutert.</p>
+</div>
+<div class="section" id="maschinen-verwalten">
+<h2><a class="toc-backref" href="#toc-entry-5">Maschinen verwalten</a></h2>
+<p>Maschinen werden für alle Zwecke als Ressourcen behandelt. Ähnlich wie Mitarbeiter können Maschinen daher verwaltet und Aufgaben zugewiesen werden. Die Ressourcenzuweisung wird im Abschnitt „Ressourcenzuweisung&quot; behandelt, der die spezifischen Merkmale von Maschinen erläutern wird.</p>
+<p>Maschinen werden über den Menüeintrag „Ressourcen&quot; verwaltet. Dieser Bereich enthält eine Operation namens „Maschinenliste&quot;, die die Maschinen des Unternehmens anzeigt. Benutzer können eine Maschine aus dieser Liste bearbeiten oder löschen.</p>
+<p>Beim Bearbeiten von Maschinen zeigt das System eine Reihe von Registerkarten zur Verwaltung verschiedener Details an:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Maschinendetails:</strong> Diese Registerkarte ermöglicht es Benutzern, die Identifikationsdetails der Maschine zu bearbeiten:</p>
+<ol class="lowerroman simple">
+<li>Name</li>
+<li>Maschinencode</li>
+<li>Beschreibung der Maschine</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Maschinendetails bearbeiten</p>
+</div>
+</li>
+<li><p class="first"><strong>Kriterien:</strong> Wie bei Mitarbeiterressourcen wird diese Registerkarte verwendet, um Kriterien hinzuzufügen, die die Maschine erfüllt. Maschinen können zwei Arten von Kriterien zugewiesen werden: maschinenspezifische oder generische. Mitarbeiterkriterien können Maschinen nicht zugewiesen werden. So weisen Sie Kriterien zu:</p>
+<ol class="lowerroman simple">
+<li>Klicken Sie auf die Schaltfläche „Kriterien hinzufügen&quot;.</li>
+<li>Suchen Sie nach dem hinzuzufügenden Kriterium und wählen Sie das am besten geeignete aus.</li>
+<li>Wählen Sie das Startdatum aus, ab dem das Kriterium gilt.</li>
+<li>Wählen Sie das Enddatum für die Anwendung des Kriteriums auf die Ressource aus.</li>
+<li>Klicken Sie auf die Schaltfläche „Speichern und fortfahren&quot;.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Kriterien Maschinen zuweisen</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalender:</strong> Diese Registerkarte ermöglicht es Benutzern, einen spezifischen Kalender für die Maschine zu konfigurieren.</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Kalender Maschinen zuweisen</p>
+</div>
+</li>
+<li><p class="first"><strong>Maschinenkonfiguration:</strong> Diese Registerkarte ermöglicht es Benutzern, das Verhältnis von Maschinen zu Mitarbeiterressourcen zu konfigurieren. Eine Maschine hat einen Alpha-Wert, der das Maschinen-/Mitarbeiterverhältnis angibt. Die Zuordnung eines Mitarbeiters zu einer Maschine kann auf zwei Arten erfolgen:</p>
+<ol class="lowerroman simple">
+<li><strong>Spezifische Zuweisung:</strong> Weisen Sie einen Datumsbereich zu, in dem der Mitarbeiter der Maschine zugewiesen ist.</li>
+<li><strong>Generische Zuweisung:</strong> Weisen Sie Kriterien zu, die von den der Maschine zugewiesenen Mitarbeitern erfüllt werden müssen.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Konfiguration von Maschinen</p>
+</div>
+</li>
+<li><p class="first"><strong>Kostenkategorie:</strong> Diese Registerkarte ermöglicht es Benutzern, die Kostenkategorie zu konfigurieren, die eine Maschine während eines bestimmten Zeitraums erfüllt.</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Kostenkategorien Maschinen zuweisen</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="virtuelle-mitarbeitergruppen">
+<h2><a class="toc-backref" href="#toc-entry-6">Virtuelle Mitarbeitergruppen</a></h2>
+<p>Das Programm ermöglicht es Benutzern, virtuelle Mitarbeitergruppen zu erstellen, die keine echten Mitarbeiter sind, sondern simuliertes Personal. Diese Gruppen ermöglichen es Benutzern, erhöhte Produktionskapazität zu bestimmten Zeiten basierend auf den Kalendereinstellungen zu modellieren.</p>
+<p>Die Registerkarten zum Erstellen virtueller Mitarbeitergruppen sind dieselben wie für die Konfiguration von Mitarbeitern:</p>
+<ul class="simple">
+<li>Allgemeine Details</li>
+<li>Zugewiesene Kriterien</li>
+<li>Kalender</li>
+<li>Zugeordnete Stunden</li>
+</ul>
+<p>Der Unterschied zwischen virtuellen Mitarbeitergruppen und tatsächlichen Mitarbeitern besteht darin, dass virtuelle Mitarbeitergruppen einen Namen für die Gruppe und eine Menge haben, die die Anzahl der tatsächlichen Personen in der Gruppe darstellt.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Virtuelle Ressourcen</p>
+</div>
+</div>
+<div class="section" id="warteschlangenbasierte-ressourcen">
+<h2><a class="toc-backref" href="#toc-entry-7">Warteschlangenbasierte Ressourcen</a></h2>
+<p>Warteschlangenbasierte Ressourcen sind eine spezifische Art von Produktivelement, das entweder nicht zugewiesen sein oder 100 % Engagement haben kann. Mit anderen Worten, sie können nicht mehr als eine Aufgabe gleichzeitig geplant haben und können auch nicht überbelastet werden.</p>
+<p>Für jede warteschlangenbasierte Ressource wird automatisch eine Warteschlange erstellt. Die für diese Ressourcen geplanten Aufgaben können mit den bereitgestellten Zuweisungsmethoden spezifisch verwaltet werden.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

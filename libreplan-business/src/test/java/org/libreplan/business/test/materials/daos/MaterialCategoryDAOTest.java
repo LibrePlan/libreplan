@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -139,6 +140,99 @@ public class MaterialCategoryDAOTest {
                 assertEquals(category.getId(), listCategory.getParent().getId());
             }
         }
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). getAll/getAllRootMaterialCategories/findUniqueByName/findAll
+     * had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void testGetAllIncludesSaved() {
+        MaterialCategory category = createValidMaterialCategory();
+        materialCategoryDAO.save(category);
+
+        boolean found = false;
+        for (MaterialCategory c : materialCategoryDAO.getAll()) {
+            if (c.getId().equals(category.getId())) {
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
+    @Test
+    @Transactional
+    public void testGetAllRootMaterialCategoriesExcludesChildren() {
+        MaterialCategory root = createValidMaterialCategory();
+        MaterialCategory child = createValidMaterialCategory();
+        root.addSubcategory(child);
+        materialCategoryDAO.save(root);
+
+        boolean rootFound = false;
+        for (MaterialCategory c : materialCategoryDAO.getAllRootMaterialCategories()) {
+            assertEquals(null, c.getParent());
+            if (c.getId().equals(root.getId())) {
+                rootFound = true;
+            }
+            assertFalse(c.getId().equals(child.getId()));
+        }
+        assertTrue(rootFound);
+    }
+
+    @Test
+    @Transactional
+    public void testFindUniqueByNameIsCaseInsensitiveAndTrims() throws InstanceNotFoundException {
+        String mixedCaseName = "MiXeD-" + UUID.randomUUID();
+        MaterialCategory category = MaterialCategory.create(mixedCaseName);
+        materialCategoryDAO.save(category);
+
+        assertEquals(category.getId(), materialCategoryDAO.findUniqueByName(mixedCaseName).getId());
+        assertEquals(category.getId(), materialCategoryDAO.findUniqueByName(mixedCaseName.toLowerCase()).getId());
+        assertEquals(category.getId(), materialCategoryDAO.findUniqueByName("  " + mixedCaseName + "  ").getId());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void testFindUniqueByNameThrowsWhenNotFound() throws InstanceNotFoundException {
+        materialCategoryDAO.findUniqueByName("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void testFindUniqueByNameThrowsWhenBlank() throws InstanceNotFoundException {
+        materialCategoryDAO.findUniqueByName("   ");
+    }
+
+    @Test
+    @Transactional
+    public void testFindAllOnlyReturnsRootsOrderedByCode() {
+        String prefix = UUID.randomUUID().toString();
+
+        MaterialCategory root1 = MaterialCategory.create(prefix + "-a");
+        root1.setCode(prefix + "-1");
+        materialCategoryDAO.save(root1);
+
+        MaterialCategory root2 = MaterialCategory.create(prefix + "-b");
+        root2.setCode(prefix + "-2");
+        materialCategoryDAO.save(root2);
+
+        MaterialCategory child = createValidMaterialCategory();
+        root1.addSubcategory(child);
+        materialCategoryDAO.save(root1);
+
+        List<MaterialCategory> ours = new java.util.ArrayList<>();
+        for (MaterialCategory c : materialCategoryDAO.findAll()) {
+            if (c.getCode() != null && c.getCode().startsWith(prefix)) {
+                ours.add(c);
+            }
+        }
+
+        assertEquals(2, ours.size());
+        assertEquals(root1.getId(), ours.get(0).getId());
+        assertEquals(root2.getId(), ours.get(1).getId());
     }
 
 }

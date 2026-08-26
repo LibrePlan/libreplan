@@ -1,0 +1,7 @@
+[     865ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:8080/resources/worker/worker.zul:0
+[     865ms] [VERBOSE] [DOM] Password field is not contained in a form: (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:8080/resources/worker/worker.zul:0
+[ 1093466ms] [LOG] LegendResize @ http://127.0.0.1:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[ 7972971ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 7992971ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 8012971ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 8032971ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0

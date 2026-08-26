@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +26,8 @@
         <vbox>
             <label sclass="subtitulo" value="${i18n:_t('Assigned locations')}" />
             <listbox id="activeSatisfactions" mold="paging"
-                     model="@{controller.localizations.activeSatisfactions}"
+                     model="@load(controller.localizations.activeSatisfactions)"
+                     itemRenderer="@load(controller.localizations.activeSatisfactionsRenderer)"
                      height="200px" multiple="true" checkmark="true">
                 <listhead>
                     <listheader label="${i18n:_t('Group')}"
@@ -33,10 +35,6 @@
                     <listheader label="${i18n:_t('Starting date')}"
                                 sort="auto(startDate)" />
                 </listhead>
-                <listitem self="@{each='satisfaction'}" value="@{satisfaction}">
-                    <listcell label="@{satisfaction.criterion.name}"/>
-                    <listcell label="@{satisfaction.startDate}"/>
-                </listitem>
             </listbox>
         </vbox>
         <vbox style="margin-top:80px">
@@ -47,34 +45,26 @@
         <vbox>
             <label sclass="subtitulo" value="${i18n:_t('Non-assigned locations')}" />
             <listbox id="criterionsNotAssigned" mold="paging"
-                     model="@{controller.localizations.criterionsNotAssigned}"
+                     model="@load(controller.localizations.criterionsNotAssigned)"
+                     itemRenderer="@load(controller.localizations.criterionsNotAssignedRenderer)"
                      height="200px" multiple="true" checkmark="true">
                 <listhead>
                     <listheader label="${i18n:_t('Group')}"
                                 sort="auto(name)"/>
                 </listhead>
-                <listitem self="@{each='criterion'}" value="@{criterion}">
-                    <listcell label="@{criterion.name}"/>
-                </listitem>
             </listbox>
         </vbox>
     </hbox>
 
 
     <label sclass="subtitulo" value="${i18n:_t('Log')}" />
-    <grid id="listing" model="@{controller.localizations.localizationsHistory}"
+    <grid id="listing" model="@load(controller.localizations.localizationsHistory)"
+          rowRenderer="@load(controller.localizations.localizationsHistoryRenderer)"
           mold="paging" pageSize="10">
         <columns>
             <column label="${i18n:_t('Group')}" sort="auto(criterion.name)" />
             <column label="${i18n:_t('Starting date')}" sort="auto(startDate)" />
             <column label="${i18n:_t('Ending date')}" sort="auto(endDate)" />
         </columns>
-        <rows>
-            <row self="@{each='satisfaction'}">
-                <label value="@{satisfaction.criterion.name}" />
-                <label value="@{satisfaction.startDate}" />
-                <label value="@{satisfaction.endDate}" />
-            </row>
-        </rows>
     </grid>
 </vbox>

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,10 @@ package org.libreplan.business.planner.daos;
 
 import java.util.List;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.planner.entities.SubcontractorCommunication;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -47,9 +51,10 @@ public class SubcontractorCommunicationDAO
 
     @Override
     public List<SubcontractorCommunication> getAllNotReviewed(){
-        return getSession()
-                .createCriteria(SubcontractorCommunication.class)
-                .add(Restrictions.eq("reviewed", false))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<SubcontractorCommunication> cq = cb.createQuery(SubcontractorCommunication.class);
+        Root<SubcontractorCommunication> root = cq.from(SubcontractorCommunication.class);
+        cq.where(cb.equal(root.get("reviewed"), false));
+        return getSession().createQuery(cq).getResultList();
     }
 }

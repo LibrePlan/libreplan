@@ -1,0 +1,424 @@
+- generic [ref=f252e4]:
+  - generic [ref=f252e5]:
+    - table [ref=f252e6]:
+      - rowgroup [ref=f252e7]:
+        - row [ref=f252e8]:
+          - cell [ref=f252e9]:
+            - link [ref=f252e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f252e12]:
+            - table [ref=f252e13]:
+              - rowgroup [ref=f252e14]:
+                - row [ref=f252e15]:
+                  - cell [ref=f252e16]:
+                    - generic [ref=f252e17]:
+                      - menubar [ref=f252e18]:
+                        - menuitem "Planning" [ref=f252e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f252e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f252e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f252e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f252e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f252e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f252e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f252e33]:
+                        - rowgroup [ref=f252e34]:
+                          - row [ref=f252e35]:
+                            - cell [ref=f252e36]:
+                              - table [ref=f252e37]:
+                                - rowgroup [ref=f252e38]:
+                                  - row [ref=f252e39]:
+                                    - cell [ref=f252e40]
+                                    - cell [ref=f252e41]:
+                                      - strong [ref=f252e42]: START
+                                    - cell [ref=f252e43]
+                                    - cell [ref=f252e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f252e45]:
+                                        - rowgroup [ref=f252e46]:
+                                          - row [ref=f252e47]:
+                                            - cell [ref=f252e48]:
+                                              - table [ref=f252e49]:
+                                                - rowgroup [ref=f252e50]:
+                                                  - row [ref=f252e51]:
+                                                    - cell [ref=f252e52]:
+                                                      - table [ref=f252e53]:
+                                                        - rowgroup [ref=f252e54]:
+                                                          - row [ref=f252e55]:
+                                                            - cell [ref=f252e56]:
+                                                              - table [ref=f252e57]:
+                                                                - rowgroup [ref=f252e58]:
+                                                                  - row [ref=f252e59]:
+                                                                    - cell [ref=f252e60]
+                                                                    - cell [ref=f252e63]
+                                                                    - cell "Configuration" [ref=f252e64]
+                                                    - cell [ref=f252e65]
+                                                    - cell [ref=f252e66]:
+                                                      - table [ref=f252e67]:
+                                                        - rowgroup [ref=f252e68]:
+                                                          - row [ref=f252e69]:
+                                                            - cell [ref=f252e70]:
+                                                              - table [ref=f252e71]:
+                                                                - rowgroup [ref=f252e72]:
+                                                                  - row [ref=f252e73]:
+                                                                    - cell [ref=f252e74]
+                                                                    - cell [ref=f252e77]
+                                                                    - cell "Main Settings" [ref=f252e78]
+                            - cell [ref=f252e79]:
+                              - generic [ref=f252e80]:
+                                - link "Help" [ref=f252e81] [cursor=pointer]:
+                                  - /url: /help/en/16-ldap-authentication.html
+                                - img "Axuda" [ref=f252e83]
+                                - img "Info" [ref=f252e85]
+    - table [ref=f252e87]:
+      - rowgroup [ref=f252e88]:
+        - row [ref=f252e89]:
+          - cell [ref=f252e90]
+          - 'cell "user: admin" [ref=f252e91]'
+          - cell [ref=f252e92]:
+            - link "[Log out]" [ref=f252e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f252e94]:
+    - text:    
+    - generic [ref=f252e95]:
+      - generic [ref=f252e96]: Main Settings
+      - generic [ref=f252e97]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f252e98]:
+          - tablist [ref=f252e99]:
+            - listitem [ref=f252e100] [cursor=pointer]:
+              - generic [ref=f252e101]: Main preferences
+            - listitem [ref=f252e103] [cursor=pointer]:
+              - generic [ref=f252e104]: Entity sequences
+            - listitem [ref=f252e106] [cursor=pointer]:
+              - generic [ref=f252e107]: LDAP configuration
+            - listitem [ref=f252e109] [cursor=pointer]:
+              - generic [ref=f252e110]: Connectors
+          - text:  
+          - generic [ref=f252e112]:
+            - text:   
+            - tabpanel [ref=f252e333]:
+              - generic [ref=f252e334]:
+                - generic [ref=f252e335]: Entity code sequences
+                - table [ref=f252e339]:
+                  - rowgroup [ref=f252e340]:
+                    - row [ref=f252e341]:
+                      - cell [ref=f252e342]:
+                        - table [ref=f252e343]:
+                          - rowgroup [ref=f252e344]:
+                            - row [ref=f252e345]:
+                              - cell [ref=f252e346]:
+                                - table [ref=f252e347]:
+                                  - rowgroup [ref=f252e348]:
+                                    - row [ref=f252e349]:
+                                      - cell [ref=f252e350]:
+                                        - table [ref=f252e351]:
+                                          - rowgroup [ref=f252e352]:
+                                            - row [ref=f252e353]:
+                                              - cell "Select entity" [ref=f252e354]
+                                              - cell [ref=f252e355]
+                                              - cell [ref=f252e356]:
+                                                - combobox [ref=f252e357]:
+                                                  - textbox [active] [ref=f252e358]
+                                                  - button [ref=f252e359] [cursor=pointer]:
+                                                    - generic [ref=f252e360]: 
+                                                  - list [ref=f252e775]:
+                                                    - listitem [ref=f252e776] [cursor=pointer]: Project
+                                                    - listitem [ref=f252e777] [cursor=pointer]: Criterion
+                                                    - listitem [ref=f252e778] [cursor=pointer]: Label
+                                                    - listitem [ref=f252e779] [cursor=pointer]: Machine
+                                                    - listitem [ref=f252e780] [cursor=pointer]: Worker
+                                                    - listitem [ref=f252e781] [cursor=pointer]: Material unit
+                                                    - listitem [ref=f252e782] [cursor=pointer]: Calendar
+                                                    - listitem [ref=f252e783] [cursor=pointer]: Hours type
+                                                    - listitem [ref=f252e784] [cursor=pointer]: Material category
+                                                    - listitem [ref=f252e785] [cursor=pointer]: Timesheet
+                                                    - listitem [ref=f252e786] [cursor=pointer]: Timesheet template
+                                                    - listitem [ref=f252e787] [cursor=pointer]: Calendar exception day
+                                                    - listitem [ref=f252e788] [cursor=pointer]: Cost category
+                                                    - listitem [ref=f252e789] [cursor=pointer]: Resource calendar
+                                                    - listitem [ref=f252e790] [cursor=pointer]: Criterion satisfaction
+                                                    - listitem [ref=f252e791] [cursor=pointer]: Resource cost category assignment
+                                                    - listitem [ref=f252e792] [cursor=pointer]: Expense sheet
+                                                    - listitem [ref=f252e793] [cursor=pointer]: Issue log
+                                                    - listitem [ref=f252e794] [cursor=pointer]: Risk log
+                                              - cell [ref=f252e361]
+                                              - cell "Prefix" [ref=f252e362]
+                                              - cell [ref=f252e363]
+                                              - cell [ref=f252e364]:
+                                                - textbox [ref=f252e365]
+                                              - cell [ref=f252e366]
+                                              - cell "Number of digits" [ref=f252e367]
+                                              - cell [ref=f252e368]
+                                              - cell [ref=f252e369]:
+                                                - textbox [ref=f252e370]: "5"
+                                              - cell [ref=f252e371]
+                                              - cell [ref=f252e372]:
+                                                - button "Add" [ref=f252e373] [cursor=pointer]
+                            - row [ref=f252e374]:
+                              - cell [ref=f252e375]
+                            - row [ref=f252e376]:
+                              - cell [ref=f252e377]:
+                                - separator [ref=f252e378]
+                            - row [ref=f252e379]:
+                              - cell [ref=f252e380]
+                            - row [ref=f252e381]:
+                              - cell [ref=f252e382]:
+                                - grid [ref=f252e383]:
+                                  - rowgroup [ref=f252e392]:
+                                    - columnheader "Entity type" [ref=f252e393]
+                                    - columnheader "Active" [ref=f252e395]
+                                    - columnheader "Prefix" [ref=f252e397]
+                                    - columnheader "Number of digits" [ref=f252e399]
+                                    - columnheader "Last value" [ref=f252e401]
+                                    - columnheader "Operations" [ref=f252e403]
+                                  - rowgroup [ref=f252e412]:
+                                    - gridcell "Project sequences" [ref=f252e413]
+                                    - gridcell [ref=f252e415]:
+                                      - radio [checked] [ref=f252e418]
+                                    - gridcell [ref=f252e419]:
+                                      - textbox [disabled] [ref=f252e421]: ORDER
+                                    - gridcell [ref=f252e422]:
+                                      - textbox [disabled] [ref=f252e424]: "4"
+                                    - gridcell [ref=f252e425]:
+                                      - textbox [disabled] [ref=f252e427]: "0071"
+                                    - gridcell [ref=f252e428]:
+                                      - button "Remove" [disabled] [ref=f252e430]
+                                    - gridcell "Criterion sequences" [ref=f252e432]
+                                    - gridcell [ref=f252e434]:
+                                      - radio [checked] [ref=f252e437]
+                                    - gridcell [ref=f252e438]:
+                                      - textbox [disabled] [ref=f252e440]: CRITERION
+                                    - gridcell [ref=f252e441]:
+                                      - textbox [disabled] [ref=f252e443]: "4"
+                                    - gridcell [ref=f252e444]:
+                                      - textbox [disabled] [ref=f252e446]: "0004"
+                                    - gridcell [ref=f252e447]:
+                                      - button "Remove" [disabled] [ref=f252e449]
+                                    - gridcell "Label sequences" [ref=f252e451]
+                                    - gridcell [ref=f252e453]:
+                                      - radio [checked] [ref=f252e456]
+                                    - gridcell [ref=f252e457]:
+                                      - textbox [disabled] [ref=f252e459]: LABEL
+                                    - gridcell [ref=f252e460]:
+                                      - textbox [disabled] [ref=f252e462]: "4"
+                                    - gridcell [ref=f252e463]:
+                                      - textbox [disabled] [ref=f252e465]: "0001"
+                                    - gridcell [ref=f252e466]:
+                                      - button "Remove" [disabled] [ref=f252e468]
+                                    - gridcell "Machine sequences" [ref=f252e470]
+                                    - gridcell [ref=f252e472]:
+                                      - radio [checked] [ref=f252e475]
+                                    - gridcell [ref=f252e476]:
+                                      - textbox [disabled] [ref=f252e478]: MACHINE
+                                    - gridcell [ref=f252e479]:
+                                      - textbox [disabled] [ref=f252e481]: "4"
+                                    - gridcell [ref=f252e482]:
+                                      - textbox [disabled] [ref=f252e484]: "0016"
+                                    - gridcell [ref=f252e485]:
+                                      - button "Remove" [disabled] [ref=f252e487]
+                                    - gridcell "Worker sequences" [ref=f252e489]
+                                    - gridcell [ref=f252e491]:
+                                      - radio [checked] [ref=f252e494]
+                                    - gridcell [ref=f252e495]:
+                                      - textbox [disabled] [ref=f252e497]: WORKER
+                                    - gridcell [ref=f252e498]:
+                                      - textbox [disabled] [ref=f252e500]: "4"
+                                    - gridcell [ref=f252e501]:
+                                      - textbox [disabled] [ref=f252e503]: "0024"
+                                    - gridcell [ref=f252e504]:
+                                      - button "Remove" [disabled] [ref=f252e506]
+                                    - gridcell "Material unit sequences" [ref=f252e508]
+                                    - gridcell [ref=f252e510]:
+                                      - radio [checked] [ref=f252e513]
+                                    - gridcell [ref=f252e514]:
+                                      - textbox [disabled] [ref=f252e516]: UNIT_TYPE
+                                    - gridcell [ref=f252e517]:
+                                      - textbox [disabled] [ref=f252e519]: "4"
+                                    - gridcell [ref=f252e520]:
+                                      - textbox [disabled] [ref=f252e522]: "0008"
+                                    - gridcell [ref=f252e523]:
+                                      - button "Remove" [disabled] [ref=f252e525]
+                                    - gridcell "Calendar sequences" [ref=f252e527]
+                                    - gridcell [ref=f252e529]:
+                                      - radio [checked] [ref=f252e532]
+                                    - gridcell [ref=f252e533]:
+                                      - textbox [disabled] [ref=f252e535]: CALENDAR
+                                    - gridcell [ref=f252e536]:
+                                      - textbox [disabled] [ref=f252e538]: "4"
+                                    - gridcell [ref=f252e539]:
+                                      - textbox [disabled] [ref=f252e541]: "0014"
+                                    - gridcell [ref=f252e542]:
+                                      - button "Remove" [disabled] [ref=f252e544]
+                                    - gridcell "Hours type sequences" [ref=f252e546]
+                                    - gridcell [ref=f252e548]:
+                                      - radio [checked] [ref=f252e551]
+                                    - gridcell [ref=f252e552]:
+                                      - textbox [disabled] [ref=f252e554]: WORK_HOURS_TYPE
+                                    - gridcell [ref=f252e555]:
+                                      - textbox [disabled] [ref=f252e557]: "4"
+                                    - gridcell [ref=f252e558]:
+                                      - textbox [disabled] [ref=f252e560]: "0002"
+                                    - gridcell [ref=f252e561]:
+                                      - button "Remove" [disabled] [ref=f252e563]
+                                    - gridcell "Material category sequences" [ref=f252e565]
+                                    - gridcell [ref=f252e567]:
+                                      - radio [checked] [ref=f252e570]
+                                    - gridcell [ref=f252e571]:
+                                      - textbox [disabled] [ref=f252e573]: MATERIAL_CATEGORY
+                                    - gridcell [ref=f252e574]:
+                                      - textbox [disabled] [ref=f252e576]: "4"
+                                    - gridcell [ref=f252e577]:
+                                      - textbox [disabled] [ref=f252e579]: "0005"
+                                    - gridcell [ref=f252e580]:
+                                      - button "Remove" [disabled] [ref=f252e582]
+                                    - gridcell "Timesheet sequences" [ref=f252e584]
+                                    - gridcell [ref=f252e586]:
+                                      - radio [checked] [ref=f252e589]
+                                    - gridcell [ref=f252e590]:
+                                      - textbox [disabled] [ref=f252e592]: WORK_REPORT
+                                    - gridcell [ref=f252e593]:
+                                      - textbox [disabled] [ref=f252e595]: "4"
+                                    - gridcell [ref=f252e596]:
+                                      - textbox [disabled] [ref=f252e598]: "0017"
+                                    - gridcell [ref=f252e599]:
+                                      - button "Remove" [disabled] [ref=f252e601]
+                                    - gridcell "Timesheet template sequences" [ref=f252e603]
+                                    - gridcell [ref=f252e605]:
+                                      - radio [checked] [ref=f252e608]
+                                    - gridcell [ref=f252e609]:
+                                      - textbox [disabled] [ref=f252e611]: WORKREPORTTYPE
+                                    - gridcell [ref=f252e612]:
+                                      - textbox [disabled] [ref=f252e614]: "4"
+                                    - gridcell [ref=f252e615]:
+                                      - textbox [disabled] [ref=f252e617]: "0004"
+                                    - gridcell [ref=f252e618]:
+                                      - button "Remove" [disabled] [ref=f252e620]
+                                    - gridcell "Calendar exception day sequences" [ref=f252e622]
+                                    - gridcell [ref=f252e624]:
+                                      - radio [checked] [ref=f252e627]
+                                    - gridcell [ref=f252e628]:
+                                      - textbox [disabled] [ref=f252e630]: CALENDAR_EXCEPTION_TYPE
+                                    - gridcell [ref=f252e631]:
+                                      - textbox [disabled] [ref=f252e633]: "4"
+                                    - gridcell [ref=f252e634]:
+                                      - textbox [disabled] [ref=f252e636]: "0009"
+                                    - gridcell [ref=f252e637]:
+                                      - button "Remove" [disabled] [ref=f252e639]
+                                    - gridcell "Cost category sequences" [ref=f252e641]
+                                    - gridcell [ref=f252e643]:
+                                      - radio [checked] [ref=f252e646]
+                                    - gridcell [ref=f252e647]:
+                                      - textbox [disabled] [ref=f252e649]: COST_CATEGORY
+                                    - gridcell [ref=f252e650]:
+                                      - textbox [disabled] [ref=f252e652]: "4"
+                                    - gridcell [ref=f252e653]:
+                                      - textbox [disabled] [ref=f252e655]: "0003"
+                                    - gridcell [ref=f252e656]:
+                                      - button "Remove" [disabled] [ref=f252e658]
+                                    - gridcell "Resource calendar sequences" [ref=f252e660]
+                                    - gridcell [ref=f252e662]:
+                                      - radio [checked] [ref=f252e665]
+                                    - gridcell [ref=f252e666]:
+                                      - textbox [disabled] [ref=f252e668]: RESOURCE_CALENDAR
+                                    - gridcell [ref=f252e669]:
+                                      - textbox [disabled] [ref=f252e671]: "4"
+                                    - gridcell [ref=f252e672]:
+                                      - textbox [disabled] [ref=f252e674]: "0021"
+                                    - gridcell [ref=f252e675]:
+                                      - button "Remove" [disabled] [ref=f252e677]
+                                    - gridcell "Criterion satisfaction sequences" [ref=f252e679]
+                                    - gridcell [ref=f252e681]:
+                                      - radio [checked] [ref=f252e684]
+                                    - gridcell [ref=f252e685]:
+                                      - textbox [disabled] [ref=f252e687]: CRITERION_SATISFACTION
+                                    - gridcell [ref=f252e688]:
+                                      - textbox [disabled] [ref=f252e690]: "4"
+                                    - gridcell [ref=f252e691]:
+                                      - textbox [disabled] [ref=f252e693]: "0009"
+                                    - gridcell [ref=f252e694]:
+                                      - button "Remove" [disabled] [ref=f252e696]
+                                    - gridcell "Resource cost category assignment sequences" [ref=f252e698]
+                                    - gridcell [ref=f252e700]:
+                                      - radio [checked] [ref=f252e703]
+                                    - gridcell [ref=f252e704]:
+                                      - textbox [disabled] [ref=f252e706]: RESOURCE_COST_CATEGORY_ASSIGNMENT
+                                    - gridcell [ref=f252e707]:
+                                      - textbox [disabled] [ref=f252e709]: "4"
+                                    - gridcell [ref=f252e710]:
+                                      - textbox [disabled] [ref=f252e712]: "0008"
+                                    - gridcell [ref=f252e713]:
+                                      - button "Remove" [disabled] [ref=f252e715]
+                                    - gridcell "Expense sheet sequences" [ref=f252e717]
+                                    - gridcell [ref=f252e719]:
+                                      - radio [checked] [ref=f252e722]
+                                    - gridcell [ref=f252e723]:
+                                      - textbox [disabled] [ref=f252e725]: EXPENSE_SHEET
+                                    - gridcell [ref=f252e726]:
+                                      - textbox [disabled] [ref=f252e728]: "4"
+                                    - gridcell [ref=f252e729]:
+                                      - textbox [disabled] [ref=f252e731]: "0007"
+                                    - gridcell [ref=f252e732]:
+                                      - button "Remove" [disabled] [ref=f252e734]
+                                    - gridcell "Issue log sequences" [ref=f252e736]
+                                    - gridcell [ref=f252e738]:
+                                      - radio [checked] [ref=f252e741]
+                                    - gridcell [ref=f252e742]:
+                                      - textbox [disabled] [ref=f252e744]: ISSUE_LOG
+                                    - gridcell [ref=f252e745]:
+                                      - textbox [disabled] [ref=f252e747]: "4"
+                                    - gridcell [ref=f252e748]:
+                                      - textbox [disabled] [ref=f252e750]: "0008"
+                                    - gridcell [ref=f252e751]:
+                                      - button "Remove" [disabled] [ref=f252e753]
+                                    - gridcell "Risk log sequences" [ref=f252e755]
+                                    - gridcell [ref=f252e757]:
+                                      - radio [checked] [ref=f252e760]
+                                    - gridcell [ref=f252e761]:
+                                      - textbox [disabled] [ref=f252e763]: RISK_LOG
+                                    - gridcell [ref=f252e764]:
+                                      - textbox [disabled] [ref=f252e766]: "4"
+                                    - gridcell [ref=f252e767]:
+                                      - textbox [disabled] [ref=f252e769]: "0005"
+                                    - gridcell [ref=f252e770]:
+                                      - button "Remove" [disabled] [ref=f252e772]
+            - text:     
+        - table [ref=f252e313]:
+          - rowgroup [ref=f252e314]:
+            - row [ref=f252e315]:
+              - cell [ref=f252e316]:
+                - table [ref=f252e317]:
+                  - rowgroup [ref=f252e318]:
+                    - row [ref=f252e319]:
+                      - cell [ref=f252e320]:
+                        - button "Save" [ref=f252e321] [cursor=pointer]
+                      - cell [ref=f252e322]
+                      - cell [ref=f252e323]:
+                        - button "Cancel" [ref=f252e324] [cursor=pointer]
+  - table [ref=f252e325]:
+    - rowgroup [ref=f252e326]:
+      - row [ref=f252e327]:
+        - cell [ref=f252e328]:
+          - generic [ref=f252e330]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f252e331] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f252e332]
+  - text:    

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Informe d'Hores Treballades per Recurs</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="informe-d-hores-treballades-per-recurs">
+<h1 class="title">Informe d'Hores Treballades per Recurs</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#proposit" id="toc-entry-1">Propòsit</a></li>
+<li><a class="reference internal" href="#parametres-d-entrada-i-filtres" id="toc-entry-2">Paràmetres d'Entrada i Filtres</a></li>
+<li><a class="reference internal" href="#sortida" id="toc-entry-3">Sortida</a><ul>
+<li><a class="reference internal" href="#capcalera" id="toc-entry-4">Capçalera</a></li>
+<li><a class="reference internal" href="#peu-de-pagina" id="toc-entry-5">Peu de Pàgina</a></li>
+<li><a class="reference internal" href="#cos" id="toc-entry-6">Cos</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="proposit">
+<h1><a class="toc-backref" href="#toc-entry-1">Propòsit</a></h1>
+<p>Aquest informe extreu una llista de tasques i el temps que els recursos hi han dedicat dins d'un període especificat. Diversos filtres permeten als usuaris refinar la consulta per obtenir només la informació desitjada i excloure les dades innecessàries.</p>
+</div>
+<div class="section" id="parametres-d-entrada-i-filtres">
+<h1><a class="toc-backref" href="#toc-entry-2">Paràmetres d'Entrada i Filtres</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Dates</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Tipus</em>: Opcional.</li>
+<li><dl class="first docutils">
+<dt><em>Dos camps de data</em>:</dt>
+<dd><ul class="first last">
+<li><em>Data d'Inici:</em> És la data més primerenca perquè els parts de treball siguin inclosos. Els parts de treball amb dates anteriors a la <em>Data d'Inici</em> s'exclouen. Si aquest paràmetre es deixa en blanc, els parts de treball no es filtren per la <em>Data d'Inici</em>.</li>
+<li><em>Data de Fi:</em> És la data més tardana perquè els parts de treball siguin inclosos. Els parts de treball amb dates posteriors a la <em>Data de Fi</em> s'exclouen. Si aquest paràmetre es deixa en blanc, els parts de treball no es filtren per la <em>Data de Fi</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filtrar per Treballadors:</strong>
+*   <em>Tipus:</em> Opcional.
+*   <em>Com funciona:</em> Podeu seleccionar un o més treballadors per restringir els parts de treball al temps registrat per aquells treballadors específics. Per afegir un treballador com a filtre, cerqueu-lo al selector i feu clic al botó <em>Afegir</em>. Si aquest filtre es deixa buit, es recuperen els parts de treball independentment del treballador.</li>
+<li><strong>Filtrar per Etiquetes:</strong>
+*   <em>Tipus:</em> Opcional.
+*   <em>Com funciona:</em> Podeu afegir una o més etiquetes per usar-les com a filtres cercant-les al selector i fent clic al botó <em>Afegir</em>. Aquestes etiquetes s'utilitzen per seleccionar les tasques que s'han d'incloure als resultats en calcular les hores dedicades. Aquest filtre es pot aplicar als fulls de temps, les tasques, ambdós, o cap.</li>
+<li><strong>Filtrar per Criteris:</strong>
+*   <em>Tipus:</em> Opcional.
+*   <em>Com funciona:</em> Podeu seleccionar un o més criteris cercant-los al selector i fent clic al botó <em>Afegir</em>. Aquests criteris s'utilitzen per seleccionar els recursos que compleixen almenys un d'ells. L'informe mostrarà tot el temps dedicat pels recursos que compleixen un dels criteris seleccionats.</li>
+</ul>
+</div>
+<div class="section" id="sortida">
+<h1><a class="toc-backref" href="#toc-entry-3">Sortida</a></h1>
+<div class="section" id="capcalera">
+<h2><a class="toc-backref" href="#toc-entry-4">Capçalera</a></h2>
+<p>La capçalera de l'informe mostra els filtres que s'han configurat i aplicat a l'informe actual.</p>
+</div>
+<div class="section" id="peu-de-pagina">
+<h2><a class="toc-backref" href="#toc-entry-5">Peu de Pàgina</a></h2>
+<p>La data en què es va generar l'informe es llista al peu de pàgina.</p>
+</div>
+<div class="section" id="cos">
+<h2><a class="toc-backref" href="#toc-entry-6">Cos</a></h2>
+<p>El cos de l'informe consisteix en diversos grups d'informació.</p>
+<ul>
+<li><p class="first">El primer nivell d'agregació és per recurs. Tot el temps dedicat per un recurs es mostra juntament sota la capçalera. Cada recurs s'identifica per:</p>
+<ul class="simple">
+<li><em>Treballador:</em> Cognoms, Nom.</li>
+<li><em>Màquina:</em> Nom.</li>
+</ul>
+<p>Una línia de resum mostra el nombre total d'hores treballades pel recurs.</p>
+</li>
+<li><p class="first">El segon nivell d'agrupació és per <em>data</em>. Tots els informes d'un recurs específic en la mateixa data es mostren junts.</p>
+<p>Una línia de resum mostra el nombre total d'hores treballades pel recurs en aquella data.</p>
+</li>
+<li><p class="first">El nivell final llista els parts de treball del treballador en aquell dia. La informació mostrada per a cada línia de part de treball és:</p>
+<ul class="simple">
+<li><em>Codi de Tasca:</em> El codi de la tasca a la qual s'atribueixen les hores registrades.</li>
+<li><em>Nom de Tasca:</em> El nom de la tasca a la qual s'atribueixen les hores registrades.</li>
+<li><em>Hora d'Inici:</em> Aquesta és opcional. És l'hora en què el recurs va començar a treballar en la tasca.</li>
+<li><em>Hora de Fi:</em> Aquesta és opcional. És l'hora en què el recurs va acabar de treballar en la tasca en la data especificada.</li>
+<li><em>Camps de Text:</em> Aquesta és opcional. Si la línia del part de treball té camps de text, els valors emplenats es mostren aquí. El format és: &lt;Nom del camp de text&gt;:&lt;Valor&gt;</li>
+<li><em>Etiquetes:</em> Depèn de si el model de part de treball té un camp d'etiqueta en la seva definició. Si hi ha múltiples etiquetes, es mostren a la mateixa columna. El format és: &lt;Nom del tipus d'etiqueta&gt;:&lt;Valor de l'etiqueta&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

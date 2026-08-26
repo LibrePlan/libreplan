@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,12 +25,13 @@ package org.libreplan.business.resources.daos;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Path;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.Validate;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.CostCategory;
@@ -81,11 +83,15 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion> implements ICr
             return new ArrayList<>();
         }
 
-        Criteria c = getSession().createCriteria(Criterion.class);
-        c.add(Restrictions.eq("name", name).ignoreCase())
-                .createCriteria("type").add(Restrictions.eq("name", type).ignoreCase());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Criterion> cq = cb.createQuery(Criterion.class);
+        Root<Criterion> root = cq.from(Criterion.class);
+        Path<String> typeName = root.get("type").get("name");
+        cq.where(
+                cb.equal(cb.lower(root.get("name")), name.toLowerCase()),
+                cb.equal(cb.lower(typeName), type.toLowerCase()));
 
-        return (List<Criterion>) c.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     public Criterion findUniqueByNameAndType(Criterion criterion) throws InstanceNotFoundException {
@@ -114,13 +120,14 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion> implements ICr
     }
 
     private boolean existsByInternalCode(Criterion criterion) {
-        Criteria c = getSession().createCriteria(Criterion.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Criterion> cq = cb.createQuery(Criterion.class);
+        Root<Criterion> root = cq.from(Criterion.class);
+        cq.where(cb.equal(
+                cb.lower(root.get("predefinedCriterionInternalName")),
+                criterion.getPredefinedCriterionInternalName().toLowerCase()));
 
-        c.add(Restrictions.eq(
-                "predefinedCriterionInternalName",
-                criterion.getPredefinedCriterionInternalName()).ignoreCase());
-
-        return c.list().size() > 0;
+        return !getSession().createQuery(cq).getResultList().isEmpty();
     }
 
     @Override
@@ -161,10 +168,12 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion> implements ICr
     }
 
     public List<Criterion> getAllSorted() {
-        Criteria c = getSession().createCriteria(Criterion.class);
-        c.addOrder(Order.asc("name"));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Criterion> cq = cb.createQuery(Criterion.class);
+        Root<Criterion> root = cq.from(Criterion.class);
+        cq.orderBy(cb.asc(root.get("name")));
 
-        return (List<Criterion>) c.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
 
@@ -180,20 +189,22 @@ public class CriterionDAO extends IntegrationEntityDAO<Criterion> implements ICr
 
     @Override
     public int numberOfRelatedRequirements(Criterion criterion) {
-        Criteria c = getSession()
-                .createCriteria(CriterionRequirement.class)
-                .add(Restrictions.eq("criterion", criterion)).setProjection(Projections.rowCount());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<CriterionRequirement> root = cq.from(CriterionRequirement.class);
+        cq.select(cb.count(root)).where(cb.equal(root.get("criterion"), criterion));
 
-        return Integer.valueOf(c.uniqueResult().toString());
+        return getSession().createQuery(cq).uniqueResult().intValue();
     }
 
     @Override
     public int numberOfRelatedSatisfactions(Criterion criterion) {
-        Criteria c = getSession()
-                .createCriteria(CriterionSatisfaction.class)
-                .add(Restrictions.eq("criterion", criterion)).setProjection(Projections.rowCount());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<CriterionSatisfaction> root = cq.from(CriterionSatisfaction.class);
+        cq.select(cb.count(root)).where(cb.equal(root.get("criterion"), criterion));
 
-        return Integer.valueOf(c.uniqueResult().toString());
+        return getSession().createQuery(cq).uniqueResult().intValue();
     }
 
     @Override

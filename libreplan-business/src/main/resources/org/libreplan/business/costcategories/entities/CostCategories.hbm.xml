@@ -45,9 +45,9 @@
 
         <property name="priceCost" column="price_cost" />
 
-        <property name="initDate" column="init_date" />
+        <property name="initDate" column="init_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
-        <property name="endDate" column="end_date" />
+        <property name="endDate" column="end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
         <many-to-one name="type" class="TypeOfWorkHours" column="type_of_work_hours_id" />
 
@@ -91,9 +91,9 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <property name="initDate" column="init_date" />
+        <property name="initDate" column="init_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
-        <property name="endDate" column="end_date" />
+        <property name="endDate" column="end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
         <!-- Not Indexed -->
         <many-to-one name="costCategory" class="CostCategory" column="cost_category_id"/>

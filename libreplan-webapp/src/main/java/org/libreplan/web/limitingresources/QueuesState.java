@@ -34,8 +34,8 @@ import java.util.Set;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.jgrapht.DirectedGraph;
-import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.Graph;
+import org.jgrapht.alg.cycle.CycleDetector;
 import org.jgrapht.graph.DirectedMultigraph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -65,7 +65,7 @@ public class QueuesState {
 
     private final List<LimitingResourceQueueElement> unassignedElements;
 
-    private final DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph;
+    private final Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph;
 
     private final Map<Long, LimitingResourceQueue> queuesById;
 
@@ -105,10 +105,10 @@ public class QueuesState {
         this.graph = buildGraph(getAllElements(unassignedElements, queues));
     }
 
-    private static DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildGraph(
+    private static Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildGraph(
             List<LimitingResourceQueueElement> allElements) {
 
-        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =
+        Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =
                 instantiateDirectedGraph();
 
         for (LimitingResourceQueueElement each : allElements) {
@@ -133,7 +133,7 @@ public class QueuesState {
     }
 
     private static void addDependency(
-            DirectedGraph<LimitingResourceQueueElement,
+            Graph<LimitingResourceQueueElement,
                     LimitingResourceQueueDependency> result,
             LimitingResourceQueueDependency dependency) {
 
@@ -389,7 +389,7 @@ public class QueuesState {
 
     }
 
-    public DirectedGraph<LimitingResourceQueueElement, Edge> getPotentiallyAffectedByInsertion(
+    public Graph<LimitingResourceQueueElement, Edge> getPotentiallyAffectedByInsertion(
             LimitingResourceQueueElement element) {
 
         DirectedMultigraph<LimitingResourceQueueElement, Edge> result;
@@ -408,8 +408,8 @@ public class QueuesState {
 
     }
 
-    private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> onQueues(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
+    private Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> onQueues(
+            Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
 
         SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result;
         result = instantiateDirectedGraph();
@@ -424,7 +424,7 @@ public class QueuesState {
     }
 
     private DirectedMultigraph<LimitingResourceQueueElement, Edge> asEdges(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
+            Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> graph) {
 
         DirectedMultigraph<LimitingResourceQueueElement, Edge> result = instantiateMultiGraph();
         for (LimitingResourceQueueDependency each : graph.edgeSet()) {
@@ -484,7 +484,7 @@ public class QueuesState {
     }
 
     private void addInsertionOrderOnQueueEdges(
-            DirectedGraph<LimitingResourceQueueElement, Edge> result,
+            Graph<LimitingResourceQueueElement, Edge> result,
             LimitingResourceQueueElement first,
             List<LimitingResourceQueueElement> elements) {
 
@@ -517,7 +517,7 @@ public class QueuesState {
 
         LimitingResourceQueueElement queueElement = getEquivalent(externalQueueElement);
 
-        DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph =
+        Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph =
                 buildOutgoingGraphFor(queueElement);
 
         CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector =
@@ -535,7 +535,7 @@ public class QueuesState {
         return result;
     }
 
-    private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildOutgoingGraphFor(
+    private Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildOutgoingGraphFor(
             LimitingResourceQueueElement queueElement) {
 
         SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =
@@ -547,7 +547,7 @@ public class QueuesState {
     }
 
     private void buildOutgoingGraphFor(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result,
+            Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result,
             LimitingResourceQueueElement element) {
 
         Set<LimitingResourceQueueDependency> outgoingEdgesOf = graph.outgoingEdgesOf(element);
@@ -560,18 +560,18 @@ public class QueuesState {
     }
 
     private CycleDetector<LimitingResourceQueueElement, LimitingResourceQueueDependency> cycleDetector(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
+            Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
 
         return new CycleDetector<>(subGraph);
     }
 
     private List<LimitingResourceQueueElement> getElementsOrderedTopologically(
-            DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
+            Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> subGraph) {
 
         return onlyAssigned(toList(topologicalIterator(subGraph)));
     }
 
-    public static <V, E> TopologicalOrderIterator<V, E> topologicalIterator(DirectedGraph<V, E> subGraph) {
+    public static <V, E> TopologicalOrderIterator<V, E> topologicalIterator(Graph<V, E> subGraph) {
         return new TopologicalOrderIterator<>(subGraph);
     }
 
@@ -650,7 +650,7 @@ public class QueuesState {
      * @param queueElements
      * @return
      */
-    private DirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildSubgraphFor(
+    private Graph<LimitingResourceQueueElement, LimitingResourceQueueDependency> buildSubgraphFor(
             List<LimitingResourceQueueElement> queueElements) {
 
         SimpleDirectedGraph<LimitingResourceQueueElement, LimitingResourceQueueDependency> result =

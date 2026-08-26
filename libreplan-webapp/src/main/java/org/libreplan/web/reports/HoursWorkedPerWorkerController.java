@@ -105,6 +105,10 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
         return hoursWorkedPerWorkerModel.getResources();
     }
 
+    public org.zkoss.zul.ListModel<Resource> getResourcesModel() {
+        return new org.zkoss.zul.SimpleListModel<>(new ArrayList<>(getResources()));
+    }
+
     @Override
     protected String getReportName() {
         return REPORT_NAME;
@@ -331,6 +335,10 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
         return hoursWorkedPerWorkerModel.getSelectedLabels();
     }
 
+    public ListitemRenderer getLabelsRenderer() {
+        return ReportListitemRenderers.labelRenderer(this::onRemoveLabel);
+    }
+
     public List<Criterion> getAllCriterions() {
         return hoursWorkedPerWorkerModel.getCriterions();
     }
@@ -354,6 +362,10 @@ public class HoursWorkedPerWorkerController extends LibrePlanReportController {
     public void onRemoveCriterion(Criterion criterion) {
         hoursWorkedPerWorkerModel.removeSelectedCriterion(criterion);
         Util.reloadBindings(lbCriterions);
+    }
+
+    public ListitemRenderer getCriterionsRenderer() {
+        return ReportListitemRenderers.criterionRenderer(this::onRemoveCriterion);
     }
 
     public List<Criterion> getSelectedCriterions() {

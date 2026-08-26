@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -47,6 +48,16 @@
     </zscript>
 
     <div xmlns:n="http://www.zkoss.org/2005/zk/native" apply="${templateCtrl}" height="100%">
+        <!--
+          Chart.js, driving the load/earned-value charts (org.libreplan.web.planner.chart.*).
+          Kept as children of this div rather than page-level siblings: ganttz's MenuBuilder picks
+          the first VISIBLE page-root component as the anchor for task context menus
+          (MenuBuilder.findVisibleOn/getRoots), and a root-level <script> would win that lookup
+          over this div, breaking the Gantt's right-click menu.
+        -->
+        <script src="/webjars/chart.js/4.4.0/dist/chart.umd.js"/>
+        <script src="/common/js/libreplan-chart.js"/>
+        <script src="/common/js/bandbox-search.js"/>
         <timer repeats="true" running="true" delay="20000" onTimer=""/>
         <borderlayout height="100%" width="100%">
             <north border="none">
@@ -92,11 +103,15 @@
                                                 <rows>
                                                     <row>
                                                         <label value="${i18n:_t('Select scenario')}" />
+                                                        <!-- No @save on selectedElement: accept() below
+                                                             reads scenarioBandboxSearch.getSelectedElement()
+                                                             directly instead, there's no
+                                                             setScenario(Scenario) to save to anyway. -->
                                                         <bandboxSearch
                                                                 id="scenarioBandboxSearch"
                                                                 finder="ScenarioBandboxFinder"
-                                                                model="@{templateCtrl.scenarios}"
-                                                                selectedElement="@{templateCtrl.scenario}" />
+                                                                model="@load(templateCtrl.scenarios)"
+                                                                selectedElement="@load(templateCtrl.scenario)" />
                                                     </row>
                                                 </rows>
                                             </grid>

@@ -1,0 +1,221 @@
+- generic [ref=f718e4]:
+  - generic:
+    - generic [ref=f718e7]:
+      - table [ref=f718e8]:
+        - rowgroup [ref=f718e9]:
+          - row [ref=f718e10]:
+            - cell [ref=f718e11]:
+              - link [ref=f718e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f718e14]:
+              - table [ref=f718e15]:
+                - rowgroup [ref=f718e16]:
+                  - row [ref=f718e17]:
+                    - cell [ref=f718e18]:
+                      - generic [ref=f718e19]:
+                        - list [ref=f718e21]:
+                          - listitem [ref=f718e22]:
+                            - link "Planning" [ref=f718e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f718e25]:
+                            - link "Resources" [ref=f718e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f718e28]:
+                            - link "Cost" [ref=f718e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f718e31]:
+                            - link "Configuration" [ref=f718e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f718e34]:
+                            - link "Communications" [ref=f718e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f718e37]:
+                            - link "Reports" [ref=f718e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f718e40]:
+                            - link "Personal area" [ref=f718e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f718e43]:
+                          - rowgroup [ref=f718e44]:
+                            - row [ref=f718e45]:
+                              - cell [ref=f718e46]:
+                                - table [ref=f718e47]:
+                                  - rowgroup [ref=f718e48]:
+                                    - row [ref=f718e49]:
+                                      - cell [ref=f718e50]
+                                      - cell [ref=f718e51]:
+                                        - strong [ref=f718e52]: START
+                                      - cell [ref=f718e53]
+                                      - cell [ref=f718e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f718e55]:
+                                          - rowgroup [ref=f718e56]:
+                                            - row [ref=f718e57]:
+                                              - cell [ref=f718e58]:
+                                                - table [ref=f718e59]:
+                                                  - rowgroup [ref=f718e60]:
+                                                    - row [ref=f718e61]:
+                                                      - cell [ref=f718e62]:
+                                                        - table [ref=f718e63]:
+                                                          - rowgroup [ref=f718e64]:
+                                                            - row [ref=f718e65]:
+                                                              - cell [ref=f718e66]:
+                                                                - table [ref=f718e67]:
+                                                                  - rowgroup [ref=f718e68]:
+                                                                    - row [ref=f718e69]:
+                                                                      - cell [ref=f718e70]
+                                                                      - cell [ref=f718e73]
+                                                                      - cell "Resources" [ref=f718e74]
+                                                      - cell [ref=f718e75]
+                                                      - cell [ref=f718e76]:
+                                                        - table [ref=f718e77]:
+                                                          - rowgroup [ref=f718e78]:
+                                                            - row [ref=f718e79]:
+                                                              - cell [ref=f718e80]:
+                                                                - table [ref=f718e81]:
+                                                                  - rowgroup [ref=f718e82]:
+                                                                    - row [ref=f718e83]:
+                                                                      - cell [ref=f718e84]
+                                                                      - cell [ref=f718e87]
+                                                                      - cell "Materials" [ref=f718e88]
+                              - cell [ref=f718e89]:
+                                - generic [ref=f718e90]:
+                                  - link "Help" [ref=f718e91] [cursor=pointer]:
+                                    - /url: /help/en/11-materiales.html#administraci-n-de-materiais
+                                  - img "Axuda" [ref=f718e93]
+                                  - img "Info" [ref=f718e95]
+      - table [ref=f718e97]:
+        - rowgroup [ref=f718e98]:
+          - row [ref=f718e99]:
+            - cell [ref=f718e100]
+            - 'cell "user: admin" [ref=f718e101]'
+            - cell [ref=f718e102]:
+              - link "[Log out]" [ref=f718e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+  - generic [ref=f718e106]:
+    - generic:    
+    - generic [ref=f718e109]:
+      - generic [ref=f718e110]: Materials
+      - generic [ref=f718e111]:
+        - table [ref=f718e112]:
+          - rowgroup [ref=f718e113]:
+            - row [ref=f718e114]:
+              - cell [ref=f718e115]:
+                - table [ref=f718e116]:
+                  - rowgroup [ref=f718e117]:
+                    - row:
+                      - cell:
+                        - table:
+                          - rowgroup:
+                            - row:
+                              - cell:
+                                - table
+                    - row [ref=f718e118]:
+                      - cell [ref=f718e119]
+                    - row [ref=f718e120]:
+                      - cell "Categories Add Unselect Name Code Generate code Operations Imported materials without category MATERIAL_CATEGORY0001" [ref=f718e121]:
+                        - generic [ref=f718e122]:
+                          - generic [ref=f718e123]: Categories
+                          - generic [ref=f718e126]:
+                            - table [ref=f718e127]:
+                              - rowgroup [ref=f718e128]:
+                                - row [ref=f718e129]:
+                                  - cell [ref=f718e130]:
+                                    - table [ref=f718e131]:
+                                      - rowgroup [ref=f718e132]:
+                                        - row "Add Unselect" [ref=f718e133]:
+                                          - cell [ref=f718e134]:
+                                            - textbox [ref=f718e135]
+                                          - cell [ref=f718e136]
+                                          - cell [ref=f718e137]:
+                                            - button "Add" [ref=f718e138] [cursor=pointer]
+                                          - cell [ref=f718e139]
+                                          - cell [ref=f718e140]
+                                          - cell [ref=f718e142]
+                                          - cell [ref=f718e143]:
+                                            - button "Unselect" [ref=f718e144] [cursor=pointer]
+                            - generic [ref=f718e145]:
+                              - table [ref=f718e147]:
+                                - rowgroup [ref=f718e153]:
+                                  - row [ref=f718e154]:
+                                    - columnheader "Name" [ref=f718e155]
+                                    - columnheader "Code" [ref=f718e157]
+                                    - columnheader "Generate code" [ref=f718e159]
+                                    - columnheader "Operations" [ref=f718e161]
+                                    - columnheader
+                              - generic [ref=f718e163]:
+                                - table [ref=f718e164]:
+                                  - rowgroup [ref=f718e170]:
+                                    - row [ref=f718e171]:
+                                      - cell [ref=f718e172] [cursor=pointer]:
+                                        - textbox [ref=f718e174]: Imported materials without category
+                                      - cell [ref=f718e175] [cursor=pointer]:
+                                        - textbox [disabled] [ref=f718e177]: MATERIAL_CATEGORY0001
+                                      - cell [ref=f718e178] [cursor=pointer]:
+                                        - checkbox [checked] [ref=f718e181]
+                                      - cell [ref=f718e182] [cursor=pointer]:
+                                        - button "Delete" [ref=f718e184]
+                                - button [ref=f718e186] [cursor=pointer]
+        - table [ref=f718e187]:
+          - rowgroup [ref=f718e188]:
+            - row [ref=f718e189]:
+              - cell [ref=f718e190]:
+                - table [ref=f718e191]:
+                  - rowgroup [ref=f718e192]:
+                    - row [ref=f718e193]:
+                      - cell "List of materials for all categories (select one to filter) New Code Description Unit price Unit type Category Disabled Operations" [ref=f718e194]:
+                        - generic [ref=f718e195]:
+                          - generic [ref=f718e196]: List of materials for all categories (select one to filter)
+                          - generic [ref=f718e199]:
+                            - button "New" [ref=f718e200] [cursor=pointer]
+                            - generic [ref=f718e202]:
+                              - table [ref=f718e204]:
+                                - rowgroup [ref=f718e213]:
+                                  - row [ref=f718e214]:
+                                    - columnheader "Code" [ref=f718e215]
+                                    - columnheader "Description" [ref=f718e217]
+                                    - columnheader "Unit price" [ref=f718e219]
+                                    - columnheader "Unit type" [ref=f718e221]
+                                    - columnheader "Category" [ref=f718e223]
+                                    - columnheader "Disabled" [ref=f718e225]
+                                    - columnheader "Operations" [ref=f718e227]
+                                    - columnheader
+                              - table [ref=f718e231]:
+                                - rowgroup
+                                - rowgroup [ref=f718e240]:
+                                  - row [ref=f718e241]:
+                                    - cell [ref=f718e242]
+                              - generic [ref=f718e243]:    
+        - button "Save" [ref=f718e244] [cursor=pointer]
+  - generic:
+    - table [ref=f718e247]:
+      - rowgroup [ref=f718e248]:
+        - row [ref=f718e249]:
+          - cell [ref=f718e250]:
+            - generic [ref=f718e252]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f718e253] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f718e254]
+    - text:    

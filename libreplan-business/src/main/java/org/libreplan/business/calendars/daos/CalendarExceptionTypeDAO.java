@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,9 +24,11 @@ package org.libreplan.business.calendars.daos;
 
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.calendars.entities.CalendarException;
 import org.libreplan.business.calendars.entities.CalendarExceptionType;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
@@ -49,10 +52,12 @@ public class CalendarExceptionTypeDAO extends IntegrationEntityDAO<CalendarExcep
 
     @Override
     public boolean existsByName(CalendarExceptionType type) {
-        Criteria c = getSession().createCriteria(CalendarExceptionType.class);
-        c.add(Restrictions.eq("name", type.getName()));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CalendarExceptionType> cq = cb.createQuery(CalendarExceptionType.class);
+        Root<CalendarExceptionType> root = cq.from(CalendarExceptionType.class);
+        cq.where(cb.equal(root.get("name"), type.getName()));
 
-        List list = c.list();
+        List<CalendarExceptionType> list = getSession().createQuery(cq).getResultList();
 
         return (list.size() == 1);
     }
@@ -68,10 +73,12 @@ public class CalendarExceptionTypeDAO extends IntegrationEntityDAO<CalendarExcep
     }
 
     private List<CalendarException> getCalendarExceptions(CalendarExceptionType type) {
-        Criteria c = getSession().createCriteria(CalendarException.class);
-        c.add(Restrictions.eq("type.id", type.getId()));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CalendarException> cq = cb.createQuery(CalendarException.class);
+        Root<CalendarException> root = cq.from(CalendarException.class);
+        cq.where(cb.equal(root.get("type").get("id"), type.getId()));
 
-        return c.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -97,9 +104,11 @@ public class CalendarExceptionTypeDAO extends IntegrationEntityDAO<CalendarExcep
             throw new InstanceNotFoundException(null, CalendarExceptionType.class.getName());
         }
 
-        CalendarExceptionType calendarExceptionType = (CalendarExceptionType) getSession()
-                .createCriteria(CalendarExceptionType.class)
-                .add(Restrictions.eq("name", name.trim()).ignoreCase()).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CalendarExceptionType> cq = cb.createQuery(CalendarExceptionType.class);
+        Root<CalendarExceptionType> root = cq.from(CalendarExceptionType.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.trim().toLowerCase()));
+        CalendarExceptionType calendarExceptionType = getSession().createQuery(cq).uniqueResult();
 
         if ( calendarExceptionType == null ) {
             throw new InstanceNotFoundException(name, CalendarExceptionType.class.getName());

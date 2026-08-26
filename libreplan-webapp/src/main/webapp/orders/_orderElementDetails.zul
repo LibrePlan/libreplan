@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -31,45 +32,45 @@
             <row>
                 <label value="${i18n:_t('Task name')}" />
                 <textbox id="name"
-                    value="@{detailsController.orderElement.name}"
+                    value="@load(detailsController.orderElement.name) @save(detailsController.orderElement.name)"
                     constraint="no empty:${i18n:_t('cannot be empty')}" width="500px" />
             </row>
             <row>
                 <label value="${i18n:_t('Code ')}" />
                 <textbox id="code"
-                    value="@{detailsController.orderElement.code}"
+                    value="@load(detailsController.orderElement.code) @save(detailsController.orderElement.code)"
                     constraint="no empty:${i18n:_t('cannot be empty')}" width="150px"
-                    disabled="@{detailsController.codeDisabled}" />
+                    disabled="@load(detailsController.codeDisabled)" />
             </row>
             <row>
                 <label value="${i18n:_t('Starting date')}" />
                 <hbox>
                     <datebox id="initDate"
-                             value="@{detailsController.orderElement.initDate}"
-                             constraint="@{detailsController.checkConstraintStartDate}"/>
+                             value="@load(detailsController.orderElement.initDate) @save(detailsController.orderElement.initDate)"
+                             constraint="@load(detailsController.checkConstraintStartDate)"/>
                 </hbox>
             </row>
             <row>
                 <label value="${i18n:_t('Deadline')}" />
                 <hbox>
                     <datebox id="deadline"
-                             value="@{detailsController.orderElement.deadline}"
-                             constraint="@{detailsController.checkConstraintFinishDate}"/>
+                             value="@load(detailsController.orderElement.deadline) @save(detailsController.orderElement.deadline)"
+                             constraint="@load(detailsController.checkConstraintFinishDate)"/>
                 </hbox>
             </row>
             <row>
                 <label value="${i18n:_t('Description')}" />
                 <textbox id="description" rows="3"
-                    value="@{detailsController.orderElement.description}"
+                    value="@load(detailsController.orderElement.description) @save(detailsController.orderElement.description)"
                     width="600px" />
             </row>
             <row>
                 <label value="${i18n:_t('Budget')}" />
                 <decimalbox id="budget"
-                    value="@{detailsController.orderElement.budget}"
-                    disabled="@{detailsController.container}"
+                    value="@load(detailsController.orderElement.budget) @save(detailsController.orderElement.budget)"
+                    disabled="@load(detailsController.container)"
                     constraint="no empty,no negative:${i18n:_t('cannot be negative or empty')}"
-                    format="@{detailsController.moneyFormat}" />
+                    format="@load(detailsController.moneyFormat)" />
             </row>
         </rows>
     </grid>

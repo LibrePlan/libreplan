@@ -1,0 +1,171 @@
+- generic [ref=f368e1]:
+  - generic [ref=f368e4]:
+    - generic [ref=f368e5]:
+      - table [ref=f368e6]:
+        - rowgroup [ref=f368e7]:
+          - row [ref=f368e8]:
+            - cell [ref=f368e9]:
+              - link [ref=f368e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f368e12]:
+              - table [ref=f368e13]:
+                - rowgroup [ref=f368e14]:
+                  - row [ref=f368e15]:
+                    - cell [ref=f368e16]:
+                      - generic [ref=f368e17]:
+                        - menubar [ref=f368e18]:
+                          - menuitem "Planning" [ref=f368e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f368e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f368e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f368e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f368e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f368e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f368e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f368e33]:
+                          - rowgroup [ref=f368e34]:
+                            - row [ref=f368e35]:
+                              - cell [ref=f368e36]:
+                                - table [ref=f368e37]:
+                                  - rowgroup [ref=f368e38]:
+                                    - row [ref=f368e39]:
+                                      - cell [ref=f368e40]
+                                      - cell [ref=f368e41]:
+                                        - strong [ref=f368e42]: START
+                                      - cell [ref=f368e43]
+                                      - cell [ref=f368e44]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f368e45]:
+                                          - rowgroup [ref=f368e46]:
+                                            - row [ref=f368e47]:
+                                              - cell [ref=f368e48]:
+                                                - table [ref=f368e49]:
+                                                  - rowgroup [ref=f368e50]:
+                                                    - row [ref=f368e51]:
+                                                      - cell [ref=f368e52]:
+                                                        - table [ref=f368e53]:
+                                                          - rowgroup [ref=f368e54]:
+                                                            - row [ref=f368e55]:
+                                                              - cell [ref=f368e56]:
+                                                                - table [ref=f368e57]:
+                                                                  - rowgroup [ref=f368e58]:
+                                                                    - row [ref=f368e59]:
+                                                                      - cell [ref=f368e60]
+                                                                      - cell [ref=f368e63]
+                                                                      - cell "Resources" [ref=f368e64]
+                                                      - cell [ref=f368e65]
+                                                      - cell [ref=f368e66]:
+                                                        - table [ref=f368e67]:
+                                                          - rowgroup [ref=f368e68]:
+                                                            - row [ref=f368e69]:
+                                                              - cell [ref=f368e70]:
+                                                                - table [ref=f368e71]:
+                                                                  - rowgroup [ref=f368e72]:
+                                                                    - row [ref=f368e73]:
+                                                                      - cell [ref=f368e74]
+                                                                      - cell [ref=f368e77]
+                                                                      - cell "Labels" [ref=f368e78]
+                              - cell [ref=f368e79]:
+                                - generic [ref=f368e80]:
+                                  - link "Help" [ref=f368e81] [cursor=pointer]:
+                                    - /url: /help/en/10-etiquetas.html
+                                  - img "Axuda" [ref=f368e83]
+                                  - img "Info" [ref=f368e85]
+      - table [ref=f368e87]:
+        - rowgroup [ref=f368e88]:
+          - row [ref=f368e89]:
+            - cell [ref=f368e90]
+            - 'cell "user: admin" [ref=f368e91]'
+            - cell [ref=f368e92]:
+              - link "[Log out]" [ref=f368e93] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f368e94]:
+      - text:    
+      - generic [ref=f368e96]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f368e97]:
+          - generic [ref=f368e98]: Label Types List
+          - generic [ref=f368e99]:
+            - grid [ref=f368e100]:
+              - rowgroup [ref=f368e105]:
+                - columnheader [ref=f368e106]:
+                  - generic [ref=f368e107] [cursor=pointer]:
+                    - generic [ref=f368e108]: 
+                    - text: Name
+                - columnheader "Code" [ref=f368e110]
+                - columnheader "Operations" [ref=f368e112]
+              - rowgroup [ref=f368e118]:
+                - gridcell "Priority" [ref=f368e119]
+                - gridcell "LABEL0001" [ref=f368e121]
+                - gridcell [ref=f368e123]:
+                  - table [ref=f368e125]:
+                    - rowgroup [ref=f368e126]:
+                      - row [ref=f368e127]:
+                        - cell [ref=f368e128]:
+                          - table [ref=f368e129]:
+                            - rowgroup [ref=f368e130]:
+                              - row [ref=f368e131]:
+                                - cell [ref=f368e132]:
+                                  - button "Edit" [ref=f368e133] [cursor=pointer]
+                                - cell [ref=f368e135]
+                                - cell [ref=f368e136]:
+                                  - button "Remove" [ref=f368e137] [cursor=pointer]
+              - generic [ref=f368e139]:    
+            - button "Create" [ref=f368e140] [cursor=pointer]
+        - text:   
+    - table [ref=f368e141]:
+      - rowgroup [ref=f368e142]:
+        - row [ref=f368e143]:
+          - cell [ref=f368e144]:
+            - generic [ref=f368e146]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f368e147] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f368e148]
+    - text:    
+  - generic [ref=f368e149]:
+    - generic [ref=f368e150]: "LibrePlan: Runtime Error"
+    - generic [ref=f368e152]:
+      - generic [ref=f368e153]: Message - Cannot invoke "org.libreplan.business.labels.entities.LabelType.isNewObject()" because "labelType" is null
+      - generic [ref=f368e156]:
+        - grid [ref=f368e157]:
+          - rowgroup [ref=f368e161]:
+            - gridcell "Exception type" [ref=f368e162]
+            - gridcell "class java.lang.NullPointerException" [ref=f368e164]
+            - gridcell "Status code" [ref=f368e166]
+            - gridcell "500" [ref=f368e168]
+            - gridcell "Stacktrace" [ref=f368e170]
+            - gridcell [ref=f368e172]:
+              - textbox [active] [ref=f368e174]: "java.lang.NullPointerException: Cannot invoke \"org.libreplan.business.labels.entities.LabelType.isNewObject()\" because \"labelType\" is null at org.libreplan.web.labels.LabelTypeCRUDController$2.canRemoveLabelType(LabelTypeCRUDController.java:152) at org.libreplan.web.labels.LabelTypeCRUDController$2.onEvent(LabelTypeCRUDController.java:141) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f368e175]:
+          - rowgroup [ref=f368e176]:
+            - row [ref=f368e177]:
+              - cell [ref=f368e178]:
+                - table [ref=f368e179]:
+                  - rowgroup [ref=f368e180]:
+                    - row [ref=f368e181]:
+                      - cell [ref=f368e182]:
+                        - button "Continue" [ref=f368e183] [cursor=pointer]
+                      - cell [ref=f368e184]
+                      - cell [ref=f368e185]:
+                        - button "Reload" [ref=f368e186] [cursor=pointer]
+                      - cell [ref=f368e187]
+                      - cell [ref=f368e188]:
+                        - button "Exit session" [ref=f368e189] [cursor=pointer]

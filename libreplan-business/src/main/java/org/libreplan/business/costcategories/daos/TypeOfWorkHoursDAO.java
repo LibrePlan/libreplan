@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,10 +25,11 @@ package org.libreplan.business.costcategories.daos;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.Validate;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.daos.IConnectorDAO;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
@@ -75,10 +77,12 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     public TypeOfWorkHours findUniqueByCode(String code)
             throws InstanceNotFoundException {
 
-        Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
-        c.add(Restrictions.eq("code", code));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TypeOfWorkHours> cq = cb.createQuery(TypeOfWorkHours.class);
+        Root<TypeOfWorkHours> root = cq.from(TypeOfWorkHours.class);
+        cq.where(cb.equal(root.get("code"), code));
 
-        TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
+        TypeOfWorkHours found = getSession().createQuery(cq).uniqueResult();
         if (found == null) {
             throw new InstanceNotFoundException(code, TypeOfWorkHours.class.getName());
         }
@@ -88,11 +92,13 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     @Override
     public List<TypeOfWorkHours> findActive() {
 
-        Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
-        c.add(Restrictions.eq("enabled", true));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TypeOfWorkHours> cq = cb.createQuery(TypeOfWorkHours.class);
+        Root<TypeOfWorkHours> root = cq.from(TypeOfWorkHours.class);
+        cq.where(cb.equal(root.get("enabled"), true));
 
         List<TypeOfWorkHours> list = new ArrayList<TypeOfWorkHours>();
-        list.addAll(c.list());
+        list.addAll(getSession().createQuery(cq).getResultList());
         return list;
     }
 
@@ -134,10 +140,12 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     public TypeOfWorkHours findUniqueByName(String name)
             throws InstanceNotFoundException {
 
-        Criteria c = getSession().createCriteria(TypeOfWorkHours.class);
-        c.add(Restrictions.eq("name", name.trim()).ignoreCase());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TypeOfWorkHours> cq = cb.createQuery(TypeOfWorkHours.class);
+        Root<TypeOfWorkHours> root = cq.from(TypeOfWorkHours.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.trim().toLowerCase()));
 
-        TypeOfWorkHours found = (TypeOfWorkHours) c.uniqueResult();
+        TypeOfWorkHours found = getSession().createQuery(cq).uniqueResult();
         if (found == null) {
             throw new InstanceNotFoundException(name, TypeOfWorkHours.class
                     .getName());
@@ -147,8 +155,11 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
 
     @Override
     public List<TypeOfWorkHours> hoursTypeByNameAsc() {
-        return getSession().createCriteria(TypeOfWorkHours.class)
-                .addOrder(Order.asc("name")).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TypeOfWorkHours> cq = cb.createQuery(TypeOfWorkHours.class);
+        Root<TypeOfWorkHours> root = cq.from(TypeOfWorkHours.class);
+        cq.orderBy(cb.asc(root.get("name")));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -160,9 +171,11 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     }
 
     private void checkHasWorkReportLine(TypeOfWorkHours type) {
-        List workReportLines = getSession()
-                .createCriteria(WorkReportLine.class)
-                .add(Restrictions.eq("typeOfWorkHours", type)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+        cq.where(cb.equal(root.get("typeOfWorkHours"), type));
+        List<WorkReportLine> workReportLines = getSession().createQuery(cq).getResultList();
         if (!workReportLines.isEmpty()) {
             throw ValidationException
                     .invalidValueException(
@@ -172,8 +185,11 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
     }
 
     private void checkHasHourCost(TypeOfWorkHours type) {
-        List hoursCost = getSession().createCriteria(HourCost.class)
-                .add(Restrictions.eq("type", type)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<HourCost> cq = cb.createQuery(HourCost.class);
+        Root<HourCost> root = cq.from(HourCost.class);
+        cq.where(cb.equal(root.get("type"), type));
+        List<HourCost> hoursCost = getSession().createQuery(cq).getResultList();
         if (!hoursCost.isEmpty()) {
             throw ValidationException
                     .invalidValueException(
@@ -195,9 +211,11 @@ public class TypeOfWorkHoursDAO extends IntegrationEntityDAO<TypeOfWorkHours>
 
     @Override
     public boolean existsByName(TypeOfWorkHours typeOfWorkHours) {
-        Criteria c = getSession().createCriteria(TypeOfWorkHours.class).add(
-                Restrictions.eq("name", typeOfWorkHours.getName()));
-        return c.uniqueResult() != null;
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TypeOfWorkHours> cq = cb.createQuery(TypeOfWorkHours.class);
+        Root<TypeOfWorkHours> root = cq.from(TypeOfWorkHours.class);
+        cq.where(cb.equal(root.get("name"), typeOfWorkHours.getName()));
+        return getSession().createQuery(cq).uniqueResult() != null;
     }
 
     private void checkIsJiraConnectorTypeOfWorkHours(TypeOfWorkHours type) {

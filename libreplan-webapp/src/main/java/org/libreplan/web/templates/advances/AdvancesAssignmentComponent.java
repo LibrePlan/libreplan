@@ -29,12 +29,12 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listcell;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -95,11 +95,11 @@ public class AdvancesAssignmentComponent extends HtmlMacroComponent {
         this.template = template;
     }
 
-    public List<AdvanceAssignmentTemplate> getAdvanceAssignments() {
+    public ListModel<AdvanceAssignmentTemplate> getAdvanceAssignments() {
         if (template == null) {
-            return Collections.emptyList();
+            return new ListModelList<>(Collections.emptyList());
         }
-        return new ArrayList<>(template.getAdvanceAssignmentTemplates());
+        return new ListModelList<>(template.getAdvanceAssignmentTemplates());
     }
 
     public ListitemRenderer getAdvancesRenderer() {

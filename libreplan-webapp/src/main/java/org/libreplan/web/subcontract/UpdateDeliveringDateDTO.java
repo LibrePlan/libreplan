@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,8 +20,8 @@
 
 package org.libreplan.web.subcontract;
 
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.XmlAttribute;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 /**

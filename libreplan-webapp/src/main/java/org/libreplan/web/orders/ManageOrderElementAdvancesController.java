@@ -69,6 +69,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.XYModel;
@@ -205,8 +206,38 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
     }
 
     private void reloadAdvances() {
+        reloadEditAdvances();
+        reloadEditAdvancesMeasurement();
         Util.reloadBindings(self);
         setSelectedAdvanceLine();
+    }
+
+    /**
+     * editAdvances' own model="@load(...)" binding gets its binder set up during this tab's
+     * whole-window pre-composition, before openWindow()/initEdit() ever run - same
+     * "AnnotateBinderInit only creates/reloads what existed at that moment" bug class fixed for
+     * AssignedMaterialsController's lbFoundMaterials/gridMaterials. Util.reloadBindings(self)
+     * afterwards can be a silent no-op, hiding both pre-existing and newly-added assignments.
+     * Bypass the binder and set the wrapped ListModel directly.
+     *
+     * itemRenderer="@load(...)" on the same tag is bypassed the same way and for the same reason -
+     * setting only the model without also re-asserting the renderer left rows falling back to
+     * their raw toString() (e.g. in the Gantt right-click "Progress assignment" window, a
+     * different composition context than the task-edit dialog's Progress tab where this was
+     * originally fixed).
+     */
+    private void reloadEditAdvances() {
+        if (editAdvances != null) {
+            editAdvances.setItemRenderer(advanceTypeListRenderer);
+            editAdvances.setModel(new ListModelList<>(getAdvanceAssignments()));
+        }
+    }
+
+    private void reloadEditAdvancesMeasurement() {
+        if (editAdvancesMeasurement != null) {
+            editAdvancesMeasurement.setItemRenderer(advanceMeasurementRenderer);
+            editAdvancesMeasurement.setModel(new ListModelList<>(getAdvanceMeasurements()));
+        }
     }
 
     private void setSelectedAdvanceLine() {
@@ -735,7 +766,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
 
             ((AdvanceAssignment) item.getValue()).setReportGlobalAdvance(spread);
-            Util.reloadBindings(editAdvances);
+            reloadEditAdvances();
             setSelectedAdvanceLine();
         }
 
@@ -847,7 +878,7 @@ public class ManageOrderElementAdvancesController extends GenericForwardComposer
 
     public void setCurrentDate() {
         this.manageOrderElementAdvancesModel.sortListAdvanceMeasurement();
-        Util.reloadBindings(editAdvancesMeasurement);
+        reloadEditAdvancesMeasurement();
 
         this.setPercentage();
         this.setCurrentValue();

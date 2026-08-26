@@ -1,0 +1,260 @@
+- generic [ref=f832e4]:
+  - generic [ref=f832e5]:
+    - table [ref=f832e6]:
+      - rowgroup [ref=f832e7]:
+        - row [ref=f832e8]:
+          - cell [ref=f832e9]:
+            - link [ref=f832e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f832e12]:
+            - table [ref=f832e13]:
+              - rowgroup [ref=f832e14]:
+                - row [ref=f832e15]:
+                  - cell [ref=f832e16]:
+                    - generic [ref=f832e17]:
+                      - menubar [ref=f832e18]:
+                        - menuitem "Planning" [ref=f832e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f832e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f832e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f832e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f832e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f832e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f832e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f832e33]:
+                        - rowgroup [ref=f832e34]:
+                          - row [ref=f832e35]:
+                            - cell [ref=f832e36]:
+                              - table [ref=f832e37]:
+                                - rowgroup [ref=f832e38]:
+                                  - row [ref=f832e39]:
+                                    - cell [ref=f832e40]
+                                    - cell [ref=f832e41]:
+                                      - strong [ref=f832e42]: START
+                                    - cell [ref=f832e43]
+                                    - cell [ref=f832e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f832e45]:
+                                        - rowgroup [ref=f832e46]:
+                                          - row [ref=f832e47]:
+                                            - cell [ref=f832e48]:
+                                              - table [ref=f832e49]:
+                                                - rowgroup [ref=f832e50]:
+                                                  - row [ref=f832e51]:
+                                                    - cell [ref=f832e52]:
+                                                      - table [ref=f832e53]:
+                                                        - rowgroup [ref=f832e54]:
+                                                          - row [ref=f832e55]:
+                                                            - cell [ref=f832e56]:
+                                                              - table [ref=f832e57]:
+                                                                - rowgroup [ref=f832e58]:
+                                                                  - row [ref=f832e59]:
+                                                                    - cell [ref=f832e60]
+                                                                    - cell [ref=f832e63]
+                                                                    - cell "Cost" [ref=f832e64]
+                                                    - cell [ref=f832e65]
+                                                    - cell [ref=f832e66]:
+                                                      - table [ref=f832e67]:
+                                                        - rowgroup [ref=f832e68]:
+                                                          - row [ref=f832e69]:
+                                                            - cell [ref=f832e70]:
+                                                              - table [ref=f832e71]:
+                                                                - rowgroup [ref=f832e72]:
+                                                                  - row [ref=f832e73]:
+                                                                    - cell [ref=f832e74]
+                                                                    - cell [ref=f832e77]
+                                                                    - cell "Timesheets" [ref=f832e78]
+                            - cell [ref=f832e79]:
+                              - generic [ref=f832e80]:
+                                - link "Help" [ref=f832e81] [cursor=pointer]:
+                                  - /url: /help/en/09-partes.html#id3
+                                - img "Axuda" [ref=f832e83]
+                                - img "Info" [ref=f832e85]
+    - table [ref=f832e87]:
+      - rowgroup [ref=f832e88]:
+        - row [ref=f832e89]:
+          - cell [ref=f832e90]
+          - 'cell "user: admin" [ref=f832e91]'
+          - cell [ref=f832e92]:
+            - link "[Log out]" [ref=f832e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f832e94]:
+    - text:    
+    - generic [ref=f832e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:                    
+      - generic [ref=f832e273]:
+        - generic [ref=f832e274]: Edit Timesheet
+        - generic [ref=f832e275]:
+          - generic [ref=f832e276]:
+            - tablist [ref=f832e277]:
+              - listitem [ref=f832e278] [cursor=pointer]:
+                - generic [ref=f832e279]: Report data
+            - text:  
+            - tabpanel [ref=f832e282]:
+              - table [ref=f832e283]:
+                - rowgroup [ref=f832e284]:
+                  - row [ref=f832e285]:
+                    - cell [ref=f832e286]:
+                      - table [ref=f832e287]:
+                        - rowgroup [ref=f832e288]:
+                          - row [ref=f832e289]:
+                            - cell "General data" [ref=f832e290]:
+                              - generic [ref=f832e291]:
+                                - generic [ref=f832e292]: General data
+                                - grid [ref=f832e296]:
+                                  - rowgroup [ref=f832e300]:
+                                    - gridcell "Type" [ref=f832e301]
+                                    - gridcell "Default" [ref=f832e303]
+                                    - gridcell "Code" [ref=f832e305]
+                                    - gridcell [ref=f832e307]:
+                                      - table [ref=f832e309]:
+                                        - rowgroup [ref=f832e310]:
+                                          - row [ref=f832e311]:
+                                            - cell [ref=f832e312]:
+                                              - table [ref=f832e313]:
+                                                - rowgroup [ref=f832e314]:
+                                                  - row [ref=f832e315]:
+                                                    - cell [ref=f832e316]:
+                                                      - textbox [disabled] [ref=f832e317]: WORK_REPORT0012
+                                                    - cell [ref=f832e318]
+                                                    - cell [ref=f832e319]:
+                                                      - generic [ref=f832e320]:
+                                                        - checkbox "Generate code" [checked] [ref=f832e321]
+                                                        - text: Generate code
+                          - row [ref=f832e322]:
+                            - cell [ref=f832e323]
+                          - row [ref=f832e324]:
+                            - cell "Heading Fields" [ref=f832e325]:
+                              - generic [ref=f832e326]:
+                                - generic [ref=f832e327]: Heading Fields
+                                - generic [ref=f832e330]:
+                                  - grid [ref=f832e331]:
+                                    - rowgroup:       
+                                    - generic [ref=f832e332]:    
+                                  - grid [ref=f832e333]:
+                                    - rowgroup
+                                    - generic [ref=f832e337]:    
+                          - row [ref=f832e338]:
+                            - cell [ref=f832e339]
+                          - row [ref=f832e340]:
+                            - cell [ref=f832e341]:
+                              - separator [ref=f832e342]
+                          - row [ref=f832e343]:
+                            - cell [ref=f832e344]
+                          - row [ref=f832e345]:
+                            - cell "Timesheet lines Add new row" [ref=f832e346]:
+                              - generic [ref=f832e347]:
+                                - generic [ref=f832e348]: Timesheet lines
+                                - generic [ref=f832e351]:
+                                  - table [ref=f832e352]:
+                                    - rowgroup [ref=f832e353]:
+                                      - row [ref=f832e354]:
+                                        - cell [ref=f832e355]:
+                                          - table [ref=f832e356]:
+                                            - rowgroup [ref=f832e357]:
+                                              - row [ref=f832e358]:
+                                                - cell [ref=f832e359]:
+                                                  - button "Add new row" [ref=f832e360] [cursor=pointer]
+                                  - grid [ref=f832e361]:
+                                    - rowgroup [ref=f832e371]:
+                                      - columnheader [ref=f832e372]:
+                                        - generic [ref=f832e373] [cursor=pointer]:
+                                          - generic [ref=f832e374]: 
+                                          - text: Date
+                                      - columnheader "Resource" [ref=f832e376]
+                                      - columnheader "Task" [ref=f832e378]
+                                      - columnheader "Hours" [ref=f832e380]
+                                      - columnheader "Hours type" [ref=f832e382]
+                                      - columnheader "Done" [ref=f832e384]
+                                      - columnheader "Code" [ref=f832e386]
+                                      - columnheader "Op." [ref=f832e388]
+                                    - rowgroup [ref=f832e399]:
+                                      - gridcell [ref=f832e400]:
+                                        - combobox [ref=f832e402]:
+                                          - textbox [ref=f832e403]: Jun 9, 2026
+                                          - button [ref=f832e404] [cursor=pointer]:
+                                            - generic [ref=f832e405]: 
+                                          - text:    
+                                      - gridcell [ref=f832e406]:
+                                        - combobox [ref=f832e408]:
+                                          - textbox [ref=f832e409]: H,Tobias (THE)
+                                          - button [ref=f832e410] [cursor=pointer]:
+                                            - generic [ref=f832e411]: 
+                                      - gridcell [ref=f832e412]:
+                                        - combobox [ref=f832e415]:
+                                          - textbox [ref=f832e416]: "Task 1 :: THE_Testproject #1"
+                                          - button [ref=f832e417] [cursor=pointer]:
+                                            - generic [ref=f832e418]: 
+                                      - gridcell [ref=f832e419]:
+                                        - textbox [ref=f832e421]: "6"
+                                      - gridcell [ref=f832e422]:
+                                        - combobox [ref=f832e424]:
+                                          - option "Default"
+                                          - option "Overtime"
+                                      - gridcell [ref=f832e425]:
+                                        - checkbox [ref=f832e428]
+                                      - gridcell [ref=f832e429]:
+                                        - textbox [disabled] [ref=f832e431]: WORK_REPORT0012-0002
+                                      - gridcell [ref=f832e432]:
+                                        - button "Delete" [ref=f832e434] [cursor=pointer]
+                                      - gridcell [ref=f832e436]:
+                                        - combobox [ref=f832e438]:
+                                          - textbox [ref=f832e439]: Jun 9, 2026
+                                          - button [ref=f832e440] [cursor=pointer]:
+                                            - generic [ref=f832e441]: 
+                                          - text:    
+                                      - gridcell [ref=f832e442]:
+                                        - combobox [ref=f832e444]:
+                                          - textbox [ref=f832e445]: H,Tobias (THE)
+                                          - button [ref=f832e446] [cursor=pointer]:
+                                            - generic [ref=f832e447]: 
+                                      - gridcell [ref=f832e448]:
+                                        - combobox [ref=f832e451]:
+                                          - textbox [ref=f832e452]: "Phase 1 :: THE_Testproject #1"
+                                          - button [ref=f832e453] [cursor=pointer]:
+                                            - generic [ref=f832e454]: 
+                                      - gridcell [ref=f832e455]:
+                                        - textbox [ref=f832e457]: "12"
+                                      - gridcell [ref=f832e458]:
+                                        - combobox [ref=f832e460]:
+                                          - option "Default"
+                                          - option "Overtime"
+                                      - gridcell [ref=f832e461]:
+                                        - checkbox [checked] [ref=f832e464]
+                                      - gridcell [ref=f832e465]:
+                                        - textbox [disabled] [ref=f832e467]: WORK_REPORT0012-0001
+                                      - gridcell [ref=f832e468]:
+                                        - button "Delete" [ref=f832e470] [cursor=pointer]
+                                    - generic [ref=f832e472]:    
+          - button "Save" [ref=f832e473] [cursor=pointer]
+          - button "Save & Continue" [ref=f832e474] [cursor=pointer]
+          - button "Save & New timesheet" [ref=f832e475] [cursor=pointer]
+          - button "Cancel" [ref=f832e476] [cursor=pointer]
+  - table [ref=f832e265]:
+    - rowgroup [ref=f832e266]:
+      - row [ref=f832e267]:
+        - cell [ref=f832e268]:
+          - generic [ref=f832e270]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f832e271] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f832e272]
+  - text:    

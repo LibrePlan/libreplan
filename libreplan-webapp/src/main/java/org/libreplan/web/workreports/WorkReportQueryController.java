@@ -44,6 +44,7 @@ import org.libreplan.web.UserUtil;
 import org.libreplan.web.common.IMessagesForUser;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
+import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.Autocomplete;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
 import org.libreplan.web.security.SecurityUtils;
@@ -52,8 +53,10 @@ import org.zkoss.ganttz.IPredicate;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
@@ -61,6 +64,9 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Window;
 
@@ -120,6 +126,13 @@ public class WorkReportQueryController extends GenericForwardComposer {
         comp.setAttribute("controller", this);
 
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        // AnnotateBinderInit's own page-level pass (<?init class="AnnotateBinderInit"?>) only
+        // calls Util.createBindingsFor - it never loads the bindings it registers, so without an
+        // explicit initial load here gridListQuery stays empty until some other action happens to
+        // trigger a reload.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     public List<OrderElement> getOrderElements() {
@@ -304,7 +317,43 @@ public class WorkReportQueryController extends GenericForwardComposer {
         List<WorkReportLine> result = workReportModel.getAllWorkReportLines();
         updateSummary(result);
 
-        return result;
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new ListModelList<>(result);
+    }
+
+    /**
+     * The list's rows used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug
+     * entirely.
+     */
+    public RowRenderer getQueryWorkReportLineRenderer() {
+        return (row, data, index) -> {
+            final WorkReportLine line = (WorkReportLine) data;
+            row.setValue(line);
+
+            row.appendChild(new Label(Util.formatDate(line.getDate())));
+            row.appendChild(new Label(
+                    line.getResource() != null ? line.getResource().getShortDescription() : ""));
+            row.appendChild(new Label(
+                    line.getOrderElement() != null && line.getOrderElement().getOrder() != null
+                            ? line.getOrderElement().getOrder().getCode() : ""));
+            row.appendChild(new Label(
+                    line.getOrderElement() != null && line.getOrderElement().getOrder() != null
+                            ? line.getOrderElement().getOrder().getName() : ""));
+            row.appendChild(new Label(line.getOrderElement() != null ? line.getOrderElement().getCode() : ""));
+            row.appendChild(new Label(line.getOrderElement() != null ? line.getOrderElement().getName() : ""));
+            row.appendChild(new Label(Util.formatTime(line.getClockStart())));
+            row.appendChild(new Label(Util.formatTime(line.getClockFinish())));
+            row.appendChild(new Label(line.getEffort().toFormattedString()));
+            row.appendChild(new Label(
+                    line.getTypeOfWorkHours() != null ? line.getTypeOfWorkHours().getName() : ""));
+
+            Button editButton = Util.createEditButton(event -> goToEditFormQuery(line));
+            row.appendChild(editButton);
+        };
     }
 
     public void sortQueryWorkReportLines() {

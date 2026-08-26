@@ -331,7 +331,8 @@ h4.message_WARNING {
 .z-label,.z-radio-content,.z-checkbox-content,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
 div.z-tree-footer-content, div.z-tree-cell-content, div.z-tree-col-content, .z-listbox,
 div.z-footer-content, div.z-row-content, div.z-group-content, div.z-group-foot-content,
-div.z-column-content, div.z-listfooter-content, div.z-listcell-content, .z-bandbox, .z-bandbox-input {
+div.z-column-content, div.z-listfooter-content, div.z-listcell-content, .z-bandbox, .z-bandbox-input,
+div.z-auxheader-content {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: normal;
@@ -447,7 +448,8 @@ tr.z-treerow td.z-treerow-focus {
     background-image: none;
 }
 
-div.z-footer-content,div.z-row-content,div.z-group-content,div.z-group-foot-content,div.z-column-content,div.z-tree-col-content {
+div.z-footer-content,div.z-row-content,div.z-group-content,div.z-group-foot-content,div.z-column-content,div.z-tree-col-content,
+div.z-auxheader-content {
     font-family: Tahoma, Arial, Helvetica, sans-serif;
     font-size: 11px;
     font-weight: bold;
@@ -1573,13 +1575,16 @@ tr.z-tree-row-seld .z-row-content {
     white-space: nowrap;
 }
 
+/* position:relative makes this span the containing block for its
+ * dropdown arrow (.z-combobox-button below, absolutely positioned by
+ * Breeze's own base CSS) - no left/margin-left offset needed once the
+ * "Hide progress" button it should overlap is restored to its real
+ * width (.show-advances .planner-command.z-button, further down this
+ * file) - the arrow already lands inside that button's right portion
+ * without any extra nudging. Verified against the reference (Sapphire)
+ * deployment: 46px button, arrow flush with its right edge. */
 .progress-types.z-combobox {
     position: relative;
-    left: -9px;
-}
-
-.progress-types {
-    margin-left:-12px;
 }
 
 .progress-types.z-combobox .z-combobox-inp {
@@ -2269,16 +2274,30 @@ textarea {
 .z-messagebox-btn {
     background-color: #E4F3D9;
     background-image: none !important;
+    /* Breeze's base .z-button always sets color:#fff, assuming a saturated
+     * background - invisible against this pale green. Confirmed against the
+     * live reference deployment (computed style of its OK button): plain
+     * black, not the app's usual link-blue. */
+    color: #000;
 }
 
 .z-messagebox-button:hover,
 .z-messagebox-btn:hover {
     background: #C3EAAF none;
+    /* Breeze's own .z-button:hover{color:...} matches this button too and
+     * has equal specificity (one class + one pseudo-class each) - without
+     * repeating the override here it wins on source order and the OK label
+     * goes back to unreadable white on this pale background. */
+    color: #000;
 }
 
 .z-messagebox-button:focus,
 .z-messagebox-btn:focus {
     background: #C3EAAF none;
+    /* Same issue as :hover above, but for Breeze's .z-button:focus - this is
+     * the state that actually matters most here, since the messagebox's OK
+     * button is focused by default. */
+    color: #000;
 }
 
 .z-messagebox-button:disabled,
@@ -2457,14 +2476,36 @@ textarea {
 
 /* Breeze's default grid/list header is a solid saturated blue (#0093f9)
  * with white text. Restoring Sapphire's pale gradient + navy text so
- * tables read as data (light) rather than as a heavy UI chrome band. */
+ * tables read as data (light) rather than as a heavy UI chrome band.
+ * .z-auxheader/.z-auxhead-bar (a <auxhead> row, used e.g. by the Monte
+ * Carlo critical-path grid to group columns under a merged label) and
+ * .z-columns-bar are separate elements from .z-column but paint the same
+ * raw var(--zk-mesh-title-background-color) blue in grid.css.dsp/
+ * auxhead.css.dsp - included here so every header row in a table looks
+ * the same regardless of which of these it happens to be built from. */
 .z-listheader,
 .z-column,
-.z-treecol {
+.z-treecol,
+.z-auxheader,
+.z-auxhead-bar,
+.z-columns-bar {
     background: #e7f6fd;
     background: linear-gradient(to bottom, #e7f6fd 0%, #c6e9fa 100%);
     border-left: 1px solid #8fb9d0;
     border-bottom: 1px solid #8fb9d0;
+}
+
+/* Belt-and-suspenders for the fix above: redefine the CSS custom property
+ * itself (Breeze's own _default.less sets --zk-mesh-title-background-color:
+ * var(--zk-color-primary) at :root, i.e. the same raw accent blue) so any
+ * other mesh/grid header element that reads this variable directly - not
+ * just the three selectors above - also gets this app's usual pale header
+ * tone instead of ZK's default. Kept as a flat color (the solid midpoint of
+ * the gradient above) rather than a gradient: several rules that consume
+ * this variable (e.g. .z-auxheader) do so via the `background-color`
+ * shorthand, which silently ignores an invalid (gradient) value. */
+:root {
+    --zk-mesh-title-background-color: #d7effc;
 }
 
 /* .z-grid-header-border is a separate, empty divider <div> both themes
@@ -2486,8 +2527,22 @@ textarea {
 .z-column-sorticon i,
 .z-treecol-content,
 .z-treecol-sorticon,
-.z-treecol-sorticon i {
+.z-treecol-sorticon i,
+.z-auxheader-content {
     color: #00547a;
+}
+
+/* Same belt-and-suspenders reasoning as --zk-mesh-title-background-color
+ * above: .z-auxheader-content's own base rule (auxhead.css.dsp) sets
+ * color:var(--zk-mesh-title-color), which Breeze's _default.less defines
+ * as --zk-text-color-default3 (near-white) - fine against Breeze's own
+ * saturated header background, unreadable against the pale one restored
+ * above (e.g. "Optimistic"/"Normal"/"Pessimistic" on the Monte Carlo
+ * critical-path grid). The explicit selector above already fixes every
+ * *known* consumer; this covers any other one that reads the variable
+ * directly. */
+:root {
+    --zk-mesh-title-color: #00547a;
 }
 
 /* Same Sapphire source (font-family:Arial,Sans-serif;font-size:12px;...)
@@ -2577,6 +2632,20 @@ textarea {
     border-radius: 4px 4px 0 0;
     background: #e7f6fd;
     background: linear-gradient(to bottom, #e7f6fd 0%, #c6e9fa 100%);
+}
+
+/* The bare .z-tab rule above loses to Breeze's own
+ * .z-tabbox-left>.z-tabs .z-tab / .z-tabbox-right>.z-tabs .z-tab (higher
+ * specificity: 3 selectors vs. 1), which set padding:var(--zk-tabbox-tab-
+ * vertical-padding) (12px 8px) — exactly the widget the project-planning
+ * page's "Graphics" tabbox (Load/Earned value) uses, since ZK renders it
+ * with the -left orientation class even though it displays as a normal
+ * horizontal tab strip. Re-declaring the same padding here at matching
+ * specificity restores Sapphire's near-zero padding for that case too. */
+.z-tabbox-left > .z-tabs .z-tab,
+.z-tabbox-right > .z-tabs .z-tab {
+    padding: 0;
+    padding-top: 1px;
 }
 
 /* This app's own pre-existing rule (.z-tabpanel,.z-tabbox-ver
@@ -2968,6 +3037,24 @@ textarea {
     margin-right: 0 !important;
 }
 
+/* One of these buttons is a deliberate exception, not a bug this rule
+ * should "fix": ganttzk's plannerLayout.zul gives the show/hide-progress
+ * toggle (id="showAdvances", wrapped in <hbox class="show-advances">
+ * together with the invisible .progress-types combobox right after it)
+ * a static style="width:46px; margin-right:-5px" - on purpose, so its
+ * icon and the combobox's dropdown arrow both fit inside one visually
+ * wider button, arrow overlapping the button's right portion. The
+ * blanket rule above was neutralizing that (down to ~30px, same as
+ * every plain single-icon button), which shrank the button the arrow is
+ * supposed to sit inside of. Restoring the original 46px/-5px here,
+ * scoped to just this button via its wrapper class so every other
+ * .planner-command/.planner-icon button keeps the width:auto fix above.
+ * Verified against the reference (Sapphire) deployment. */
+.show-advances .planner-command.z-button {
+    width: 46px !important;
+    margin-right: -5px !important;
+}
+
 /* Breeze's borderlayout region bodies (the content area of every <north>/
  * <south>/<west>/<center>/<east>, e.g. the main page content, sidebars,
  * toolbars) add padding:16px and line-height:16px; Sapphire's had no
@@ -2991,11 +3078,20 @@ textarea {
  * restores the right side to Sapphire's value, but top/bottom/left still
  * fall through to Breeze's larger defaults (6px/6px/12px) instead of
  * Sapphire's (3px/3px/6px), making every top-level menu item taller and
- * wider than it should be. */
+ * wider than it should be. Breeze's line-height (18px) is also taller than
+ * Sapphire's (12px) -- padding alone being fixed still left the top menu
+ * bar (Planning/Resources/Cost/...) and every dropdown noticeably taller
+ * than the reference, since content-box height is padding + line-height.
+ * Breeze also sets min-height:34px directly on this element (Sapphire has
+ * none, min-height:0) -- restoring padding/line-height alone has zero
+ * visible effect until that floor is removed too, since it was overriding
+ * the smaller natural content height the whole time. */
 .z-menu-content {
     padding-top: 3px;
     padding-bottom: 3px;
     padding-left: 6px;
+    line-height: 12px;
+    min-height: 0;
 }
 
 /* Sapphire groups .z-combobox-button/.z-bandbox-button/.z-datebox-button/
@@ -3005,13 +3101,21 @@ textarea {
  * border-box sizing that gives a 14x14 interior). Breeze's equivalent is
  * padding:6px 8px 0 (later bumped to padding-top:8px), min-width:40px,
  * height:34px -- a much bigger button that no longer matches the compact
- * 22-24px inputs restored earlier in this file. */
+ * 22-24px inputs restored earlier in this file.
+ *
+ * min-width alone doesn't fully restore this: Breeze also sets an explicit
+ * width on some of these (confirmed via computed styles: combobox rendered
+ * 30px, bandbox 32px, timebox 34px - only datebox happened to already
+ * land on 24px), and an explicit width wins over min-width regardless of
+ * source order/specificity. Pinning width:24px here too actually shrinks
+ * them all to Sapphire's real size instead of just flooring them. */
 .z-combobox-button,
 .z-bandbox-button,
 .z-datebox-button,
 .z-timebox-button,
 .z-spinner-button,
 .z-doublespinner-button {
+    width: 24px;
     padding: 4px;
     min-width: 24px;
     height: 24px;
@@ -3067,6 +3171,16 @@ input[type="checkbox"] {
     width: 14px;
     height: 14px;
     accent-color: #2a83b4;
+    /* Follow-up to the appearance:auto fix above: Breeze's own base rule for
+     * this same selector sets font-family:ZK85Icons,FontAwesome (needed for
+     * ITS custom-drawn glyph under appearance:none) and that declaration
+     * isn't cleared just by switching appearance back to auto. Left in
+     * place, it makes Chromium's native checkbox paint corrupt itself into
+     * a doubled/ghosted checkmark (confirmed by isolating this one
+     * property - toggling it alone reproduces/fixes the doubling with
+     * every other property unchanged). Resetting it here removes the
+     * second, garbled render and leaves a single clean native tick. */
+    font-family: inherit;
 }
 
 /* Breeze's own radio button (a custom appearance:none widget, not
@@ -3304,6 +3418,50 @@ input[type="radio"]:hover {
     font-size: 14px;
 }
 
+/* Rendered every .z-icon-* glyph (all of them, reference and current app
+ * alike) side by side at matched size/color to isolate what actually
+ * differs (see doc/technical/jdk25-migration -- font comparison done
+ * 2026-08-20): ZK85Icons turns out to be a near pixel-perfect clone of
+ * the reference's real FontAwesome 4.7.0 for almost every glyph used
+ * here (carets, angles, chevrons, the search glass) -- switching font
+ * is not the fix. What actually differs everywhere is color: Breeze
+ * sets these to rgba(0,0,0,.9)/.57/.34 depending on the icon's role
+ * (full/menu/disabled-splitter opacity tiers), while the reference uses
+ * one flat rgb(99,99,99) regardless of role or disabled state. One
+ * universal override covers every icon in the app, calendar included
+ * (the fix above doesn't set color at all, so it inherits this too). */
+[class*="z-icon-"] {
+    color: rgb(99, 99, 99) !important;
+}
+
+/* Breeze also sizes each of these icon roles larger than Sapphire did
+ * (e.g. the combobox/bandbox trigger glyph at 22px here vs 16px on the
+ * reference) -- restoring the reference's own per-role sizes, measured
+ * directly against the reference deployment. The datebox calendar icon
+ * isn't listed here because its size was already fixed above (14px,
+ * already matching the reference). */
+.z-menu-content .z-icon-caret-down { font-size: 16px; }
+.z-menu-content .z-icon-caret-right { font-size: 15px; }
+.z-combobox-button .z-icon-caret-down,
+.z-bandbox-button .z-icon-caret-down { font-size: 16px; }
+.z-bandbox-button .z-icon-search { font-size: 14px; }
+.z-north-splitter-button .z-icon-ellipsis-h,
+.z-south-splitter-button .z-icon-ellipsis-h,
+.z-north-splitter-button .z-icon-caret-up,
+.z-south-splitter-button .z-icon-caret-down,
+.z-west-splitter-button .z-icon-ellipsis-v,
+.z-west-splitter-button .z-icon-caret-left { font-size: 10px; }
+.z-north-collapsed .z-icon-angle-double-down,
+.z-west-collapsed .z-icon-angle-double-right,
+.z-south-collapsed .z-icon-angle-double-up,
+.z-south-header .z-icon-angle-double-down { font-size: 14px; }
+.z-calendar-icon.z-calendar-left .z-icon-angle-left,
+.z-calendar-icon.z-calendar-right .z-icon-angle-right { font-size: 20px; }
+.z-timebox-icon.z-timebox-up .z-icon-angle-up,
+.z-timebox-icon.z-timebox-down .z-icon-angle-down { font-size: 14px; }
+.z-tabbox-icon.z-tabbox-up-scroll .z-icon-chevron-up,
+.z-tabbox-icon.z-tabbox-down-scroll .z-icon-chevron-down { font-size: 12px; }
+
 /* Breeze's .z-datebox-button relies on padding+line-height to position
  * its icon (padding:6px 8px 0, then a later rule overrides just
  * padding-top to 8px -- an asymmetric 8px top/0 bottom split that
@@ -3313,9 +3471,215 @@ input[type="radio"]:hover {
  * Switching the button to flex centering positions the icon relative
  * to the button's actual box instead of leftover padding math --
  * robust regardless of icon font-size. inline-flex (not flex) to keep
- * it sitting inline next to the datebox input as before. */
-.z-datebox-button {
+ * it sitting inline next to the datebox input as before.
+ *
+ * .z-combobox-button/.z-bandbox-button have the same root cause even
+ * though nothing here shrank their icon: the shared button-size rule
+ * further up this file (padding:4px, width/height:24px) never set
+ * line-height, so it falls through to Breeze's own 16px default, which
+ * doesn't match the icon's own 14px line-height -- 2-3px too low,
+ * measured against the reference. Same flex fix, same reasoning. */
+.z-datebox-button,
+.z-combobox-button,
+.z-bandbox-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
+}
+
+/* Sapphire's paging buttons (First/Prev/Next/Last on any paged listbox/grid, e.g. Projects
+ * List) had a light blue box - background, border, rounded corners, dimmed further when
+ * disabled - giving each arrow a clear clickable button look. Breeze's own .z-paging-button
+ * defaults to border:none/background-color:transparent plus a plain --zk-text-color-default
+ * icon, i.e. a bare icon glyph with no button chrome at all. Colors below sampled directly
+ * from a still-Sapphire v1.6.1 instance (the version this branch is migrating away from). */
+.z-paging-button {
+    color: #3079B4;
+    background-color: #D6EFFB;
+    border: 1px solid #8FB9D0;
+    border-radius: 3px;
+}
+.z-paging-button:hover {
+    background-color: #C2E4F7;
+}
+.z-paging-button[disabled] {
+    color: var(--zk-disabled-color);
+    background-color: #E4F3FB;
+    border-color: #BAD3E1;
+}
+.z-paging-button[disabled]:hover {
+    background-color: #E4F3FB;
+}
+
+/* Breeze's own button box (min-width/height:26px, padding:4px) and icon
+ * (font-size:var(--zk-paging-icon-size), ~18px) leave essentially zero slack - the icon nearly
+ * fills the whole box - and centering there relies on line-height math rather than true box
+ * centering, so it reads as oversized and slightly off-center. Sapphire's actual button was a
+ * 24x24px box holding a ~12px icon (measured directly from the v1.6.1 screenshot: an 8-9px-tall
+ * glyph centered in a 24px box). Reproduce that, and switch to flex centering for the icon the
+ * same way .z-datebox-button/.z-combobox-button/.z-bandbox-button already do above, so it's
+ * centered regardless of font metrics rather than fought via padding/line-height.
+ *
+ * Breeze's input box is also just too tall (height:36px vs Sapphire's measured 24px) even
+ * though its width (42px) already roughly matches Sapphire's (45px) - only the height needed
+ * fixing. */
+.z-paging-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0;
+}
+/* ZK forces .z-icon-angle-*{font-family:FontAwesome;font-weight:900} - the *new* bundled
+ * FontAwesome 5/6-solid font (fa-solid-900.woff2), not the old FontAwesome 4.7 the reference
+ * (and this app's whole look) was built against. This file already established (see the
+ * .z-datebox-icon.z-icon-calendar fix and its comment further up) that ZK85Icons is a proven
+ * near pixel-perfect clone of that reference FontAwesome 4.7 for exactly these glyphs (carets,
+ * angles, chevrons) - side-by-side comparison confirmed a genuinely different, larger glyph
+ * shape from the new FontAwesome, not just a sizing/centering issue. Force ZK85Icons here too.
+ *
+ * Color: this app has one universal rule further up ([class*="z-icon-"]{color:rgb(99,99,99)
+ * !important}) deliberately applied to every icon site-wide after an earlier investigation
+ * found the reference uses that flat gray for icons in general - but paging is a genuine,
+ * measured exception: the reference's own enabled paging arrows are a saturated blue, and its
+ * disabled ones are a lighter neutral gray, not the site-wide icon gray. Both colors sampled
+ * directly from the v1.6.1 reference screenshot pixel values. Higher specificity than the
+ * universal rule ([class*="z-icon-"].z-paging-icon vs plain [class*="z-icon-"]) so no need to
+ * fight source order. */
+.z-paging .z-paging-icon {
+    font-family: ZK85Icons;
+    font-size: 12px;
+}
+[class*="z-icon-"].z-paging-icon {
+    color: rgb(4, 99, 157) !important;
+}
+.z-paging-button[disabled] [class*="z-icon-"].z-paging-icon {
+    color: rgb(202, 202, 202) !important;
+}
+.z-paging-input {
+    height: 24px;
+    line-height: 22px;
+}
+
+/* Breeze's paging text/info (current-page input, "/ N" total, "[ x - y / z ]" summary) all
+ * default to --zk-paging-color/--zk-text-color-lighter (near-black/light gray) instead of this
+ * app's own established label color - the same #00547a already used site-wide for .z-label
+ * further up (Sapphire's window.css.dsp .z-label rule). Match that here too. */
+.z-paging-input,
+.z-paging-text,
+.z-paging-info {
+    color: #00547a;
+}
+
+/* .z-paging's items (First/Prev/input/Next/Last, each its own <li>) are plain
+ * display:inline list items - each one's vertical position on the line is decided
+ * independently via its own baseline/line-height metrics, not a shared center. That's why the
+ * 24px-tall button and 24px-tall input above, despite being the same height, still don't land
+ * on the same horizontal line (measured ~5px apart). Making the <ul> a flex row with
+ * align-items:center centers every child uniformly regardless of its own box/baseline
+ * quirks - the same reasoning as every other flex-centering fix in this file. */
+.z-paging ul {
+    display: inline-flex;
+    align-items: center;
+}
+
+/* Breeze's messagebox (the "Information"/"Confirm" popup shown after actions like Save) uses
+ * the same "spacious modern UI" sizing seen elsewhere in this file, but never got restored:
+ *  - .z-messagebox-window is a fixed width:480px (--zk-messagebox-window-width) regardless of
+ *    message length, vs Sapphire's much narrower fixed width:350px (confirmed against the live
+ *    reference deployment).
+ *  - .z-window-header inside it is height:61px/padding:18px 16px/font-size:18px, vs Sapphire's
+ *    compact height:32px/padding:3px 0 5px 6px/font-size:12px.
+ *  - .z-messagebox itself gets a wide fixed width via calc() derived from that same 480px
+ *    window width, and .z-messagebox-viewport wrapping it has overflow:auto + white-space:nowrap.
+ *    Since the wide fixed-width text container ends up a few px wider than the viewport even
+ *    for a one-line message like "Project saved", this reliably shows a bogus, purely
+ *    decorative horizontal scrollbar on every single info dialog - there is never actually
+ *    enough content to need scrolling. Sapphire's own messagebox (an older ZK DOM structure
+ *    with no such viewport/scroll wrapper at all) sizes its message span to its literal content
+ *    width instead. Switching to overflow:visible + width:auto (with a max-width so a genuinely
+ *    long message - e.g. a multi-line validation error list - still wraps instead of stretching
+ *    the dialog arbitrarily wide) reproduces that same "size to content, never scroll" behavior
+ *    within Breeze's DOM. */
+.z-messagebox-window {
+    width: 350px;
+}
+
+.z-messagebox-window .z-window-header {
+    height: 32px;
+    padding: 3px 0 5px 6px;
+    font-size: 12px;
+}
+
+.z-messagebox-viewport {
+    overflow: visible;
+    white-space: normal;
+}
+
+.z-messagebox {
+    width: auto;
+    max-width: 300px;
+}
+
+/* Remaining messagebox polish, after the width/scrollbar fix above:
+ *  - .z-messagebox-window's own background is a light blue (confirmed against the live
+ *    reference deployment: rgb(182, 225, 234)) that only shows through behind the header, since
+ *    the content area below paints its own opaque white background over it (see .z-window-content
+ *    fix further up). Breeze's window background is plain white throughout, including behind the
+ *    header, which is why ours looked flat/colorless there.
+ *  - Sapphire's close button is a bordered square (1px solid #8fb9d0 - the same border blue used
+ *    site-wide in this file), vs Breeze's plain borderless icon.
+ *  - Sapphire's own messagebox icons (information/exclamation/question/error) are glossy raster
+ *    PNGs (web/sapphire/zul/img/msgbox/*.png inside the old ZK 8.6 Sapphire theme jar), not the
+ *    flat CSS-drawn glyph Breeze uses. Breeze's own zk.wcs already references PNGs at these exact
+ *    same class names/relative filenames (zul/img/msgbox/info-btn.png etc.) - it just never shipped
+ *    them, relying on a different (flat, CSS-only) icon instead. Vendored the actual Sapphire PNGs
+ *    (extracted from the live reference deployment's own sapphire.jar, same file this app's own
+ *    dependency once bundled) into common/img/msgbox/ and pointed these same class names at them -
+ *    .z-messagebox-icon is already sized exactly 32x32 (matching these PNGs 1:1), so no size
+ *    adjustment is needed.
+ *  - The whole dialog's outer edge is blue on Sapphire, not Breeze's plain gray - confirmed via
+ *    computed style on the live reference: it's .z-window-content (not the outer .z-messagebox-window,
+ *    which is gray on both) that carries `border: 1px solid #8fb9d0` - the same blue already used
+ *    for the close button above. That alone isn't enough though: the reference window also has
+ *    `padding: 4px` on .z-messagebox-window itself, which is what makes the blue border visible at
+ *    all - it opens a 4px gap between the outer gray border and the inner blue one so both show as
+ *    two distinct nested boxes. Without that padding (Breeze's default is 0), the blue border sits
+ *    immediately flush against the gray one and is effectively invisible. */
+.z-messagebox-window {
+    background-color: #b6e1ea;
+    padding: 4px;
+}
+
+.z-messagebox-window .z-window-content {
+    border: 1px solid #8fb9d0;
+}
+
+.z-messagebox-window .z-window-close {
+    border: 1px solid #8fb9d0;
+    /* The close icon (an 18px icon-font glyph, vertical-align:baseline) doesn't
+     * sit centered in this 28x24 button under Breeze's own padding/line-height
+     * math - most visible once the border above eats into the same box.
+     * Force true centering with flex instead of fighting that box model. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.z-messagebox-information {
+    background-image: url("/common/img/msgbox/info-btn.png");
+}
+
+.z-messagebox-exclamation {
+    background-image: url("/common/img/msgbox/warning-btn.png");
+}
+
+.z-messagebox-question {
+    background-image: url("/common/img/msgbox/question-btn.png");
+}
+
+.z-messagebox-error {
+    background-image: url("/common/img/msgbox/stop-btn.png");
 }

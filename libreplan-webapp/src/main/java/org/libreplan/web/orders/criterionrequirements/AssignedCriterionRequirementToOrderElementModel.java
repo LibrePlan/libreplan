@@ -158,8 +158,24 @@ public class AssignedCriterionRequirementToOrderElementModel extends
         return false;
     }
 
+    /**
+     * Not readOnly: this is only ever called from OrderCRUDController's save() (via
+     * AssignedCriterionRequirementController.close()), right before the real save transaction, and
+     * reattachOrderElement()'s orderElementDAO.reattach() (-&gt; session.saveOrUpdate()) genuinely
+     * needs to write when the user has just added a new, still-transient DirectCriterionRequirement
+     * - orderElement.criterionRequirements is then a dirty collection, and reattaching a dirty
+     * collection is exactly the case Hibernate's own session.lock(..., LockMode.NONE) (used by
+     * orderElementDAO.reattachUnmodifiedEntity(), the true read-only alternative) explicitly refuses
+     * ("re-associated object has dirty collection"). Marking this readOnly used to let that write
+     * happen anyway (readOnly only suppresses the flush, not the id generator call it triggers)
+     * while silently discarding it - permanently stamping the real, would-be-genuine id/version onto
+     * the Java object without ever inserting the row. The later, real save transaction then found
+     * that id/version already set, concluded (correctly, once BaseEntity.getVersion() stopped lying)
+     * that this must be an existing, detached row, and issued an UPDATE for a row that had never
+     * actually been inserted - reported as "Row was updated or deleted by another transaction"
+     * (concurrentModification.zul), even though nothing else ever touched it.
+     */
     @Override
-    @Transactional(readOnly = true)
     public void confirm() throws ValidationException{
         reattachOrderElement();
     }

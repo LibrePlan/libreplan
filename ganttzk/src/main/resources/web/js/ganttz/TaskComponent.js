@@ -62,7 +62,24 @@ ganttz.TaskComponent = zk.$extends(
             labelsText : null,
             tooltipText : null,
             left: function() {
-                this.$supers('setLeft', arguments);
+                /*
+                 * Not this.$supers('setLeft', arguments): the $define wrapper above already
+                 * wrote the new value into the cached field before invoking this hook, so by the
+                 * time $supers reaches zk.Widget's own setLeft(left), its "this._left != left"
+                 * freshness check always sees them as equal and skips applying the style - the
+                 * DOM position update is silently dropped every time. This used to be masked by
+                 * passing {force:true} through to that check, but ZK 10.3's regenerated
+                 * setLeft(left) dropped the force parameter entirely, so nothing ever bypasses it
+                 * anymore. Setting the style directly here (from the value the wrapper already
+                 * cached) sidesteps that dead code path. Reproduced live: adding a dependency
+                 * between two sibling tasks inside a container correctly recalculated the
+                 * destination task's dates server-side, but its Gantt bar never moved on screen
+                 * until a full page reload rebuilt the widget from scratch.
+                 */
+                var n = this.$n();
+                if (n) {
+                    n.style.left = this.getLeft() || '';
+                }
                 this._getRelatedDependencies().forEach(function(dependency) {
                     dependency.draw();
                 });
@@ -110,8 +127,17 @@ ganttz.TaskComponent = zk.$extends(
             this.$supers('bind_', arguments);
             this.domListen_(this.$n(), "onMouseover", '_showTooltip');
             this.domListen_(this.$n(), "onMouseout", '_hideTooltip');
-            if( jq(this.$n()).attr('movingtasksenabled') == "true" ) this._addDragDrop();
-            if( jq(this.$n()).attr('resizingtasksenabled') == "true" ) this._addResize();
+            /*
+             * Not jq(this.$n()).attr('movingtasksenabled')/'resizingtasksenabled': the Java side's
+             * render(renderer, "movingTasksEnabled", ...) call used to also land as a literal DOM
+             * attribute on this element (readable via jQuery), but ZK 10.3 (post Jakarta
+             * migration) only sets it as a plain widget field now (this.movingTasksEnabled) - it's
+             * never mirrored onto the DOM. The jQuery lookup therefore always returned undefined,
+             * silently disabling drag-to-move and drag-to-resize for every task. Confirmed live:
+             * the widget field carried the correct true/false value the whole time.
+             */
+            if( this.movingTasksEnabled ) this._addDragDrop();
+            if( this.resizingTasksEnabled ) this._addResize();
         },
         unbind_ : function(event) {
             this.domUnlisten_(this.$n(), "onMouseout", '_hideTooltip');

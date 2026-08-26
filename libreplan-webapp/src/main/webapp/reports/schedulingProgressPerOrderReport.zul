@@ -2,6 +2,7 @@
     This file is part of LibrePlan
 
     Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+    Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
     Desenvolvemento Tecnolóxico de Galicia
 
     This program is free software: you can redistribute it and/or modify
@@ -19,7 +20,7 @@
 -->
 
 <?page title="${i18n:_t('LibrePlan: Work And Progress Per Project')}" id="reports"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
@@ -82,12 +83,8 @@
                         <row>
                             <label value="${i18n:_t('Progress type')}:" />
                             <listbox id="lbAdvanceType"
-                                     model="@{controller.advanceTypeDTOs}"
                                      mold="select"
                                      multiple="false" >
-                                <listitem self="@{each='advanceTypeDTO'}" value="@{advanceTypeDTO}">
-                                    <listcell label="@{advanceTypeDTO.name}" />
-                                </listitem>
                             </listbox>
                         </row>
                     </rows>
@@ -102,7 +99,7 @@
                     <separator spacing="5px"/>
                     <hbox>
                         <bandboxSearch id="bdOrders" finder="OrderBandboxFinder"
-                                       model="@{controller.allOrders}"
+                                       model="@load(controller.allOrders)"
                                        widthListbox="680px"
                                        widthBandbox="480px"
                                        sclass="bandbox-margin"/>
@@ -113,7 +110,8 @@
                 <listbox id="lbOrders"
                          width="700px"
                          multiple="true"
-                         model="@{controller.selectedOrders}"
+                         model="@load(controller.selectedOrders)"
+                         itemRenderer="@load(controller.ordersRenderer)"
                          sclass="margin-border">
                     <listhead>
                         <listheader label="${i18n:_t('Name')}" align="center" sort="auto(name)" />
@@ -121,19 +119,6 @@
                         <listheader label="${i18n:_t('Start date')}" sort="auto(initDate)" align="center" />
                         <listheader label="${i18n:_t('Operations')}" sort="auto(initDate)" align="center" width="100px"/>
                     </listhead>
-
-                    <listitem self="@{each='order'}" value="@{order}">
-                        <listcell label="@{order.name}" />
-                        <listcell label="@{order.code}" />
-                        <listcell label="@{order.initDate, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-                        <listcell>
-                            <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                    hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_t('Delete')}"
-                                    onClick="controller.onRemoveOrder(self.parent.parent.value);">
-                            </button>
-                        </listcell>
-                    </listitem>
                 </listbox>
             </panelchildren>
         </panel>

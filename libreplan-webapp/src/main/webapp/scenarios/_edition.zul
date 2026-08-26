@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +23,7 @@
 <window id="${arg.top_id}">
     <caption id="caption" sclass="caption-title" />
 
-    <grid  fixedLayout="true" style="margin-bottom: 10px;">
+    <grid style="margin-bottom: 10px;">
         <columns>
             <column width="200px" />
             <column/>
@@ -30,31 +31,28 @@
         <rows>
             <row>
                 <label value="${i18n:_t('Name')}" />
-                <textbox value="@{controller.scenario.name}" width="300px"
+                <textbox value="@load(controller.scenario.name) @save(controller.scenario.name)" width="300px"
                     constraint="no empty:${i18n:_t('cannot be empty')}"
-                    disabled="@{controller.scenario.predefined}"
+                    disabled="@load(controller.scenario.predefined)"
                     onBlur="controller.updateWindowTitle()" />
             </row>
-            <row visible="@{controller.scenario.derived}">
+            <row visible="@load(controller.scenario.derived)">
                 <label value="${i18n:_t('Predecessor')}" />
-                <label value="@{controller.scenario.predecessor.name}" />
+                <label value="@load(controller.scenario.predecessor.name)" />
             </row>
             <row>
                 <label value="${i18n:_t('Description')}" />
-                <textbox value="@{controller.scenario.description}"
+                <textbox value="@load(controller.scenario.description) @save(controller.scenario.description)"
                     rows="5" width="300px" />
             </row>
             <row>
                 <label value="${i18n:_t('Projects')}" />
-                <listbox model="@{controller.orders}">
+                <listbox model="@load(controller.ordersModel)"
+                         itemRenderer="@load(controller.ordersRenderer)">
                     <listhead>
                         <listheader label="${i18n:_t('Code')}" />
                         <listheader label="${i18n:_t('Name')}" />
                     </listhead>
-                    <listitem self="@{each='order'}" value="@{order}">
-                        <listcell label="@{order.code}" />
-                        <listcell label="@{order.name}" />
-                    </listitem>
                 </listbox>
             </row>
         </rows>

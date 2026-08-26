@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Отчёт об общем количестве часов, отработанных ресурсом за месяц</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">Отчёт об общем количестве часов, отработанных ресурсом за месяц</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">Назначение</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">Входные параметры и фильтры</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">Вывод</a><ul>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">Заголовок</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">Нижний колонтитул</a></li>
+<li><a class="reference internal" href="#section-7" id="toc-entry-6">Тело</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">Назначение</a></h1>
+<p>Данный отчёт предоставляет общее количество часов, отработанных каждым ресурсом за указанный месяц. Эта информация может быть полезна для определения сверхурочной работы или, в зависимости от организации, количества часов, за которые каждый ресурс должен получить компенсацию.</p>
+<p>Приложение отслеживает рабочие отчёты как для работников, так и для машин. Для машин в отчёте суммируется количество часов их работы в течение месяца.</p>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">Входные параметры и фильтры</a></h1>
+<p>Для формирования данного отчёта пользователи должны указать год и месяц, за которые они хотят получить общее количество часов, отработанных каждым ресурсом.</p>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-3">Вывод</a></h1>
+<p>Формат вывода следующий:</p>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-4">Заголовок</a></h2>
+<p>В заголовке отчёта отображается:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Год</em>, к которому относятся данные отчёта.</li>
+<li><em>Месяц</em>, к которому относятся данные отчёта.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-5">Нижний колонтитул</a></h2>
+<p>В нижнем колонтитуле отображается дата формирования отчёта.</p>
+</div>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-6">Тело</a></h2>
+<p>Раздел данных отчёта состоит из одной таблицы с двумя столбцами:</p>
+<blockquote>
+<ul class="simple">
+<li>Один столбец с заголовком <strong>Название</strong> для имени ресурса.</li>
+<li>Один столбец с заголовком <strong>Часы</strong> с общим количеством часов, отработанных ресурсом в данной строке.</li>
+</ul>
+</blockquote>
+<p>Последняя строка содержит суммарное количество часов, отработанных всеми ресурсами за указанный <em>месяц</em> и <em>год</em>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

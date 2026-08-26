@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,9 +28,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.reports.dtos.WorkReportLineDTO;
@@ -55,12 +59,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         implements IWorkReportLineDAO {
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<WorkReportLine> findByOrderElement(OrderElement orderElement){
-        Criteria c = getSession().createCriteria(WorkReportLine.class).createCriteria("orderElement");
-        c.add(Restrictions.idEq(orderElement.getId()));
-        return (List<WorkReportLine>) c.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+        cq.where(cb.equal(root.get("orderElement").get("id"), orderElement.getId()));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @SuppressWarnings("unchecked")
@@ -91,7 +96,6 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         return findByOrderElementAndChildren(orderElement, false);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @Transactional(readOnly=true)
     public List<WorkReportLine> findByOrderElementAndChildren(OrderElement orderElement, boolean sortByDate) {
@@ -99,53 +103,63 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         Collection<OrderElement> orderElements = orderElement.getAllChildren();
         orderElements.add(orderElement);
 
-        // Prepare criteria
-        final Criteria criteria = getSession().createCriteria(WorkReportLine.class);
-        criteria.add(Restrictions.in("orderElement", orderElements));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+        cq.where(root.get("orderElement").in(orderElements));
         if (sortByDate) {
-            criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+            cq.orderBy(cb.asc(root.get("date")));
         }
-        return criteria.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<WorkReportLine> findFilteredByDate(Date start, Date end) {
-        Criteria criteria  = getSession().createCriteria(WorkReportLine.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+
+        List<Predicate> predicates = new ArrayList<>();
         if(start != null) {
-            criteria.add(Restrictions.ge("date", start));
+            predicates.add(cb.greaterThanOrEqualTo(root.get("date"), start));
         }
         if(end != null) {
-            criteria.add(Restrictions.le("date", end));
+            predicates.add(cb.lessThanOrEqualTo(root.get("date"), end));
         }
-        return criteria.list();
+        cq.where(predicates.toArray(new Predicate[0]));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<WorkReportLine> findByResources(List<Resource> resourcesList) {
         if (resourcesList.isEmpty()) {
             return Collections.emptyList();
         }
-        return getSession().createCriteria(WorkReportLine.class).add(
-                Restrictions.in("resource", resourcesList)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+        cq.where(root.get("resource").in(resourcesList));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<WorkReportLine> findByResourceFilteredByDateNotInWorkReport(
             Resource resource, Date start, Date end, WorkReport workReport) {
-        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
-        criteria.add(Restrictions.eq("resource", resource));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
 
-        criteria.add(Restrictions.ge("date", start));
-        criteria.add(Restrictions.le("date", end));
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(root.get("resource"), resource));
+        predicates.add(cb.greaterThanOrEqualTo(root.get("date"), start));
+        predicates.add(cb.lessThanOrEqualTo(root.get("date"), end));
 
         if (workReport != null) {
-            criteria.add(Restrictions.ne("workReport", workReport));
+            predicates.add(cb.notEqual(root.get("workReport"), workReport));
         }
 
-        return criteria.list();
+        cq.where(predicates.toArray(new Predicate[0]));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -176,31 +190,42 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         return findFinishedByOrderElementNotInWorkReport(orderElement, workReport);
     }
 
-    @SuppressWarnings("unchecked")
     private List<WorkReportLine> findFinishedByOrderElementNotInWorkReport(
             OrderElement orderElement, WorkReport workReport) {
-        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
 
-        criteria.add(Restrictions.eq("orderElement", orderElement));
+        // Compare by id, not by entity reference (same idiom as findByOrderElement() above).
+        // orderElement/workReport here often belong to a different Hibernate session than this
+        // one (findFinishedByOrderElementNotInWorkReportAnotherTransaction below runs in its own
+        // REQUIRES_NEW transaction), so using them directly as Criteria equality parameters makes
+        // Hibernate try to determine whether they're transient or detached - which throws
+        // TransientObjectException even for an entity with a real, persisted id. Comparing raw
+        // ids sidesteps that entirely; getId() needs no session at all.
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(cb.equal(root.get("orderElement").get("id"), orderElement.getId()));
         if (!workReport.isNewObject()) {
-            criteria.add(Restrictions.ne("workReport", workReport));
+            predicates.add(cb.notEqual(root.get("workReport").get("id"), workReport.getId()));
         }
-        criteria.add(Restrictions.eq("finished", true));
+        predicates.add(cb.equal(root.get("finished"), true));
 
-        return (List<WorkReportLine>) criteria.list();
+        cq.where(predicates.toArray(new Predicate[0]));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public Boolean isFinished(OrderElement orderElement) {
-        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+        cq.where(
+                cb.equal(root.get("orderElement"), orderElement),
+                cb.equal(root.get("finished"), true));
 
-        criteria.add(Restrictions.eq("orderElement", orderElement));
-        criteria.add(Restrictions.eq("finished", true));
-
-        return criteria.uniqueResult() != null;
+        return getSession().createQuery(cq).uniqueResult() != null;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<WorkReportLine> findByOrderElementAndWorkReports(
             OrderElement orderElement, List<WorkReport> workReports) {
@@ -208,12 +233,14 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
             return Collections.emptyList();
         }
 
-        Criteria criteria = getSession().createCriteria(WorkReportLine.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
+        cq.where(
+                cb.equal(root.get("orderElement"), orderElement),
+                root.get("workReport").in(workReports));
 
-        criteria.add(Restrictions.eq("orderElement", orderElement));
-        criteria.add(Restrictions.in("workReport", workReports));
-
-        return (List<WorkReportLine>) criteria.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Transactional(readOnly = true)
@@ -227,21 +254,23 @@ public class WorkReportLineDAO extends IntegrationEntityDAO<WorkReportLine>
         Collection<OrderElement> orderElements = orderElement.getAllChildren();
         orderElements.add(orderElement);
 
-        // Prepare criteria
-        final Criteria criteria = getSession().createCriteria(
-                WorkReportLine.class);
-        criteria.add(Restrictions.in("orderElement", orderElements));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportLine> cq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> root = cq.from(WorkReportLine.class);
 
+        List<Predicate> predicates = new ArrayList<>();
+        predicates.add(root.get("orderElement").in(orderElements));
         if (start != null) {
-            criteria.add(Restrictions.ge("date", start));
+            predicates.add(cb.greaterThanOrEqualTo(root.get("date"), start));
         }
         if (end != null) {
-            criteria.add(Restrictions.le("date", end));
+            predicates.add(cb.lessThanOrEqualTo(root.get("date"), end));
         }
+        cq.where(predicates.toArray(new Predicate[0]));
         if (sortByDate) {
-            criteria.addOrder(org.hibernate.criterion.Order.asc("date"));
+            cq.orderBy(cb.asc(root.get("date")));
         }
-        return criteria.list();
+        return getSession().createQuery(cq).getResultList();
 
     }
 

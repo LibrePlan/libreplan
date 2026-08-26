@@ -1,0 +1,22 @@
+[     253ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://127.0.0.1:8080/common/layout/login.zul:0
+[    1145ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[    1232ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[   11580ms] [LOG] LegendResize @ http://127.0.0.1:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[   31513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[   51513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[   71513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[   91513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  111513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  131513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  151513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  171513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  191513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  211513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  231513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  251513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  271513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  291513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  311513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  331513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  351513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[  371513ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0

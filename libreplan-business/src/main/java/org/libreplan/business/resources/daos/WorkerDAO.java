@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,10 +25,12 @@ package org.libreplan.business.resources.daos;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.Worker;
@@ -52,10 +55,12 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
 
     @Override
     public Worker findUniqueByNif(String nif) throws InstanceNotFoundException {
-        Criteria criteria = getSession().createCriteria(Worker.class);
-        criteria.add(Restrictions.eq("nif", nif.trim()).ignoreCase());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Worker> cq = cb.createQuery(Worker.class);
+        Root<Worker> root = cq.from(Worker.class);
+        cq.where(cb.equal(cb.lower(root.get("nif")), nif.trim().toLowerCase()));
 
-        List<Worker> list = criteria.list();
+        List<Worker> list = getSession().createQuery(cq).getResultList();
         if (list.size() != 1) {
             throw new InstanceNotFoundException(nif, Worker.class.getName());
         }
@@ -82,26 +87,13 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         return list(Worker.class);
     }
 
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Worker> findByNameSubpartOrNifCaseInsensitive(String name, boolean limitingResource) {
-        final String containsName = "%" + name + "%";
-        return getSession().createCriteria(Worker.class).add(
-                Restrictions.and(
-                        Restrictions.eq("limitingResource", limitingResource),
-                        Restrictions.or(
-                                Restrictions.or(
-                                        Restrictions.ilike("firstName", containsName),
-                                        Restrictions.ilike("surname", containsName)),
-                                Restrictions.like("nif", containsName)))).list();
-
-    }
-
-    @SuppressWarnings("unchecked")
     @Override
     public List<Worker> findByFirstNameCaseInsensitive(String name) {
-        return getSession().createCriteria(Worker.class).add(
-                Restrictions.ilike("firstName", name)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Worker> cq = cb.createQuery(Worker.class);
+        Root<Worker> root = cq.from(Worker.class);
+        cq.where(cb.equal(cb.lower(root.get("firstName")), name.toLowerCase()));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -110,15 +102,17 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         return findByFirstNameCaseInsensitive(name);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Worker> findByFirstNameSecondNameAndNif(String firstname,
             String secondname, String nif) {
-        return getSession().createCriteria(Worker.class).add(
-                Restrictions.and(Restrictions.ilike("firstName", firstname),
-                        Restrictions.and(Restrictions.ilike("surname",
-                                secondname), Restrictions.like("nif", nif))))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Worker> cq = cb.createQuery(Worker.class);
+        Root<Worker> root = cq.from(Worker.class);
+        cq.where(
+                cb.like(cb.lower(root.get("firstName")), firstname.toLowerCase()),
+                cb.like(cb.lower(root.get("surname")), secondname.toLowerCase()),
+                cb.like(root.get("nif"), nif));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -128,13 +122,16 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
         return findByFirstNameSecondNameAndNif(firstname, secondname, nif);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Worker> findByFirstNameSecondName(String firstname,
             String secondname) {
-        return getSession().createCriteria(Worker.class).add(
-                Restrictions.and(Restrictions.ilike("firstName", firstname),
-                        Restrictions.ilike("surname", secondname))).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Worker> cq = cb.createQuery(Worker.class);
+        Root<Worker> root = cq.from(Worker.class);
+        cq.where(
+                cb.like(cb.lower(root.get("firstName")), firstname.toLowerCase()),
+                cb.like(cb.lower(root.get("surname")), secondname.toLowerCase()));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -192,11 +189,12 @@ public class WorkerDAO extends IntegrationEntityDAO<Worker>
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Worker> getBound() {
-        Criteria criteria = getSession().createCriteria(Worker.class);
-        criteria.add(Restrictions.isNotNull("user"));
-        return criteria.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Worker> cq = cb.createQuery(Worker.class);
+        Root<Worker> root = cq.from(Worker.class);
+        cq.where(cb.isNotNull(root.get("user")));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override

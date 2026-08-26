@@ -1,0 +1,2 @@
+[    1547ms] [LOG] LegendResize @ http://localhost:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[  195449ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://localhost:8080/zkau:0

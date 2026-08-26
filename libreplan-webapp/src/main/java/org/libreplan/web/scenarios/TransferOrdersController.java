@@ -34,17 +34,19 @@ import org.libreplan.web.common.Level;
 import org.libreplan.web.common.MessagesForUser;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.common.components.bandboxsearch.BandboxSearch;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.SimpleListModel;
 
 /**
  * Controller for UI operations to transfer orders between scenarios.
@@ -53,7 +55,6 @@ import org.zkoss.zul.Listbox;
  */
 public class TransferOrdersController extends GenericForwardComposer {
 
-    @Autowired
     private ITransferOrdersModel transferOrdersModel;
 
     private IMessagesForUser messagesForUser;
@@ -71,6 +72,7 @@ public class TransferOrdersController extends GenericForwardComposer {
     @Override
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
+        transferOrdersModel = (ITransferOrdersModel) SpringUtil.getBean("transferOrdersModel");
         messagesForUser = new MessagesForUser(messagesContainer);
         comp.setAttribute("transferOrdersController", this, true);
 
@@ -105,6 +107,13 @@ public class TransferOrdersController extends GenericForwardComposer {
                         setDestinationScenario();
                     }
                 });
+
+        // AnnotateBinderInit's page-level pass only registers @load bindings, it never loads them
+        // (see the identical comment in BaseCalendarCRUDController.doAfterCompose /
+        // ScenarioCRUDController.doAfterCompose) - without this, the scenario bandboxes' dropdown
+        // stays empty until some other action happens to trigger a reload.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private void setSourceScenario() {
@@ -133,12 +142,20 @@ public class TransferOrdersController extends GenericForwardComposer {
         return transferOrdersModel.getSourceScenarioOrders();
     }
 
+    public ListModel<Order> getSourceScenarioOrdersModel() {
+        return new SimpleListModel<>(new java.util.ArrayList<>(getSourceScenarioOrders()));
+    }
+
     public Scenario getDestinationScenario() {
         return transferOrdersModel.getDestinationScenario();
     }
 
     public Set<Order> getDestinationScenarioOrders() {
         return transferOrdersModel.getDestinationScenarioOrders();
+    }
+
+    public ListModel<Order> getDestinationScenarioOrdersModel() {
+        return new SimpleListModel<>(new java.util.ArrayList<>(getDestinationScenarioOrders()));
     }
 
     public ListitemRenderer getSourceOrderRenderer() {

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -421,8 +422,8 @@ public class TaskComponent extends Div implements AfterCompose {
         if ( getColor() != null )
             setStyle("background-color : " +  getColor());
 
-        setWidgetAttribute("movingTasksEnabled", ((Boolean)isMovingTasksEnabled()).toString());
-        setWidgetAttribute("resizingTasksEnabled", ((Boolean)isResizingTasksEnabled()).toString());
+        render(renderer, "movingTasksEnabled", isMovingTasksEnabled());
+        render(renderer, "resizingTasksEnabled", isResizingTasksEnabled());
 
         /* We can't use setStyle because of restrictions involved with UiVisualizer#getResponses and the
          * smartUpdate method (when the request is asynchronous)
@@ -465,8 +466,8 @@ public class TaskComponent extends Div implements AfterCompose {
             return;
         }
 
-        setLeft("0");
-        setLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
+        forceSetLeft("0");
+        forceSetLeft(this.task.getBeginDate().toPixels(getMapper()) + "px");
         updateWidth();
         smartUpdate("name", this.task.getName());
         updateDeadline();
@@ -475,11 +476,42 @@ public class TaskComponent extends Div implements AfterCompose {
     }
 
     private void updateWidth() {
-        setWidth("0");
+        forceSetWidth("0");
         int pixelsEnd = this.task.getEndDate().toPixels(getMapper());
         int pixelsStart = this.task.getBeginDate().toPixels(getMapper());
 
-        setWidth((pixelsEnd - pixelsStart) + "px");
+        forceSetWidth((pixelsEnd - pixelsStart) + "px");
+    }
+
+    /**
+     * setLeft()/setWidth() reset to "0" before setting the real value so that a
+     * genuine change is always seen -- but ZK's own smartUpdate(name, value)
+     * (the two-arg overload setLeft()/setWidth() use) coalesces repeated calls
+     * for the same property within one response into just the last one, so the
+     * "0" reset never actually reaches the client. Older ZK client widgets
+     * tolerated this because their generated setters accepted a "force" option
+     * that made a pushed update apply unconditionally; ZK 10.3's regenerated
+     * setters (setLeft/setWidth/setTop/setHeight) dropped that parameter
+     * entirely, so once a task's on-screen position and its widget's cached
+     * value silently drift apart (e.g. a dependency-type change on a
+     * container-nested task recomputing a pixel value the widget already
+     * "remembers"), the client-side redundant-update check discards the fix
+     * forever -- until a full page reload rebuilds the widget from scratch.
+     * Bypassing setLeft()/setWidth() and calling smartUpdate(name, value, true)
+     * directly (the "append" overload) keeps each call as its own distinct
+     * queued response entry instead of overwriting the previous one, so the
+     * "0" reset genuinely reaches the client and restores the guarantee this
+     * code always depended on. setXxxDirectly() keeps the component's own
+     * server-side field in sync, exactly as the real setter would.
+     */
+    private void forceSetLeft(String value) {
+        setLeftDirectly(value);
+        smartUpdate("left", value, true);
+    }
+
+    private void forceSetWidth(String value) {
+        setWidthDirectly(value);
+        smartUpdate("width", value, true);
     }
 
     private void updateDeadline() {

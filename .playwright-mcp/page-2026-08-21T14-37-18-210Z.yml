@@ -1,0 +1,107 @@
+- generic [ref=f214e4]:
+  - generic [ref=f214e5]:
+    - table [ref=f214e6]:
+      - rowgroup [ref=f214e7]:
+        - row [ref=f214e8]:
+          - cell [ref=f214e9]:
+            - link [ref=f214e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f214e12]:
+            - table [ref=f214e13]:
+              - rowgroup [ref=f214e14]:
+                - row [ref=f214e15]:
+                  - cell [ref=f214e16]:
+                    - generic [ref=f214e17]:
+                      - menubar [ref=f214e18]:
+                        - menuitem "Planning" [ref=f214e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f214e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f214e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f214e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f214e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f214e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f214e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f214e33]:
+                        - rowgroup [ref=f214e34]:
+                          - row [ref=f214e35]:
+                            - cell [ref=f214e36]:
+                              - table [ref=f214e37]:
+                                - rowgroup [ref=f214e38]:
+                                  - row [ref=f214e39]:
+                                    - cell [ref=f214e40]
+                                    - cell [ref=f214e41]:
+                                      - strong [ref=f214e42]: START
+                                    - cell [ref=f214e43]
+                                    - cell:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f214e44]:
+                              - generic [ref=f214e45]:
+                                - link "Help" [ref=f214e46] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f214e48]
+                                - img "Info" [ref=f214e50]
+    - table [ref=f214e52]:
+      - rowgroup [ref=f214e53]:
+        - row [ref=f214e54]:
+          - cell [ref=f214e55]
+          - 'cell "user: admin" [ref=f214e56]'
+          - cell [ref=f214e57]:
+            - link "[Log out]" [ref=f214e58] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:  
+  - generic [ref=f214e59]:
+    - text:  
+    - table [ref=f214e62]:
+      - rowgroup [ref=f214e63]:
+        - row [ref=f214e64]:
+          - cell [ref=f214e65]:
+            - table [ref=f214e66]:
+              - rowgroup [ref=f214e67]:
+                - row [ref=f214e68]:
+                  - cell "Another user has modified the same data, so the operation cannot be safely completed." [ref=f214e69]
+                - row [ref=f214e70]:
+                  - cell [ref=f214e71]
+                - row [ref=f214e72]:
+                  - cell "Please try it again." [ref=f214e73]
+                - row [ref=f214e74]:
+                  - cell [ref=f214e75]
+                - row [ref=f214e76]:
+                  - cell [ref=f214e77]:
+                    - table [ref=f214e78]:
+                      - rowgroup [ref=f214e79]:
+                        - row [ref=f214e80]:
+                          - cell [ref=f214e81]:
+                            - table [ref=f214e82]:
+                              - rowgroup [ref=f214e83]:
+                                - row [ref=f214e84]:
+                                  - cell [ref=f214e85]:
+                                    - button "Continue" [ref=f214e86] [cursor=pointer]
+  - table [ref=f214e87]:
+    - rowgroup [ref=f214e88]:
+      - row [ref=f214e89]:
+        - cell [ref=f214e90]:
+          - generic [ref=f214e92]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f214e93] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f214e94]
+  - text:  

@@ -6,6 +6,7 @@
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,8 +34,8 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.libreplan.business.common.Registry;
 import org.libreplan.business.users.entities.UserRole;

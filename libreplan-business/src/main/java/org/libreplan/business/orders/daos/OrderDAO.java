@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  * Desenvolvemento Tecnolóxico de Galicia
  *
  * This program is free software: you can redistribute it and/or modify it under
@@ -26,10 +27,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
@@ -246,35 +249,34 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
 
         List<Long> ordersIdsUnscheduled = getOrdersIdsUnscheduled(startDate, endDate);
 
-        Criteria c = getSession().createCriteria(Order.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+        Root<Order> root = cq.from(Order.class);
 
         if (ordersIdsFiltered != null && ordersIdsByDates != null) {
 
-            org.hibernate.criterion.Criterion and = Restrictions.and(
-                    Restrictions.in("id", ordersIdsFiltered),
-                    Restrictions.in("id", ordersIdsByDates));
-
-            c.add(and);
+            cq.where(cb.and(
+                    root.get("id").in(ordersIdsFiltered),
+                    root.get("id").in(ordersIdsByDates)));
         } else {
             if (ordersIdsFiltered != null) {
-                c.add(Restrictions.in("id", ordersIdsFiltered));
+                cq.where(root.get("id").in(ordersIdsFiltered));
             }
 
             if (ordersIdsByDates != null) {
                 if (ordersIdsUnscheduled.isEmpty()) {
-                    c.add(Restrictions.in("id", ordersIdsByDates));
+                    cq.where(root.get("id").in(ordersIdsByDates));
                 } else {
-                    c.add(Restrictions.or(
-                            Restrictions.in("id", ordersIdsByDates),
-                            Restrictions.in("id", ordersIdsUnscheduled)));
+                    cq.where(cb.or(
+                            root.get("id").in(ordersIdsByDates),
+                            root.get("id").in(ordersIdsUnscheduled)));
                 }
             }
         }
 
-        c.addOrder(org.hibernate.criterion.Order.desc("initDate"));
-        c.addOrder(org.hibernate.criterion.Order.asc("infoComponent.name"));
+        cq.orderBy(cb.desc(root.get("initDate")), cb.asc(root.get("infoComponent").get("name")));
 
-        return c.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     private List<Long> getOrdersIdsUnscheduled(Date startDate, Date endDate) {
@@ -513,13 +515,13 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
 
     @Override
     public List<Order> findAll() {
-        return getSession()
-                .createCriteria(getEntityClass())
-                .addOrder(org.hibernate.criterion.Order.asc("infoComponent.code"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(getEntityClass());
+        Root<Order> root = cq.from(getEntityClass());
+        cq.orderBy(cb.asc(root.get("infoComponent").get("code")));
+        return getSession().createQuery(cq).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @Transactional(readOnly = true)
     public Order findByCode(String code) throws InstanceNotFoundException {
@@ -528,10 +530,11 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
             throw new InstanceNotFoundException(null, getEntityClass().getName());
         }
 
-        Order entity = (Order) getSession()
-                .createCriteria(getEntityClass())
-                .add(Restrictions.eq("infoComponent.code", code.trim()).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(getEntityClass());
+        Root<Order> root = cq.from(getEntityClass());
+        cq.where(cb.equal(cb.lower(root.get("infoComponent").get("code")), code.trim().toLowerCase()));
+        Order entity = getSession().createQuery(cq).uniqueResult();
 
         if (entity == null) {
             throw new InstanceNotFoundException(code, getEntityClass().getName());
@@ -589,17 +592,17 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
         return findByName(name);
     }
 
-    @SuppressWarnings("unchecked")
     private Order findByName(String name) throws InstanceNotFoundException {
 
         if (StringUtils.isBlank(name)) {
             throw new InstanceNotFoundException(null, getEntityClass().getName());
         }
 
-        Order order = (Order) getSession()
-                .createCriteria(getEntityClass())
-                .add(Restrictions.eq("infoComponent.name", name).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(getEntityClass());
+        Root<Order> root = cq.from(getEntityClass());
+        cq.where(cb.equal(cb.lower(root.get("infoComponent").get("name")), name.toLowerCase()));
+        Order order = getSession().createQuery(cq).uniqueResult();
 
         if (order == null) {
             throw new InstanceNotFoundException(name, getEntityClass().getName());
@@ -715,13 +718,15 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<Order> getActiveOrders() {
-        Criteria criteria = getSession().createCriteria(getEntityClass());
-        criteria.add(Restrictions.not(Restrictions.eq(STATE_PARAMETER, OrderStatusEnum.CANCELLED)));
-        criteria.add(Restrictions.not(Restrictions.eq(STATE_PARAMETER, OrderStatusEnum.STORED)));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(getEntityClass());
+        Root<Order> root = cq.from(getEntityClass());
+        cq.where(
+                cb.notEqual(root.get(STATE_PARAMETER), OrderStatusEnum.CANCELLED),
+                cb.notEqual(root.get(STATE_PARAMETER), OrderStatusEnum.STORED));
 
-        return criteria.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -778,11 +783,13 @@ public class OrderDAO extends IntegrationEntityDAO<Order> implements IOrderDAO {
 
     @Override
     public List<Order> getOrdersWithNotEmptyCustomersReferences() {
-        return getSession()
-                .createCriteria(Order.class)
-                .add(Restrictions.isNotNull("customerReference"))
-                .add(Restrictions.ne("customerReference", ""))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+        Root<Order> root = cq.from(Order.class);
+        cq.where(
+                cb.isNotNull(root.get("customerReference")),
+                cb.notEqual(root.get("customerReference"), ""));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

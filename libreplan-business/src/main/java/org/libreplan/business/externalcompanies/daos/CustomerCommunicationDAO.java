@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2010-2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,8 +22,10 @@ package org.libreplan.business.externalcompanies.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.externalcompanies.entities.CustomerCommunication;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -46,9 +49,11 @@ implements ICustomerCommunicationDAO {
 
     @Override
     public List<CustomerCommunication> getAllNotReviewed(){
-        Criteria c = getSession().createCriteria(CustomerCommunication.class);
-        c.add(Restrictions.eq("reviewed", false));
-        return c.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CustomerCommunication> cq = cb.createQuery(CustomerCommunication.class);
+        Root<CustomerCommunication> root = cq.from(CustomerCommunication.class);
+        cq.where(cb.equal(root.get("reviewed"), false));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

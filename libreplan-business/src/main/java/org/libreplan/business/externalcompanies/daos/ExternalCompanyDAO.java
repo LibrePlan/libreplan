@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,8 +24,10 @@ package org.libreplan.business.externalcompanies.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.externalcompanies.entities.ExternalCompany;
@@ -63,10 +66,12 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     public ExternalCompany findUniqueByName(String name) throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(ExternalCompany.class);
-        c.add(Restrictions.eq("name", name));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<ExternalCompany> cq = cb.createQuery(ExternalCompany.class);
+        Root<ExternalCompany> root = cq.from(ExternalCompany.class);
+        cq.where(cb.equal(root.get("name"), name));
 
-        ExternalCompany found = (ExternalCompany) c.uniqueResult();
+        ExternalCompany found = getSession().createQuery(cq).uniqueResult();
         if (found == null) {
             throw new InstanceNotFoundException(name, ExternalCompany.class.getName());
         }
@@ -99,10 +104,11 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
     @Override
     public ExternalCompany findUniqueByNif(String nif) throws InstanceNotFoundException {
 
-        ExternalCompany found = (ExternalCompany) getSession()
-                .createCriteria(ExternalCompany.class)
-                .add(Restrictions.eq("nif", nif))
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<ExternalCompany> cq = cb.createQuery(ExternalCompany.class);
+        Root<ExternalCompany> root = cq.from(ExternalCompany.class);
+        cq.where(cb.equal(root.get("nif"), nif));
+        ExternalCompany found = getSession().createQuery(cq).uniqueResult();
 
         if (found == null) {
             throw new InstanceNotFoundException(nif, ExternalCompany.class.getName());
@@ -119,10 +125,11 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     public List<ExternalCompany> findSubcontractor() {
-        return getSession()
-                .createCriteria(ExternalCompany.class)
-                .add(Restrictions.eq("subcontractor", true))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<ExternalCompany> cq = cb.createQuery(ExternalCompany.class);
+        Root<ExternalCompany> root = cq.from(ExternalCompany.class);
+        cq.where(cb.equal(root.get("subcontractor"), true));
+        return getSession().createQuery(cq).getResultList();
     }
 
     public List<ExternalCompany> getAll() {
@@ -131,10 +138,11 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
 
     @Override
     public List<ExternalCompany> getExternalCompaniesAreClient() {
-        return getSession()
-                .createCriteria(ExternalCompany.class)
-                .add(Restrictions.eq("client", true))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<ExternalCompany> cq = cb.createQuery(ExternalCompany.class);
+        Root<ExternalCompany> root = cq.from(ExternalCompany.class);
+        cq.where(cb.equal(root.get("client"), true));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -143,17 +151,17 @@ public class ExternalCompanyDAO extends GenericDAOHibernate<ExternalCompany, Lon
             return false;
         }
 
-        boolean usedInOrders = !getSession()
-                .createCriteria(Order.class)
-                .add(Restrictions.eq("customer", company))
-                .list()
-                .isEmpty();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
 
-        boolean usedInSubcontractedTask = !getSession()
-                .createCriteria(SubcontractedTaskData.class)
-                .add(Restrictions.eq("externalCompany", company))
-                .list()
-                .isEmpty();
+        CriteriaQuery<Order> orderCq = cb.createQuery(Order.class);
+        Root<Order> orderRoot = orderCq.from(Order.class);
+        orderCq.where(cb.equal(orderRoot.get("customer"), company));
+        boolean usedInOrders = !getSession().createQuery(orderCq).getResultList().isEmpty();
+
+        CriteriaQuery<SubcontractedTaskData> taskDataCq = cb.createQuery(SubcontractedTaskData.class);
+        Root<SubcontractedTaskData> taskDataRoot = taskDataCq.from(SubcontractedTaskData.class);
+        taskDataCq.where(cb.equal(taskDataRoot.get("externalCompany"), company));
+        boolean usedInSubcontractedTask = !getSession().createQuery(taskDataCq).getResultList().isEmpty();
 
         return usedInOrders || usedInSubcontractedTask;
     }

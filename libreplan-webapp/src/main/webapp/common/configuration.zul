@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2011-2012 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -21,7 +22,7 @@
 -->
 
 <?page title="${i18n:_t('LibrePlan: Main Settings')}"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
@@ -61,7 +62,7 @@
                                 <label
                                         value="${i18n:_t('Company code')}" />
                                 <textbox id="companyCode"
-                                         value="@{configurationController.companyCode}"
+                                         value="@load(configurationController.companyCode)@save(configurationController.companyCode)"
                                          constraint="no empty:${i18n:_t('cannot be empty')}" />
                             </row>
 
@@ -69,32 +70,32 @@
                                 <label value="${i18n:_t('Default calendar')}" />
                                 <bandboxSearch id="defaultCalendarBandboxSearch"
                                                finder="BaseCalendarBandboxFinder"
-                                               model="@{configurationController.calendars}"
-                                               selectedElement="@{configurationController.defaultCalendar}" />
+                                               model="@load(configurationController.calendars)"
+                                               selectedElement="@load(configurationController.defaultCalendar)" />
                             </row>
 
                             <row>
                                 <label value="${i18n:_t('Hours type for personal timesheets')}" />
-                                <bandboxSearch
+                                <bandboxSearch id="personalTimesheetsTypeOfWorkHoursBandboxSearch"
                                         finder="TypeOfWorkHoursBandboxFinder"
-                                        selectedElement="@{configurationController.personalTimesheetsTypeOfWorkHours, access='both'}" />
+                                        selectedElement="@load(configurationController.personalTimesheetsTypeOfWorkHours)" />
                             </row>
                             <row>
                                 <label value="${i18n:_t('Personal timesheets peridocity')}" />
-                                <listbox model="@{configurationController.personalTimesheetsPeriodicities}"
-                                         itemRenderer="@{configurationController.personalTimesheetsPeriodicityRenderer}"
-                                         selectedItem="@{configurationController.selectedPersonalTimesheetsPeriodicity}"
-                                         disabled="@{configurationController.personalTimesheetsPeriodicityDisabled}"
-                                         tooltiptext="@{configurationController.personalTimesheetsPeriodicityTooltip}"
+                                <listbox model="@load(configurationController.personalTimesheetsPeriodicities)"
+                                         itemRenderer="@load(configurationController.personalTimesheetsPeriodicityRenderer)"
+                                         selectedItem="@load(configurationController.selectedPersonalTimesheetsPeriodicity)@save(configurationController.selectedPersonalTimesheetsPeriodicity)"
+                                         disabled="@load(configurationController.personalTimesheetsPeriodicityDisabled)"
+                                         tooltiptext="@load(configurationController.personalTimesheetsPeriodicityTooltip)"
                                          mold="select" />
                             </row>
 
                             <row>
                                 <label value="${i18n:_t('Show progress')}" />
                                 <listbox id="lbTypeProgress"
-                                         model="@{configurationController.progressTypes}"
-                                         itemRenderer="@{configurationController.progressTypeRenderer}"
-                                         selectedItem="@{configurationController.selectedProgressType}"
+                                         model="@load(configurationController.progressTypes)"
+                                         itemRenderer="@load(configurationController.progressTypeRenderer)"
+                                         selectedItem="@load(configurationController.selectedProgressType)@save(configurationController.selectedProgressType)"
                                          mold="select" />
                             </row>
 
@@ -102,7 +103,7 @@
                                 <label value="${i18n:_t('Company logo URL')}" />
                                 <hbox>
                                     <textbox id="companyLogoURL"
-                                             value="@{configurationController.companyLogoURL}"
+                                             value="@load(configurationController.companyLogoURL)"
                                              width="200px" readonly="true" />
 
                                     <button label="Upload" upload="true,maxsize=999"
@@ -119,9 +120,9 @@
                             <row>
                                 <label value="${i18n:_t('Currency')}" />
                                 <listbox id="currencyListbox"
-                                         model="@{configurationController.currencies}"
-                                         itemRenderer="@{configurationController.currencyRenderer}"
-                                         selectedItem="@{configurationController.selectedCurrency}"
+                                         model="@load(configurationController.currenciesModel)"
+                                         itemRenderer="@load(configurationController.currencyRenderer)"
+                                         selectedItem="@load(configurationController.selectedCurrency)@save(configurationController.selectedCurrency)"
                                          mold="select" />
                             </row>
 
@@ -130,12 +131,12 @@
                                 <checkbox
                                         id="enableAutocompleteLogin"
                                         label="${i18n:_t('Enable/Disable')}"
-                                        disabled="@{configurationController.isChangedDefaultPasswdAdmin}"
+                                        disabled="@load(configurationController.changedDefaultPasswdAdmin)"
 
                                         tooltiptext = "${i18n:_t('Enable/Disable autocomplete property in login form,
                                         if the admin password is still the default one')}"
 
-                                        checked="@{configurationController.autocompleteLogin}"
+                                        checked="@load(configurationController.autocompleteLogin)@save(configurationController.autocompleteLogin)"
                                         onCheck="configurationController.reloadGeneralConfiguration();" />
                             </row>
 
@@ -145,11 +146,11 @@
                                     <checkbox
                                             label="${i18n:_t('Show a notification when new LibrePlan versions are released')}"
                                             tooltiptext="${i18n:_t('Enable/Disable warning about new LibrePlan versions available')}"
-                                            checked="@{configurationController.checkNewVersionEnabled}" />
+                                            checked="@load(configurationController.checkNewVersionEnabled)@save(configurationController.checkNewVersionEnabled)" />
                                     <checkbox
                                             label="${i18n:_t('Allow collection of anonymous statistics to help us improve LibrePlan')}"
                                             tooltiptext="${i18n:_t('Check this option if you would like to send feedback to LibrePlan developers about program usage')}"
-                                            checked="@{configurationController.allowedToGatherUsageStatsEnabled}"/>
+                                            checked="@load(configurationController.allowedToGatherUsageStatsEnabled)@save(configurationController.allowedToGatherUsageStatsEnabled)"/>
                                 </vbox>
                             </row>
 
@@ -165,66 +166,66 @@
                                         <row>
                                             <checkbox
                                                     label="${i18n:_t('Criteria')}"
-                                                    checked="@{configurationController.generateCodeForCriterion}"
+                                                    checked="@load(configurationController.generateCodeForCriterion)@save(configurationController.generateCodeForCriterion)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
                                                     label="${i18n:_t('Labels')}"
-                                                    checked="@{configurationController.generateCodeForLabel}"
+                                                    checked="@load(configurationController.generateCodeForLabel)@save(configurationController.generateCodeForLabel)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
 
                                         <row>
                                             <checkbox
                                                     label="${i18n:_t('Timesheets')}"
-                                                    checked="@{configurationController.generateCodeForWorkReport}"
+                                                    checked="@load(configurationController.generateCodeForWorkReport)@save(configurationController.generateCodeForWorkReport)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
                                                     label="${i18n:_t('Resources')}"
-                                                    checked="@{configurationController.generateCodeForResources}"
+                                                    checked="@load(configurationController.generateCodeForResources)@save(configurationController.generateCodeForResources)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
 
                                         <row>
                                             <checkbox
                                                     label="${i18n:_t('Hours Types')}"
-                                                    checked="@{configurationController.generateCodeForTypesOfWorkHours}"
+                                                    checked="@load(configurationController.generateCodeForTypesOfWorkHours)@save(configurationController.generateCodeForTypesOfWorkHours)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
                                                     label="${i18n:_t('Material categories')}"
-                                                    checked="@{configurationController.generateCodeForMaterialCategories}"
+                                                    checked="@load(configurationController.generateCodeForMaterialCategories)@save(configurationController.generateCodeForMaterialCategories)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
 
                                         <row>
                                             <checkbox
                                                     label="${i18n:_t('Material Units')}"
-                                                    checked="@{configurationController.generateCodeForUnitTypes}"
+                                                    checked="@load(configurationController.generateCodeForUnitTypes)@save(configurationController.generateCodeForUnitTypes)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
                                                     label="${i18n:_t('Calendar')}"
-                                                    checked="@{configurationController.generateCodeForBaseCalendars}"
+                                                    checked="@load(configurationController.generateCodeForBaseCalendars)@save(configurationController.generateCodeForBaseCalendars)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
 
                                         <row>
                                             <checkbox
                                                     label="${i18n:_t('Timesheet templates')}"
-                                                    checked="@{configurationController.generateCodeForWorkReportType}"
+                                                    checked="@load(configurationController.generateCodeForWorkReportType)@save(configurationController.generateCodeForWorkReportType)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
                                                     label="${i18n:_t('Calendar exception days')}"
-                                                    checked="@{configurationController.generateCodeForCalendarExceptionType}"
+                                                    checked="@load(configurationController.generateCodeForCalendarExceptionType)@save(configurationController.generateCodeForCalendarExceptionType)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
 
                                         <row>
                                             <checkbox
                                                     label="${i18n:_t('Cost category')}"
-                                                    checked="@{configurationController.generateCodeForCostCategory}"
+                                                    checked="@load(configurationController.generateCodeForCostCategory)@save(configurationController.generateCodeForCostCategory)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                             <checkbox
                                                     label="${i18n:_t('Expense sheets')}"
-                                                    checked="@{configurationController.generateCodeForExpenseSheets}"
+                                                    checked="@load(configurationController.generateCodeForExpenseSheets)@save(configurationController.generateCodeForExpenseSheets)"
                                                     onCheck="configurationController.reloadGeneralConfiguration();" />
                                         </row>
                                     </rows>
@@ -235,7 +236,7 @@
                             <row>
                                 <label value="${i18n:_t('Perspectives')}" />
                                 <checkbox label="${i18n:_t('MonteCarlo method')}"
-                                          checked="@{configurationController.monteCarloMethodTabVisible}" />
+                                          checked="@load(configurationController.monteCarloMethodTabVisible)@save(configurationController.monteCarloMethodTabVisible)" />
                             </row>
 
                             <!-- Automatic budget -->
@@ -243,19 +244,19 @@
                                 <label value="${i18n:_t('Automatic budget')}" />
                                 <hbox align="pack">
                                     <label value="${i18n:_t('Hours type')}" />
-                                    <bandboxSearch
+                                    <bandboxSearch id="budgetDefaultTypeOfWorkHoursBandboxSearch"
                                             finder="TypeOfWorkHoursBandboxFinder"
-                                            selectedElement="@{configurationController.budgetDefaultTypeOfWorkHours, access='both'}" />
+                                            selectedElement="@load(configurationController.budgetDefaultTypeOfWorkHours)" />
                                     <checkbox
                                             label="${i18n:_t('calculate based on task criteria and cost categories')}"
-                                            checked="@{configurationController.enabledAutomaticBudget}" />
+                                            checked="@load(configurationController.enabledAutomaticBudget)@save(configurationController.enabledAutomaticBudget)" />
                                 </hbox>
                             </row>
 
                             <row>
                                 <label value="${i18n:_t('Seconds planning warning')}" />
                                 <hbox>
-                                    <intbox width="50px" value="@{configurationController.secondsPlanningWarning}"
+                                    <intbox width="50px" value="@load(configurationController.secondsPlanningWarning)@save(configurationController.secondsPlanningWarning)"
                                             constraint="no empty,no negative:${i18n:_t('cannot be negative or empty')}" />
                                     <label
                                             value="${i18n:_t('Defines the time since last saving operation at project
@@ -267,7 +268,7 @@
                                 <label value="${i18n:_t('Local document repository location')}"/>
                                 <textbox id="repoLocation" width="300px"
                                          tooltiptext="Example: /example/repository/path/"
-                                         value="@{configurationController.repositoryLocation}"
+                                         value="@load(configurationController.repositoryLocation)@save(configurationController.repositoryLocation)"
                                          constraint="/(\/.*\/$|^$)/:Example: /example/repository/path/"/>
                             </row>
                         </rows>
@@ -283,13 +284,8 @@
                                 <hbox pack="center" style="margin-top: 10px;">
                                     <label value="${i18n:_t('Select entity')}" />
                                     <combobox id="entityCombo"
-                                              model="@{configurationController.entityNames}">
-                                        <comboitem
-                                                self="@{each=entityName}"
-                                                label="@{entityName.description}"
-                                                value="@{entityName}" />
-
-                                    </combobox>
+                                              model="@load(configurationController.entityNamesModel)"
+                                              itemRenderer="@load(configurationController.entityNamesRenderer)" />
                                     <label value="${i18n:_t('Prefix')}" />
                                     <textbox id="prefixBox" />
                                     <label value="${i18n:_t('Number of digits')}" />
@@ -302,7 +298,7 @@
 
                                 <grid id="entitySequencesGrid"
                                       sizedByContent="false" height="400px" sclass="entity-sequences-grid"
-                                      rowRenderer="@{configurationController.entitySequenceGroupRenderer}">
+                                      rowRenderer="@load(configurationController.entitySequenceGroupRenderer)">
                                     <columns>
                                         <column label="${i18n:_t('Entity type')}" />
                                         <column label="${i18n:_t('Active')}" />
@@ -325,10 +321,10 @@
                         <caption label="${i18n:_t('Activation')}" />
                         <label value="${i18n:_t('Enable LDAP authentication')}" />
                         <checkbox id="ldapAuthEnabled"
-                                  checked="@{configurationController.ldapConfiguration.ldapAuthEnabled}" />
+                                  checked="@load(configurationController.ldapConfiguration.ldapAuthEnabled)@save(configurationController.ldapConfiguration.ldapAuthEnabled)" />
                         <label value="${i18n:_t('Use LDAP roles')}" />
                         <checkbox id="ldapSaveRolesDB"
-                                  checked="@{configurationController.ldapConfiguration.ldapSaveRolesDB}" />
+                                  checked="@load(configurationController.ldapConfiguration.ldapSaveRolesDB)@save(configurationController.ldapConfiguration.ldapSaveRolesDB)" />
                     </groupbox>
 
                     <!-- Configuration -->
@@ -346,7 +342,7 @@
                                     <label value="${i18n:_t('Host')}" />
                                     <hbox>
                                         <textbox id="ldapHost"
-                                                 value="@{configurationController.ldapConfiguration.ldapHost}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapHost)@save(configurationController.ldapConfiguration.ldapHost)"
                                                  width="300px"/>
                                         <label value="${i18n:__t('Example: {0}', 'ldap://localhost')}" />
                                     </hbox>
@@ -356,7 +352,7 @@
                                     <label value="${i18n:_t('Port')}" />
                                     <hbox>
                                         <textbox id="ldapPort"
-                                                 value="@{configurationController.ldapConfiguration.ldapPort}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapPort)@save(configurationController.ldapConfiguration.ldapPort)"
                                                  width="300px"
                                                  maxlength="5"/>
                                         <label value="${i18n:__t('Example: {0}', '389')}" />
@@ -367,7 +363,7 @@
                                     <label value="${i18n:_t('Base')}" />
                                     <hbox>
                                         <textbox id="ldapBase"
-                                                 value="@{configurationController.ldapConfiguration.ldapBase}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapBase)@save(configurationController.ldapConfiguration.ldapBase)"
                                                  width="300px"/>
                                         <label value="${i18n:__t('Example: {0}', 'dc=example,dc=org')}" />
                                     </hbox>
@@ -377,7 +373,7 @@
                                     <label value="${i18n:_t('UserDn')}" />
                                     <hbox>
                                         <textbox id="ldapUserDn"
-                                                 value="@{configurationController.ldapConfiguration.ldapUserDn}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapUserDn)@save(configurationController.ldapConfiguration.ldapUserDn)"
                                                  width="300px"/>
                                         <label value="${i18n:__t('Example: {0}', 'cn=admin,dc=example,dc=org')}" />
                                     </hbox>
@@ -386,7 +382,7 @@
                                 <row>
                                     <label value="${i18n:_t('Password')}" />
                                     <textbox id="ldapPassword"
-                                             value="@{configurationController.ldapConfiguration.ldapPassword}"
+                                             value="@load(configurationController.ldapConfiguration.ldapPassword)@save(configurationController.ldapConfiguration.ldapPassword)"
                                              type="password"  width="300px"/>
                                 </row>
                             </rows>
@@ -415,7 +411,7 @@
                                     <label value="${i18n:_t('UserId')}" />
                                     <hbox>
                                         <textbox id="ldapUserId"
-                                                 value="@{configurationController.ldapConfiguration.ldapUserId}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapUserId)@save(configurationController.ldapConfiguration.ldapUserId)"
                                                  width="300px"/>
                                         <label value="${i18n:__t('Example: {0}', 'uid')}" />
                                     </hbox>
@@ -424,7 +420,7 @@
                                 <row>
                                     <label value="${i18n:_t('Save passwords in database')}" />
                                     <checkbox id="ldapSavePasswordsDB"
-                                              checked="@{configurationController.ldapConfiguration.ldapSavePasswordsDB}" />
+                                              checked="@load(configurationController.ldapConfiguration.ldapSavePasswordsDB)@save(configurationController.ldapConfiguration.ldapSavePasswordsDB)" />
                                 </row>
 
                             </rows>
@@ -456,9 +452,9 @@
                                     <label value="${i18n:_t('Group path')}" />
                                     <hbox>
                                         <textbox id="ldapGroupPath"
-                                                 value="@{configurationController.ldapConfiguration.ldapGroupPath}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapGroupPath)@save(configurationController.ldapConfiguration.ldapGroupPath)"
                                                  width="300px"
-                                                 disabled="@{configurationController.ldapPropertyStrategy}" />
+                                                 disabled="@load(configurationController.ldapPropertyStrategy)" />
                                         <label value="${i18n:__t('Example: {0}', 'ou=groups')}" />
                                         <label value="${i18n:_t('(If it is empty, a node strategy is used)')}" />
                                     </hbox>
@@ -468,7 +464,7 @@
                                     <label value="${i18n:_t('Role property')}" />
                                     <hbox>
                                         <textbox id="ldapRoleProperty"
-                                                 value="@{configurationController.ldapConfiguration.ldapRoleProperty}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapRoleProperty)@save(configurationController.ldapConfiguration.ldapRoleProperty)"
                                                  width="300px" />
                                         <label value="${i18n:__t('Example: {0}', 'member')}" />
                                     </hbox>
@@ -478,7 +474,7 @@
                                     <label value="${i18n:_t('Role search query')}" />
                                     <hbox>
                                         <textbox id="ldapSearchQuery"
-                                                 value="@{configurationController.ldapConfiguration.ldapSearchQuery}"
+                                                 value="@load(configurationController.ldapConfiguration.ldapSearchQuery)@save(configurationController.ldapConfiguration.ldapSearchQuery)"
                                                  width="300px" />
                                         <label value="${i18n:__t('Example: {0}', 'uid=[USER_ID],ou=people,dc=example,dc=org')}" />
                                     </hbox>
@@ -492,8 +488,8 @@
 
                         <vbox id="ldapRoles">
                             <grid id="configurationRoles"
-                                  model="@{configurationController.roles}"
-                                  rowRenderer="@{configurationController.allUserRolesRenderer}"
+                                  model="@load(configurationController.rolesModel)"
+                                  rowRenderer="@load(configurationController.allUserRolesRenderer)"
                                   mold="paging" pageSize="10" sizedByContent="true">
                                 <columns>
                                     <column label="${i18n:_t('LibrePlan Role')}" width="200px" />
@@ -513,20 +509,16 @@
                             <hbox pack="center">
                                 <label value="${i18n:_t('Select connector')}" />
                                 <combobox id="connectorCombo" autodrop="true"
-                                          model="@{configurationController.connectors}"
-                                          selectedItem="@{configurationController.selectedConnector}">
-                                    <comboitem
-                                            self="@{each=connectors}"
-                                            label="@{connectors.name}"
-                                            value="@{connectors}" />
-                                </combobox>
+                                          model="@load(configurationController.connectorsModel)"
+                                          itemRenderer="@load(configurationController.connectorsRenderer)"
+                                          selectedItem="@load(configurationController.selectedConnector)@save(configurationController.selectedConnector)" />
                             </hbox>
 
                             <separator />
 
                             <grid id="connectorPropertriesGrid"
-                                  model="@{configurationController.connectorPropertries}"
-                                  rowRenderer="@{configurationController.connectorPropertriesRenderer}">
+                                  model="@load(configurationController.connectorPropertries)"
+                                  rowRenderer="@load(configurationController.connectorPropertriesRenderer)">
 
                                 <columns>
                                     <column label="${i18n:_t('Name')}" width="200px"/>

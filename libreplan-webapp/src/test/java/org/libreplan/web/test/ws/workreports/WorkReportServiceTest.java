@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -39,13 +40,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 import org.junit.Test;
@@ -531,17 +533,19 @@ public class WorkReportServiceTest {
 
         Session session = sessionFactory.openSession();
 
-        List workReports = session
-                .createCriteria(WorkReport.class)
-                .addOrder(Order.asc("code"))
-                .list();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+
+        CriteriaQuery<WorkReport> cq = cb.createQuery(WorkReport.class);
+        Root<WorkReport> root = cq.from(WorkReport.class);
+        cq.orderBy(cb.asc(root.get("code")));
+        List<WorkReport> workReports = session.createQuery(cq).getResultList();
 
         assertThat(workReports.size(), equalTo(previous + 1));
 
-        WorkReport imported = (WorkReport) session
-                .createCriteria(WorkReport.class)
-                .add(Restrictions.eq("code", workReportDTO.code.trim()).ignoreCase())
-                .uniqueResult();
+        CriteriaQuery<WorkReport> cqImported = cb.createQuery(WorkReport.class);
+        Root<WorkReport> rootImported = cqImported.from(WorkReport.class);
+        cqImported.where(cb.equal(cb.lower(rootImported.get("code")), workReportDTO.code.trim().toLowerCase()));
+        WorkReport imported = session.createQuery(cqImported).getSingleResult();
 
         assertThat(imported.getDate(), equalTo(date));
 

@@ -1,0 +1,166 @@
+- generic [ref=f181e1]:
+  - generic [ref=f181e4]:
+    - generic [ref=f181e5]:
+      - table [ref=f181e6]:
+        - rowgroup [ref=f181e7]:
+          - row [ref=f181e8]:
+            - cell [ref=f181e9]:
+              - link [ref=f181e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f181e12]:
+              - table [ref=f181e13]:
+                - rowgroup [ref=f181e14]:
+                  - row [ref=f181e15]:
+                    - cell [ref=f181e16]:
+                      - generic [ref=f181e17]:
+                        - menubar [ref=f181e18]:
+                          - menuitem "Planning" [ref=f181e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f181e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f181e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f181e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f181e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f181e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f181e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f181e33]:
+                          - rowgroup [ref=f181e34]:
+                            - row [ref=f181e35]:
+                              - cell [ref=f181e36]:
+                                - table [ref=f181e37]:
+                                  - rowgroup [ref=f181e38]:
+                                    - row [ref=f181e39]:
+                                      - cell [ref=f181e40]
+                                      - cell [ref=f181e41]:
+                                        - strong [ref=f181e42]: START
+                                      - cell [ref=f181e43]
+                                      - cell:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell [ref=f181e44]:
+                                - generic [ref=f181e45]:
+                                  - link "Help" [ref=f181e46] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f181e48]
+                                  - img "Info" [ref=f181e50]
+      - table [ref=f181e52]:
+        - rowgroup [ref=f181e53]:
+          - row [ref=f181e54]:
+            - cell [ref=f181e55]
+            - 'cell "user: admin" [ref=f181e56]'
+            - cell [ref=f181e57]:
+              - link "[Log out]" [ref=f181e58] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+    - generic [ref=f181e59]:
+      - table [ref=f181e60]:
+        - rowgroup [ref=f181e61]:
+          - row [ref=f181e62]:
+            - cell [ref=f181e63]:
+              - table [ref=f181e64]:
+                - rowgroup [ref=f181e65]:
+                  - row [ref=f181e66]:
+                    - cell [ref=f181e67]:
+                      - table [ref=f181e68]:
+                        - rowgroup [ref=f181e69]:
+                          - row [ref=f181e70]:
+                            - cell [ref=f181e71]:
+                              - table [ref=f181e72]:
+                                - rowgroup [ref=f181e73]:
+                                  - row [ref=f181e74]:
+                                    - cell [ref=f181e75]:
+                                      - button "Create New Project" [ref=f181e76] [cursor=pointer]
+                  - row [ref=f181e78]:
+                    - cell [ref=f181e79]
+                  - row [ref=f181e80]:
+                    - cell [ref=f181e81]:
+                      - table [ref=f181e82]:
+                        - rowgroup [ref=f181e83]:
+                          - row [ref=f181e84]:
+                            - cell [ref=f181e85]:
+                              - table [ref=f181e86]:
+                                - rowgroup [ref=f181e87]:
+                                  - row [ref=f181e88]:
+                                    - cell [ref=f181e89]:
+                                      - button "Projects Planning" [ref=f181e90] [cursor=pointer]
+                                  - row [ref=f181e91]:
+                                    - cell [ref=f181e92]
+                                  - row:
+                                    - cell
+                                  - row [ref=f181e93]:
+                                    - cell [ref=f181e94]
+                                  - row [ref=f181e95]:
+                                    - cell [ref=f181e96]:
+                                      - button "Projects List" [ref=f181e97] [cursor=pointer]
+                                  - row [ref=f181e98]:
+                                    - cell [ref=f181e99]
+                                  - row:
+                                    - cell
+                                  - row [ref=f181e100]:
+                                    - cell [ref=f181e101]
+                                  - row [ref=f181e102]:
+                                    - cell [ref=f181e103]:
+                                      - button "Resources Load" [ref=f181e104] [cursor=pointer]
+                                  - row [ref=f181e105]:
+                                    - cell [ref=f181e106]
+                                  - row:
+                                    - cell
+                                  - row [ref=f181e107]:
+                                    - cell [ref=f181e108]
+                                  - row [ref=f181e109]:
+                                    - cell [ref=f181e110]:
+                                      - button "Queue-based Resources Planning" [ref=f181e111] [cursor=pointer]
+                                  - row [ref=f181e112]:
+                                    - cell [ref=f181e113]
+                                  - row:
+                                    - cell
+                                  - row [ref=f181e114]:
+                                    - cell [ref=f181e115]
+                                  - row [ref=f181e116]:
+                                    - cell [ref=f181e117]:
+                                      - button "Logs" [ref=f181e118] [cursor=pointer]
+                                  - row [ref=f181e119]:
+                                    - cell [ref=f181e120]
+                                  - row:
+                                    - cell
+                                  - row [ref=f181e121]:
+                                    - cell [ref=f181e122]
+                                  - row [ref=f181e123]:
+                                    - cell [ref=f181e124]:
+                                      - button "Pipeline" [ref=f181e125] [cursor=pointer]
+                                  - row [ref=f181e126]:
+                                    - cell [ref=f181e127]
+                                  - row:
+                                    - cell
+      - text:  
+    - table [ref=f181e130]:
+      - rowgroup [ref=f181e131]:
+        - row [ref=f181e132]:
+          - cell [ref=f181e133]:
+            - generic [ref=f181e135]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f181e136] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f181e137]
+    - text:  
+  - link [active]:
+    - /url: javascript:;
+  - alert:
+    - generic [ref=f181e139]: changing perspective

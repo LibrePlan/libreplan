@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2012 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -55,14 +56,13 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.SortedSet;
 
 import static org.libreplan.web.I18nHelper._t;
 
@@ -93,6 +93,8 @@ public class ExpenseSheetCRUDController
 
     private BandboxSearch bandboxResource;
 
+    private BandboxSearch bandboxSelectOrder;
+
     private Textbox tbConcept;
 
     private ExpenseSheetLineRenderer expenseSheetLineRenderer = new ExpenseSheetLineRenderer();
@@ -118,6 +120,59 @@ public class ExpenseSheetCRUDController
         super.doAfterCompose(comp);
         checkUserHasProperRoleOrSendForbiddenCode();
         URLHandlerRegistry.getRedirectorFor(IExpenseSheetCRUDController.class).register(this, page);
+
+        // BaseCRUDController.doAfterCompose() already calls showListWindow() (which reloads
+        // listWindow's bindings), but that happens before AnnotateBinderInit's own later
+        // page-level pass has created any binder at all, so it's a no-op. Redo it here, now that
+        // the binder exists. Only listWindow is reloaded - editWindow's bindings reference
+        // controller.expenseSheet/newExpenseSheetLine, which are still null at this point (they're
+        // only set up by initCreate()/initEdit(), called later from goToCreateForm()/
+        // goToEditForm()); showEditWindow() reloads editWindow's own bindings once that has
+        // happened. createBindingsFor still covers the whole tree since it only registers
+        // bindings, it doesn't evaluate them.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(listWindow);
+
+        loadComponentsEditWindow();
+        wireBandboxSearchManualSaveListeners();
+    }
+
+    /**
+     * BandboxSearch.setSelectedElement() posts a Binder.SAVE_EVENT to itself when a binder is
+     * present, but AnnotateBinder doesn't recognize that generic event as a save-trigger for a
+     * custom HtmlMacroComponent's "selectedElement" property - there's no native save-event
+     * registered for it, so an "@save" binding on selectedElement silently never fires. Called
+     * once from doAfterCompose - editWindow's BandboxSearch fellows already exist in the composed
+     * tree even while editWindow itself is still hidden, and are reused (not recreated) across
+     * every subsequent create/edit cycle, so wiring the listeners more than once would stack
+     * duplicate saves.
+     */
+    private void wireBandboxSearchManualSaveListeners() {
+        EventListener updateProject = event -> {
+            Listitem item = bandboxSelectOrder.getSelectedItem();
+            setProject(item == null ? null : (Order) item.getValue());
+        };
+        bandboxSelectOrder.setListboxEventListener(Events.ON_SELECT, updateProject);
+        bandboxSelectOrder.setListboxEventListener(Events.ON_OK, updateProject);
+        bandboxSelectOrder.setBandboxEventListener(Events.ON_CHANGING, updateProject);
+
+        EventListener updateTask = event -> {
+            Listitem item = bandboxTasks.getSelectedItem();
+            OrderElement orderElement = item == null ? null : (OrderElement) item.getValue();
+            expenseSheetModel.getNewExpenseSheetLine().setOrderElement(orderElement);
+        };
+        bandboxTasks.setListboxEventListener(Events.ON_SELECT, updateTask);
+        bandboxTasks.setListboxEventListener(Events.ON_OK, updateTask);
+        bandboxTasks.setBandboxEventListener(Events.ON_CHANGING, updateTask);
+
+        EventListener updateResource = event -> {
+            Listitem item = bandboxResource.getSelectedItem();
+            Resource resource = item == null ? null : (Resource) item.getValue();
+            expenseSheetModel.getNewExpenseSheetLine().setResource(resource);
+        };
+        bandboxResource.setListboxEventListener(Events.ON_SELECT, updateResource);
+        bandboxResource.setListboxEventListener(Events.ON_OK, updateResource);
+        bandboxResource.setBandboxEventListener(Events.ON_CHANGING, updateResource);
     }
 
     private void checkUserHasProperRoleOrSendForbiddenCode() {
@@ -150,6 +205,7 @@ public class ExpenseSheetCRUDController
         gridExpenseLines = (Grid) editWindow.getFellowIfAny("gridExpenseLines");
         bandboxResource = (BandboxSearch) editWindow.getFellowIfAny("bandboxResource");
         bandboxTasks = (BandboxSearch) editWindow.getFellowIfAny("bandboxTasks");
+        bandboxSelectOrder = (BandboxSearch) editWindow.getFellowIfAny("bandboxSelectOrder");
     }
 
     /**
@@ -157,7 +213,10 @@ public class ExpenseSheetCRUDController
      */
 
     public List<ExpenseSheet> getExpenseSheets() {
-        return expenseSheetModel.getExpenseSheets();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(expenseSheetModel.getExpenseSheets());
     }
 
     /**
@@ -168,8 +227,24 @@ public class ExpenseSheetCRUDController
         return expenseSheetModel.getExpenseSheet();
     }
 
-    public SortedSet<ExpenseSheetLine> getExpenseSheetLines() {
-        return expenseSheetModel.getExpenseSheetLines();
+    /**
+     * IntegrationEntity.isCodeAutogenerated() returns a boxed Boolean - ZK's BeanELResolver only
+     * recognizes the "is"-prefix getter convention for properties declared as primitive boolean,
+     * so binding directly to it throws PropertyNotFoundException. This thin wrapper (with matching
+     * setter for @save) exposes a primitive boolean instead.
+     */
+    public boolean isExpenseSheetCodeAutogenerated() {
+        return getExpenseSheet().isCodeAutogenerated();
+    }
+
+    public void setExpenseSheetCodeAutogenerated(boolean codeAutogenerated) {
+        getExpenseSheet().setCodeAutogenerated(codeAutogenerated);
+    }
+
+    public List<ExpenseSheetLine> getExpenseSheetLines() {
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic coercion from SortedSet (or List) to ListModel, so wrap it explicitly.
+        return new org.zkoss.zul.ListModelList<>(expenseSheetModel.getExpenseSheetLines());
     }
 
     /**

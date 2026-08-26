@@ -32,11 +32,11 @@
          <hbox>
 
             <listbox id="assignedObjects"
-                model="@{top.assignedObjects}"
-                itemRenderer="@{top.renderer}"
+                model="@load(top.assignedObjectsModel)"
+                itemRenderer="@load(top.renderer)"
                 multiple="true" checkmark="true">
                 <listhead>
-                    <listheader label="@{top.assignedTitle}" />
+                    <listheader label="@load(top.assignedTitle)" />
                 </listhead>
             </listbox>
 
@@ -48,11 +48,11 @@
             </vbox>
 
             <listbox id="unassignedObjects"
-                model="@{top.unassignedObjects}"
-                itemRenderer="@{top.renderer}"
+                model="@load(top.unassignedObjectsModel)"
+                itemRenderer="@load(top.renderer)"
                 multiple="true" checkmark="true">
                 <listhead>
-                    <listheader label="@{top.unassignedTitle}" />
+                    <listheader label="@load(top.unassignedTitle)" />
                 </listhead>
             </listbox>
 

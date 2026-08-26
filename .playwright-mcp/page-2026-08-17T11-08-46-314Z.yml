@@ -1,0 +1,254 @@
+- generic [ref=f192e1]:
+  - generic [ref=f192e4]:
+    - generic [ref=f192e5]:
+      - table [ref=f192e6]:
+        - rowgroup [ref=f192e7]:
+          - row [ref=f192e1635]:
+            - cell [ref=f192e9]:
+              - link [ref=f192e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f192e1636]:
+              - table [ref=f192e13]:
+                - rowgroup [ref=f192e14]:
+                  - row [ref=f192e1637]:
+                    - cell [ref=f192e1638]:
+                      - generic [ref=f192e17]:
+                        - menubar [ref=f192e18]:
+                          - menuitem "Planning" [ref=f192e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f192e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f192e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f192e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f192e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f192e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f192e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f192e33]:
+                          - rowgroup [ref=f192e34]:
+                            - row [ref=f192e1639]:
+                              - cell [ref=f192e1640]:
+                                - table [ref=f192e37]:
+                                  - rowgroup [ref=f192e38]:
+                                    - row [ref=f192e1641]:
+                                      - cell [ref=f192e40]
+                                      - cell [ref=f192e41]:
+                                        - strong [ref=f192e42]: START
+                                      - cell [ref=f192e43]
+                                      - cell [ref=f192e1642]:
+                                        - table [ref=f192e45]:
+                                          - rowgroup [ref=f192e46]:
+                                            - row [ref=f192e1643]:
+                                              - cell [ref=f192e1644]:
+                                                - table [ref=f192e49]:
+                                                  - rowgroup [ref=f192e50]:
+                                                    - row [ref=f192e1645]:
+                                                      - cell [ref=f192e1646]
+                                                      - cell [ref=f192e1648]
+                                                      - cell "Planning" [ref=f192e1649]
+                                                      - cell [ref=f192e1650]
+                                                      - cell [ref=f192e1651]
+                                                      - cell [ref=f192e1653]
+                                                      - cell "Project Details" [ref=f192e1654]
+                                                      - cell [ref=f192e1655]
+                                                      - cell [ref=f192e1656]
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell [ref=f192e61]:
+                                - generic [ref=f192e62]:
+                                  - link "Help" [ref=f192e63] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f192e65]
+                                  - img "Info" [ref=f192e67]
+      - table [ref=f192e69]:
+        - rowgroup [ref=f192e70]:
+          - row [ref=f192e71]:
+            - cell [ref=f192e72]
+            - 'cell "user: admin" [ref=f192e73]'
+            - cell [ref=f192e74]:
+              - link "[Log out]" [ref=f192e75] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f192e76]:
+      - table [ref=f192e77]:
+        - rowgroup [ref=f192e78]:
+          - row [ref=f192e79]:
+            - cell [ref=f192e80]:
+              - table [ref=f192e81]:
+                - rowgroup [ref=f192e82]:
+                  - row [ref=f192e83]:
+                    - cell [ref=f192e84]:
+                      - table [ref=f192e85]:
+                        - rowgroup [ref=f192e86]:
+                          - row [ref=f192e87]:
+                            - cell [ref=f192e88]:
+                              - table [ref=f192e89]:
+                                - rowgroup [ref=f192e90]:
+                                  - row [ref=f192e91]:
+                                    - cell [ref=f192e1658]:
+                                      - button "Save Project" [ref=f192e1659] [cursor=pointer]
+                                    - cell [ref=f192e1661]
+                                    - cell [ref=f192e1662]:
+                                      - button "Cancel editing" [ref=f192e1663] [cursor=pointer]
+                  - row [ref=f192e95]:
+                    - cell [ref=f192e96]
+                  - row [ref=f192e97]:
+                    - cell [ref=f192e98]:
+                      - table [ref=f192e99]:
+                        - rowgroup [ref=f192e100]:
+                          - row [ref=f192e101]:
+                            - cell [ref=f192e102]:
+                              - table [ref=f192e103]:
+                                - rowgroup [ref=f192e104]:
+                                  - row [ref=f192e105]:
+                                    - cell [ref=f192e106]:
+                                      - button "Projects Planning" [ref=f192e107] [cursor=pointer]
+                                  - row [ref=f192e108]:
+                                    - cell [ref=f192e109]
+                                  - row:
+                                    - cell
+                                  - row [ref=f192e110]:
+                                    - cell [ref=f192e111]
+                                  - row [ref=f192e112]:
+                                    - cell [ref=f192e113]:
+                                      - button "Projects List" [ref=f192e114] [cursor=pointer]
+                                  - row [ref=f192e115]:
+                                    - cell [ref=f192e116]
+                                  - row:
+                                    - cell
+                                  - row [ref=f192e117]:
+                                    - cell [ref=f192e118]
+                                  - row [ref=f192e119]:
+                                    - cell [ref=f192e120]:
+                                      - button "Resources Load" [ref=f192e121] [cursor=pointer]
+                                  - row [ref=f192e122]:
+                                    - cell [ref=f192e123]
+                                  - row:
+                                    - cell
+                                  - row [ref=f192e124]:
+                                    - cell [ref=f192e125]
+                                  - row [ref=f192e126]:
+                                    - cell [ref=f192e127]:
+                                      - button "Queue-based Resources Planning" [ref=f192e128] [cursor=pointer]
+                                  - row [ref=f192e129]:
+                                    - cell [ref=f192e130]
+                                  - row:
+                                    - cell
+                                  - row [ref=f192e131]:
+                                    - cell [ref=f192e132]
+                                  - row [ref=f192e133]:
+                                    - cell [ref=f192e134]:
+                                      - button "Logs" [ref=f192e135] [cursor=pointer]
+                                  - row [ref=f192e136]:
+                                    - cell [ref=f192e137]
+                                  - row:
+                                    - cell
+                                  - row [ref=f192e138]:
+                                    - cell [ref=f192e139]
+                                  - row [ref=f192e140]:
+                                    - cell [ref=f192e141]:
+                                      - button "Pipeline" [ref=f192e142] [cursor=pointer]
+                                  - row [ref=f192e143]:
+                                    - cell [ref=f192e144]
+                                  - row:
+                                    - cell
+      - text:    
+      - generic [ref=f192e1665]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table:
+                  - rowgroup:
+                    - row:
+                      - text:           
+                      - cell:
+                        - table:
+                          - rowgroup:
+                            - row:
+                              - cell:
+                                - table
+        - text:    
+        - generic [ref=f192e1666]:
+          - table:
+            - rowgroup:
+              - row:
+                - cell:
+                  - table
+          - text:     
+          - generic [ref=f192e1669]:
+            - tablist [ref=f192e1670]:
+              - listitem [ref=f192e1671] [cursor=pointer]:
+                - generic [ref=f192e1672]: WBS (tasks)
+              - listitem [ref=f192e1674] [cursor=pointer]:
+                - generic [ref=f192e1675]: General data
+              - listitem [ref=f192e1677] [cursor=pointer]:
+                - generic [ref=f192e1678]: Cost
+              - listitem [ref=f192e1680] [cursor=pointer]:
+                - generic [ref=f192e1681]: Progress
+              - listitem [ref=f192e1683] [cursor=pointer]:
+                - generic [ref=f192e1684]: Labels
+              - listitem [ref=f192e1686] [cursor=pointer]:
+                - generic [ref=f192e1687]: Criterion Requirement
+              - listitem [ref=f192e1689] [cursor=pointer]:
+                - generic [ref=f192e1690]: Materials
+              - listitem [ref=f192e1692] [cursor=pointer]:
+                - generic [ref=f192e1693]: Task quality forms
+              - listitem [ref=f192e1695] [cursor=pointer]:
+                - generic [ref=f192e1696]: Files
+              - listitem [ref=f192e1698] [cursor=pointer]:
+                - generic [ref=f192e1699]: Authorizations
+            - generic [ref=f192e1701] [cursor=pointer]: 
+            - generic [ref=f192e1703] [cursor=pointer]: 
+            - generic [ref=f192e1705]:
+              - text:    
+              - tabpanel [ref=f192e1706]
+              - text:                                      
+    - table [ref=f192e731]:
+      - rowgroup [ref=f192e732]:
+        - row [ref=f192e733]:
+          - cell [ref=f192e734]:
+            - generic [ref=f192e736]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f192e737] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f192e738]
+    - text:    
+  - generic [ref=f192e1707]:
+    - generic [ref=f192e1708]: "LibrePlan: Runtime Error"
+    - generic [ref=f192e1710]:
+      - generic [ref=f192e1711]: Message - Not allowed to set vflex and rows at the same time
+      - generic [ref=f192e1714]:
+        - grid [ref=f192e1715]:
+          - rowgroup [ref=f192e1719]:
+            - gridcell "Exception type" [ref=f192e1720]
+            - gridcell "class org.zkoss.zk.ui.UiException" [ref=f192e1722]
+            - gridcell "Status code" [ref=f192e1724]
+            - gridcell "500" [ref=f192e1726]
+            - gridcell "Stacktrace" [ref=f192e1728]
+            - gridcell [ref=f192e1730]:
+              - textbox [active] [ref=f192e1732]: "org.zkoss.zk.ui.UiException: Not allowed to set vflex and rows at the same time at org.zkoss.zul.Tree.setVflex(Tree.java:900) at org.zkoss.zk.ui.HtmlBasedComponent$16.setValue(HtmlBasedComponent.java:966) at org.zkoss.zk.ui.HtmlBasedComponent$16.setValue(HtmlBasedComponent.java:964) at org.zkoss.zk.ui.metainfo.Property.assign0(Property.java:246) at org.zkoss.zk.ui.metainfo.Property.assign(Property.java:186) at org.zkoss.zk.ui.metainfo.ComponentInfo.applyProperties(ComponentInfo.java:743) at org.zkoss.zk.ui.impl.AbstractUiFactory.newComponent(AbstractUiFactory.java:150) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:930) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:847) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:805) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.createComponents(UiEngineImpl.java:1154) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents0(AbstractExecution.java:342) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents(AbstractExecution.java:303) at org.zkoss.zk.ui.HtmlMacroComponent.compose(HtmlMacroComponent.java:173) at org.zkoss.zk.ui.HtmlMacroComponent.afterCompose(HtmlMacroComponent.java:144) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:951) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.createComponents(UiEngineImpl.java:1154) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents0(AbstractExecution.java:342) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents(AbstractExecution.java:303) at org.zkoss.zk.ui.Executions.createComponents(Executions.java:176) at org.libreplan.web.orders.OrderCRUDController.addEditWindowIfNecessary(OrderCRUDController.java:414) at org.libreplan.web.orders.OrderCRUDController.prepareEditWindow(OrderCRUDController.java:1141) at org.libreplan.web.orders.OrderCRUDController.initEdit(OrderCRUDController.java:1109) at org.libreplan.web.planner.tabs.OrdersTabCreator$4.afterShowAction(OrdersTabCreator.java:168) at org.libreplan.web.planner.tabs.CreatedOnDemandTab.show(CreatedOnDemandTab.java:95) at org.libreplan.web.planner.tabs.TabOnModeType.changeTab(TabOnModeType.java:85) at org.libreplan.web.planner.tabs.TabOnModeType.lambda$new$0(TabOnModeType.java:76) at org.libreplan.web.planner.tabs.Mode.fireModeTypeChanged(Mode.java:101) at org.libreplan.web.planner.tabs.Mode.changeTo(Mode.java:92) at org.libreplan.web.planner.tabs.Mode.goToOrderMode(Mode.java:81) at org.libreplan.web.planner.tabs.MultipleTabsPlannerController.lambda$changeModeTo$0(MultipleTabsPlannerController.java:617) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:64) at org.libreplan.web.planner.tabs.MultipleTabsPlannerController$2.goToOrderDetails(MultipleTabsPlannerController.java:317) at org.libreplan.web.orders.OrderCRUDController.goToEditForm(OrderCRUDController.java:1103) at org.libreplan.web.orders.OrderCRUDController$OrdersRowRenderer.lambda$appendButtonEdit$0(OrderCRUDController.java:1351) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f192e1733]:
+          - rowgroup [ref=f192e1734]:
+            - row [ref=f192e1735]:
+              - cell [ref=f192e1736]:
+                - table [ref=f192e1737]:
+                  - rowgroup [ref=f192e1738]:
+                    - row [ref=f192e1739]:
+                      - cell [ref=f192e1740]:
+                        - button "Continue" [ref=f192e1741] [cursor=pointer]
+                      - cell [ref=f192e1742]
+                      - cell [ref=f192e1743]:
+                        - button "Reload" [ref=f192e1744] [cursor=pointer]
+                      - cell [ref=f192e1745]
+                      - cell [ref=f192e1746]:
+                        - button "Exit session" [ref=f192e1747] [cursor=pointer]

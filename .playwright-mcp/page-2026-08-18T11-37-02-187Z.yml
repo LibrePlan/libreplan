@@ -1,0 +1,226 @@
+- generic [ref=f669e4]:
+  - generic [ref=f669e5]:
+    - table [ref=f669e6]:
+      - rowgroup [ref=f669e7]:
+        - row [ref=f669e8]:
+          - cell [ref=f669e9]:
+            - link [ref=f669e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f669e12]:
+            - table [ref=f669e13]:
+              - rowgroup [ref=f669e14]:
+                - row [ref=f669e15]:
+                  - cell [ref=f669e16]:
+                    - generic [ref=f669e17]:
+                      - menubar [ref=f669e18]:
+                        - menuitem "Planning" [ref=f669e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f669e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f669e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f669e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f669e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f669e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f669e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f669e33]:
+                        - rowgroup [ref=f669e34]:
+                          - row [ref=f669e35]:
+                            - cell [ref=f669e36]:
+                              - table [ref=f669e37]:
+                                - rowgroup [ref=f669e38]:
+                                  - row [ref=f669e39]:
+                                    - cell [ref=f669e40]
+                                    - cell [ref=f669e41]:
+                                      - strong [ref=f669e42]: START
+                                    - cell [ref=f669e43]
+                                    - cell [ref=f669e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f669e45]:
+                                        - rowgroup [ref=f669e46]:
+                                          - row [ref=f669e47]:
+                                            - cell [ref=f669e48]:
+                                              - table [ref=f669e49]:
+                                                - rowgroup [ref=f669e50]:
+                                                  - row [ref=f669e51]:
+                                                    - cell [ref=f669e52]:
+                                                      - table [ref=f669e53]:
+                                                        - rowgroup [ref=f669e54]:
+                                                          - row [ref=f669e55]:
+                                                            - cell [ref=f669e56]:
+                                                              - table [ref=f669e57]:
+                                                                - rowgroup [ref=f669e58]:
+                                                                  - row [ref=f669e59]:
+                                                                    - cell [ref=f669e60]
+                                                                    - cell [ref=f669e63]
+                                                                    - cell "Resources" [ref=f669e64]
+                                                    - cell [ref=f669e65]
+                                                    - cell [ref=f669e66]:
+                                                      - table [ref=f669e67]:
+                                                        - rowgroup [ref=f669e68]:
+                                                          - row [ref=f669e69]:
+                                                            - cell [ref=f669e70]:
+                                                              - table [ref=f669e71]:
+                                                                - rowgroup [ref=f669e72]:
+                                                                  - row [ref=f669e73]:
+                                                                    - cell [ref=f669e74]
+                                                                    - cell [ref=f669e77]
+                                                                    - cell "Calendar Exception Days" [ref=f669e78]
+                            - cell [ref=f669e79]:
+                              - generic [ref=f669e80]:
+                                - link "Help" [ref=f669e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f669e83]
+                                - img "Info" [ref=f669e85]
+    - table [ref=f669e87]:
+      - rowgroup [ref=f669e88]:
+        - row [ref=f669e89]:
+          - cell [ref=f669e90]
+          - 'cell "user: admin" [ref=f669e91]'
+          - cell [ref=f669e92]:
+            - link "[Log out]" [ref=f669e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f669e94]:
+    - text:    
+    - generic [ref=f669e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:     
+      - generic [ref=f669e323]:
+        - generic [ref=f669e324]: "Edit Calendar Exception Day: LEAVE"
+        - generic [ref=f669e327]:
+          - generic [ref=f669e328]:
+            - tablist [ref=f669e329]:
+              - listitem [ref=f669e330] [cursor=pointer]:
+                - generic [ref=f669e331]: Edit
+            - text:  
+            - tabpanel [ref=f669e334]:
+              - grid [ref=f669e335]:
+                - rowgroup [ref=f669e339]:
+                  - gridcell "Code:" [ref=f669e340]
+                  - gridcell [ref=f669e342]:
+                    - table [ref=f669e344]:
+                      - rowgroup [ref=f669e345]:
+                        - row [ref=f669e346]:
+                          - cell [ref=f669e347]:
+                            - table [ref=f669e348]:
+                              - rowgroup [ref=f669e349]:
+                                - row [ref=f669e350]:
+                                  - cell [ref=f669e351]:
+                                    - textbox [disabled] [ref=f669e352]: CALENDAR_EXCEPTION_TYPE0002
+                                  - cell [ref=f669e353]
+                                  - cell [ref=f669e354]:
+                                    - generic [ref=f669e355]:
+                                      - checkbox "Generate code" [checked] [ref=f669e356]
+                                      - text: Generate code
+                  - gridcell "Name" [ref=f669e357]
+                  - gridcell [ref=f669e359]:
+                    - textbox [ref=f669e361]: LEAVE
+                  - gridcell "Color" [ref=f669e362]
+                  - gridcell [ref=f669e364]:
+                    - table [ref=f669e366]:
+                      - rowgroup [ref=f669e367]:
+                        - row [ref=f669e368]:
+                          - cell [ref=f669e369]:
+                            - table [ref=f669e370]:
+                              - rowgroup [ref=f669e371]:
+                                - row [ref=f669e372]:
+                                  - cell "magenta" [ref=f669e373]:
+                                    - combobox [ref=f669e374]:
+                                      - option "red (default)"
+                                      - option "green"
+                                      - option "blue"
+                                      - option "cyan"
+                                      - option "magenta" [selected]
+                                      - option "yellow"
+                                      - option "black"
+                                      - option "orange"
+                                      - option "purple"
+                                  - cell [ref=f669e375]
+                                  - cell [ref=f669e376]
+                                  - cell [ref=f669e378]
+                                  - cell "Own exception" [ref=f669e379]
+                                  - cell [ref=f669e380]
+                                  - cell [ref=f669e381]
+                                  - cell [ref=f669e383]
+                                  - cell "Inherited exception" [ref=f669e384]
+                  - gridcell "Standard Effort" [ref=f669e385]
+                  - gridcell [ref=f669e387]:
+                    - table [ref=f669e389]:
+                      - rowgroup [ref=f669e390]:
+                        - row [ref=f669e391]:
+                          - cell [ref=f669e392]:
+                            - table [ref=f669e393]:
+                              - rowgroup [ref=f669e394]:
+                                - row [ref=f669e395]:
+                                  - cell [ref=f669e396]:
+                                    - spinbutton [ref=f669e397]: "0"
+                                    - generic [ref=f669e398] [cursor=pointer]:
+                                      - generic [ref=f669e399]: 
+                                      - generic [ref=f669e401]: 
+                                  - cell [ref=f669e403]
+                                  - cell [ref=f669e404]:
+                                    - spinbutton [ref=f669e405]: "0"
+                                    - generic [ref=f669e406] [cursor=pointer]:
+                                      - generic [ref=f669e407]: 
+                                      - generic [ref=f669e409]: 
+                  - gridcell "Extra Effort" [ref=f669e411]
+                  - gridcell [ref=f669e413]:
+                    - table [ref=f669e415]:
+                      - rowgroup [ref=f669e416]:
+                        - row [ref=f669e417]:
+                          - cell [ref=f669e418]:
+                            - table [ref=f669e419]:
+                              - rowgroup [ref=f669e420]:
+                                - row [ref=f669e421]:
+                                  - cell [ref=f669e422]:
+                                    - table [ref=f669e423]:
+                                      - rowgroup [ref=f669e424]:
+                                        - row [ref=f669e425]:
+                                          - cell [ref=f669e426]:
+                                            - table [ref=f669e427]:
+                                              - rowgroup [ref=f669e428]:
+                                                - row [ref=f669e429]:
+                                                  - cell [ref=f669e430]:
+                                                    - spinbutton [ref=f669e431]: "0"
+                                                    - generic [ref=f669e432] [cursor=pointer]:
+                                                      - generic [ref=f669e433]: 
+                                                      - generic [ref=f669e435]: 
+                                                  - cell [ref=f669e437]
+                                                  - cell [ref=f669e438]:
+                                                    - spinbutton [ref=f669e439]: "0"
+                                                    - generic [ref=f669e440] [cursor=pointer]:
+                                                      - generic [ref=f669e441]: 
+                                                      - generic [ref=f669e443]: 
+                                  - cell [ref=f669e445]
+                                  - cell [ref=f669e446]:
+                                    - generic [ref=f669e447]:
+                                      - checkbox "Infinitely Over Assignable" [ref=f669e448]
+                                      - text: Infinitely Over Assignable
+          - button "Save" [ref=f669e449] [cursor=pointer]
+          - button "Save and Continue" [ref=f669e450] [cursor=pointer]
+          - button "Cancel" [ref=f669e451] [cursor=pointer]
+  - table [ref=f669e315]:
+    - rowgroup [ref=f669e316]:
+      - row [ref=f669e317]:
+        - cell [ref=f669e318]:
+          - generic [ref=f669e320]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f669e321] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f669e322]
+  - text:    

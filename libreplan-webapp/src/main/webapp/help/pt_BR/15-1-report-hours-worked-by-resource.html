@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Relatório de Horas Trabalhadas por Recurso</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="relatorio-de-horas-trabalhadas-por-recurso">
+<h1 class="title">Relatório de Horas Trabalhadas por Recurso</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#finalidade" id="toc-entry-1">Finalidade</a></li>
+<li><a class="reference internal" href="#parametros-de-entrada-e-filtros" id="toc-entry-2">Parâmetros de Entrada e Filtros</a></li>
+<li><a class="reference internal" href="#resultado" id="toc-entry-3">Resultado</a><ul>
+<li><a class="reference internal" href="#cabecalho" id="toc-entry-4">Cabeçalho</a></li>
+<li><a class="reference internal" href="#rodape" id="toc-entry-5">Rodapé</a></li>
+<li><a class="reference internal" href="#corpo" id="toc-entry-6">Corpo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="finalidade">
+<h1><a class="toc-backref" href="#toc-entry-1">Finalidade</a></h1>
+<p>Este relatório extrai uma lista de tarefas e o tempo que os recursos dedicaram a elas dentro de um período especificado. Vários filtros permitem ao usuário refinar a consulta para obter apenas as informações desejadas e excluir dados irrelevantes.</p>
+</div>
+<div class="section" id="parametros-de-entrada-e-filtros">
+<h1><a class="toc-backref" href="#toc-entry-2">Parâmetros de Entrada e Filtros</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Datas</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Tipo</em>: Opcional.</li>
+<li><dl class="first docutils">
+<dt><em>Dois campos de data</em>:</dt>
+<dd><ul class="first last">
+<li><em>Data de Início:</em> É a data mais antiga para os relatórios de trabalho a serem incluídos. Relatórios de trabalho com datas anteriores à <em>Data de Início</em> são excluídos. Se este parâmetro for deixado em branco, os relatórios de trabalho não são filtrados pela <em>Data de Início</em>.</li>
+<li><em>Data de Fim:</em> É a data mais recente para os relatórios de trabalho a serem incluídos. Relatórios de trabalho com datas posteriores à <em>Data de Fim</em> são excluídos. Se este parâmetro for deixado em branco, os relatórios de trabalho não são filtrados pela <em>Data de Fim</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filtrar por Trabalhadores:</strong>
+*   <em>Tipo:</em> Opcional.
+*   <em>Como funciona:</em> Você pode selecionar um ou mais trabalhadores para restringir os relatórios de trabalho ao tempo registrado por esses trabalhadores específicos. Para adicionar um trabalhador como filtro, pesquise-o no seletor e clique no botão <em>Adicionar</em>. Se este filtro estiver vazio, os relatórios de trabalho serão recuperados independentemente do trabalhador.</li>
+<li><strong>Filtrar por Etiquetas:</strong>
+*   <em>Tipo:</em> Opcional.
+*   <em>Como funciona:</em> Você pode adicionar uma ou mais etiquetas para usar como filtros, pesquisando-as no seletor e clicando no botão <em>Adicionar</em>. Essas etiquetas são usadas para selecionar as tarefas a serem incluídas nos resultados ao calcular as horas dedicadas a elas. Este filtro pode ser aplicado a folhas de horas, tarefas, ambos ou nenhum.</li>
+<li><strong>Filtrar por Critérios:</strong>
+*   <em>Tipo:</em> Opcional.
+*   <em>Como funciona:</em> Você pode selecionar um ou mais critérios, pesquisando-os no seletor e clicando no botão <em>Adicionar</em>. Esses critérios são usados para selecionar os recursos que satisfaçam pelo menos um deles. O relatório mostrará todo o tempo dedicado pelos recursos que atendam a um dos critérios selecionados.</li>
+</ul>
+</div>
+<div class="section" id="resultado">
+<h1><a class="toc-backref" href="#toc-entry-3">Resultado</a></h1>
+<div class="section" id="cabecalho">
+<h2><a class="toc-backref" href="#toc-entry-4">Cabeçalho</a></h2>
+<p>O cabeçalho do relatório exibe os filtros que foram configurados e aplicados ao relatório atual.</p>
+</div>
+<div class="section" id="rodape">
+<h2><a class="toc-backref" href="#toc-entry-5">Rodapé</a></h2>
+<p>A data em que o relatório foi gerado é listada no rodapé.</p>
+</div>
+<div class="section" id="corpo">
+<h2><a class="toc-backref" href="#toc-entry-6">Corpo</a></h2>
+<p>O corpo do relatório é composto por vários grupos de informações.</p>
+<ul>
+<li><p class="first">O primeiro nível de agregação é por recurso. Todo o tempo dedicado por um recurso é mostrado em conjunto abaixo do cabeçalho. Cada recurso é identificado por:</p>
+<ul class="simple">
+<li><em>Trabalhador:</em> Sobrenome, Nome.</li>
+<li><em>Máquina:</em> Nome.</li>
+</ul>
+<p>Uma linha de resumo mostra o número total de horas trabalhadas pelo recurso.</p>
+</li>
+<li><p class="first">O segundo nível de agrupamento é por <em>data</em>. Todos os relatórios de um recurso específico na mesma data são mostrados em conjunto.</p>
+<p>Uma linha de resumo mostra o número total de horas trabalhadas pelo recurso nessa data.</p>
+</li>
+<li><p class="first">O nível final lista os relatórios de trabalho do trabalhador naquele dia. As informações exibidas para cada linha de relatório de trabalho são:</p>
+<ul class="simple">
+<li><em>Código da Tarefa:</em> O código da tarefa à qual as horas registradas são atribuídas.</li>
+<li><em>Nome da Tarefa:</em> O nome da tarefa à qual as horas registradas são atribuídas.</li>
+<li><em>Hora de Início:</em> Opcional. É a hora em que o recurso começou a trabalhar na tarefa.</li>
+<li><em>Hora de Fim:</em> Opcional. É a hora em que o recurso terminou de trabalhar na tarefa na data especificada.</li>
+<li><em>Campos de Texto:</em> Opcional. Se a linha do relatório de trabalho tiver campos de texto, os valores preenchidos são mostrados aqui. O formato é: &lt;Nome do campo de texto&gt;:&lt;Valor&gt;</li>
+<li><em>Etiquetas:</em> Depende de o modelo de relatório de trabalho ter um campo de etiqueta em sua definição. Se houver várias etiquetas, elas são mostradas na mesma coluna. O formato é: &lt;Nome do tipo de etiqueta&gt;:&lt;Valor da etiqueta&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

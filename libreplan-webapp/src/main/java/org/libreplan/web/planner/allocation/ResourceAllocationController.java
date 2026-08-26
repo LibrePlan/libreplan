@@ -501,10 +501,14 @@ public class ResourceAllocationController extends GenericForwardComposer {
         return Arrays.asList(CalculationTypeRadio.values());
     }
 
-    public List<?> getResourceAllocations() {
+    private List<?> resourceAllocationsList() {
         return formBinder != null
                 ? plusAggregatingRow(formBinder.getCurrentRows())
                 : Collections.<AllocationRow> emptyList();
+    }
+
+    public org.zkoss.zul.ListModel<?> getResourceAllocations() {
+        return new org.zkoss.zul.ListModelList<>(resourceAllocationsList());
     }
 
     private List<Object> plusAggregatingRow(List<AllocationRow> currentRows) {
@@ -647,7 +651,7 @@ public class ResourceAllocationController extends GenericForwardComposer {
     }
 
     public boolean hasResourceAllocations() {
-        return getResourceAllocations().size() > 1;
+        return resourceAllocationsList().size() > 1;
     }
 
     public boolean isAnyNotFlat() {

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -135,6 +136,48 @@ public class CustomerCommunicationDAOTest {
         } catch (ValidationException e) {
             // Ok
         }
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). getAll/getAllNotReviewed had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void testGetAllIncludesSaved() {
+        CustomerCommunication customerCommunication = createValidCustomerCommunication();
+        customerCommunicationDAO.save(customerCommunication);
+
+        boolean found = false;
+        for (CustomerCommunication c : customerCommunicationDAO.getAll()) {
+            if (c.getId().equals(customerCommunication.getId())) {
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
+    @Test
+    @Transactional
+    public void testGetAllNotReviewedOnlyReturnsUnreviewedOnes() {
+        CustomerCommunication notReviewed = createValidCustomerCommunication();
+        notReviewed.setReviewed(false);
+        customerCommunicationDAO.save(notReviewed);
+
+        CustomerCommunication reviewed = createValidCustomerCommunication();
+        reviewed.setReviewed(true);
+        customerCommunicationDAO.save(reviewed);
+
+        boolean notReviewedFound = false;
+        for (CustomerCommunication c : customerCommunicationDAO.getAllNotReviewed()) {
+            assertFalse(c.getReviewed());
+            if (c.getId().equals(notReviewed.getId())) {
+                notReviewedFound = true;
+            }
+            assertFalse(c.getId().equals(reviewed.getId()));
+        }
+        assertTrue(notReviewedFound);
     }
 
 }

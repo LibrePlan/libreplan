@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,10 +29,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Criteria;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
@@ -69,13 +72,13 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport> implements I
 
     private final String WORK_REPORT_TYPE_COLUMN = "workReportType";
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<WorkReport> getAllByWorkReportType(WorkReportType workReportType) {
-        return getSession()
-                .createCriteria(WorkReport.class)
-                .add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, workReportType))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReport> cq = cb.createQuery(WorkReport.class);
+        Root<WorkReport> root = cq.from(WorkReport.class);
+        cq.where(cb.equal(root.get(WORK_REPORT_TYPE_COLUMN), workReportType));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -141,13 +144,16 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport> implements I
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public WorkReport getPersonalTimesheetWorkReport(
             Resource resource, LocalDate date, PersonalTimesheetsPeriodicityEnum periodicity) {
 
-        Criteria criteria = getSession().createCriteria(WorkReport.class);
-        criteria.add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, getPersonalTimesheetsWorkReportType()));
-        List<WorkReport> personalTimesheets = criteria.add(Restrictions.eq("resource", resource)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReport> cq = cb.createQuery(WorkReport.class);
+        Root<WorkReport> root = cq.from(WorkReport.class);
+        cq.where(
+                cb.equal(root.get(WORK_REPORT_TYPE_COLUMN), getPersonalTimesheetsWorkReportType()),
+                cb.equal(root.get("resource"), resource));
+        List<WorkReport> personalTimesheets = getSession().createQuery(cq).getResultList();
 
         LocalDate start = periodicity.getStart(date);
         LocalDate end = periodicity.getEnd(date);
@@ -181,22 +187,23 @@ public class WorkReportDAO extends IntegrationEntityDAO<WorkReport> implements I
     }
 
     @Override
-    public boolean isAnyPersonalTimesheetAlreadySaved() {
-        return getSession()
-                .createCriteria(WorkReport.class)
-                .add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, getPersonalTimesheetsWorkReportType()))
-                .list()
-                .isEmpty();
+    public boolean noPersonalTimesheetsSavedYet() {
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReport> cq = cb.createQuery(WorkReport.class);
+        Root<WorkReport> root = cq.from(WorkReport.class);
+        cq.where(cb.equal(root.get(WORK_REPORT_TYPE_COLUMN), getPersonalTimesheetsWorkReportType()));
+        return getSession().createQuery(cq).getResultList().isEmpty();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<WorkReport> findPersonalTimesheetsByResourceAndOrderElement(Resource resource) {
-        return getSession()
-                .createCriteria(WorkReport.class)
-                .add(Restrictions.eq(WORK_REPORT_TYPE_COLUMN, getPersonalTimesheetsWorkReportType()))
-                .add(Restrictions.eq("resource", resource))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReport> cq = cb.createQuery(WorkReport.class);
+        Root<WorkReport> root = cq.from(WorkReport.class);
+        cq.where(
+                cb.equal(root.get(WORK_REPORT_TYPE_COLUMN), getPersonalTimesheetsWorkReportType()),
+                cb.equal(root.get("resource"), resource));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

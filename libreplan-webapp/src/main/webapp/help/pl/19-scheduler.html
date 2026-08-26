@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Harmonogram</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="harmonogram">
+<h1 class="title">Harmonogram</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#widok-listy-harmonogramowania-zadan" id="toc-entry-1">Widok listy harmonogramowania zadań</a></li>
+<li><a class="reference internal" href="#dodawanie-lub-edytowanie-zadania" id="toc-entry-2">Dodawanie lub edytowanie zadania</a><ul>
+<li><a class="reference internal" href="#wyskakujace-okienko-wyrazenia-cron" id="toc-entry-3">Wyskakujące okienko wyrażenia cron</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usuwanie-zadania" id="toc-entry-4">Usuwanie zadania</a></li>
+<li><a class="reference internal" href="#reczne-uruchamianie-zadania" id="toc-entry-5">Ręczne uruchamianie zadania</a></li>
+</ul>
+</div>
+<p>Harmonogram jest zaprojektowany do dynamicznego planowania zadań. Jest opracowany przy użyciu <em>Spring Framework Quartz scheduler</em>.</p>
+<p>Aby efektywnie korzystać z tego harmonogramu, należy najpierw utworzyć zadania (zadania Quartz), które mają być planowane. Następnie zadania te można dodać do bazy danych, ponieważ wszystkie zadania do zaplanowania są przechowywane w bazie danych.</p>
+<p>Gdy harmonogram startuje, odczytuje z bazy danych zadania do zaplanowania lub odplanowania i odpowiednio je planuje lub usuwa. Następnie zadania mogą być dynamicznie dodawane, aktualizowane lub usuwane przy użyciu interfejsu użytkownika <tt class="docutils literal">Harmonogramowanie zadań</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Harmonogram startuje, gdy aplikacja LibrePlan uruchamia się i zatrzymuje, gdy aplikacja się zatrzymuje.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Ten harmonogram obsługuje tylko <tt class="docutils literal">wyrażenia cron</tt> do planowania zadań.</p>
+</div>
+<p>Kryteria, których harmonogram używa do planowania lub usuwania zadań po uruchomieniu, są następujące:</p>
+<p>Dla wszystkich zadań:</p>
+<ul class="simple">
+<li>Zaplanuj<ul>
+<li>Zadanie ma <em>Łącznik</em>, a <em>Łącznik</em> jest aktywowany, i zadanie może być zaplanowane.</li>
+<li>Zadanie nie ma <em>Łącznika</em> i może być zaplanowane.</li>
+</ul>
+</li>
+<li>Usuń<ul>
+<li>Zadanie ma <em>Łącznik</em>, a <em>Łącznik</em> nie jest aktywowany.</li>
+<li>Zadanie ma <em>Łącznik</em>, a <em>Łącznik</em> jest aktywowany, ale zadanie nie może być zaplanowane.</li>
+<li>Zadanie nie ma <em>Łącznika</em> i nie może być zaplanowane.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Zadań nie można ponownie zaplanować ani odplanować, jeśli są aktualnie uruchomione.</p>
+</div>
+<div class="section" id="widok-listy-harmonogramowania-zadan">
+<h1><a class="toc-backref" href="#toc-entry-1">Widok listy harmonogramowania zadań</a></h1>
+<p>Widok <tt class="docutils literal">Lista harmonogramowania zadań</tt> umożliwia użytkownikom:</p>
+<ul class="simple">
+<li>Dodanie nowego zadania.</li>
+<li>Edycję istniejącego zadania.</li>
+<li>Usunięcie zadania.</li>
+<li>Ręczne uruchomienie procesu.</li>
+</ul>
+</div>
+<div class="section" id="dodawanie-lub-edytowanie-zadania">
+<h1><a class="toc-backref" href="#toc-entry-2">Dodawanie lub edytowanie zadania</a></h1>
+<p>Z widoku <tt class="docutils literal">Lista harmonogramowania zadań</tt> kliknij:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Utwórz</tt>, aby dodać nowe zadanie, lub</li>
+<li><tt class="docutils literal">Edytuj</tt>, aby zmodyfikować wybrane zadanie.</li>
+</ul>
+<p>Obie akcje otworzą formularz tworzenia/edycji <tt class="docutils literal">zadania</tt>. <tt class="docutils literal">Formularz</tt> wyświetla następujące właściwości:</p>
+<ul class="simple">
+<li>Pola:<ul>
+<li><strong>Grupa zadań:</strong> Nazwa grupy zadań.</li>
+<li><strong>Nazwa zadania:</strong> Nazwa zadania.</li>
+<li><strong>Wyrażenie cron:</strong> Pole tylko do odczytu z przyciskiem <tt class="docutils literal">Edytuj</tt> do otwierania okna wprowadzania <tt class="docutils literal">wyrażenia cron</tt>.</li>
+<li><strong>Nazwa klasy zadania:</strong> <tt class="docutils literal">Lista rozwijana</tt> do wyboru zadania (istniejące zadanie).</li>
+<li><strong>Łącznik:</strong> <tt class="docutils literal">Lista rozwijana</tt> do wyboru łącznika. Nie jest obowiązkowe.</li>
+<li><strong>Harmonogram:</strong> Pole wyboru wskazujące, czy zaplanować to zadanie.</li>
+</ul>
+</li>
+<li>Przyciski:<ul>
+<li><strong>Zapisz:</strong> Aby zapisać lub zaktualizować zadanie zarówno w bazie danych, jak i w harmonogramie. Użytkownik jest następnie przenoszony do <tt class="docutils literal">Widoku listy harmonogramowania zadań</tt>.</li>
+<li><strong>Zapisz i kontynuuj:</strong> To samo co „Zapisz&quot;, ale użytkownik nie jest przenoszony do <tt class="docutils literal">Widoku listy harmonogramowania zadań</tt>.</li>
+<li><strong>Anuluj:</strong> Nic nie jest zapisywane, a użytkownik jest przenoszony do <tt class="docutils literal">Widoku listy harmonogramowania zadań</tt>.</li>
+</ul>
+</li>
+<li>Oraz sekcja wskazówek dotyczących składni wyrażeń cron.</li>
+</ul>
+<div class="section" id="wyskakujace-okienko-wyrazenia-cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Wyskakujące okienko wyrażenia cron</a></h2>
+<p>Aby poprawnie wprowadzić <tt class="docutils literal">wyrażenie cron</tt>, używany jest formularz wyskakujący <tt class="docutils literal">wyrażenia cron</tt>. W tym formularzu możesz wprowadzić żądane <tt class="docutils literal">wyrażenie cron</tt>. Zapoznaj się również ze wskazówką dotyczącą <tt class="docutils literal">wyrażenia cron</tt>. Jeśli wprowadzisz nieprawidłowe <tt class="docutils literal">wyrażenie cron</tt>, zostaniesz natychmiast powiadomiony.</p>
+</div>
+</div>
+<div class="section" id="usuwanie-zadania">
+<h1><a class="toc-backref" href="#toc-entry-4">Usuwanie zadania</a></h1>
+<p>Kliknij przycisk <tt class="docutils literal">Usuń</tt>, aby usunąć zadanie zarówno z bazy danych, jak i z harmonogramu. Wyświetlone zostaną informacje o powodzeniu lub niepowodzeniu tej akcji.</p>
+</div>
+<div class="section" id="reczne-uruchamianie-zadania">
+<h1><a class="toc-backref" href="#toc-entry-5">Ręczne uruchamianie zadania</a></h1>
+<p>Jako alternatywa dla oczekiwania na uruchomienie zadania zgodnie z harmonogramem, możesz kliknąć ten przycisk, aby bezpośrednio uruchomić proces. Następnie informacje o powodzeniu lub niepowodzeniu zostaną wyświetlone w <tt class="docutils literal">wyskakującym okienku</tt>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -124,7 +124,16 @@ public class SubcontractModel implements ISubcontractModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    // Not readOnly: same bug shape as AssignedCriterionRequirementToOrderElementModel.confirm()
+    // (see that class's comment) - this is only ever called from EditTaskController.accept()'s
+    // SUBCONTRACT branch, as a prelude to the real project-wide save, and
+    // subcontractedTaskDataDAO.save(subcontractedTaskData) below can genuinely need to insert a
+    // brand-new SubcontractedTaskData (legacy <generator class="increment">, same generator
+    // family implicated in every other bug this class of readOnly-mislabeling caused). Marking
+    // this readOnly let the id-generator run while discarding the resulting INSERT, so the later
+    // real save transaction found an id already set and issued a wrong UPDATE instead of an
+    // INSERT - identical failure mode, just for SubcontractedTaskData instead of
+    // DirectCriterionRequirement.
     public void confirm() {
         if (task != null) {
             if (subcontractedTaskData == null) {

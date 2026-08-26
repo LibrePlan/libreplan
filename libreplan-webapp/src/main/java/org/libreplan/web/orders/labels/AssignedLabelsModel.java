@@ -216,9 +216,13 @@ public abstract class AssignedLabelsModel<T> implements IAssignedLabelsModel<T> 
         return false;
     }
 
+    // DEAD CODE START - getAllLabels() has no remaining caller since
+    // _listOrderElementLabels.zul's bandboxSearch stopped binding model= to it (see the comment
+    // there). Left in place pending Jeroen's decision on whether to remove it.
     @Transactional(readOnly = true)
     public List<Label> getAllLabels() {
         return getLabelsOnConversation();
     }
+    // DEAD CODE END
 
 }

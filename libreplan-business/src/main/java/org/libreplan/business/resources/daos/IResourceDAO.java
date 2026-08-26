@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -83,22 +84,6 @@ public interface IResourceDAO extends IIntegrationEntityDAO<Resource> {
      * @return
      */
     List<Worker> getWorkers();
-
-    /**
-     *
-     * Returns all {@link Resource} which are limiting
-     *
-     * @return
-     */
-    List<Resource> getAllLimitingResources();
-
-    /**
-     *
-     * Returns all {@link Resource} which are not limiting
-     *
-     * @return
-     */
-    List<Resource> getAllNonLimitingResources();
 
     /**
      * Returns all {@link HoursWorkedPerResourceDTO} per {@link Resource} between

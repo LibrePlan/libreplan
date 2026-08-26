@@ -447,6 +447,58 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
         return taskEditFormComposer == null ? null : taskEditFormComposer.getTaskDTO();
     }
 
+    // TaskDTO (org.zkoss.ganttz.TaskEditFormComposer.TaskDTO, a ganttzk library class we can't
+    // modify) exposes plain public fields, not JavaBean getters/setters - @load/@save resolve
+    // properties through strict JavaBean introspection (BeanELResolver/Introspector), which
+    // doesn't see raw fields at all, only get/is/set method pairs. These wrappers give the ZUML
+    // side real bean properties to bind to instead of reaching through to the DTO's fields
+    // directly.
+    public String getTaskName() {
+        TaskDTO dto = getGanttTaskDTO();
+        return dto == null ? null : dto.name;
+    }
+
+    public void setTaskName(String name) {
+        TaskDTO dto = getGanttTaskDTO();
+        if ( dto != null ) {
+            dto.name = name;
+        }
+    }
+
+    public Date getTaskBeginDate() {
+        TaskDTO dto = getGanttTaskDTO();
+        return dto == null ? null : dto.beginDate;
+    }
+
+    public Date getTaskEndDate() {
+        TaskDTO dto = getGanttTaskDTO();
+        return dto == null ? null : dto.endDate;
+    }
+
+    public Date getTaskDeadlineDate() {
+        TaskDTO dto = getGanttTaskDTO();
+        return dto == null ? null : dto.deadlineDate;
+    }
+
+    public void setTaskDeadlineDate(Date deadlineDate) {
+        TaskDTO dto = getGanttTaskDTO();
+        if ( dto != null ) {
+            dto.deadlineDate = deadlineDate;
+        }
+    }
+
+    public String getTaskNotes() {
+        TaskDTO dto = getGanttTaskDTO();
+        return dto == null ? null : dto.notes;
+    }
+
+    public void setTaskNotes(String notes) {
+        TaskDTO dto = getGanttTaskDTO();
+        if ( dto != null ) {
+            dto.notes = notes;
+        }
+    }
+
     public void accept() {
         if ( !isResourcesAdded ) {
             listToAdd.clear();
@@ -536,10 +588,12 @@ public class TaskPropertiesController extends GenericForwardComposer<Component> 
 
     }
 
-    public List<ResourceAllocationTypeEnum> getResourceAllocationTypeOptionList() {
-        return scenarioManager.getCurrent().isMaster()
+    public org.zkoss.zul.ListModel<ResourceAllocationTypeEnum> getResourceAllocationTypeOptionList() {
+        List<ResourceAllocationTypeEnum> options = scenarioManager.getCurrent().isMaster()
                 ? ResourceAllocationTypeEnum.getOptionList()
                 : ResourceAllocationTypeEnum.getOptionListForNonMasterBranch();
+
+        return new org.zkoss.zul.ListModelList<>(options);
     }
 
     public ResourceAllocationTypeEnum getResourceAllocationType() {

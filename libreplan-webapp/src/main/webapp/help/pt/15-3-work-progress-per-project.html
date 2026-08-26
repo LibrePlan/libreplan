@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Relatório de Trabalho e Progresso por Projecto</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="relatorio-de-trabalho-e-progresso-por-projecto">
+<h1 class="title">Relatório de Trabalho e Progresso por Projecto</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#finalidade" id="toc-entry-1">Finalidade</a></li>
+<li><a class="reference internal" href="#parametros-de-entrada-e-filtros" id="toc-entry-2">Parâmetros de Entrada e Filtros</a></li>
+<li><a class="reference internal" href="#resultado" id="toc-entry-3">Resultado</a><ul>
+<li><a class="reference internal" href="#cabecalho" id="toc-entry-4">Cabeçalho</a></li>
+<li><a class="reference internal" href="#rodape" id="toc-entry-5">Rodapé</a></li>
+<li><a class="reference internal" href="#corpo" id="toc-entry-6">Corpo</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="finalidade">
+<h1><a class="toc-backref" href="#toc-entry-1">Finalidade</a></h1>
+<p>Este relatório fornece uma visão geral do estado dos projectos, considerando tanto o progresso como o custo.</p>
+<p>Analisa o progresso actual de cada projecto, comparando-o com o progresso planeado e o trabalho concluído.</p>
+<p>O relatório apresenta também vários rácios relacionados com o custo do projecto, comparando o desempenho actual com o desempenho planeado.</p>
+</div>
+<div class="section" id="parametros-de-entrada-e-filtros">
+<h1><a class="toc-backref" href="#toc-entry-2">Parâmetros de Entrada e Filtros</a></h1>
+<p>Existem vários parâmetros obrigatórios:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Data de Referência:</strong> É a data utilizada como ponto de referência para comparar o estado planeado do projecto com o seu desempenho real. <em>O valor predefinido para este campo é a data actual</em>.</li>
+<li><strong>Tipo de Progresso:</strong> É o tipo de progresso utilizado para medir o progresso do projecto. A aplicação permite que um projecto seja medido simultaneamente com diferentes tipos de progresso. O tipo seleccionado pelo utilizador no menu pendente é utilizado para calcular os dados do relatório. O valor predefinido para o <em>tipo de progresso</em> é <em>propagação</em>, que é um tipo de progresso especial que utiliza o método preferido de medição do progresso configurado para cada elemento da EAP.</li>
+</ul>
+</blockquote>
+<p>Os parâmetros opcionais são:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Data de Início:</strong> É a data de início mais antiga para os projectos a incluir no relatório. Se este campo ficar em branco, não existe uma data de início mínima para os projectos.</li>
+<li><strong>Data de Fim:</strong> É a data de fim mais recente para os projectos a incluir no relatório. Todos os projectos que terminem depois da <em>Data de Fim</em> serão excluídos.</li>
+<li><strong>Filtrar por Projectos:</strong> Este filtro permite ao utilizador seleccionar os projectos específicos a incluir no relatório. Se não forem adicionados projectos ao filtro, o relatório incluirá todos os projectos na base de dados. É fornecido um menu pendente pesquisável para encontrar o projecto pretendido. Os projectos são adicionados ao filtro clicando no botão <em>Adicionar</em>.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="resultado">
+<h1><a class="toc-backref" href="#toc-entry-3">Resultado</a></h1>
+<p>O formato de saída é o seguinte:</p>
+<div class="section" id="cabecalho">
+<h2><a class="toc-backref" href="#toc-entry-4">Cabeçalho</a></h2>
+<p>O cabeçalho do relatório apresenta os seguintes campos:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Data de Início:</strong> A data de início do filtro. Não é apresentada se o relatório não for filtrado por este campo.</li>
+<li><strong>Data de Fim:</strong> A data de fim do filtro. Não é apresentada se o relatório não for filtrado por este campo.</li>
+<li><strong>Tipo de Progresso:</strong> O tipo de progresso utilizado no relatório.</li>
+<li><strong>Projectos:</strong> Indica os projectos filtrados para os quais o relatório é gerado. Apresentará a cadeia <em>Todos</em> quando o relatório incluir todos os projectos que satisfaçam os outros filtros.</li>
+<li><strong>Data de Referência:</strong> A data de referência de entrada obrigatória seleccionada para o relatório.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="rodape">
+<h2><a class="toc-backref" href="#toc-entry-5">Rodapé</a></h2>
+<p>O rodapé apresenta a data em que o relatório foi gerado.</p>
+</div>
+<div class="section" id="corpo">
+<h2><a class="toc-backref" href="#toc-entry-6">Corpo</a></h2>
+<p>O corpo do relatório é constituído por uma lista de projectos seleccionados com base nos filtros de entrada.</p>
+<p>Os filtros funcionam adicionando condições, excepto para o conjunto formado pelos filtros de data (<em>Data de Início</em>, <em>Data de Fim</em>) e o <em>Filtrar por Projectos</em>. Neste caso, se um ou ambos os filtros de data estiverem preenchidos e o <em>Filtrar por Projectos</em> tiver uma lista de projectos seleccionados, este último filtro tem precedência. Isto significa que os projectos incluídos no relatório são os fornecidos pelo <em>Filtrar por Projectos</em>, independentemente dos filtros de data.</p>
+<p>É importante ter em conta que o progresso no relatório é calculado como uma fracção da unidade, variando entre 0 e 1.</p>
+<p>Para cada projecto seleccionado para inclusão no resultado do relatório, são apresentadas as seguintes informações:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Nome do Projecto</em>.</li>
+<li><dl class="first docutils">
+<dt><em>Total de Horas</em>. O total de horas do projecto é apresentado somando as horas de cada tarefa. São apresentados dois tipos de total de horas:</dt>
+<dd><ul class="first last">
+<li><em>Estimadas (TE)</em>. É a soma de todas as horas estimadas na EAP do projecto. Representa o número total de horas estimadas para concluir o projecto.</li>
+<li><em>Planeadas (TP)</em>. No <em>LibrePlan</em>, é possível ter duas quantidades diferentes: o número estimado de horas para uma tarefa (o número de horas inicialmente estimado para concluir a tarefa) e as horas planeadas (as horas alocadas no plano para concluir a tarefa). As horas planeadas podem ser iguais, inferiores ou superiores às horas estimadas e são determinadas numa fase posterior, a operação de atribuição. Por conseguinte, o total de horas planeadas para um projecto é a soma de todas as horas alocadas para as suas tarefas.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Progresso</em>. São apresentadas três medições relacionadas com o progresso global do tipo especificado no filtro de entrada de progresso para cada projecto na data de referência:</dt>
+<dd><ul class="first last">
+<li><em>Medido (PM)</em>. É o progresso global considerando as medições de progresso com uma data anterior à <em>Data de Referência</em> nos parâmetros de entrada do relatório. Todas as tarefas são tidas em conta e a soma é ponderada pelo número de horas de cada tarefa.</li>
+<li><em>Imputado (PI)</em>. É o progresso assumindo que o trabalho continua ao mesmo ritmo que as horas concluídas para uma tarefa. Se X horas de Y horas de uma tarefa estiverem concluídas, o progresso imputado global é considerado X/Y.</li>
+<li><em>Planeado (PP)</em>. É o progresso global do projecto de acordo com o calendário planeado na data de referência. Se tudo tivesse acontecido exactamente como planeado, o progresso medido deveria ser igual ao progresso planeado.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Horas até à Data</em>. Existem dois campos que mostram o número de horas até à data de referência de duas perspectivas:</dt>
+<dd><ul class="first last">
+<li><em>Planeadas (HP)</em>. Este número é a soma das horas alocadas a qualquer tarefa do projecto com uma data inferior ou igual à <em>Data de Referência</em>.</li>
+<li><em>Reais (HR)</em>. Este número é a soma das horas comunicadas nos relatórios de trabalho para qualquer uma das tarefas do projecto com uma data inferior ou igual à <em>Data de Referência</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><em>Diferença</em>. Sob este título, existem várias métricas relacionadas com o custo:</dt>
+<dd><ul class="first last">
+<li><em>Custo</em>. É a diferença em horas entre o número de horas gastas, considerando o progresso medido, e as horas concluídas até à data de referência. A fórmula é: <em>PM*TP - HR</em>.</li>
+<li><em>Planeado</em>. É a diferença entre as horas gastas de acordo com o progresso global medido do projecto e o número planeado até à <em>Data de Referência</em>. Mede a vantagem ou o atraso no tempo. A fórmula é: <em>PM*TP - HP</em>.</li>
+<li><em>Rácio de Custo</em>. É calculado dividindo <em>PM</em> / <em>PI</em>. Se for superior a 1, significa que o projecto é rentável neste momento. Se for inferior a 1, significa que o projecto está a perder dinheiro.</li>
+<li><em>Rácio Planeado</em>. É calculado dividindo <em>PM</em> / <em>PP</em>. Se for superior a 1, significa que o projecto está adiantado em relação ao calendário. Se for inferior a 1, significa que o projecto está atrasado em relação ao calendário.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

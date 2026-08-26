@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,9 +22,9 @@
 
 package org.libreplan.web.planner.chart;
 
-import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.timetracker.zoom.ZoomLevel;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zul.Div;
 
 /**
  * Contract for {@link ChartFiller}.
@@ -32,7 +33,7 @@ import org.zkoss.ganttz.util.Interval;
  */
 public interface IChartFiller {
 
-    void fillChart(Timeplot chart, Interval interval, Integer size);
+    void fillChart(Div chart, Interval interval, Integer size);
 
     void setZoomLevel(ZoomLevel zoomLevel);
 

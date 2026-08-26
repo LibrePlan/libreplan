@@ -1,0 +1,141 @@
+- generic [ref=f752e4]:
+  - generic [ref=f752e5]:
+    - table [ref=f752e6]:
+      - rowgroup [ref=f752e7]:
+        - row [ref=f752e8]:
+          - cell [ref=f752e9]:
+            - link [ref=f752e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f752e12]:
+            - table [ref=f752e13]:
+              - rowgroup [ref=f752e14]:
+                - row [ref=f752e15]:
+                  - cell [ref=f752e16]:
+                    - generic [ref=f752e17]:
+                      - menubar [ref=f752e18]:
+                        - menuitem "Planning" [ref=f752e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f752e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f752e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f752e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f752e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f752e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f752e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f752e33]:
+                        - rowgroup [ref=f752e34]:
+                          - row [ref=f752e35]:
+                            - cell [ref=f752e36]:
+                              - table [ref=f752e37]:
+                                - rowgroup [ref=f752e38]:
+                                  - row [ref=f752e39]:
+                                    - cell [ref=f752e40]
+                                    - cell [ref=f752e41]:
+                                      - strong [ref=f752e42]: START
+                                    - cell [ref=f752e43]
+                                    - cell [ref=f752e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f752e45]:
+                                        - rowgroup [ref=f752e46]:
+                                          - row [ref=f752e47]:
+                                            - cell [ref=f752e48]:
+                                              - table [ref=f752e49]:
+                                                - rowgroup [ref=f752e50]:
+                                                  - row [ref=f752e51]:
+                                                    - cell [ref=f752e52]:
+                                                      - table [ref=f752e53]:
+                                                        - rowgroup [ref=f752e54]:
+                                                          - row [ref=f752e55]:
+                                                            - cell [ref=f752e56]:
+                                                              - table [ref=f752e57]:
+                                                                - rowgroup [ref=f752e58]:
+                                                                  - row [ref=f752e59]:
+                                                                    - cell [ref=f752e60]
+                                                                    - cell [ref=f752e63]
+                                                                    - cell "Personal area" [ref=f752e64]
+                                                    - cell [ref=f752e65]
+                                                    - cell [ref=f752e66]:
+                                                      - table [ref=f752e67]:
+                                                        - rowgroup [ref=f752e68]:
+                                                          - row [ref=f752e69]:
+                                                            - cell [ref=f752e70]:
+                                                              - table [ref=f752e71]:
+                                                                - rowgroup [ref=f752e72]:
+                                                                  - row [ref=f752e73]:
+                                                                    - cell [ref=f752e74]
+                                                                    - cell [ref=f752e77]
+                                                                    - cell "Change Password" [ref=f752e78]
+                            - cell [ref=f752e79]:
+                              - generic [ref=f752e80]:
+                                - link "Help" [ref=f752e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f752e83]
+                                - img "Info" [ref=f752e85]
+    - table [ref=f752e87]:
+      - rowgroup [ref=f752e88]:
+        - row [ref=f752e89]:
+          - cell [ref=f752e90]
+          - 'cell "user: admin" [ref=f752e91]'
+          - cell [ref=f752e92]:
+            - link "[Log out]" [ref=f752e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f752e94]:
+    - text:    
+    - generic [ref=f752e95]:
+      - generic [ref=f752e96]: Change password
+      - generic [ref=f752e97]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f752e98]:
+          - tablist [ref=f752e99]:
+            - listitem [ref=f752e100] [cursor=pointer]:
+              - generic [ref=f752e101]: Password
+          - text:  
+          - tabpanel [ref=f752e104]:
+            - generic [ref=f752e105]:
+              - generic [ref=f752e106]: Password settings
+              - grid [ref=f752e110]:
+                - rowgroup [ref=f752e114]:
+                  - gridcell "Current password" [ref=f752e115]
+                  - gridcell [ref=f752e117]:
+                    - textbox [ref=f752e119]
+                  - gridcell "New password" [ref=f752e120]
+                  - gridcell [ref=f752e122]:
+                    - textbox [ref=f752e124]
+                  - gridcell "Password confirmation" [ref=f752e125]
+                  - gridcell [ref=f752e127]:
+                    - textbox [ref=f752e129]
+        - table [ref=f752e130]:
+          - rowgroup [ref=f752e131]:
+            - row [ref=f752e132]:
+              - cell [ref=f752e133]:
+                - table [ref=f752e134]:
+                  - rowgroup [ref=f752e135]:
+                    - row [ref=f752e136]:
+                      - cell [ref=f752e137]:
+                        - button "Save" [ref=f752e138] [cursor=pointer]
+  - table [ref=f752e139]:
+    - rowgroup [ref=f752e140]:
+      - row [ref=f752e141]:
+        - cell [ref=f752e142]:
+          - generic [ref=f752e144]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f752e145] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f752e146]
+  - text:    

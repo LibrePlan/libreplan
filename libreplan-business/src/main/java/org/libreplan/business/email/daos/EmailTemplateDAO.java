@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2015 LibrePlan
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,10 @@
 
 package org.libreplan.business.email.daos;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.email.entities.EmailTemplate;
@@ -47,20 +51,21 @@ public class EmailTemplateDAO extends GenericDAOHibernate<EmailTemplate, Long> i
     @Override
     @Transactional(readOnly = true)
     public List<EmailTemplate> findByType(EmailTemplateEnum type) {
-        return getSession()
-                .createCriteria(EmailTemplate.class)
-                .add(Restrictions.eq("type", type))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailTemplate> cq = cb.createQuery(EmailTemplate.class);
+        Root<EmailTemplate> root = cq.from(EmailTemplate.class);
+        cq.where(cb.equal(root.get("type"), type));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public EmailTemplate findByTypeAndLanguage(EmailTemplateEnum type, Language language) {
-        return (EmailTemplate) getSession()
-                .createCriteria(EmailTemplate.class)
-                .add(Restrictions.eq("type", type))
-                .add(Restrictions.eq("language", language))
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailTemplate> cq = cb.createQuery(EmailTemplate.class);
+        Root<EmailTemplate> root = cq.from(EmailTemplate.class);
+        cq.where(cb.equal(root.get("type"), type), cb.equal(root.get("language"), language));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override

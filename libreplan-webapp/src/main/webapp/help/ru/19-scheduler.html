@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Планировщик</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">Планировщик</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">Представление списка планирования заданий</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">Добавление или редактирование задания</a><ul>
+<li><a class="reference internal" href="#cron" id="toc-entry-3">Всплывающее окно cron-выражения</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-4">Удаление задания</a></li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-5">Ручной запуск задания</a></li>
+</ul>
+</div>
+<p>Планировщик предназначен для динамического планирования заданий. Он разработан с использованием <em>Spring Framework Quartz scheduler</em>.</p>
+<p>Для эффективного использования планировщика сначала необходимо создать задания (задания Quartz), которые должны быть запланированы. Затем эти задания можно добавить в базу данных, поскольку все задания, подлежащие планированию, хранятся в базе данных.</p>
+<p>При запуске планировщик считывает из базы данных задания, которые необходимо запланировать или снять с расписания, и выполняет соответствующие действия. После этого задания можно динамически добавлять, обновлять или удалять с помощью пользовательского интерфейса <tt class="docutils literal">Планирование заданий</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Планировщик запускается при запуске веб-приложения LibrePlan и останавливается при его остановке.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Данный планировщик поддерживает только <tt class="docutils literal"><span class="pre">cron-выражения</span></tt> для планирования заданий.</p>
+</div>
+<p>Критерии, используемые планировщиком для планирования или удаления заданий при запуске, следующие:</p>
+<p>Для всех заданий:</p>
+<ul class="simple">
+<li>Запланировать<ul>
+<li>Задание имеет <em>Коннектор</em>, <em>Коннектор</em> активирован, и задание разрешено к планированию.</li>
+<li>Задание не имеет <em>Коннектора</em> и разрешено к планированию.</li>
+</ul>
+</li>
+<li>Удалить<ul>
+<li>Задание имеет <em>Коннектор</em>, и <em>Коннектор</em> не активирован.</li>
+<li>Задание имеет <em>Коннектор</em>, <em>Коннектор</em> активирован, но задание не разрешено к планированию.</li>
+<li>Задание не имеет <em>Коннектора</em> и не разрешено к планированию.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Задания не могут быть перепланированы или сняты с расписания, если они в настоящее время выполняются.</p>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">Представление списка планирования заданий</a></h1>
+<p>Представление <tt class="docutils literal">Список планирования заданий</tt> позволяет пользователям:</p>
+<ul class="simple">
+<li>Добавлять новое задание.</li>
+<li>Редактировать существующее задание.</li>
+<li>Удалять задание.</li>
+<li>Запускать процесс вручную.</li>
+</ul>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">Добавление или редактирование задания</a></h1>
+<p>В представлении <tt class="docutils literal">Список планирования заданий</tt> нажмите:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Создать</tt> для добавления нового задания, или</li>
+<li><tt class="docutils literal">Редактировать</tt> для изменения выбранного задания.</li>
+</ul>
+<p>Оба действия откроют <tt class="docutils literal">форму</tt> создания/редактирования задания. <tt class="docutils literal">Форма</tt> отображает следующие свойства:</p>
+<ul class="simple">
+<li>Поля:<ul>
+<li><strong>Группа заданий:</strong> Название группы заданий.</li>
+<li><strong>Название задания:</strong> Название задания.</li>
+<li><strong>Cron-выражение:</strong> Поле только для чтения с кнопкой <tt class="docutils literal">Редактировать</tt> для открытия окна ввода <tt class="docutils literal"><span class="pre">cron-выражения</span></tt>.</li>
+<li><strong>Имя класса задания:</strong> <tt class="docutils literal">Раскрывающийся список</tt> для выбора задания (из существующих заданий).</li>
+<li><strong>Коннектор:</strong> <tt class="docutils literal">Раскрывающийся список</tt> для выбора коннектора. Необязательный параметр.</li>
+<li><strong>Расписание:</strong> Флажок, указывающий, следует ли планировать данное задание.</li>
+</ul>
+</li>
+<li>Кнопки:<ul>
+<li><strong>Сохранить:</strong> Сохранение или обновление задания в базе данных и планировщике. После этого пользователь возвращается в <tt class="docutils literal">Представление списка планирования заданий</tt>.</li>
+<li><strong>Сохранить и продолжить:</strong> То же, что «Сохранить», но пользователь не возвращается в <tt class="docutils literal">Представление списка планирования заданий</tt>.</li>
+<li><strong>Отмена:</strong> Ничего не сохраняется, пользователь возвращается в <tt class="docutils literal">Представление списка планирования заданий</tt>.</li>
+</ul>
+</li>
+<li>Раздел подсказок о синтаксисе cron-выражений.</li>
+</ul>
+<div class="section" id="cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Всплывающее окно cron-выражения</a></h2>
+<p>Для корректного ввода <tt class="docutils literal"><span class="pre">cron-выражения</span></tt> используется всплывающая форма <tt class="docutils literal"><span class="pre">cron-выражения</span></tt>. В этой форме можно ввести нужное <tt class="docutils literal"><span class="pre">cron-выражение</span></tt>. См. также подсказку о <tt class="docutils literal"><span class="pre">cron-выражении</span></tt>. При вводе недопустимого <tt class="docutils literal"><span class="pre">cron-выражения</span></tt> вы будете немедленно уведомлены.</p>
+</div>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-4">Удаление задания</a></h1>
+<p>Нажмите кнопку <tt class="docutils literal">Удалить</tt>, чтобы удалить задание из базы данных и планировщика. Результат этого действия (успех или неудача) будет отображён.</p>
+</div>
+<div class="section" id="section-5">
+<h1><a class="toc-backref" href="#toc-entry-5">Ручной запуск задания</a></h1>
+<p>В качестве альтернативы ожиданию запуска задания по расписанию можно нажать эту кнопку, чтобы запустить процесс непосредственно. После этого информация об успехе или неудаче будет отображена во <tt class="docutils literal">всплывающем окне</tt>.</p>
+</div>
+</div>
+</body>
+</html>

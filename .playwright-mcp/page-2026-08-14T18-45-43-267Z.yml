@@ -1,0 +1,32 @@
+- table [ref=f5e5]:
+  - rowgroup [ref=f5e6]:
+    - row [ref=f5e7]:
+      - cell [ref=f5e8]:
+        - table [ref=f5e9]:
+          - rowgroup [ref=f5e10]:
+            - row [ref=f5e11]:
+              - cell [ref=f5e12]:
+                - generic [ref=f5e13]:
+                  - generic [ref=f5e14]: Message - null
+                  - generic [ref=f5e17]:
+                    - grid [ref=f5e18]:
+                      - rowgroup [ref=f5e22]:
+                        - gridcell "Exception type" [ref=f5e23]
+                        - gridcell [ref=f5e25]
+                        - gridcell "Status code" [ref=f5e28]
+                        - gridcell [ref=f5e30]
+                        - gridcell "Stacktrace" [ref=f5e33]
+                        - gridcell [ref=f5e35]:
+                          - textbox [ref=f5e37]
+                    - table [ref=f5e38]:
+                      - rowgroup [ref=f5e39]:
+                        - row [ref=f5e40]:
+                          - cell [ref=f5e41]:
+                            - table [ref=f5e42]:
+                              - rowgroup [ref=f5e43]:
+                                - row [ref=f5e44]:
+                                  - cell [ref=f5e45]:
+                                    - button "Reload" [ref=f5e46] [cursor=pointer]
+                                  - cell [ref=f5e47]
+                                  - cell [ref=f5e48]:
+                                    - button "Exit session" [ref=f5e49] [cursor=pointer]

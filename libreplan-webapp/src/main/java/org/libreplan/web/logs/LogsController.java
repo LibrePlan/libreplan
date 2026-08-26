@@ -45,7 +45,7 @@ public class LogsController extends GenericForwardComposer {
 
     private Window riskLogWindow;
 
-    private Window logWindow;
+    private Component logWindow;
 
     private IssueLogCRUDController issueLogController;
 
@@ -63,7 +63,7 @@ public class LogsController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("logsController", this, true);
-        logWindow = (Window) comp.getFellowIfAny("logWindow");
+        logWindow = comp;
         Util.createBindingsFor(logWindow);
         setupIssueLogController();
         setupRiskLogController();
@@ -151,6 +151,17 @@ public class LogsController extends GenericForwardComposer {
 
     public static boolean getProjectNameVisibility() {
         return projectNameVisibility;
+    }
+
+    /**
+     * Instance wrapper for the "logsController.projectNameVisibility" EL binding:
+     * java.beans.Introspector (which BeanELResolver relies on) never considers static methods
+     * when building property descriptors, so "controller.projectNameVisibility" could never
+     * resolve to the static getProjectNameVisibility() above, independent of the @{...} binder
+     * issue - it needs a real instance method.
+     */
+    public boolean isProjectNameVisibility() {
+        return getProjectNameVisibility();
     }
 
     public static Order getOrder() {

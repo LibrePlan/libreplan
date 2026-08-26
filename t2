@@ -1,0 +1,39 @@
+ua new question regarding this repo. I know that the Xwiki war file uses liquibase and when connected to the database creates new tables if the database layout is outdated. Currently the LibrePlan project forces the user to have docker compose initialise the database or have the admin create the layout manually. How hard is it to switch LibrePlan to the same behaviour as the Xwiki project? What could be reasons not to want this?
+
+I'll look into how LibrePlan currently manages its database schema before answering.
+
+● Explore(Find DB schema management approach)
+Backgrounded agent (↓ to manage · ctrl+o to expand)
+
+Investigating the codebase now — I'll report back once I have the findings.
+
+✻ Waiting for 1 background agent to finish
+
+● Agent "Find DB schema management approach" finished · 2m 10s
+
+LibrePlan already uses Liquibase internally — this isn't a "introduce it from scratch" question, it's "move it from build-time to runtime."
+
+Current state
+
+- Hibernate is configured with hibernate.hbm2ddl.auto=validate (both dev and prod, pom.xml:93/114) — it only checks the schema matches the mappings, never creates/alters anything.
+- The actual schema lives in libreplan-business/src/main/resources/db.changelog.xml, a full Liquibase changelog (28 sub-files, 521 changesets across releases 1.0–1.6). This is the same tool XWiki uses.
+- But it's wired in as a Maven build step, not an app startup hook: the liquibase-update profile in libreplan-business/pom.xml runs liquibase:update against the DB during mvn builds (dev convenience), and liquibase-updatesql generates diff SQL for releases.
+- What ships to admins is not Liquibase at all — it's static exported SQL: scripts/database/install.sql for fresh installs and upgrade_x.y.z.sql per release, which admins run by hand with psql, per INSTALL.rst/UPDATE.rst. Liquibase is invisible to them.
+
+How hard to switch to XWiki-style auto-migration
+
+Technically, not very hard — maybe a few days of work, not a rewrite:
+1. Add liquibase-core as a runtime dependency of libreplan-webapp (currently only pulled in at build time via the plugin).
+2. Add a startup hook (Spring InitializingBean/ContextListener, same idea as XWiki) that runs Liquibase.update() against the app's DataSource pointed at db.changelog.xml before Hibernate initializes.
+3. Switch hibernate.hbm2ddl.auto from validate to something that tolerates a freshly-migrated schema (or leave validate as a post-migration sanity check — arguably better than removing it).
+4. Handle the bookkeeping gap: existing installs were seeded via install.sql/upgrade_*.sql, which are exports of the Liquibase changelog and do include the databasechangelog/databasechangeloglock tables. You'd need to verify those exported changeset ids/authors/filenames line up exactly with what live Liquibase would compute, or the first auto-run against a real production DB could try to redundantly replay or conflict on changesets. This is the trickiest part, not the code.
+5. If the webapp ever runs multi-instance (behind a load balancer), Liquibase's changelog lock needs coordinating so two nodes don't race on migration at boot.
+
+Reasons not to want this
+
+- Admin control/review: UPDATE.rst explicitly tells admins to back up first, then apply a known SQL script. Auto-migration on boot removes that natural checkpoint — schema changes happen silently the moment someone starts the new app version, with no chance to review the generated DDL or confirm a backup was actually taken.
+- Rollback story: none of the existing changesets appear to have Liquibase rollback blocks authored (they were generated as forward diffs for release SQL exports). Auto-applying them at startup makes "downgrade the app" and "downgrade the schema" two different, currently-unsupported problems.
+- Privilege escalation: running DDL at every boot means the app's runtime DB user needs CREATE/ALTER/DROP rights permanently, whereas many self-hosted/enterprise admins deliberately run migrations with a privileged user and then run the app with a least-privilege user. This is a common on-prem security requirement LibrePlan's admin base (municipalities, enterprises) may care about.
+- Migration bookkeeping risk for existing installs: as above — years of installs done via manual SQL script application need their databasechangelog state to be trustworthy before Liquibase can safely take over, or upgrades could silently break for the existing user base.
+
+Net: the code lift is small because the hard part (an actual Liquibase-managed changelog) already exists — the real cost is organizational/security (admin review, backup discipline, DB privilege model) rather than engineering.

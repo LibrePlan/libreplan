@@ -1,0 +1,342 @@
+- generic [ref=f252e4]:
+  - generic [ref=f252e5]:
+    - table [ref=f252e6]:
+      - rowgroup [ref=f252e7]:
+        - row [ref=f252e8]:
+          - cell [ref=f252e9]:
+            - link [ref=f252e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f252e12]:
+            - table [ref=f252e13]:
+              - rowgroup [ref=f252e14]:
+                - row [ref=f252e15]:
+                  - cell [ref=f252e16]:
+                    - generic [ref=f252e17]:
+                      - menubar [ref=f252e18]:
+                        - menuitem "Planning" [ref=f252e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f252e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f252e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f252e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f252e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f252e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f252e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f252e33]:
+                        - rowgroup [ref=f252e34]:
+                          - row [ref=f252e35]:
+                            - cell [ref=f252e36]:
+                              - table [ref=f252e37]:
+                                - rowgroup [ref=f252e38]:
+                                  - row [ref=f252e39]:
+                                    - cell [ref=f252e40]
+                                    - cell [ref=f252e41]:
+                                      - strong [ref=f252e42]: START
+                                    - cell [ref=f252e43]
+                                    - cell [ref=f252e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f252e45]:
+                                        - rowgroup [ref=f252e46]:
+                                          - row [ref=f252e47]:
+                                            - cell [ref=f252e48]:
+                                              - table [ref=f252e49]:
+                                                - rowgroup [ref=f252e50]:
+                                                  - row [ref=f252e51]:
+                                                    - cell [ref=f252e52]:
+                                                      - table [ref=f252e53]:
+                                                        - rowgroup [ref=f252e54]:
+                                                          - row [ref=f252e55]:
+                                                            - cell [ref=f252e56]:
+                                                              - table [ref=f252e57]:
+                                                                - rowgroup [ref=f252e58]:
+                                                                  - row [ref=f252e59]:
+                                                                    - cell [ref=f252e60]
+                                                                    - cell [ref=f252e63]
+                                                                    - cell "Configuration" [ref=f252e64]
+                                                    - cell [ref=f252e65]
+                                                    - cell [ref=f252e66]:
+                                                      - table [ref=f252e67]:
+                                                        - rowgroup [ref=f252e68]:
+                                                          - row [ref=f252e69]:
+                                                            - cell [ref=f252e70]:
+                                                              - table [ref=f252e71]:
+                                                                - rowgroup [ref=f252e72]:
+                                                                  - row [ref=f252e73]:
+                                                                    - cell [ref=f252e74]
+                                                                    - cell [ref=f252e77]
+                                                                    - cell "Main Settings" [ref=f252e78]
+                            - cell [ref=f252e79]:
+                              - generic [ref=f252e80]:
+                                - link "Help" [ref=f252e81] [cursor=pointer]:
+                                  - /url: /help/en/16-ldap-authentication.html
+                                - img "Axuda" [ref=f252e83]
+                                - img "Info" [ref=f252e85]
+    - table [ref=f252e87]:
+      - rowgroup [ref=f252e88]:
+        - row [ref=f252e89]:
+          - cell [ref=f252e90]
+          - 'cell "user: admin" [ref=f252e91]'
+          - cell [ref=f252e92]:
+            - link "[Log out]" [ref=f252e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f252e94]:
+    - text:    
+    - generic [ref=f252e95]:
+      - generic [ref=f252e96]: Main Settings
+      - generic [ref=f252e97]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f252e98]:
+          - tablist [ref=f252e99]:
+            - listitem [ref=f252e100] [cursor=pointer]:
+              - generic [ref=f252e101]: Main preferences
+            - listitem [ref=f252e103] [cursor=pointer]:
+              - generic [ref=f252e104]: Entity sequences
+            - listitem [ref=f252e106] [cursor=pointer]:
+              - generic [ref=f252e107]: LDAP configuration
+            - listitem [ref=f252e109] [cursor=pointer]:
+              - generic [ref=f252e110]: Connectors
+          - text:  
+          - generic [ref=f252e112]:
+            - text:    
+            - tabpanel [ref=f252e795]:
+              - generic [ref=f252e796]:
+                - generic [ref=f252e797]: Activation
+                - generic [ref=f252e800]:
+                  - text: Enable LDAP authentication
+                  - checkbox [ref=f252e802]
+                  - text: Use LDAP roles
+                  - checkbox [ref=f252e804]
+              - generic [ref=f252e805]:
+                - generic [ref=f252e806]: Configuration
+                - generic [ref=f252e809]:
+                  - grid [ref=f252e810]:
+                    - rowgroup [ref=f252e814]:
+                      - gridcell "Host" [ref=f252e815]
+                      - gridcell [ref=f252e817]:
+                        - table [ref=f252e819]:
+                          - rowgroup [ref=f252e820]:
+                            - row [ref=f252e821]:
+                              - cell [ref=f252e822]:
+                                - table [ref=f252e823]:
+                                  - rowgroup [ref=f252e824]:
+                                    - row [ref=f252e825]:
+                                      - cell [ref=f252e826]:
+                                        - textbox [ref=f252e827]
+                                      - cell [ref=f252e828]
+                                      - 'cell "Example: ldap://localhost" [ref=f252e829]'
+                      - gridcell "Port" [ref=f252e830]
+                      - gridcell [ref=f252e832]:
+                        - table [ref=f252e834]:
+                          - rowgroup [ref=f252e835]:
+                            - row [ref=f252e836]:
+                              - cell [ref=f252e837]:
+                                - table [ref=f252e838]:
+                                  - rowgroup [ref=f252e839]:
+                                    - row [ref=f252e840]:
+                                      - cell [ref=f252e841]:
+                                        - textbox [ref=f252e842]
+                                      - cell [ref=f252e843]
+                                      - 'cell "Example: 389" [ref=f252e844]'
+                      - gridcell "Base" [ref=f252e845]
+                      - gridcell [ref=f252e847]:
+                        - table [ref=f252e849]:
+                          - rowgroup [ref=f252e850]:
+                            - row [ref=f252e851]:
+                              - cell [ref=f252e852]:
+                                - table [ref=f252e853]:
+                                  - rowgroup [ref=f252e854]:
+                                    - row [ref=f252e855]:
+                                      - cell [ref=f252e856]:
+                                        - textbox [ref=f252e857]
+                                      - cell [ref=f252e858]
+                                      - 'cell "Example: dc=example,dc=org" [ref=f252e859]'
+                      - gridcell "UserDn" [ref=f252e860]
+                      - gridcell [ref=f252e862]:
+                        - table [ref=f252e864]:
+                          - rowgroup [ref=f252e865]:
+                            - row [ref=f252e866]:
+                              - cell [ref=f252e867]:
+                                - table [ref=f252e868]:
+                                  - rowgroup [ref=f252e869]:
+                                    - row [ref=f252e870]:
+                                      - cell [ref=f252e871]:
+                                        - textbox [ref=f252e872]
+                                      - cell [ref=f252e873]
+                                      - 'cell "Example: cn=admin,dc=example,dc=org" [ref=f252e874]'
+                      - gridcell "Password" [ref=f252e875]
+                      - gridcell [ref=f252e877]:
+                        - textbox [ref=f252e879]
+                  - separator [ref=f252e880]
+                  - button "Test LDAP connection" [ref=f252e881] [cursor=pointer]
+                  - separator [ref=f252e882]
+              - generic [ref=f252e883]:
+                - generic [ref=f252e884]: Authentication
+                - grid [ref=f252e888]:
+                  - rowgroup [ref=f252e892]:
+                    - gridcell "UserId" [ref=f252e893]
+                    - gridcell [ref=f252e895]:
+                      - table [ref=f252e897]:
+                        - rowgroup [ref=f252e898]:
+                          - row [ref=f252e899]:
+                            - cell [ref=f252e900]:
+                              - table [ref=f252e901]:
+                                - rowgroup [ref=f252e902]:
+                                  - row [ref=f252e903]:
+                                    - cell [ref=f252e904]:
+                                      - textbox [ref=f252e905]
+                                    - cell [ref=f252e906]
+                                    - 'cell "Example: uid" [ref=f252e907]'
+                    - gridcell "Save passwords in database" [ref=f252e908]
+                    - gridcell [ref=f252e910]:
+                      - checkbox [checked] [ref=f252e913]
+              - generic [ref=f252e914]:
+                - generic [ref=f252e915]: Authorization
+                - generic [ref=f252e918]:
+                  - grid [ref=f252e919]:
+                    - rowgroup [ref=f252e923]:
+                      - gridcell "Role search strategy" [ref=f252e924]
+                      - gridcell [ref=f252e926]:
+                        - radiogroup [ref=f252e928]:
+                          - generic [ref=f252e929]:
+                            - radio "Group strategy" [checked] [ref=f252e930]
+                            - text: Group strategy
+                          - generic [ref=f252e931]:
+                            - radio "Property strategy" [ref=f252e932]
+                            - text: Property strategy
+                      - gridcell "Group path" [ref=f252e933]
+                      - gridcell [ref=f252e935]:
+                        - table [ref=f252e937]:
+                          - rowgroup [ref=f252e938]:
+                            - row [ref=f252e939]:
+                              - cell [ref=f252e940]:
+                                - table [ref=f252e941]:
+                                  - rowgroup [ref=f252e942]:
+                                    - row [ref=f252e943]:
+                                      - cell [ref=f252e944]:
+                                        - textbox [ref=f252e945]
+                                      - cell [ref=f252e946]
+                                      - 'cell "Example: ou=groups" [ref=f252e947]'
+                                      - cell [ref=f252e948]
+                                      - cell "(If it is empty, a node strategy is used)" [ref=f252e949]
+                      - gridcell "Role property" [ref=f252e950]
+                      - gridcell [ref=f252e952]:
+                        - table [ref=f252e954]:
+                          - rowgroup [ref=f252e955]:
+                            - row [ref=f252e956]:
+                              - cell [ref=f252e957]:
+                                - table [ref=f252e958]:
+                                  - rowgroup [ref=f252e959]:
+                                    - row [ref=f252e960]:
+                                      - cell [ref=f252e961]:
+                                        - textbox [ref=f252e962]
+                                      - cell [ref=f252e963]
+                                      - 'cell "Example: member" [ref=f252e964]'
+                      - gridcell "Role search query" [ref=f252e965]
+                      - gridcell [ref=f252e967]:
+                        - table [ref=f252e969]:
+                          - rowgroup [ref=f252e970]:
+                            - row [ref=f252e971]:
+                              - cell [ref=f252e972]:
+                                - table [ref=f252e973]:
+                                  - rowgroup [ref=f252e974]:
+                                    - row [ref=f252e975]:
+                                      - cell [ref=f252e976]:
+                                        - textbox [ref=f252e977]
+                                      - cell [ref=f252e978]
+                                      - 'cell "Example: uid=[USER_ID],ou=people,dc=example,dc=org" [ref=f252e979]'
+                  - separator [ref=f252e980]
+                  - separator [ref=f252e981]
+                  - table [ref=f252e982]:
+                    - rowgroup [ref=f252e983]:
+                      - row [ref=f252e984]:
+                        - cell [ref=f252e985]:
+                          - table [ref=f252e986]:
+                            - rowgroup [ref=f252e987]:
+                              - row [ref=f252e988]:
+                                - cell [ref=f252e989]:
+                                  - grid [ref=f252e990]:
+                                    - rowgroup [ref=f252e994]:
+                                      - columnheader "LibrePlan Role" [ref=f252e995]
+                                      - columnheader "LDAP Roles (separated by ;)" [ref=f252e997]
+                                    - rowgroup [ref=f252e1002]:
+                                      - gridcell "Superuser" [ref=f252e1003]
+                                      - gridcell [ref=f252e1005]:
+                                        - textbox [ref=f252e1007]
+                                      - gridcell "Web service reader" [ref=f252e1008]
+                                      - gridcell [ref=f252e1010]:
+                                        - textbox [ref=f252e1012]
+                                      - gridcell "Web service writer" [ref=f252e1013]
+                                      - gridcell [ref=f252e1015]:
+                                        - textbox [ref=f252e1017]
+                                      - gridcell "Web service subcontractor operations" [ref=f252e1018]
+                                      - gridcell [ref=f252e1020]:
+                                        - textbox [ref=f252e1022]
+                                      - gridcell "Read all projects" [ref=f252e1023]
+                                      - gridcell [ref=f252e1025]:
+                                        - textbox [ref=f252e1027]
+                                      - gridcell "Edit all projects" [ref=f252e1028]
+                                      - gridcell [ref=f252e1030]:
+                                        - textbox [ref=f252e1032]
+                                      - gridcell "Create projects" [ref=f252e1033]
+                                      - gridcell [ref=f252e1035]:
+                                        - textbox [ref=f252e1037]
+                                      - gridcell "Bound user" [ref=f252e1038]
+                                      - gridcell [ref=f252e1040]:
+                                        - textbox [ref=f252e1042]
+                                      - gridcell "Planning" [ref=f252e1043]
+                                      - gridcell [ref=f252e1045]:
+                                        - textbox [ref=f252e1047]
+                                      - gridcell "Templates" [ref=f252e1048]
+                                      - gridcell [ref=f252e1050]:
+                                        - textbox [ref=f252e1052]
+                                    - navigation [ref=f252e1054]:
+                                      - button "First" [disabled] [ref=f252e1055]:
+                                        - generic [ref=f252e1056]: 
+                                      - button "Prev" [disabled] [ref=f252e1057]:
+                                        - generic [ref=f252e1058]: 
+                                      - textbox "Current" [ref=f252e1059]: "1"
+                                      - text: / 6
+                                      - button "Next" [ref=f252e1060] [cursor=pointer]:
+                                        - generic [ref=f252e1061]: 
+                                      - button "Last" [ref=f252e1062] [cursor=pointer]:
+                                        - generic [ref=f252e1063]: 
+                                      - generic [ref=f252e1064]: "[ 1 - 10 / 54 ]"
+            - text: 
+        - table [ref=f252e313]:
+          - rowgroup [ref=f252e314]:
+            - row [ref=f252e315]:
+              - cell [ref=f252e316]:
+                - table [ref=f252e317]:
+                  - rowgroup [ref=f252e318]:
+                    - row [ref=f252e319]:
+                      - cell [ref=f252e320]:
+                        - button "Save" [ref=f252e321] [cursor=pointer]
+                      - cell [ref=f252e322]
+                      - cell [ref=f252e323]:
+                        - button "Cancel" [ref=f252e324] [cursor=pointer]
+  - table [ref=f252e325]:
+    - rowgroup [ref=f252e326]:
+      - row [ref=f252e327]:
+        - cell [ref=f252e328]:
+          - generic [ref=f252e330]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f252e331] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f252e332]
+  - text:    

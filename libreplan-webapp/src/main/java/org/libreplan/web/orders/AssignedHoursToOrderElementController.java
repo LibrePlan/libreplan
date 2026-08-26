@@ -28,11 +28,17 @@ import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Progressmeter;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Vbox;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.libreplan.web.common.Util.formatDate;
 
 /**
  * Controller for show the assigned hours of the selected order element.
@@ -76,6 +82,18 @@ public class AssignedHoursToOrderElementController extends GenericForwardCompose
 
     public List<WorkReportLineDTO> getWorkReportLines() {
         return assignedHoursToOrderElementModel.getWorkReportLines();
+    }
+
+    public RowRenderer getWorkReportLinesRenderer() {
+        return (Row row, Object data, int i) -> {
+            final WorkReportLineDTO workReportLine = (WorkReportLineDTO) data;
+            row.setValue(workReportLine);
+
+            row.appendChild(new Label(formatDate(workReportLine.getDate())));
+            row.appendChild(new Label(workReportLine.getResource().getShortDescription()));
+            row.appendChild(new Label(workReportLine.getTypeOfWorkHours().getName()));
+            row.appendChild(new Label(workReportLine.getSumEffort().toFormattedString()));
+        };
     }
 
     public String getTotalAssignedDirectEffort() {
@@ -195,6 +213,22 @@ public class AssignedHoursToOrderElementController extends GenericForwardCompose
 
     public List<ExpenseSheetLine> getExpenseSheetLines() {
         return assignedHoursToOrderElementModel.getExpenseSheetLines();
+    }
+
+    public RowRenderer getExpenseSheetLinesRenderer() {
+        return (Row row, Object data, int i) -> {
+            final ExpenseSheetLine expenseSheetLine = (ExpenseSheetLine) data;
+            row.setValue(expenseSheetLine);
+
+            row.appendChild(new Label(formatDate(expenseSheetLine.getDate())));
+            row.appendChild(new Label(expenseSheetLine.getConcept()));
+            row.appendChild(new Label(expenseSheetLine.getResource().getShortDescription()));
+
+            Hbox value = new Hbox();
+            value.appendChild(new Label(expenseSheetLine.getValue().toString()));
+            value.appendChild(new Label(getCurrencySymbol()));
+            row.appendChild(value);
+        };
     }
 
     public String getCurrencySymbol() {

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,8 +24,10 @@ package org.libreplan.business.labels.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.labels.entities.LabelType;
@@ -48,24 +51,28 @@ public class LabelDAO extends IntegrationEntityDAO<Label> implements ILabelDAO {
 
     @Override
     public Label findByNameAndType(String labelName, LabelType labelType) {
-        return (Label) getSession().createCriteria(Label.class).add(
-                Restrictions.eq("name", labelName)).add(
-                Restrictions.eq("type", labelType)).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Label> cq = cb.createQuery(Label.class);
+        Root<Label> root = cq.from(Label.class);
+        cq.where(cb.equal(root.get("name"), labelName), cb.equal(root.get("type"), labelType));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override
     public List<Label> findByType(LabelType labelType) {
-        Criteria c = getSession().createCriteria(Label.class).add(
-                Restrictions.eq("type", labelType));
-        return ((List<Label>) c.list());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Label> cq = cb.createQuery(Label.class);
+        Root<Label> root = cq.from(Label.class);
+        cq.where(cb.equal(root.get("type"), labelType));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public boolean existsByName(String labelName) {
-        Criteria c = getSession().createCriteria(Label.class).add(
-                Restrictions.eq("name", labelName));
-        if (c.uniqueResult() != null)
-            return true;
-        return false;
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Label> cq = cb.createQuery(Label.class);
+        Root<Label> root = cq.from(Label.class);
+        cq.where(cb.equal(root.get("name"), labelName));
+        return getSession().createQuery(cq).uniqueResult() != null;
     }
 }

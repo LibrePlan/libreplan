@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -82,7 +83,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = { BUSINESS_SPRING_CONFIG_FILE, BUSINESS_SPRING_CONFIG_TEST_FILE })
 public class MoneyCostCalculatorTest {
 
-    @javax.annotation.Resource
+    @jakarta.annotation.Resource
     private IDataBootstrap scenariosBootstrap;
 
     @Autowired

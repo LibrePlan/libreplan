@@ -18,7 +18,7 @@
 
         <property name="description" />
 
-        <property name="lastNotOwnedReassignationsTimeStamp" column="last_not_owned_reassignations_time_stamp" />
+        <property name="lastNotOwnedReassignationsTimeStamp" column="last_not_owned_reassignations_time_stamp" type="org.libreplan.business.workingday.hibernate.DateTimeType" />
 
         <map name="orders" table="scenario_orders" lazy="false" cascade="save-update">
             <key column="scenario_id" />
@@ -41,7 +41,7 @@
 
         <version name="version" access="property" type="long" />
 
-        <property name="modificationByOwnerTimestamp" column="modification_by_owner_timestamp" />
+        <property name="modificationByOwnerTimestamp" column="modification_by_owner_timestamp" type="org.libreplan.business.workingday.hibernate.DateTimeType" />
 
         <many-to-one name="ownerScenario" class="Scenario" />
     </class>

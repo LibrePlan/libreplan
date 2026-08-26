@@ -1,0 +1,99 @@
+- generic [ref=f196e4]:
+  - generic [ref=f196e5]:
+    - table [ref=f196e6]:
+      - rowgroup [ref=f196e7]:
+        - row [ref=f196e8]:
+          - cell [ref=f196e9]:
+            - link [ref=f196e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f196e12]:
+            - table [ref=f196e13]:
+              - rowgroup [ref=f196e14]:
+                - row [ref=f196e15]:
+                  - cell [ref=f196e16]:
+                    - generic [ref=f196e17]:
+                      - menubar [ref=f196e18]:
+                        - menuitem "Planning" [ref=f196e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f196e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f196e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f196e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f196e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f196e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f196e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f196e33]:
+                        - rowgroup [ref=f196e34]:
+                          - row [ref=f196e35]:
+                            - cell [ref=f196e36]:
+                              - table [ref=f196e37]:
+                                - rowgroup [ref=f196e38]:
+                                  - row [ref=f196e39]:
+                                    - cell [ref=f196e40]
+                                    - cell [ref=f196e41]:
+                                      - strong [ref=f196e42]: START
+                                    - cell [ref=f196e43]
+                                    - cell:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f196e44]:
+                              - generic [ref=f196e45]:
+                                - link "Help" [ref=f196e46] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f196e48]
+                                - img "Info" [ref=f196e50]
+    - table [ref=f196e52]:
+      - rowgroup [ref=f196e53]:
+        - row [ref=f196e54]:
+          - cell [ref=f196e55]
+          - 'cell "user: admin" [ref=f196e56]'
+          - cell [ref=f196e57]:
+            - link "[Log out]" [ref=f196e58] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f196e59]:
+    - text:    
+    - generic [ref=f196e61]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f196e62]:
+        - generic [ref=f196e63]: Scenarios List
+        - generic [ref=f196e65]:
+          - table [ref=f196e67]:
+            - rowgroup [ref=f196e71]:
+              - row [ref=f196e72]:
+                - columnheader "Name" [ref=f196e73]
+                - columnheader "Operations" [ref=f196e75]
+                - columnheader
+          - table [ref=f196e78]:
+            - rowgroup
+  - table [ref=f196e79]:
+    - rowgroup [ref=f196e80]:
+      - row [ref=f196e81]:
+        - cell [ref=f196e82]:
+          - generic [ref=f196e84]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f196e85] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f196e86]
+  - text:    

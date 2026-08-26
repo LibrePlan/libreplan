@@ -39,7 +39,7 @@ import java.util.SortedSet;
 import org.apache.commons.lang3.Validate;
 import org.hibernate.Hibernate;
 import org.hibernate.proxy.HibernateProxy;
-import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.joda.time.LocalDate;
 import org.libreplan.business.calendars.entities.BaseCalendar;
@@ -499,7 +499,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
      * @return the elements that have been moved
      */
     private List<LimitingResourceQueueElement> shift(
-            DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
+            Graph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
             LimitingResourceQueueElement elementInserted,
             AllocationSpec allocationAlreadyDone) {
 
@@ -520,7 +520,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private List<AllocationSpec> getAllocationsToBeDone(
-            DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
+            Graph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
             LimitingResourceQueueElement elementInserted,
             AllocationSpec allocationAlreadyDone) {
 
@@ -557,7 +557,7 @@ public class LimitingResourceQueueModel implements ILimitingResourceQueueModel {
     }
 
     private AllocationSpec getAllocationToBeDoneFor(
-            DirectedGraph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
+            Graph<LimitingResourceQueueElement, Edge> potentiallyAffectedByInsertion,
             Map<LimitingResourceQueueElement, AllocationSpec> allocationsToBeDoneByElement,
             LimitingResourceQueueElement current) {
 

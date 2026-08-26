@@ -1,0 +1,157 @@
+- generic [ref=f265e1]:
+  - generic [ref=f265e4]:
+    - generic [ref=f265e5]:
+      - table [ref=f265e6]:
+        - rowgroup [ref=f265e7]:
+          - row [ref=f265e8]:
+            - cell [ref=f265e9]:
+              - link [ref=f265e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f265e12]:
+              - table [ref=f265e13]:
+                - rowgroup [ref=f265e14]:
+                  - row [ref=f265e15]:
+                    - cell [ref=f265e16]:
+                      - generic [ref=f265e17]:
+                        - menubar [ref=f265e18]:
+                          - menuitem "Planning" [ref=f265e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f265e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f265e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f265e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f265e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f265e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f265e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f265e33]:
+                          - rowgroup [ref=f265e34]:
+                            - row [ref=f265e35]:
+                              - cell [ref=f265e36]:
+                                - table [ref=f265e37]:
+                                  - rowgroup [ref=f265e38]:
+                                    - row [ref=f265e39]:
+                                      - cell [ref=f265e40]
+                                      - cell [ref=f265e41]:
+                                        - strong [ref=f265e42]: START
+                                      - cell [ref=f265e43]
+                                      - cell [ref=f265e44]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f265e45]:
+                                          - rowgroup [ref=f265e46]:
+                                            - row [ref=f265e47]:
+                                              - cell [ref=f265e48]:
+                                                - table [ref=f265e49]:
+                                                  - rowgroup [ref=f265e50]:
+                                                    - row [ref=f265e51]:
+                                                      - cell [ref=f265e52]:
+                                                        - table [ref=f265e53]:
+                                                          - rowgroup [ref=f265e54]:
+                                                            - row [ref=f265e55]:
+                                                              - cell [ref=f265e56]:
+                                                                - table [ref=f265e57]:
+                                                                  - rowgroup [ref=f265e58]:
+                                                                    - row [ref=f265e59]:
+                                                                      - cell [ref=f265e60]
+                                                                      - cell [ref=f265e63]
+                                                                      - cell "Resources" [ref=f265e64]
+                                                      - cell [ref=f265e65]
+                                                      - cell [ref=f265e66]:
+                                                        - table [ref=f265e67]:
+                                                          - rowgroup [ref=f265e68]:
+                                                            - row [ref=f265e69]:
+                                                              - cell [ref=f265e70]:
+                                                                - table [ref=f265e71]:
+                                                                  - rowgroup [ref=f265e72]:
+                                                                    - row [ref=f265e73]:
+                                                                      - cell [ref=f265e74]
+                                                                      - cell [ref=f265e77]
+                                                                      - cell "Labels" [ref=f265e78]
+                              - cell [ref=f265e79]:
+                                - generic [ref=f265e80]:
+                                  - link "Help" [ref=f265e81] [cursor=pointer]:
+                                    - /url: /help/en/10-etiquetas.html
+                                  - img "Axuda" [ref=f265e83]
+                                  - img "Info" [ref=f265e85]
+      - table [ref=f265e87]:
+        - rowgroup [ref=f265e88]:
+          - row [ref=f265e89]:
+            - cell [ref=f265e90]
+            - 'cell "user: admin" [ref=f265e91]'
+            - cell [ref=f265e92]:
+              - link "[Log out]" [ref=f265e93] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f265e94]:
+      - text:    
+      - generic [ref=f265e96]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f265e97]:
+          - generic [ref=f265e98]: Label Types List
+          - generic [ref=f265e99]:
+            - grid [ref=f265e100]:
+              - rowgroup [ref=f265e105]:
+                - columnheader [ref=f265e106]:
+                  - generic [ref=f265e107] [cursor=pointer]:
+                    - generic [ref=f265e108]: 
+                    - text: Name
+                - columnheader "Code" [ref=f265e110]
+                - columnheader "Operations" [ref=f265e112]
+              - rowgroup [ref=f265e118]:
+                - 'gridcell "org.libreplan.business.labels.entities.LabelType@5c852d67[ id: 1, newObject: false]" [ref=f265e119]'
+              - generic [ref=f265e121]:    
+            - button "Create" [ref=f265e122] [cursor=pointer]
+        - text:   
+    - table [ref=f265e123]:
+      - rowgroup [ref=f265e124]:
+        - row [ref=f265e125]:
+          - cell [ref=f265e126]:
+            - generic [ref=f265e128]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f265e129] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f265e130]
+    - text:    
+  - generic [ref=f265e131]:
+    - generic [ref=f265e132]: "LibrePlan: Runtime Error"
+    - generic [ref=f265e134]:
+      - generic [ref=f265e135]: "Message - Index: 2, Size: 1"
+      - generic [ref=f265e138]:
+        - grid [ref=f265e139]:
+          - rowgroup [ref=f265e143]:
+            - gridcell "Exception type" [ref=f265e144]
+            - gridcell "class java.lang.IndexOutOfBoundsException" [ref=f265e146]
+            - gridcell "Status code" [ref=f265e148]
+            - gridcell "500" [ref=f265e150]
+            - gridcell "Stacktrace" [ref=f265e152]
+            - gridcell [ref=f265e154]:
+              - textbox [active] [ref=f265e156]: "java.lang.IndexOutOfBoundsException: Index: 2, Size: 1 at org.zkoss.zk.ui.AbstractComponent$ChildIter.<init>(AbstractComponent.java:3272) at org.zkoss.zk.ui.AbstractComponent$Children.listIterator(AbstractComponent.java:221) at java.base/java.util.AbstractSequentialList.get(AbstractSequentialList.java:90) at org.libreplan.web.labels.LabelTypeCRUDController$2.onEvent(LabelTypeCRUDController.java:137) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f265e157]:
+          - rowgroup [ref=f265e158]:
+            - row [ref=f265e159]:
+              - cell [ref=f265e160]:
+                - table [ref=f265e161]:
+                  - rowgroup [ref=f265e162]:
+                    - row [ref=f265e163]:
+                      - cell [ref=f265e164]:
+                        - button "Continue" [ref=f265e165] [cursor=pointer]
+                      - cell [ref=f265e166]
+                      - cell [ref=f265e167]:
+                        - button "Reload" [ref=f265e168] [cursor=pointer]
+                      - cell [ref=f265e169]
+                      - cell [ref=f265e170]:
+                        - button "Exit session" [ref=f265e171] [cursor=pointer]

@@ -1,0 +1,2 @@
+[      98ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8080/orders/orders.zul:0
+[     278ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:8080/favicon.ico:0

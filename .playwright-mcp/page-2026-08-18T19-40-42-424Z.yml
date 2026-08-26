@@ -1,0 +1,218 @@
+- generic [ref=f995e4]:
+  - generic [ref=f995e5]:
+    - table [ref=f995e6]:
+      - rowgroup [ref=f995e7]:
+        - row [ref=f995e8]:
+          - cell [ref=f995e9]:
+            - link [ref=f995e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f995e12]:
+            - table [ref=f995e13]:
+              - rowgroup [ref=f995e14]:
+                - row [ref=f995e15]:
+                  - cell [ref=f995e16]:
+                    - generic [ref=f995e17]:
+                      - menubar [ref=f995e18]:
+                        - menuitem "Planning" [ref=f995e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f995e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f995e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f995e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f995e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f995e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f995e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f995e33]:
+                        - rowgroup [ref=f995e34]:
+                          - row [ref=f995e35]:
+                            - cell [ref=f995e36]:
+                              - table [ref=f995e37]:
+                                - rowgroup [ref=f995e38]:
+                                  - row [ref=f995e39]:
+                                    - cell [ref=f995e40]
+                                    - cell [ref=f995e41]:
+                                      - strong [ref=f995e42]: START
+                                    - cell [ref=f995e43]
+                                    - cell [ref=f995e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f995e45]:
+                                        - rowgroup [ref=f995e46]:
+                                          - row [ref=f995e47]:
+                                            - cell [ref=f995e48]:
+                                              - table [ref=f995e49]:
+                                                - rowgroup [ref=f995e50]:
+                                                  - row [ref=f995e51]:
+                                                    - cell [ref=f995e52]:
+                                                      - table [ref=f995e53]:
+                                                        - rowgroup [ref=f995e54]:
+                                                          - row [ref=f995e55]:
+                                                            - cell [ref=f995e56]:
+                                                              - table [ref=f995e57]:
+                                                                - rowgroup [ref=f995e58]:
+                                                                  - row [ref=f995e59]:
+                                                                    - cell [ref=f995e60]
+                                                                    - cell [ref=f995e63]
+                                                                    - cell "Resources" [ref=f995e64]
+                                                    - cell [ref=f995e65]
+                                                    - cell [ref=f995e66]:
+                                                      - table [ref=f995e67]:
+                                                        - rowgroup [ref=f995e68]:
+                                                          - row [ref=f995e69]:
+                                                            - cell [ref=f995e70]:
+                                                              - table [ref=f995e71]:
+                                                                - rowgroup [ref=f995e72]:
+                                                                  - row [ref=f995e73]:
+                                                                    - cell [ref=f995e74]
+                                                                    - cell [ref=f995e77]
+                                                                    - cell "Machines" [ref=f995e78]
+                            - cell [ref=f995e79]:
+                              - generic [ref=f995e80]:
+                                - link "Help" [ref=f995e81] [cursor=pointer]:
+                                  - /url: /help/en/05-recursos.html#xesti-n-de-m-quinas
+                                - img "Axuda" [ref=f995e83]
+                                - img "Info" [ref=f995e85]
+    - table [ref=f995e87]:
+      - rowgroup [ref=f995e88]:
+        - row [ref=f995e89]:
+          - cell [ref=f995e90]
+          - 'cell "user: admin" [ref=f995e91]'
+          - cell [ref=f995e92]:
+            - link "[Log out]" [ref=f995e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f995e94]:
+    - text:    
+    - generic [ref=f995e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:                
+      - generic [ref=f995e289]:
+        - generic [ref=f995e290]: "Edit Machine: Druckmaschine01"
+        - generic [ref=f995e293]:
+          - generic [ref=f995e294]:
+            - tablist [ref=f995e295]:
+              - listitem [ref=f995e296] [cursor=pointer]:
+                - generic [ref=f995e297]: Machine data
+              - listitem [ref=f995e299] [cursor=pointer]:
+                - generic [ref=f995e300]: Assigned criteria
+              - listitem [ref=f995e302] [cursor=pointer]:
+                - generic [ref=f995e303]: Calendar
+              - listitem [ref=f995e305] [cursor=pointer]:
+                - generic [ref=f995e306]: Configuration
+              - listitem [ref=f995e308] [cursor=pointer]:
+                - generic [ref=f995e309]: Cost category assignment
+            - text:  
+            - generic [ref=f995e311]:
+              - text:                                                                                                                             
+              - tabpanel [ref=f995e364]:
+                - table [ref=f995e365]:
+                  - rowgroup [ref=f995e366]:
+                    - row [ref=f995e663]:
+                      - cell [ref=f995e664]:
+                        - table [ref=f995e369]:
+                          - rowgroup [ref=f995e370]:
+                            - row [ref=f995e371]:
+                              - cell [ref=f995e372]:
+                                - button "Add new configuration unit" [ref=f995e373] [cursor=pointer]
+                            - row [ref=f995e374]:
+                              - cell [ref=f995e375]
+                            - row [ref=f995e665]:
+                              - cell [ref=f995e666]:
+                                - table [ref=f995e378]:
+                                  - rowgroup [ref=f995e379]:
+                                    - row [ref=f995e667]:
+                                      - cell [ref=f995e668]:
+                                        - table [ref=f995e382]:
+                                          - rowgroup [ref=f995e383]:
+                                            - row [ref=f995e669]:
+                                              - cell [ref=f995e670]:
+                                                - table [ref=f995e671]:
+                                                  - rowgroup [ref=f995e672]:
+                                                    - row [ref=f995e673]:
+                                                      - cell [ref=f995e674]:
+                                                        - table [ref=f995e675]:
+                                                          - rowgroup [ref=f995e676]:
+                                                            - row [ref=f995e677]:
+                                                              - cell [ref=f995e678]:
+                                                                - table [ref=f995e679]:
+                                                                  - rowgroup [ref=f995e680]:
+                                                                    - row [ref=f995e681]:
+                                                                      - cell [ref=f995e682]:
+                                                                        - table [ref=f995e683]:
+                                                                          - rowgroup [ref=f995e684]:
+                                                                            - row [ref=f995e685]:
+                                                                              - cell "Name:" [ref=f995e686]
+                                                                              - cell [ref=f995e687]
+                                                                              - cell [ref=f995e688]:
+                                                                                - textbox [ref=f995e689]: New configuration unit
+                                                                              - cell [ref=f995e690]
+                                                                              - cell "Alpha:" [ref=f995e691]
+                                                                              - cell [ref=f995e692]
+                                                                              - cell [ref=f995e693]:
+                                                                                - textbox [ref=f995e694]: "1.00"
+                                                                              - cell [ref=f995e695]
+                                                                              - cell [ref=f995e696]:
+                                                                                - button "Delete" [ref=f995e697] [cursor=pointer]
+                                                            - row [ref=f995e699]:
+                                                              - cell [ref=f995e700]
+                                                            - row [ref=f995e701]:
+                                                              - cell [ref=f995e702]:
+                                                                - generic [ref=f995e703]:
+                                                                  - generic [ref=f995e704]: Worker assignments
+                                                                  - generic [ref=f995e707]:
+                                                                    - combobox [ref=f995e708]:
+                                                                      - textbox [ref=f995e709]
+                                                                      - button [ref=f995e710] [cursor=pointer]:
+                                                                        - generic [ref=f995e711]: 
+                                                                    - button "Add new worker assignment" [ref=f995e712] [cursor=pointer]
+                                                                    - grid [ref=f995e713]:
+                                                                      - rowgroup [ref=f995e719]:
+                                                                        - columnheader "Name" [ref=f995e720]
+                                                                        - columnheader "Start date" [ref=f995e722]
+                                                                        - columnheader "End date" [ref=f995e724]
+                                                                        - columnheader "Operations" [ref=f995e726]
+                                                                      - rowgroup
+                                                            - row [ref=f995e733]:
+                                                              - cell [ref=f995e734]
+                                                            - row [ref=f995e735]:
+                                                              - cell [ref=f995e736]:
+                                                                - generic [ref=f995e737]:
+                                                                  - generic [ref=f995e738]: Criterion requirements
+                                                                  - generic [ref=f995e741]:
+                                                                    - combobox [ref=f995e742]:
+                                                                      - textbox [ref=f995e743]
+                                                                      - button [ref=f995e744] [cursor=pointer]:
+                                                                        - generic [ref=f995e745]: 
+                                                                    - button "Add new criterion requirement" [ref=f995e746] [cursor=pointer]
+                                                                    - grid [ref=f995e747]:
+                                                                      - rowgroup [ref=f995e751]:
+                                                                        - columnheader "Name" [ref=f995e752]
+                                                                        - columnheader "Operations" [ref=f995e754]
+                                                                      - rowgroup
+          - button "Save" [ref=f995e361] [cursor=pointer]
+          - button "Save & Continue" [ref=f995e362] [cursor=pointer]
+          - button "Cancel" [ref=f995e363] [cursor=pointer]
+  - table [ref=f995e281]:
+    - rowgroup [ref=f995e282]:
+      - row [ref=f995e283]:
+        - cell [ref=f995e284]:
+          - generic [ref=f995e286]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f995e287] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f995e288]
+  - text:    

@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -32,7 +33,7 @@
             <tabpanel>
                 <!--  Name qualityForm -->
                 <vbox style="margin-bottom: 5px" width="100%">
-                    <grid fixedLayout="true">
+                    <grid>
                         <columns>
                             <column width="250px" />
                             <column />
@@ -41,15 +42,15 @@
                             <row>
                                 <label value="${i18n:_t('Name')}" />
                                 <textbox id="qualityFormName"
-                                         width="500px" value="@{controller.qualityForm.name}"
-                                         constraint="@{controller.checkConstraintUniqueQualityFormName}"
+                                         width="500px" value="@load(controller.qualityForm.name) @save(controller.qualityForm.name)"
+                                         constraint="@load(controller.checkConstraintUniqueQualityFormName())"
                                          onBlur="controller.updateWindowTitle()" sclass="focus-element" />
                             </row>
                             <row>
                                 <label value="${i18n:_t('Description')}" />
                                 <textbox id="qualityFormDescription"
                                          rows="3" width="500px"
-                                         value="@{controller.qualityForm.description}"/>
+                                         value="@load(controller.qualityForm.description) @save(controller.qualityForm.description)"/>
                             </row>
                             <row>
                                 <hbox>
@@ -57,14 +58,14 @@
                                     <image height="15px" src="/common/img/axuda.gif" tooltip="quality-forms-popup" />
                                 </hbox>
                                 <listbox id="listQualityFormTypes" mold="select" rows="1"
-                                         model="@{controller.qualityFormTypes}"
+                                         model="@load(controller.qualityFormTypes)"
                                          onSelect="controller.changeQualityFormType();"
-                                         selectedItem="@{controller.qualityForm.qualityFormType}"
+                                         selectedItem="@load(controller.qualityForm.qualityFormType) @save(controller.qualityForm.qualityFormType)"
                                          itemRenderer="org.libreplan.web.common.EnumsListitemRenderer"/>
                             </row>
                             <row>
                                 <label value="${i18n:_t('Report progress')}" />
-                                <checkbox id="checkBoxReportProgress" checked="@{controller.qualityForm.reportAdvance}" />
+                                <checkbox id="checkBoxReportProgress" checked="@load(controller.qualityFormReportAdvance) @save(controller.qualityFormReportAdvance)" />
                             </row>
                         </rows>
                     </grid>
@@ -78,47 +79,15 @@
                                     onClick="controller.createQualityFormItem()" />
                         </hbox>
                         <grid id="gridQualityFormItems"
-                              model="@{controller.qualityFormItems}" fixedLayout="true">
+                              model="@load(controller.qualityFormItems)"
+                              rowRenderer="@load(controller.qualityFormItemRenderer)">
                             <columns sizable="true">
                                 <column label="${i18n:_t('Name')}"/>
                                 <column label="${i18n:_t('Position')}" align="center" width="120px"
                                         sort="auto(position)" sortDirection="ascending"/>
-                                <column visible="@{controller.byPercentage}" label="${i18n:_t('Percentage')}" align="center" width="180px"/>
+                                <column visible="@load(controller.byPercentage)" label="${i18n:_t('Percentage')}" align="center" width="180px"/>
                                 <column label="${i18n:_t('Operations')}" align="center" width="120px"/>
                             </columns>
-                            <rows>
-                                <row self="@{each='qualityFormItem'}" value="@{qualityFormItem}">
-                                    <textbox value="@{qualityFormItem.name}" width="95%"
-                                             constraint="@{controller.checkConstraintQualityFormItemName}"/>
-                                    <label value="@{qualityFormItem.stringPosition}" width="50px"/>
-
-                                    <decimalbox scale = "2" width="100px"
-                                                visible="@{controller.byPercentage}"
-                                                value="@{qualityFormItem.percentage}"
-                                                constraint = "@{controller.checkConstraintQualityFormItemPercentage}"
-                                                onChange = "controller.onChangeQualityFormItemPercentage()"/>
-
-                                    <hbox>
-                                        <button visible="@{controller.byItems}"
-                                                sclass="icono" image="/common/img/ico_subir1.png"
-                                                hoverImage="/common/img/ico_subir.png"
-                                                tooltiptext="${i18n:_t('Up')}"
-                                                onClick="controller.upQualityFormItem(self.parent.parent.value);">
-                                        </button>
-                                        <button visible="@{controller.byItems}"
-                                                sclass="icono" image="/common/img/ico_bajar1.png"
-                                                hoverImage="/common/img/ico_bajar.png"
-                                                tooltiptext="${i18n:_t('Down')}"
-                                                onClick="controller.downQualityFormItem(self.parent.parent.value);">
-                                        </button>
-                                        <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                                hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_t('Delete')}"
-                                                onClick="controller.confirmDeleteQualityFormItem(self.parent.parent.value);">
-                                        </button>
-                                    </hbox>
-                                </row>
-                            </rows>
                         </grid>
                     </panelchildren>
                 </panel>

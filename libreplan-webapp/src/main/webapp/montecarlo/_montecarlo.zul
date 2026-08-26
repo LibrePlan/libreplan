@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -35,8 +36,7 @@
             <!--Lists of tasks in the critical path -->
             <grid id="gridCriticalPathTasks"
                   mold="paging"
-                  pageSize="10"
-                  fixedLayout="true">
+                  pageSize="10">
 
                 <auxhead>
                     <auxheader colspan="2"/>
@@ -87,10 +87,14 @@
                         <column hflex="1"/>
                     </columns>
                     <rows>
-                        <row spans="1,3">
-                            <label value="${i18n:_t('Group by weeks')}" />
-                            <checkbox id="cbGroupByWeeks" checked="true"
-                                      width="200px" />
+                        <row>
+                            <cell>
+                                <label value="${i18n:_t('Group by weeks')}" />
+                            </cell>
+                            <cell colspan="3">
+                                <checkbox id="cbGroupByWeeks" checked="true"
+                                          width="200px" />
+                            </cell>
                         </row>
                         <row>
                             <label value="${i18n:_t('Number of iterations')}" />

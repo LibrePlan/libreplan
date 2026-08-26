@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 ComtecSF S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -123,7 +124,7 @@ public class LDAPCustomAuthenticationProvider
         // If user != null then exists in LibrePlan
         if ( null != user && user.isLibrePlanUser() ) {
             // is a LibrePlan user, then we must authenticate against DB
-            return authenticateInDatabase(username, user, encodedPassword);
+            return authenticateInDatabase(username, user, clearPassword);
         }
 
         // If it's a LDAP or null user, then we must authenticate against LDAP
@@ -168,7 +169,7 @@ public class LDAPCustomAuthenticationProvider
         }
 
         // LDAP is not enabled we must check if the LDAP user is in DB
-        return authenticateInDatabase(username, user, encodedPassword);
+        return authenticateInDatabase(username, user, clearPassword);
     }
 
     private UserDetails loadUserDetails(String username) {
@@ -269,12 +270,20 @@ public class LDAPCustomAuthenticationProvider
         });
     }
 
-    private UserDetails authenticateInDatabase(String username, User user, String encodedPassword) {
-        if ( null != user && null != user.getPassword() && encodedPassword.equals(user.getPassword()) ) {
-            return loadUserDetails(username);
-        } else {
+    private UserDetails authenticateInDatabase(String username, User user, String clearPassword) {
+        if ( null == user || null == user.getPassword()
+                || !passwordEncoderService.matches(clearPassword, username, user.getPassword()) ) {
             throw new BadCredentialsException("Credentials are not the same as in database.");
         }
+
+        // Transparently upgrade passwords still on the legacy scheme now that we know the
+        // clear password matches - see jdk25-migration-baseline/CHANGES-and-WHY.md.
+        if ( passwordEncoderService.needsRehash(user.getPassword()) ) {
+            user.setPassword(passwordEncoderService.encodePassword(clearPassword, username));
+            saveUserOnTransaction(user);
+        }
+
+        return loadUserDetails(username);
     }
 
     @SuppressWarnings("unchecked")

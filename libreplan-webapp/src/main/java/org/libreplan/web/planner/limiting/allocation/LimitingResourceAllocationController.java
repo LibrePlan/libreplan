@@ -132,8 +132,8 @@ public class LimitingResourceAllocationController extends GenericForwardComposer
         limitingTaskInformation.refreshTotalHours();
     }
 
-    public List<LimitingAllocationRow> getResourceAllocationRows() {
-        return resourceAllocationModel.getResourceAllocationRows();
+    public org.zkoss.zul.ListModel<LimitingAllocationRow> getResourceAllocationRows() {
+        return new org.zkoss.zul.ListModelList<>(resourceAllocationModel.getResourceAllocationRows());
     }
 
     /**

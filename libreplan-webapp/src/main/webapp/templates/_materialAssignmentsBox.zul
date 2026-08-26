@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -21,9 +22,10 @@
 
 <panel title="${i18n:_t('Materials')}" border="normal">
     <panelchildren>
-        <newdatasortablegrid id="gridMaterials" fixedLayout="true"
+        <newdatasortablegrid id="gridMaterials"
                              sclass="margin-border"
-                             model="@{assignedMaterialsController.assignedMaterials}">
+                             model="@load(assignedMaterialsController.assignedMaterials)"
+                             rowRenderer="@load(assignedMaterialsController.materialAssignmentsRenderer)">
             <columns>
                 <newdatasortablecolumn label="${i18n:_t('Code')}" />
                 <newdatasortablecolumn label="${i18n:_t('Units')}" />
@@ -34,34 +36,6 @@
                 <newdatasortablecolumn label="" />
             </columns>
             <rows>
-                <row self="@{each='assignedMaterial'}" value="@{assignedMaterial}">
-                    <textbox value="@{assignedMaterial.material.code}"
-                             constraint="no empty:${i18n:_t('cannot be empty')}"
-                             readonly="true" />
-                    <doublebox value="@{assignedMaterial.units}"
-                               onChange="assignedMaterialsController.updateTotalPrice(self.parent)" />
-                    <listbox mold="select"  model="@{assignedMaterialsController.unitTypes}"
-                             onSelect = "assignedMaterialsController.selectUnitType(self)"
-                             itemRenderer="@{assignedMaterialsController.renderer}"
-                             disabled="true"/>
-                    <decimalbox value="@{assignedMaterial.unitPrice}"
-                                onChange="assignedMaterialsController.updateTotalPrice(self.parent)"
-                                format="@{assignedMaterialsController.moneyFormat}" />
-                    <decimalbox id="totalPrice" value="@{assignedMaterial.totalPrice}" disabled="${true}"
-                                format="@{assignedMaterialsController.moneyFormat}" />
-                    <label value="@{assignedMaterial.material.category.name}" width="150px" />
-                    <hbox>
-                        <button sclass="icono"
-                                image="/common/img/ico_borrar1.png"
-                                hoverImage="/common/img/ico_borrar.png"
-                                tooltiptext="${i18n:_t('Delete')}"
-                                onClick="assignedMaterialsController.showRemoveMaterialAssignmentDlg(self.parent.parent.value)"/>
-                        <button label="${i18n:_t('Split')}" sclass="add-button"
-                                tooltiptext="${i18n:_t('Split assignment')}"
-                                onClick="assignedMaterialsController.showSplitMaterialAssignmentDlg(self.parent.parent.value)"/>
-
-                    </hbox>
-                </row>
             </rows>
         </newdatasortablegrid>
     </panelchildren>

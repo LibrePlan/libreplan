@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,8 +35,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import javax.validation.Valid;
-import javax.validation.constraints.AssertTrue;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.AssertTrue;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;

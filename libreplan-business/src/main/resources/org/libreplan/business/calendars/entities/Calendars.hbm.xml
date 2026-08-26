@@ -62,7 +62,7 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <property name="date" access="field" />
+        <property name="date" access="field" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
         <component name="capacity" class="org.libreplan.business.calendars.entities.Capacity">
             <property name="standardEffort" column="standard_effort"
@@ -137,7 +137,7 @@
         <!-- Not indexed -->
         <many-to-one name="parent" class="BaseCalendar" access="field" />
 
-        <property name="expiringDate" access="field" column="expiring_date" />
+        <property name="expiringDate" access="field" column="expiring_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
     </class>
 
     <!-- CalendarAvailability -->
@@ -151,9 +151,9 @@
 
         <property name="code" access="property" not-null="true" unique="true"/>
 
-        <property name="startDate" access="field" column="start_date" />
+        <property name="startDate" access="field" column="start_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
-        <property name="endDate" access="field" column="end_date" />
+        <property name="endDate" access="field" column="end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
 
     </class>

@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -26,67 +27,63 @@
             <row>
                 <label value="${i18n:_t('External company')}" />
                 <hbox>
-                    <combobox model="@{subController.subcontractorExternalCompanies}"
-                              value="@{subController.subcontractedTaskData.externalCompany.name}"
+                    <combobox model="@load(subController.subcontractorExternalCompanies)"
+                              itemRenderer="@load(subController.externalCompanyRenderer)"
+                              value="@load(subController.subcontractedTaskData.externalCompany.name)"
                               onSelect="subController.setExternalCompany(self.selectedItem);"
-                              visible="@{subController.notSent}" >
-
-                        <comboitem self="@{each='externalCompany'}"
-                                   value="@{externalCompany}"
-                                   label="@{externalCompany.name}"
-                                   readonly="@{subController.sent}" />
+                              visible="@load(subController.notSent)" >
                     </combobox>
-                    <label value="@{subController.subcontractedTaskData.externalCompany.name}"
-                           visible="@{subController.sent}"/>
+                    <label value="@load(subController.subcontractedTaskData.externalCompany.name)"
+                           visible="@load(subController.sent)"/>
                 </hbox>
             </row>
 
             <row>
                 <label value="${i18n:_t('Subcontracting date')}" />
-                <label value="@{subController.subcontractedTaskData.subcontratationDate,
-                   converter='org.libreplan.web.common.typeconverters.DateConverter'}"
-                       visible="@{subController.sent}"/>
+                <label value="@load(subController.subcontractedTaskData.subcontratationDate,
+                   converter='org.libreplan.web.common.typeconverters.DateConverter')"
+                       visible="@load(subController.sent)"/>
             </row>
             <row>
                 <label value="${i18n:_t('Subcontracting communication date')}" />
-                <label value="@{
+                <label value="@load(
                 subController.subcontractedTaskData.subcontractCommunicationDate,
-                converter='org.libreplan.web.common.typeconverters.DateConverter'}"
-                       visible="@{subController.sent}"/>
+                converter='org.libreplan.web.common.typeconverters.DateConverter')"
+                       visible="@load(subController.sent)"/>
             </row>
             <row>
                 <hbox>
                     <label value="${i18n:_t('Work description')}" />
                     <image height="15px" src="/common/img/axuda.gif" tooltip="subcontractor-description-popup" />
                 </hbox>
-                <textbox value="@{subController.subcontractedTaskData.workDescription}"
-                         readonly="@{subController.sent}" hflex="1"/>
+                <textbox value="@load(subController.subcontractedTaskData.workDescription)@save(subController.subcontractedTaskData.workDescription)"
+                         readonly="@load(subController.sent)" hflex="1"/>
             </row>
             <row>
                 <label value="${i18n:_t('Subcontract price')}" />
-                <decimalbox value="@{subController.subcontractedTaskData.subcontractPrice}"
-                            readonly="@{subController.sent}" format="@{subController.moneyFormat}"/>
+                <decimalbox value="@load(subController.subcontractedTaskData.subcontractPrice)@save(subController.subcontractedTaskData.subcontractPrice)"
+                            readonly="@load(subController.sent)" format="@load(subController.moneyFormat)"/>
             </row>
             <row>
                 <label value="${i18n:_t('Subcontracting code')}" />
-                <textbox value="@{subController.subcontractedTaskData.subcontractedCode}"
-                         readonly="@{subController.sent}"/>
+                <textbox value="@load(subController.subcontractedTaskData.subcontractedCode)@save(subController.subcontractedTaskData.subcontractedCode)"
+                         readonly="@load(subController.sent)"/>
             </row>
             <row>
                 <label value="${i18n:_t('Exportation options')}" />
                 <vbox>
                     <checkbox label="${i18n:_t('Node without children')}"
-                              checked="@{subController.subcontractedTaskData.nodeWithoutChildrenExported}"
-                              disabled="@{subController.sent}" />
+                              checked="@load(subController.subcontractedTaskData.nodeWithoutChildrenExported)@save(subController.subcontractedTaskData.nodeWithoutChildrenExported)"
+                              disabled="@load(subController.sent)" />
                     <checkbox label="${i18n:_t('Labels')}"
-                              checked="@{subController.subcontractedTaskData.labelsExported}"
-                              disabled="@{subController.sent}" />
+                              checked="@load(subController.subcontractedTaskData.labelsExported)@save(subController.subcontractedTaskData.labelsExported)"
+                              disabled="@load(subController.sent)" />
                     <checkbox label="${i18n:_t('Material assignments')}"
-                              checked="@{subController.subcontractedTaskData.materialAssignmentsExported}"
-                              disabled="@{subController.sent}" />
+                              checked="@load(subController.subcontractedTaskData.materialAssignmentsExported)@save(subController.subcontractedTaskData.materialAssignmentsExported)"
+                              disabled="@load(subController.sent)" />
                     <checkbox label="${i18n:_t('Hours groups')}"
-                              checked="@{subController.subcontractedTaskData.hoursGroupsExported}"
-                              disabled="@{subController.sent}" />
+                              checked="@load(subController.subcontractedTaskData.hoursGroupsExported)@save(subController.subcontractedTaskData.hoursGroupsExported)"
+                              disabled="@load(subController.sent)" />
                 </vbox>
             </row>
         </rows>
@@ -105,9 +102,9 @@
         <separator spacing="20px"/>
 
         <grid id="gridDeliverDate"
-              model="@{subController.deliverDates}"
-              rowRenderer="@{subController.deliverDatesRenderer}"
-              mold="paging" pageSize="10" fixedLayout="true" width="880px">
+              model="@load(subController.deliverDates)"
+              rowRenderer="@load(subController.deliverDatesRenderer)"
+              mold="paging" pageSize="10" width="880px">
             <columns>
                 <column label="${i18n:_t('Save date')}" sort="auto(saveDate)" align="center" width="220px"/>
                 <column label="${i18n:_t('Deliver date')}" align="center" width="220px"/>
@@ -123,9 +120,9 @@
         <separator spacing="10px"/>
 
         <grid id="gridEndDates"
-              model="@{subController.askedEndDates}"
-              rowRenderer="@{subController.endDatesRenderer}"
-              mold="paging" pageSize="10" fixedLayout="true" width="880px">
+              model="@load(subController.askedEndDates)"
+              rowRenderer="@load(subController.endDatesRenderer)"
+              mold="paging" pageSize="10" width="880px">
             <columns>
                 <column label="${i18n:_t('End date')}" sort="auto(saveDate)" align="center" width="320px"/>
                 <column label="${i18n:_t('Communication date')}" align="center" width="320px"/>

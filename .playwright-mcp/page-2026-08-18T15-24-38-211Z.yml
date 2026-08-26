@@ -1,0 +1,242 @@
+- generic [ref=f981e4]:
+  - generic [ref=f981e5]:
+    - table [ref=f981e6]:
+      - rowgroup [ref=f981e7]:
+        - row [ref=f981e8]:
+          - cell [ref=f981e9]:
+            - link [ref=f981e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f981e12]:
+            - table [ref=f981e13]:
+              - rowgroup [ref=f981e14]:
+                - row [ref=f981e15]:
+                  - cell [ref=f981e16]:
+                    - generic [ref=f981e17]:
+                      - menubar [ref=f981e18]:
+                        - menuitem "Planning" [ref=f981e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f981e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f981e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f981e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f981e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f981e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f981e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f981e33]:
+                        - rowgroup [ref=f981e34]:
+                          - row [ref=f981e35]:
+                            - cell [ref=f981e36]:
+                              - table [ref=f981e37]:
+                                - rowgroup [ref=f981e38]:
+                                  - row [ref=f981e39]:
+                                    - cell [ref=f981e40]
+                                    - cell [ref=f981e41]:
+                                      - strong [ref=f981e42]: START
+                                    - cell [ref=f981e43]
+                                    - cell [ref=f981e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f981e45]:
+                                        - rowgroup [ref=f981e46]:
+                                          - row [ref=f981e47]:
+                                            - cell [ref=f981e48]:
+                                              - table [ref=f981e49]:
+                                                - rowgroup [ref=f981e50]:
+                                                  - row [ref=f981e51]:
+                                                    - cell [ref=f981e52]:
+                                                      - table [ref=f981e53]:
+                                                        - rowgroup [ref=f981e54]:
+                                                          - row [ref=f981e55]:
+                                                            - cell [ref=f981e56]:
+                                                              - table [ref=f981e57]:
+                                                                - rowgroup [ref=f981e58]:
+                                                                  - row [ref=f981e59]:
+                                                                    - cell [ref=f981e60]
+                                                                    - cell [ref=f981e63]
+                                                                    - cell "Resources" [ref=f981e64]
+                                                    - cell [ref=f981e65]
+                                                    - cell [ref=f981e66]:
+                                                      - table [ref=f981e67]:
+                                                        - rowgroup [ref=f981e68]:
+                                                          - row [ref=f981e69]:
+                                                            - cell [ref=f981e70]:
+                                                              - table [ref=f981e71]:
+                                                                - rowgroup [ref=f981e72]:
+                                                                  - row [ref=f981e73]:
+                                                                    - cell [ref=f981e74]
+                                                                    - cell [ref=f981e77]
+                                                                    - cell "Machines" [ref=f981e78]
+                            - cell [ref=f981e79]:
+                              - generic [ref=f981e80]:
+                                - link "Help" [ref=f981e81] [cursor=pointer]:
+                                  - /url: /help/en/05-recursos.html#xesti-n-de-m-quinas
+                                - img "Axuda" [ref=f981e83]
+                                - img "Info" [ref=f981e85]
+    - table [ref=f981e87]:
+      - rowgroup [ref=f981e88]:
+        - row [ref=f981e89]:
+          - cell [ref=f981e90]
+          - 'cell "user: admin" [ref=f981e91]'
+          - cell [ref=f981e92]:
+            - link "[Log out]" [ref=f981e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f981e94]:
+    - text:    
+    - generic [ref=f981e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f981e97]:
+        - generic [ref=f981e98]: Machines List
+        - generic [ref=f981e99]:
+          - separator [ref=f981e100]
+          - table [ref=f981e102]:
+            - rowgroup [ref=f981e103]:
+              - row [ref=f981e104]:
+                - cell [ref=f981e105]:
+                  - table [ref=f981e106]:
+                    - rowgroup [ref=f981e107]:
+                      - row [ref=f981e108]:
+                        - cell "Filter by" [ref=f981e109]
+                        - cell [ref=f981e110]
+                        - cell [ref=f981e111]:
+                          - combobox [ref=f981e113]:
+                            - textbox [ref=f981e114]
+                            - button [ref=f981e115] [cursor=pointer]:
+                              - generic [ref=f981e116]: 
+                        - cell [ref=f981e117]
+                        - cell "Personal details" [ref=f981e118]
+                        - cell [ref=f981e119]
+                        - cell [ref=f981e120]:
+                          - textbox [ref=f981e121]
+                        - cell [ref=f981e122]
+                        - cell "More options" [ref=f981e123]:
+                          - generic [ref=f981e124]:
+                            - generic [ref=f981e125]: More options
+                            - text:          
+                        - cell [ref=f981e128]
+                        - cell [ref=f981e129]:
+                          - button "Filter" [ref=f981e130] [cursor=pointer]
+          - separator [ref=f981e131]
+          - grid [ref=f981e504]:
+            - rowgroup [ref=f981e511]:
+              - columnheader [ref=f981e512]:
+                - generic [ref=f981e513] [cursor=pointer]:
+                  - generic [ref=f981e514]: 
+                  - text: Name
+              - columnheader "Description" [ref=f981e516]
+              - columnheader "Code" [ref=f981e518]
+              - columnheader "Queue-based" [ref=f981e520]
+              - columnheader "Operations" [ref=f981e522]
+            - rowgroup [ref=f981e530]:
+              - gridcell "Druckmaschine01" [ref=f981e531]
+              - gridcell "eine druckmaschine" [ref=f981e533]
+              - gridcell "MACHINE0001" [ref=f981e535]
+              - gridcell "no" [ref=f981e537]
+              - gridcell [ref=f981e539]:
+                - table [ref=f981e541]:
+                  - rowgroup [ref=f981e542]:
+                    - row [ref=f981e543]:
+                      - cell [ref=f981e544]:
+                        - table [ref=f981e545]:
+                          - rowgroup [ref=f981e546]:
+                            - row [ref=f981e547]:
+                              - cell [ref=f981e548]:
+                                - button "Edit" [ref=f981e549] [cursor=pointer]
+                              - cell [ref=f981e551]
+                              - cell [ref=f981e552]:
+                                - button "Remove" [ref=f981e553] [cursor=pointer]
+              - gridcell "TE0001 Prüfstand 1 - Elektromotor 90 kW" [ref=f981e555]
+              - gridcell "." [ref=f981e557]
+              - gridcell "MACHINE0011" [ref=f981e559]
+              - gridcell "no" [ref=f981e561]
+              - gridcell [ref=f981e563]:
+                - table [ref=f981e565]:
+                  - rowgroup [ref=f981e566]:
+                    - row [ref=f981e567]:
+                      - cell [ref=f981e568]:
+                        - table [ref=f981e569]:
+                          - rowgroup [ref=f981e570]:
+                            - row [ref=f981e571]:
+                              - cell [ref=f981e572]:
+                                - button "Edit" [ref=f981e573] [cursor=pointer]
+                              - cell [ref=f981e575]
+                              - cell [ref=f981e576]:
+                                - button "Remove" [ref=f981e577] [cursor=pointer]
+              - gridcell "TE0002 Prüfstand 2 - Elektromotor 43 kW" [ref=f981e579] [cursor=pointer]
+              - gridcell "." [ref=f981e581] [cursor=pointer]
+              - gridcell "MACHINE0012" [ref=f981e583] [cursor=pointer]
+              - gridcell "no" [ref=f981e585] [cursor=pointer]
+              - gridcell [ref=f981e587] [cursor=pointer]:
+                - table [ref=f981e589]:
+                  - rowgroup [ref=f981e590]:
+                    - row [ref=f981e591]:
+                      - cell [ref=f981e592]:
+                        - table [ref=f981e593]:
+                          - rowgroup [ref=f981e594]:
+                            - row [ref=f981e595]:
+                              - cell [ref=f981e596]:
+                                - button "Edit" [ref=f981e597]
+                              - cell [ref=f981e599]
+                              - cell [ref=f981e600]:
+                                - button "Remove" [ref=f981e601]
+              - gridcell "TE0033 1 / 12 12-fach Prüfstand" [ref=f981e603]
+              - gridcell "." [ref=f981e605]
+              - gridcell "MACHINE0013" [ref=f981e607]
+              - gridcell "no" [ref=f981e609]
+              - gridcell [ref=f981e611]:
+                - table [ref=f981e613]:
+                  - rowgroup [ref=f981e614]:
+                    - row [ref=f981e615]:
+                      - cell [ref=f981e616]:
+                        - table [ref=f981e617]:
+                          - rowgroup [ref=f981e618]:
+                            - row [ref=f981e619]:
+                              - cell [ref=f981e620]:
+                                - button "Edit" [ref=f981e621] [cursor=pointer]
+                              - cell [ref=f981e623]
+                              - cell [ref=f981e624]:
+                                - button "Remove" [ref=f981e625] [cursor=pointer]
+              - gridcell "TE0033 2 / 12 12-fach Prüfstand" [ref=f981e627]
+              - gridcell "." [ref=f981e629]
+              - gridcell "MACHINE0014" [ref=f981e631]
+              - gridcell "no" [ref=f981e633]
+              - gridcell [ref=f981e635]:
+                - table [ref=f981e637]:
+                  - rowgroup [ref=f981e638]:
+                    - row [ref=f981e639]:
+                      - cell [ref=f981e640]:
+                        - table [ref=f981e641]:
+                          - rowgroup [ref=f981e642]:
+                            - row [ref=f981e643]:
+                              - cell [ref=f981e644]:
+                                - button "Edit" [ref=f981e645] [cursor=pointer]
+                              - cell [ref=f981e647]
+                              - cell [ref=f981e648]:
+                                - button "Remove" [ref=f981e649] [cursor=pointer]
+            - generic [ref=f981e651]:    
+          - button "Create" [ref=f981e280] [cursor=pointer]
+      - text:                                                                                                                                           
+  - table [ref=f981e281]:
+    - rowgroup [ref=f981e282]:
+      - row [ref=f981e283]:
+        - cell [ref=f981e284]:
+          - generic [ref=f981e286]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f981e287] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f981e288]
+  - text:    

@@ -1,0 +1,414 @@
+- generic [ref=f108e1]:
+  - generic [ref=f108e4]:
+    - generic [ref=f108e5]:
+      - table [ref=f108e6]:
+        - rowgroup [ref=f108e7]:
+          - row [ref=f108e649]:
+            - cell [ref=f108e9]:
+              - link [ref=f108e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f108e650]:
+              - table [ref=f108e13]:
+                - rowgroup [ref=f108e14]:
+                  - row [ref=f108e651]:
+                    - cell [ref=f108e652]:
+                      - generic [ref=f108e17]:
+                        - menubar [ref=f108e18]:
+                          - menuitem "Planning" [ref=f108e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f108e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f108e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f108e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f108e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f108e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f108e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f108e33]:
+                          - rowgroup [ref=f108e34]:
+                            - row [ref=f108e653]:
+                              - cell [ref=f108e654]:
+                                - table [ref=f108e37]:
+                                  - rowgroup [ref=f108e38]:
+                                    - row [ref=f108e655]:
+                                      - cell [ref=f108e40]
+                                      - cell [ref=f108e41]:
+                                        - strong [ref=f108e42]: START
+                                      - cell [ref=f108e43]
+                                      - cell [ref=f108e656]:
+                                        - table [ref=f108e45]:
+                                          - rowgroup [ref=f108e46]:
+                                            - row [ref=f108e657]:
+                                              - cell [ref=f108e658]:
+                                                - table [ref=f108e49]:
+                                                  - rowgroup [ref=f108e50]:
+                                                    - row [ref=f108e659]:
+                                                      - cell [ref=f108e660]
+                                                      - cell [ref=f108e662]
+                                                      - cell "Planning" [ref=f108e663]
+                                                      - cell [ref=f108e664]
+                                                      - cell [ref=f108e665]
+                                                      - cell [ref=f108e667]
+                                                      - cell "Project Details" [ref=f108e668]
+                                                      - cell [ref=f108e669]
+                                                      - cell [ref=f108e670]
+                                                      - cell [ref=f108e672]
+                                                      - cell "LabelTestProject" [ref=f108e673]
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell [ref=f108e68]:
+                                - generic [ref=f108e69]:
+                                  - link "Help" [ref=f108e70] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f108e72]
+                                  - img "Info" [ref=f108e74]
+      - table [ref=f108e76]:
+        - rowgroup [ref=f108e77]:
+          - row [ref=f108e78]:
+            - cell [ref=f108e79]
+            - 'cell "user: admin" [ref=f108e80]'
+            - cell [ref=f108e81]:
+              - link "[Log out]" [ref=f108e82] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+    - generic [ref=f108e83]:
+      - table [ref=f108e84]:
+        - rowgroup [ref=f108e85]:
+          - row [ref=f108e86]:
+            - cell [ref=f108e87]:
+              - table [ref=f108e88]:
+                - rowgroup [ref=f108e89]:
+                  - row [ref=f108e90]:
+                    - cell [ref=f108e91]:
+                      - table [ref=f108e92]:
+                        - rowgroup [ref=f108e93]:
+                          - row [ref=f108e94]:
+                            - cell [ref=f108e95]:
+                              - table [ref=f108e96]:
+                                - rowgroup [ref=f108e97]:
+                                  - row [ref=f108e98]:
+                                    - cell [ref=f108e674]:
+                                      - button "Save Project" [ref=f108e675] [cursor=pointer]
+                                    - cell [ref=f108e677]
+                                    - cell [ref=f108e678]:
+                                      - button "Cancel editing" [ref=f108e679] [cursor=pointer]
+                  - row [ref=f108e106]:
+                    - cell [ref=f108e107]
+                  - row [ref=f108e108]:
+                    - cell [ref=f108e109]:
+                      - table [ref=f108e110]:
+                        - rowgroup [ref=f108e111]:
+                          - row [ref=f108e112]:
+                            - cell [ref=f108e113]:
+                              - table [ref=f108e114]:
+                                - rowgroup [ref=f108e115]:
+                                  - row [ref=f108e116]:
+                                    - cell [ref=f108e117]:
+                                      - button "Project Scheduling" [ref=f108e118] [cursor=pointer]
+                                  - row [ref=f108e119]:
+                                    - cell [ref=f108e120]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e121]:
+                                    - cell [ref=f108e122]
+                                  - row [ref=f108e123]:
+                                    - cell [ref=f108e124]:
+                                      - button "Project Details" [ref=f108e125] [cursor=pointer]
+                                  - row [ref=f108e126]:
+                                    - cell [ref=f108e127]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e128]:
+                                    - cell [ref=f108e129]
+                                  - row [ref=f108e130]:
+                                    - cell [ref=f108e131]:
+                                      - button "Resources Load" [ref=f108e132] [cursor=pointer]
+                                  - row [ref=f108e133]:
+                                    - cell [ref=f108e134]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e135]:
+                                    - cell [ref=f108e136]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e137]:
+                                    - cell [ref=f108e138]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e139]:
+                                    - cell [ref=f108e140]
+                                  - row [ref=f108e141]:
+                                    - cell [ref=f108e142]:
+                                      - button "Advanced Allocation" [ref=f108e143] [cursor=pointer]
+                                  - row [ref=f108e144]:
+                                    - cell [ref=f108e145]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e146]:
+                                    - cell [ref=f108e147]
+                                  - row [ref=f108e148]:
+                                    - cell [ref=f108e149]:
+                                      - button "Logs" [ref=f108e150] [cursor=pointer]
+                                  - row [ref=f108e151]:
+                                    - cell [ref=f108e152]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e153]:
+                                    - cell [ref=f108e154]
+                                  - row [ref=f108e155]:
+                                    - cell [ref=f108e156]:
+                                      - button "MonteCarlo Method" [ref=f108e157] [cursor=pointer]
+                                  - row [ref=f108e158]:
+                                    - cell [ref=f108e159]
+                                  - row:
+                                    - cell
+                                  - row [ref=f108e160]:
+                                    - cell [ref=f108e161]
+                                  - row [ref=f108e162]:
+                                    - cell [ref=f108e163]:
+                                      - button "Dashboard" [ref=f108e164] [cursor=pointer]
+                                  - row [ref=f108e165]:
+                                    - cell [ref=f108e166]
+                                  - row:
+                                    - cell
+      - text:  
+      - generic [ref=f108e682]:
+        - table [ref=f108e683]:
+          - rowgroup [ref=f108e684]:
+            - row [ref=f108e685]:
+              - cell [ref=f108e686]:
+                - table [ref=f108e687]:
+                  - rowgroup [ref=f108e688]:
+                    - row [ref=f108e689]:
+                      - text:           
+                      - cell [ref=f108e690]:
+                        - table [ref=f108e691]:
+                          - rowgroup [ref=f108e692]:
+                            - row [ref=f108e693]:
+                              - cell [ref=f108e694]:
+                                - table [ref=f108e695]:
+                                  - rowgroup [ref=f108e696]:
+                                    - row [ref=f108e697]:
+                                      - cell [ref=f108e698]:
+                                        - table [ref=f108e699]:
+                                          - rowgroup [ref=f108e700]:
+                                            - row [ref=f108e701]:
+                                              - cell [ref=f108e702]:
+                                                - table [ref=f108e703]:
+                                                  - rowgroup [ref=f108e704]:
+                                                    - row [ref=f108e705]:
+                                                      - cell "Task" [ref=f108e706]
+                                                      - cell [ref=f108e707]
+                                                      - cell [ref=f108e708]:
+                                                        - textbox [ref=f108e709]
+                                                      - cell [ref=f108e710]
+                                                      - cell "with" [ref=f108e711]
+                                                      - cell [ref=f108e712]
+                                                      - cell [ref=f108e713]:
+                                                        - combobox [ref=f108e715]:
+                                                          - textbox [ref=f108e716]
+                                                          - button [ref=f108e717] [cursor=pointer]:
+                                                            - generic [ref=f108e718]: 
+                                                      - cell [ref=f108e719]
+                                                      - cell [ref=f108e720]:
+                                                        - button "options" [ref=f108e721] [cursor=pointer]
+                                                      - cell [ref=f108e723]
+                                                      - cell [ref=f108e724]:
+                                                        - button "Filter" [ref=f108e725] [cursor=pointer]
+                                                      - text:          
+                      - cell [ref=f108e727]
+                      - cell [ref=f108e728]:
+                        - button "Expand/Collapse all" [ref=f108e729] [cursor=pointer]
+        - text:  
+        - generic [ref=f108e731]:
+          - table:
+            - rowgroup:
+              - row:
+                - cell:
+                  - table
+          - text:     
+          - generic [ref=f108e734]:
+            - tablist [ref=f108e735]:
+              - listitem [ref=f108e736] [cursor=pointer]:
+                - generic [ref=f108e737]: WBS (tasks)
+              - listitem [ref=f108e739] [cursor=pointer]:
+                - generic [ref=f108e740]: General data
+              - listitem [ref=f108e742] [cursor=pointer]:
+                - generic [ref=f108e743]: Cost
+              - listitem [ref=f108e745] [cursor=pointer]:
+                - generic [ref=f108e746]: Progress
+              - listitem [ref=f108e748] [cursor=pointer]:
+                - generic [ref=f108e749]: Labels
+              - listitem [ref=f108e751] [cursor=pointer]:
+                - generic [ref=f108e752]: Criterion Requirement
+              - listitem [ref=f108e754] [cursor=pointer]:
+                - generic [ref=f108e755]: Materials
+              - listitem [ref=f108e757] [cursor=pointer]:
+                - generic [ref=f108e758]: Task quality forms
+              - listitem [ref=f108e760] [cursor=pointer]:
+                - generic [ref=f108e761]: Files
+              - listitem [ref=f108e763] [cursor=pointer]:
+                - generic [ref=f108e764]: Authorizations
+            - text:  
+            - generic [ref=f108e766]:
+              - text:                       
+              - tabpanel [ref=f108e891]:
+                - table [ref=f108e893]:
+                  - rowgroup [ref=f108e894]:
+                    - row [ref=f108e895]:
+                      - cell [ref=f108e896]:
+                        - table [ref=f108e897]:
+                          - rowgroup [ref=f108e898]:
+                            - row [ref=f108e899]:
+                              - cell [ref=f108e900]:
+                                - generic [ref=f108e901]:
+                                  - generic [ref=f108e902]: Assigned criterion requirements
+                                  - generic [ref=f108e905]:
+                                    - table [ref=f108e906]:
+                                      - rowgroup [ref=f108e907]:
+                                        - row [ref=f108e908]:
+                                          - cell [ref=f108e909]:
+                                            - table [ref=f108e910]:
+                                              - rowgroup [ref=f108e911]:
+                                                - row [ref=f108e912]:
+                                                  - cell [ref=f108e913]:
+                                                    - button "Add" [ref=f108e914] [cursor=pointer]
+                                    - grid [ref=f108e1005]:
+                                      - rowgroup [ref=f108e1010]:
+                                        - columnheader [ref=f108e1011]:
+                                          - generic [ref=f108e1012] [cursor=pointer]:
+                                            - generic [ref=f108e1013]: 
+                                            - text: Criterion name
+                                        - columnheader "Type" [ref=f108e1015]
+                                        - columnheader "Operations" [ref=f108e1017]
+                                      - rowgroup [ref=f108e1023]:
+                                        - gridcell [ref=f108e1024]:
+                                          - table [ref=f108e1026]:
+                                            - rowgroup [ref=f108e1027]:
+                                              - row [ref=f108e1028]:
+                                                - cell [ref=f108e1029]:
+                                                  - table [ref=f108e1030]:
+                                                    - rowgroup [ref=f108e1031]:
+                                                      - row [ref=f108e1032]:
+                                                        - cell [ref=f108e1033]:
+                                                          - combobox [ref=f108e1034]:
+                                                            - textbox [ref=f108e1035]: "CATEGORY :: Senior worker"
+                                                            - button [ref=f108e1036] [cursor=pointer]:
+                                                              - generic [ref=f108e1037]: 
+                                                        - cell [ref=f108e1038]
+                                        - gridcell "Direct" [ref=f108e1039]
+                                        - gridcell [ref=f108e1041]:
+                                          - table [ref=f108e1043]:
+                                            - rowgroup [ref=f108e1044]:
+                                              - row [ref=f108e1045]:
+                                                - cell [ref=f108e1046]:
+                                                  - table [ref=f108e1047]:
+                                                    - rowgroup [ref=f108e1048]:
+                                                      - row [ref=f108e1049]:
+                                                        - cell [ref=f108e1050]:
+                                                          - button "Remove" [ref=f108e1051] [cursor=pointer]
+                                                        - cell [ref=f108e1053]
+                                      - generic [ref=f108e1054]:    
+                            - row [ref=f108e934]:
+                              - cell [ref=f108e935]
+                            - row [ref=f108e936]:
+                              - cell [ref=f108e937]:
+                                - separator [ref=f108e938]
+                            - row [ref=f108e939]:
+                              - cell [ref=f108e940]
+                            - row [ref=f108e941]:
+                              - cell [ref=f108e942]:
+                                - generic [ref=f108e943]:
+                                  - generic [ref=f108e944]: Total hours task
+                                  - grid [ref=f108e948]:
+                                    - rowgroup [ref=f108e952]:
+                                      - gridcell "Total hours task:" [ref=f108e953]
+                                      - gridcell [ref=f108e955]:
+                                        - table [ref=f108e957]:
+                                          - rowgroup [ref=f108e958]:
+                                            - row [ref=f108e959]:
+                                              - cell [ref=f108e960]:
+                                                - table [ref=f108e961]:
+                                                  - rowgroup [ref=f108e962]:
+                                                    - row [ref=f108e963]:
+                                                      - cell [ref=f108e964]
+                            - row [ref=f108e966]:
+                              - cell [ref=f108e967]
+                            - row [ref=f108e968]:
+                              - cell [ref=f108e969]:
+                                - separator [ref=f108e970]
+                            - row [ref=f108e971]:
+                              - cell [ref=f108e972]
+                            - row:
+                              - cell
+                            - row [ref=f108e973]:
+                              - cell [ref=f108e974]
+                            - row [ref=f108e975]:
+                              - cell [ref=f108e976]:
+                                - generic [ref=f108e977]:
+                                  - generic [ref=f108e978]: Hours group
+                                  - generic [ref=f108e982]:
+                                    - table [ref=f108e984]:
+                                      - rowgroup [ref=f108e985]:
+                                        - row [ref=f108e986]:
+                                          - columnheader "Criterion Requirements" [ref=f108e987]
+                                          - columnheader "Type" [ref=f108e989]
+                                          - columnheader "Hours" [ref=f108e991]
+                                    - table [ref=f108e994]:
+                                      - rowgroup
+                                      - rowgroup [ref=f108e999]:
+                                        - row [ref=f108e1000]:
+                                          - cell [ref=f108e1001]
+                            - row [ref=f108e1003]:
+                              - cell [ref=f108e1004]
+                            - text:     
+              - text:    
+          - text:                                            
+    - table [ref=f108e536]:
+      - rowgroup [ref=f108e537]:
+        - row [ref=f108e538]:
+          - cell [ref=f108e539]:
+            - generic [ref=f108e541]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f108e542] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f108e543]
+    - text:  
+  - generic [ref=f108e1130]:
+    - generic [ref=f108e1131]: "LibrePlan: Runtime Error"
+    - generic [ref=f108e1133]:
+      - generic [ref=f108e1134]: "Message - Detached entity with generated id '2147' has an uninitialized version value 'null': org.libreplan.business.requirements.entities.DirectCriterionRequirement.version"
+      - generic [ref=f108e1137]:
+        - grid [ref=f108e1138]:
+          - rowgroup [ref=f108e1142]:
+            - gridcell "Exception type" [ref=f108e1143]
+            - gridcell "class org.springframework.dao.DataIntegrityViolationException" [ref=f108e1145]
+            - gridcell "Status code" [ref=f108e1147]
+            - gridcell "500" [ref=f108e1149]
+            - gridcell "Stacktrace" [ref=f108e1151]
+            - gridcell [ref=f108e1153]:
+              - textbox [active] [ref=f108e1155]: "org.springframework.dao.DataIntegrityViolationException: Detached entity with generated id '2147' has an uninitialized version value 'null': org.libreplan.business.requirements.entities.DirectCriterionRequirement.version at org.springframework.orm.hibernate5.SessionFactoryUtils.convertHibernateAccessException(SessionFactoryUtils.java:226) at org.springframework.orm.hibernate5.HibernateExceptionTranslator.convertHibernateAccessException(HibernateExceptionTranslator.java:100) at org.springframework.orm.hibernate5.HibernateExceptionTranslator.translateExceptionIfPossible(HibernateExceptionTranslator.java:72) at org.springframework.dao.support.ChainedPersistenceExceptionTranslator.translateExceptionIfPossible(ChainedPersistenceExceptionTranslator.java:61) at org.springframework.dao.support.DataAccessUtils.translateIfNecessary(DataAccessUtils.java:343) at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:160) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) at jdk.proxy4/jdk.proxy4.$Proxy179.save(Unknown Source) at org.libreplan.web.planner.order.SaveCommandBuilder$SaveCommand.doTheSaving(SaveCommandBuilder.java:380) at org.libreplan.web.planner.order.SaveCommandBuilder$SaveCommand.lambda$save$1(SaveCommandBuilder.java:285) at org.libreplan.business.common.AdHocTransactionService.runOnTransaction(AdHocTransactionService.java:109) at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) at java.base/java.lang.reflect.Method.invoke(Method.java:565) at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:380) at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:119) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) at jdk.proxy4/jdk.proxy4.$Proxy148.runOnTransaction(Unknown Source) at org.libreplan.web.planner.order.SaveCommandBuilder$SaveCommand.save(SaveCommandBuilder.java:281) at org.libreplan.web.planner.order.SaveCommandBuilder$SaveCommand.save(SaveCommandBuilder.java:274) at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) at java.base/java.lang.reflect.Method.invoke(Method.java:565) at org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling.lambda$handler$0(ConcurrentModificationHandling.java:60) at jdk.proxy4/jdk.proxy4.$Proxy296.save(Unknown Source) at org.libreplan.web.orders.OrderModel.save(OrderModel.java:516) at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) at java.base/java.lang.reflect.Method.invoke(Method.java:565) at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) at org.springframework.aop.aspectj.MethodInvocationProceedingJoinPoint.proceed(MethodInvocationProceedingJoinPoint.java:102) at org.libreplan.web.common.concurrentdetection.ConcurrentModificationHandling.whenConcurrentModification(ConcurrentModificationHandling.java:96) at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) at java.base/java.lang.reflect.Method.invoke(Method.java:565) at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethodWithGivenArgs(AbstractAspectJAdvice.java:649) at org.springframework.aop.aspectj.AbstractAspectJAdvice.invokeAdviceMethod(AbstractAspectJAdvice.java:631) at org.springframework.aop.aspectj.AspectJAroundAdvice.invoke(AspectJAroundAdvice.java:71) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:173) at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:97) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:184) at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:223) at jdk.proxy4/jdk.proxy4.$Proxy235.save(Unknown Source) at org.libreplan.web.orders.OrderCRUDController.save(OrderCRUDController.java:956) at org.libreplan.web.orders.OrderCRUDController.saveAndContinue(OrderCRUDController.java:878) at org.libreplan.web.orders.OrderCRUDController.saveAndContinue(OrderCRUDController.java:869) at org.libreplan.web.orders.OrderCRUDController.lambda$setupGlobalButtons$0(OrderCRUDController.java:378) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470) Caused by: org.hibernate.PropertyValueException: Detached entity with generated id '2147' has an uninitialized version value 'null': org.libreplan.business.requirements.entities.DirectCriterionRequirement.version at org.hibernate.persister.entity.AbstractEntityPersister.isTransient(AbstractEntityPersister.java:4311) at org.hibernate.engine.internal.ForeignKeys.isTransient(ForeignKeys.java:316) at org.hibernate.event.internal.EntityState.getEntityState(EntityState.java:64) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.performSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:91) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:82) at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) at org.hibernate.internal.SessionImpl.fireSaveOrUpdate(SessionImpl.java:642) at org.hibernate.internal.SessionImpl.saveOrUpdate(SessionImpl.java:634) at org.hibernate.engine.spi.CascadingActions$5.cascade(CascadingActions.java:223) at org.hibernate.engine.spi.CascadingActions$5.cascade(CascadingActions.java:213) at org.hibernate.engine.internal.Cascade.cascadeToOne(Cascade.java:572) at org.hibernate.engine.internal.Cascade.cascadeAssociation(Cascade.java:494) at org.hibernate.engine.internal.Cascade.cascadeProperty(Cascade.java:255) at org.hibernate.engine.internal.Cascade.cascadeCollectionElements(Cascade.java:606) at org.hibernate.engine.internal.Cascade.cascadeCollection(Cascade.java:536) at org.hibernate.engine.internal.Cascade.cascadeAssociation(Cascade.java:497) at org.hibernate.engine.internal.Cascade.cascadeProperty(Cascade.java:255) at org.hibernate.engine.internal.Cascade.cascade(Cascade.java:194) at org.hibernate.engine.internal.Cascade.cascade(Cascade.java:74) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.cascadeOnUpdate(DefaultSaveOrUpdateEventListener.java:329) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.performUpdate(DefaultSaveOrUpdateEventListener.java:301) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.entityIsDetached(DefaultSaveOrUpdateEventListener.java:215) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.performSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:101) at org.hibernate.event.internal.DefaultSaveOrUpdateEventListener.onSaveOrUpdate(DefaultSaveOrUpdateEventListener.java:82) at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:127) at org.hibernate.internal.SessionImpl.fireSaveOrUpdate(SessionImpl.java:642) at org.hibernate.internal.SessionImpl.saveOrUpdate(SessionImpl.java:634) at org.hibernate.internal.SessionImpl.saveOrUpdate(SessionImpl.java:629) at org.libreplan.business.common.daos.GenericDAOHibernate.save(GenericDAOHibernate.java:98) at org.libreplan.business.common.daos.GenericDAOHibernate.save(GenericDAOHibernate.java:64) at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:104) at java.base/java.lang.reflect.Method.invoke(Method.java:565) at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:360) at org.springframework.aop.framework.ReflectiveMethodInvocation.invokeJoinpoint(ReflectiveMethodInvocation.java:196) at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:163) at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:138) ... 50 more"
+        - table [ref=f108e1156]:
+          - rowgroup [ref=f108e1157]:
+            - row [ref=f108e1158]:
+              - cell [ref=f108e1159]:
+                - table [ref=f108e1160]:
+                  - rowgroup [ref=f108e1161]:
+                    - row [ref=f108e1162]:
+                      - cell [ref=f108e1163]:
+                        - button "Continue" [ref=f108e1164] [cursor=pointer]
+                      - cell [ref=f108e1165]
+                      - cell [ref=f108e1166]:
+                        - button "Reload" [ref=f108e1167] [cursor=pointer]
+                      - cell [ref=f108e1168]
+                      - cell [ref=f108e1169]:
+                        - button "Exit session" [ref=f108e1170] [cursor=pointer]

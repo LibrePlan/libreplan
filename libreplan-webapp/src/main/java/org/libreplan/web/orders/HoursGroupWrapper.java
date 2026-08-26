@@ -339,7 +339,7 @@ public class HoursGroupWrapper implements INewObject, Comparable<HoursGroupWrapp
      * Used in _listOrderElementCriterionRequirements.zul
      * Should be public!
      */
-    public boolean dontExistValidCriterions() {
+    public boolean isDontExistValidCriterions() {
         return getValidCriterions().isEmpty();
     }
 

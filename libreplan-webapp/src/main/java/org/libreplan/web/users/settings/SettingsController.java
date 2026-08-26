@@ -85,6 +85,13 @@ public class SettingsController extends GenericForwardComposer {
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("settingsController", this, true);
+
+        // Util.createBindingsFor looks up a component attribute literally named "controller" to
+        // find the controller to bind against - it does not know about this page's
+        // "settingsController" variable name (used by the ZUML's own @load/@save/onClick
+        // expressions), so both attributes need to be set.
+        comp.setAttribute("controller", this, true);
+
         messages = new MessagesForUser(messagesContainer);
         settingsModel.initEditLoggedUser();
 
@@ -99,6 +106,14 @@ public class SettingsController extends GenericForwardComposer {
                     Listitem selectedItem = (Listitem) ((SelectEvent) event).getSelectedItems().iterator().next();
                     setResourcesLoadFilterCriterion(selectedItem.getValue());
                 });
+
+        // AnnotateBinderInit's own page-level pass (<?init class="AnnotateBinderInit"?>) only
+        // calls Util.createBindingsFor - it never loads the bindings it registers, so without an
+        // explicit initial load here the form stays unpopulated until some other action happens
+        // to trigger a reload. This is a single-window page (no separate hidden edit form), so a
+        // comp-wide reload here is safe.
+        org.libreplan.web.common.Util.createBindingsFor(comp);
+        org.libreplan.web.common.Util.reloadBindings(comp);
     }
 
     public List<Language> getLanguages() {
@@ -115,7 +130,10 @@ public class SettingsController extends GenericForwardComposer {
             return o1.getDisplayName().compareTo(o2.getDisplayName());
         });
 
-        return languages;
+        // The listbox's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder
+        // has no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(languages);
     }
 
     public boolean save() {
@@ -195,7 +213,7 @@ public class SettingsController extends GenericForwardComposer {
         return settingsModel.getApplicationLanguage();
     }
 
-    public static ListitemRenderer getLanguagesRenderer() {
+    public ListitemRenderer getLanguagesRenderer() {
         return languagesRenderer;
     }
 

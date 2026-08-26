@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,9 +26,9 @@ import static org.libreplan.web.I18nHelper._t;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.advance.entities.AdvanceMeasurement;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -53,6 +54,8 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Window;
@@ -83,10 +86,13 @@ public class ReportAdvancesController extends GenericForwardComposer {
         window = (Window) comp;
         window.setAttribute("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
-    public List<Order> getOrdersWithExternalCodeInAnyOrderElement() {
-        return reportAdvancesModel.getOrdersWithExternalCodeInAnyOrderElement();
+    public ListModel<Order> getOrdersWithExternalCodeInAnyOrderElement() {
+        return new ListModelList<>(reportAdvancesModel.getOrdersWithExternalCodeInAnyOrderElement());
     }
 
     public ReportAdvancesOrderRenderer getReportAdvancesOrderRenderer() {

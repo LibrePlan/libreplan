@@ -1,0 +1,4 @@
+[     303ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://localhost:8080/common/layout/login.zul:0
+[     862ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-e4ece7b34f8127fc.js:13
+[     946ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-e4ece7b34f8127fc.js:13
+[    9262ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Server Error) @ http://localhost:8080/common/configuration.zul?continue:0

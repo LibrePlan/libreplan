@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2016 LibrePlan
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -106,7 +107,7 @@ public class OrderFilesController extends GenericForwardComposer {
         messages = new MessagesForUser(messagesContainer);
     }
 
-    private boolean isRepositoryExists() {
+    public boolean isRepositoryExists() {
         configurationModel.init();
 
         File repositoryDirectory = null;

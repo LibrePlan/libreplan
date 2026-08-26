@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,9 +24,11 @@ package org.libreplan.business.materials.daos;
 
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.materials.entities.MaterialCategory;
@@ -51,10 +54,13 @@ public class MaterialCategoryDAO extends IntegrationEntityDAO<MaterialCategory>
         return list(MaterialCategory.class);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<MaterialCategory> getAllRootMaterialCategories() {
-        return getSession().createCriteria(MaterialCategory.class).add(Restrictions.isNull("parent")).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<MaterialCategory> cq = cb.createQuery(MaterialCategory.class);
+        Root<MaterialCategory> root = cq.from(MaterialCategory.class);
+        cq.where(cb.isNull(root.get("parent")));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -79,10 +85,11 @@ public class MaterialCategoryDAO extends IntegrationEntityDAO<MaterialCategory>
                     .getName());
         }
 
-        MaterialCategory materialCategory = (MaterialCategory) getSession()
-                .createCriteria(MaterialCategory.class).add(
-                        Restrictions.eq("name", name.trim()).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<MaterialCategory> cq = cb.createQuery(MaterialCategory.class);
+        Root<MaterialCategory> root = cq.from(MaterialCategory.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.trim().toLowerCase()));
+        MaterialCategory materialCategory = getSession().createQuery(cq).uniqueResult();
 
         if (materialCategory == null) {
             throw new InstanceNotFoundException(name, getEntityClass().getName());
@@ -100,8 +107,11 @@ public class MaterialCategoryDAO extends IntegrationEntityDAO<MaterialCategory>
 
     @Override
     public List<MaterialCategory> findAll() {
-        return getSession().createCriteria(MaterialCategory.class).add(
-                Restrictions.isNull("parent")).addOrder(Order.asc("code"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<MaterialCategory> cq = cb.createQuery(MaterialCategory.class);
+        Root<MaterialCategory> root = cq.from(MaterialCategory.class);
+        cq.where(cb.isNull(root.get("parent")));
+        cq.orderBy(cb.asc(root.get("code")));
+        return getSession().createQuery(cq).getResultList();
     }
 }

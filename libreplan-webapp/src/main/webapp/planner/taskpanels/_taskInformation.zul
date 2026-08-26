@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -36,7 +37,7 @@
             <foot>
                 <footer label=""/>
                 <footer label="${i18n:_t('Total estimated hours')}:"/>
-                <footer id="totalEstimatedHours" label="@{taskInformationController.totalHours}"/>
+                <footer id="totalEstimatedHours" label="@load(taskInformationController.totalHours)"/>
             </foot>
         </grid>
 

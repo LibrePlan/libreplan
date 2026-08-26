@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify it under
  * the terms of the GNU Affero General Public License as published by the Free
@@ -54,12 +55,15 @@ import org.libreplan.business.externalcompanies.entities.ExternalCompany;
 import org.libreplan.business.labels.daos.ILabelDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.daos.IOrderElementDAO;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.orders.entities.OrderElement;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.orders.entities.OrderStatusEnum;
+import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.planner.entities.PositionConstraintType;
 import org.libreplan.business.planner.entities.TaskElement;
 import org.libreplan.business.qualityforms.daos.IQualityFormDAO;
@@ -128,6 +132,9 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IOrderSyncInfoDAO orderSyncInfoDAO;
 
     @Autowired
     private PlanningStateCreator planningStateCreator;
@@ -616,6 +623,13 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     private void removeOrderFromDB(Order order) {
         try {
+            // OrderSyncInfo has an unmapped, non-cascading FK back to this order
+            // (order_sync_info.order_element_id) - left behind, it makes the delete below fail
+            // with a foreign key constraint violation. See
+            // doc/technical/jdk25-migration/Phase5-found-bugs.md item 9.
+            for (OrderSyncInfo each : orderSyncInfoDAO.findByOrder(order)) {
+                orderSyncInfoDAO.remove(each.getId());
+            }
             orderDAO.remove(order.getId());
         } catch (InstanceNotFoundException e) {
             throw new RuntimeException(e);
@@ -628,7 +642,7 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
     }
 
     @Override
-    @Transactional(readOnly = true)
+    @Transactional
     public OrderElementTreeModel getOrderElementsFilteredByPredicate(IPredicate predicate) {
         // Iterate through orderElements from order
         List<OrderElement> orderElements = new ArrayList<>();
@@ -636,6 +650,8 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
         for (OrderElement orderElement : planningState.getOrder().getAllOrderElements()) {
             if (!orderElement.isNewObject()) {
                 reattachOrderElement(orderElement);
+            } else {
+                stopPosingAsTransientOnceActuallyPersisted(orderElement);
             }
 
             // Accepts predicate, add it to list of orderElements
@@ -653,6 +669,38 @@ public class OrderModel extends IntegrationEntityModel implements IOrderModel {
 
     private void reattachOrderElement(OrderElement orderElement) {
         orderElementDAO.reattach(orderElement);
+    }
+
+    /**
+     * A sibling's reattach() above can cascade (cascade=ALL on the parent's children
+     * collection) into this still-"new" element - and the SchedulingDataForVersion and
+     * HoursGroup created together with it by a plain WBS "Add task" - and implicitly save
+     * them, handing out a real generated id right here even though nothing ever called
+     * orderElementDAO.save() on them directly. Once that's happened, getVersion() must stop
+     * lying (it returns null while isNewObject() is true - see BaseEntity.getVersion()), or
+     * the NEXT time this same long-lived object is reattached (e.g. adding another task
+     * afterwards) Hibernate can no longer tell transient from detached (non-null id, null
+     * version) and throws PropertyValueException: "uninitialized version value". Mirrors the
+     * same clean-up SaveCommandBuilder.dontPoseAsTransientObjectAnymore() already does for the
+     * explicit whole-project Save, just scoped to what this incremental reload can itself have
+     * implicitly persisted.
+     */
+    private void stopPosingAsTransientOnceActuallyPersisted(OrderElement orderElement) {
+        if (orderElement.isNewObject() && orderElement.getId() != null) {
+            orderElement.dontPoseAsTransientObjectAnymore();
+        }
+
+        for (SchedulingDataForVersion schedulingData : orderElement.getSchedulingDataForVersionFromBottomToTop()) {
+            if (schedulingData.isNewObject() && schedulingData.getId() != null) {
+                schedulingData.dontPoseAsTransientObjectAnymore();
+            }
+        }
+
+        for (HoursGroup hoursGroup : orderElement.getHoursGroups()) {
+            if (hoursGroup.isNewObject() && hoursGroup.getId() != null) {
+                hoursGroup.dontPoseAsTransientObjectAnymore();
+            }
+        }
     }
 
     @Override

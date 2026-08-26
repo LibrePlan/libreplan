@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Ressursbehandling</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ressursbehandling">
+<h1 class="title">Ressursbehandling</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#personalressurser" id="toc-entry-1">Personalressurser</a></li>
+<li><a class="reference internal" href="#maskinressurser" id="toc-entry-2">Maskinressurser</a></li>
+<li><a class="reference internal" href="#administrere-ressurser" id="toc-entry-3">Administrere ressurser</a><ul>
+<li><a class="reference internal" href="#administrere-arbeidere" id="toc-entry-4">Administrere arbeidere</a></li>
+<li><a class="reference internal" href="#administrere-maskiner" id="toc-entry-5">Administrere maskiner</a></li>
+<li><a class="reference internal" href="#virtuelle-arbeidergrupper" id="toc-entry-6">Virtuelle arbeidergrupper</a></li>
+<li><a class="reference internal" href="#kobaserte-ressurser" id="toc-entry-7">Købaserte ressurser</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Programmet håndterer to ulike typer ressurser: personell og maskiner.</p>
+<div class="section" id="personalressurser">
+<h1><a class="toc-backref" href="#toc-entry-1">Personalressurser</a></h1>
+<p>Personalressurser representerer bedriftens arbeidere. Deres viktigste egenskaper er:</p>
+<ul class="simple">
+<li>De oppfyller ett eller flere generiske kriterier eller arbeider-spesifikke kriterier.</li>
+<li>De kan spesifikt tildeles en oppgave.</li>
+<li>De kan generisk tildeles en oppgave som krever et ressurskriterium.</li>
+<li>De kan ha en standard- eller spesifikk kalender etter behov.</li>
+</ul>
+</div>
+<div class="section" id="maskinressurser">
+<h1><a class="toc-backref" href="#toc-entry-2">Maskinressurser</a></h1>
+<p>Maskinressurser representerer bedriftens maskiner. Deres viktigste egenskaper er:</p>
+<ul class="simple">
+<li>De oppfyller ett eller flere generiske kriterier eller maskin-spesifikke kriterier.</li>
+<li>De kan spesifikt tildeles en oppgave.</li>
+<li>De kan generisk tildeles en oppgave som krever et maskinkriterium.</li>
+<li>De kan ha en standard- eller spesifikk kalender etter behov.</li>
+<li>Programmet inkluderer et konfigurasjonsgrensesnitt der en <em>alpha</em>-verdi kan defineres for å representere maskin/arbeider-forholdet.<ul>
+<li><em>Alpha</em>-verdien angir mengden arbeidertid som kreves for å betjene maskinen. For eksempel betyr en alpha-verdi på 0,5 at hver 8 timers maskindrift krever 4 timers arbeidertid.</li>
+<li>Brukere kan tildele en <em>alpha</em>-verdi spesifikt til en arbeider, og dermed utpeke den arbeideren til å betjene maskinen for den prosentandelen av tid.</li>
+<li>Brukere kan også gjøre en generisk tildeling basert på et kriterium, slik at en bruksprosentandel tildeles alle ressurser som oppfyller det kriteriet og har tilgjengelig tid. Generisk tildeling fungerer på samme måte som generisk tildeling for oppgaver, som beskrevet tidligere.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="administrere-ressurser">
+<h1><a class="toc-backref" href="#toc-entry-3">Administrere ressurser</a></h1>
+<p>Brukere kan opprette, redigere og deaktivere (men ikke permanent slette) arbeidere og maskiner i bedriften ved å navigere til &quot;Ressurser&quot;-seksjonen. Denne seksjonen gir følgende funksjoner:</p>
+<ul class="simple">
+<li><strong>Liste over arbeidere:</strong> Viser en nummerert liste over arbeidere og lar brukere administrere deres detaljer.</li>
+<li><strong>Liste over maskiner:</strong> Viser en nummerert liste over maskiner og lar brukere administrere deres detaljer.</li>
+</ul>
+<div class="section" id="administrere-arbeidere">
+<h2><a class="toc-backref" href="#toc-entry-4">Administrere arbeidere</a></h2>
+<p>Arbeideradministrasjon er tilgjengelig ved å gå til &quot;Ressurser&quot;-seksjonen og deretter velge &quot;Liste over arbeidere&quot;. Brukere kan redigere enhver arbeider i listen ved å klikke på standard redigeringsikon.</p>
+<p>Når en arbeider redigeres, kan brukere åpne følgende faner:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Arbeiderdetaljer:</strong> Denne fanen lar brukere redigere arbeiderens grunnleggende identifikasjonsdetaljer:</p>
+<ul class="simple">
+<li>Fornavn</li>
+<li>Etternavn</li>
+<li>Nasjonalt ID-dokument (DNI)</li>
+<li>Købasert ressurs (se avsnittet om købaserte ressurser)</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Redigering av arbeidernes personlige opplysninger</p>
+</div>
+</li>
+<li><p class="first"><strong>Kriterier:</strong> Denne fanen brukes til å konfigurere kriteriene som en arbeider oppfyller. Brukere kan tildele alle arbeider- eller generiske kriterier de anser som hensiktsmessige. Det er avgjørende at arbeidere oppfyller kriterier for å maksimere programmets funksjonalitet. For å tildele kriterier:</p>
+<ol class="lowerroman simple">
+<li>Klikk på knappen &quot;Legg til kriterier&quot;.</li>
+<li>Søk etter kriteriet som skal legges til og velg det mest passende.</li>
+<li>Klikk på &quot;Legg til&quot;-knappen.</li>
+<li>Velg startdatoen da kriteriet blir gjeldende.</li>
+<li>Velg sluttdatoen for å anvende kriteriet på ressursen. Denne datoen er valgfri hvis kriteriet anses som uendelig.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Knytte kriterier til arbeidere</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalender:</strong> Denne fanen lar brukere konfigurere en spesifikk kalender for arbeideren. Alle arbeidere har en standard kalender tildelt; det er imidlertid mulig å tildele en spesifikk kalender til hver arbeider basert på en eksisterende kalender.</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Kalenderfane for en ressurs</p>
+</div>
+</li>
+<li><p class="first"><strong>Kostnadskategori:</strong> Denne fanen lar brukere konfigurere kostnadskategorien som en arbeider oppfyller i løpet av en gitt periode. Denne informasjonen brukes til å beregne kostnadene knyttet til en arbeider på et prosjekt.</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Kostnadskategorifane for en ressurs</p>
+</div>
+</li>
+</ol>
+<p>Ressurstildeling er forklart i avsnittet &quot;Ressurstildeling&quot;.</p>
+</div>
+<div class="section" id="administrere-maskiner">
+<h2><a class="toc-backref" href="#toc-entry-5">Administrere maskiner</a></h2>
+<p>Maskiner behandles som ressurser for alle formål. Derfor, i likhet med arbeidere, kan maskiner administreres og tildeles oppgaver. Ressurstildeling er dekket i avsnittet &quot;Ressurstildeling&quot;, som vil forklare de spesifikke funksjonene til maskiner.</p>
+<p>Maskiner administreres fra menyposten &quot;Ressurser&quot;. Denne seksjonen har en operasjon kalt &quot;Maskinliste&quot;, som viser bedriftens maskiner. Brukere kan redigere eller slette en maskin fra denne listen.</p>
+<p>Når maskiner redigeres, viser systemet en serie faner for administrasjon av ulike detaljer:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Maskindetaljer:</strong> Denne fanen lar brukere redigere maskinens identifikasjonsdetaljer:</p>
+<ol class="lowerroman simple">
+<li>Navn</li>
+<li>Maskinkode</li>
+<li>Beskrivelse av maskinen</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Redigering av maskindetaljer</p>
+</div>
+</li>
+<li><p class="first"><strong>Kriterier:</strong> Som med arbeiderressurser brukes denne fanen til å legge til kriterier som maskinen oppfyller. To typer kriterier kan tildeles maskiner: maskin-spesifikke eller generiske. Arbeiderkriterier kan ikke tildeles maskiner. For å tildele kriterier:</p>
+<ol class="lowerroman simple">
+<li>Klikk på knappen &quot;Legg til kriterier&quot;.</li>
+<li>Søk etter kriteriet som skal legges til og velg det mest passende.</li>
+<li>Velg startdatoen da kriteriet blir gjeldende.</li>
+<li>Velg sluttdatoen for å anvende kriteriet på ressursen. Denne datoen er valgfri hvis kriteriet anses som uendelig.</li>
+<li>Klikk på knappen &quot;Lagre og fortsett&quot;.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Tildele kriterier til maskiner</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalender:</strong> Denne fanen lar brukere konfigurere en spesifikk kalender for maskinen. Alle maskiner har en standard kalender tildelt; det er imidlertid mulig å tildele en spesifikk kalender til hver maskin basert på en eksisterende kalender.</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Tildele kalendere til maskiner</p>
+</div>
+</li>
+<li><p class="first"><strong>Maskinkonfigurasjon:</strong> Denne fanen lar brukere konfigurere forholdet mellom maskiner og arbeiderressurser. En maskin har en alpha-verdi som angir maskin/arbeider-forholdet. Som nevnt tidligere indikerer en alpha-verdi på 0,5 at 0,5 personer kreves for hver full dag med maskindrift. Basert på alpha-verdien tildeler systemet automatisk arbeidere som er assosiert med maskinen når maskinen er tildelt en oppgave. Å knytte en arbeider til en maskin kan gjøres på to måter:</p>
+<ol class="lowerroman simple">
+<li><strong>Spesifikk tildeling:</strong> Tildele et datointerval der arbeideren er tildelt maskinen. Dette er en spesifikk tildeling, ettersom systemet automatisk tildeler timer til arbeideren når maskinen er planlagt.</li>
+<li><strong>Generisk tildeling:</strong> Tildele kriterier som må oppfylles av arbeidere som er tildelt maskinen. Dette skaper en generisk tildeling av arbeidere som oppfyller kriteriene.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Konfigurasjon av maskiner</p>
+</div>
+</li>
+<li><p class="first"><strong>Kostnadskategori:</strong> Denne fanen lar brukere konfigurere kostnadskategorien som en maskin oppfyller i løpet av en gitt periode. Denne informasjonen brukes til å beregne kostnadene knyttet til en maskin på et prosjekt.</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Tildele kostnadskategorier til maskiner</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="virtuelle-arbeidergrupper">
+<h2><a class="toc-backref" href="#toc-entry-6">Virtuelle arbeidergrupper</a></h2>
+<p>Programmet lar brukere opprette virtuelle arbeidergrupper, som ikke er ekte arbeidere men simulert personell. Disse gruppene gjør det mulig for brukere å modellere økt produksjonskapasitet til bestemte tidspunkter, basert på kalenderinnstillingene.</p>
+<p>Virtuelle arbeidergrupper lar brukere vurdere hvordan prosjektplanleggingen ville bli påvirket av å ansette og tildele personell som oppfyller spesifikke kriterier, og dermed hjelpe i beslutningsprosessen.</p>
+<p>Fanene for å opprette virtuelle arbeidergrupper er de samme som de for konfigurering av arbeidere:</p>
+<ul class="simple">
+<li>Generelle detaljer</li>
+<li>Tildelte kriterier</li>
+<li>Kalendere</li>
+<li>Tilknyttede timer</li>
+</ul>
+<p>Forskjellen mellom virtuelle arbeidergrupper og faktiske arbeidere er at virtuelle arbeidergrupper har et navn for gruppen og en mengde, som representerer antallet virkelige personer i gruppen. Det er også et felt for kommentarer, der ytterligere informasjon kan gis, for eksempel hvilket prosjekt som ville kreve ansettelse tilsvarende den virtuelle arbeidergruppen.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Virtuelle ressurser</p>
+</div>
+</div>
+<div class="section" id="kobaserte-ressurser">
+<h2><a class="toc-backref" href="#toc-entry-7">Købaserte ressurser</a></h2>
+<p>Købaserte ressurser er en spesifikk type produktivt element som enten kan være utildelt eller ha 100 % dedikasjon. Det vil si at de ikke kan ha mer enn én oppgave planlagt samtidig, og de kan ikke over-allokeres.</p>
+<p>For hver købasert ressurs opprettes det automatisk en kø. Oppgavene som er planlagt for disse ressursene, kan administreres spesifikt ved hjelp av de tilgjengelige tildelingsmetodene, ved å opprette automatiske tildelinger mellom oppgaver og køer som oppfyller de nødvendige kriteriene, eller ved å flytte oppgaver mellom køer.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

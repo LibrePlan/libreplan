@@ -1,0 +1,82 @@
+- generic [ref=f34e3]:
+  - table:
+    - rowgroup:
+      - row:
+        - cell
+  - table [ref=f34e4]:
+    - rowgroup [ref=f34e5]:
+      - row "LibrePlan" [ref=f34e6]:
+        - cell "LibrePlan" [ref=f34e7]:
+          - img "LibrePlan" [ref=f34e8]
+  - table [ref=f34e9]:
+    - rowgroup [ref=f34e10]:
+      - row "Access to the system Help" [ref=f34e11]:
+        - cell [ref=f34e12]
+        - cell "Access to the system" [ref=f34e13]
+        - cell "Help" [ref=f34e14]:
+          - generic "Help on authentication (opens a new window)" [ref=f34e15]:
+            - link "Help" [ref=f34e16] [cursor=pointer]:
+              - /url: /help/en/index.html
+  - table [ref=f34e18]:
+    - rowgroup [ref=f34e19]:
+      - row "User admin Password admin Log in" [ref=f34e20]:
+        - cell [ref=f34e21]
+        - cell "User admin Password admin Log in" [ref=f34e22]:
+          - table [ref=f34e23]:
+            - rowgroup [ref=f34e24]:
+              - row:
+                - cell
+              - row "User" [ref=f34e25]:
+                - cell "User" [ref=f34e26]
+              - row "admin" [ref=f34e27]:
+                - cell "admin" [ref=f34e28]:
+                  - textbox [active] [ref=f34e30]: admin
+              - row "Password" [ref=f34e31]:
+                - cell "Password" [ref=f34e32]
+              - row "admin" [ref=f34e33]:
+                - cell "admin" [ref=f34e34]:
+                  - textbox [ref=f34e36]: admin
+              - row:
+                - cell
+              - row "Log in" [ref=f34e37]:
+                - cell "Log in" [ref=f34e38]:
+                  - button "Log in" [ref=f34e40] [cursor=pointer]
+        - cell [ref=f34e41]
+  - table [ref=f34e42]:
+    - rowgroup [ref=f34e43]:
+      - row [ref=f34e44]:
+        - cell [ref=f34e45]
+      - row "Supported Chrome, Firefox, Safari and Epiphany browsers v1.6.0" [ref=f34e46]:
+        - cell "Supported Chrome, Firefox, Safari and Epiphany browsers v1.6.0" [ref=f34e47]:
+          - text: Supported Chrome, Firefox, Safari and Epiphany browsers
+          - generic [ref=f34e48]: v1.6.0
+      - row [ref=f34e49]:
+        - cell [ref=f34e50]:
+          - link [ref=f34e52] [cursor=pointer]:
+            - /url: http://www.libreplan-enterprise.com
+            - img [ref=f34e53]
+      - row "Did you know LibrePlan is funded only by donations, from people like you? We don’t show advertisements or sell your data. Ever! But without you, LibrePlan can’t exist. Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!" [ref=f34e54]:
+        - cell "Did you know LibrePlan is funded only by donations, from people like you? We don’t show advertisements or sell your data. Ever! But without you, LibrePlan can’t exist. Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!" [ref=f34e55]:
+          - generic [ref=f34e56]:
+            - paragraph [ref=f34e57]:
+              - strong [ref=f34e58]: Did you know LibrePlan is funded only by donations, from people like you?
+            - paragraph [ref=f34e59]:
+              - text: We don’t show advertisements or sell your data.
+              - strong [ref=f34e60]: Ever!
+              - text: But
+              - strong [ref=f34e61]: without you, LibrePlan can’t exist.
+            - paragraph [ref=f34e62]: Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!
+            - paragraph [ref=f34e63]:
+              - iframe [ref=f34e66]:
+                - generic [active] [ref=f36e1]:
+                  - generic:
+                    - generic:
+                      - link:
+                        - /url: https://opencollective.com/libreplan/donate
+                      - region "Notifications (F8)":
+                        - list
+                  - alert [ref=f36e3]
+  - table:
+    - rowgroup:
+      - row:
+        - cell

@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2012 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -19,7 +20,7 @@
  -->
 
 <?page id="exceptionDayTypesList" title="${i18n:_t('LibrePlan: Personal timesheet')}" ?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
@@ -33,14 +34,14 @@
 
         <div id="messagesContainer" />
 
-        <div visible="@{controller.notCurrentUser}" class="footer-messages-area">
+        <div visible="@load(controller.notCurrentUser)" class="footer-messages-area">
             <label value="${i18n:_t('Warning: Not editing from home page of bound users')}" />
         </div>
 
         <hbox width="100%">
             <groupbox style="margin-top: 5px" closable="false" hflex="1">
                 <caption label="${i18n:_t('Timesheet data')}" />
-                <grid fixedLayout="true">
+                <grid>
                     <columns>
                         <column width="200px" />
                         <column />
@@ -50,28 +51,28 @@
                         <row>
                             <label value="${i18n:_t('Date')}" />
                             <hbox align="pack">
-                                <div visible="@{controller.currentUser}">
+                                <div visible="@load(controller.currentUser)">
                                     <button id="previousPeriod"
                                             image="/common/img/ico_step_left.png" sclass="icono"
                                             onClick="controller.previousPeriod();"
                                             tooltiptext="${i18n:_t('Previous')}"
-                                            disabled="@{controller.firstPeriod}" />
+                                            disabled="@load(controller.firstPeriod)" />
                                 </div>
 
-                                <label value="@{controller.timesheetString}" />
+                                <label value="@load(controller.timesheetString)" />
 
-                                <div visible="@{controller.currentUser}">
+                                <div visible="@load(controller.currentUser)">
                                     <button id="nextPeriod"
                                             onClick="controller.nextPeriod();" image="/common/img/ico_step_right.png"
                                             tooltiptext="${i18n:_t('Next')}" sclass="icono"
-                                            disabled="@{controller.lastPeriod}" />
+                                            disabled="@load(controller.lastPeriod)" />
                                 </div>
                             </hbox>
                         </row>
 
                         <row>
                             <label value="${i18n:_t('Resource')}" />
-                            <label value="@{controller.resource}" />
+                            <label value="@load(controller.resource)" />
                         </row>
                     </rows>
                 </grid>
@@ -79,19 +80,19 @@
 
             <groupbox style="margin-top: 5px; margin-left: 10px;" closable="false" hflex="1">
                 <caption label="${i18n:_t('Timesheet summary')}" />
-                <grid fixedLayout="true">
+                <grid>
                     <columns>
                         <column width="200px" />
                         <column />
                     </columns>
 
                     <rows>
-                        <row visible="@{controller.hasOtherReports}">
+                        <row visible="@load(controller.hasOtherReports)">
                             <label value="${i18n:_t('Total personal timesheet')}" />
                             <label id="summaryTotalPersonalTimesheet" />
                         </row>
 
-                        <row visible="@{controller.hasOtherReports}">
+                        <row visible="@load(controller.hasOtherReports)">
                             <label value="${i18n:_t('Total other')}" />
                             <label id="summaryTotalOther" />
                         </row>
@@ -134,8 +135,8 @@
 
                 <hbox width="100%">
                     <grid id="timesheet" sizedByContent="true" hflex="1" sclass="timesheet"
-                          model="@{controller.rows}"
-                          rowRenderer="@{controller.rowRenderer}"/>
+                          model="@load(controller.rows)"
+                          rowRenderer="@load(controller.rowRenderer)"/>
                 </hbox>
             </groupbox>
         </hbox>

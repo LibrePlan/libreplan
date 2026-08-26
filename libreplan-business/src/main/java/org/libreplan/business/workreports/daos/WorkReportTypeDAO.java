@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,10 +24,12 @@ package org.libreplan.business.workreports.daos;
 
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.Validate;
-import org.hibernate.Criteria;
 import org.hibernate.NonUniqueResultException;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.workreports.entities.WorkReportType;
@@ -57,9 +60,11 @@ public class WorkReportTypeDAO extends IntegrationEntityDAO<WorkReportType>
     @Override
     public WorkReportType findUniqueByName(String name)
             throws InstanceNotFoundException, NonUniqueResultException {
-        Criteria c = getSession().createCriteria(WorkReportType.class);
-        c.add(Restrictions.eq("name", name));
-        WorkReportType workReportType = (WorkReportType) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportType> cq = cb.createQuery(WorkReportType.class);
+        Root<WorkReportType> root = cq.from(WorkReportType.class);
+        cq.where(cb.equal(root.get("name"), name));
+        WorkReportType workReportType = getSession().createQuery(cq).uniqueResult();
 
         if (workReportType == null) {
             throw new InstanceNotFoundException(null, "WorkReportType");
@@ -94,9 +99,11 @@ public class WorkReportTypeDAO extends IntegrationEntityDAO<WorkReportType>
     @Override
     public WorkReportType findUniqueByCode(String code)
             throws InstanceNotFoundException, NonUniqueResultException {
-        Criteria c = getSession().createCriteria(WorkReportType.class);
-        c.add(Restrictions.eq("code", code));
-        WorkReportType workReportType = (WorkReportType) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<WorkReportType> cq = cb.createQuery(WorkReportType.class);
+        Root<WorkReportType> root = cq.from(WorkReportType.class);
+        cq.where(cb.equal(root.get("code"), code));
+        WorkReportType workReportType = getSession().createQuery(cq).uniqueResult();
 
         if (workReportType == null) {
             throw new InstanceNotFoundException(null, "WorkReportType");

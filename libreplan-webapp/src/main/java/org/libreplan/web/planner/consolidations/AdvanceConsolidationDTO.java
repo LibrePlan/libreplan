@@ -154,7 +154,7 @@ public class AdvanceConsolidationDTO {
         return lastConsolidatedDate;
     }
 
-    public Boolean canNotBeConsolidated() {
+    public Boolean isCanNotBeConsolidated() {
         if (isAllReadOnly()) {
             return true;
         }

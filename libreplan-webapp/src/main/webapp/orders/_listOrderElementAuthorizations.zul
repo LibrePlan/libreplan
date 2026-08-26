@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -36,8 +37,8 @@
                         profileWriteAuthCheckbox.checked);"/>
             </hbox>
             <grid id="profilesAuthListing"
-                  model="@{orderAuthorizationController.profileOrderAuthorizations}"
-                  rowRenderer="@{orderAuthorizationController.orderAuthorizationRenderer}" >
+                  model="@load(orderAuthorizationController.profileOrderAuthorizations)"
+                  rowRenderer="@load(orderAuthorizationController.orderAuthorizationRenderer)" >
                 <columns sizable="true">
                     <column label="${i18n:_t('Profile name')}" />
                     <column label="${i18n:_t('Permissions')}" />
@@ -61,25 +62,13 @@
                         userWriteAuthCheckbox.checked);"/>
             </hbox>
             <grid id="usersAuthListing"
-                  model="@{orderAuthorizationController.userOrderAuthorizations}">
+                  model="@load(orderAuthorizationController.userOrderAuthorizations)"
+                  rowRenderer="@load(orderAuthorizationController.userOrderAuthorizationRenderer)">
                 <columns sizable="true">
                     <column label="${i18n:_t('Profile name')}" />
                     <column label="${i18n:_t('Permissions')}" />
                     <column label="${i18n:_t('Actions')}" />
                 </columns>
-                <rows>
-                    <row self="@{each='authorization'}" value="@{authorization}">
-                        <label value="@{authorization.user.loginName}" />
-                        <label value="@{authorization.authorizationType.displayName}" />
-                        <hbox>
-                            <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                    onClick="orderAuthorizationController.
-                                    removeOrderAuthorization(self.parent.parent.value);"
-                                    hoverImage="/common/img/ico_borrar.png"
-                                    tooltiptext="${i18n:_t('Delete')}" />
-                        </hbox>
-                    </row>
-                </rows>
             </grid>
         </panelchildren>
     </panel>

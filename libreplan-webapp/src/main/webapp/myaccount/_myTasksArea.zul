@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2012 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -24,9 +25,9 @@
 
     <caption label="${i18n:_t('My tasks')}" />
 
-    <grid model="@{controller.tasks}"
+    <grid model="@load(controller.tasks)"
           mold="paging" pageSize="10"
-          rowRenderer="@{controller.tasksRenderer}"
+          rowRenderer="@load(controller.tasksRenderer)"
           sclass="clickable-rows">
 
         <columns sizable="true">

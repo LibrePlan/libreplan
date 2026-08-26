@@ -1,0 +1,210 @@
+- generic [ref=f161e1]:
+  - generic [ref=f161e4]:
+    - generic:
+      - generic [ref=f161e7]:
+        - table [ref=f161e8]:
+          - rowgroup [ref=f161e9]:
+            - row "Planning Resources Cost Configuration Communications Reports Personal area START Help Axuda Info" [ref=f161e10]:
+              - cell [ref=f161e11]:
+                - link [ref=f161e12] [cursor=pointer]:
+                  - /url: /
+                  - img [ref=f161e13]
+              - cell "Planning Resources Cost Configuration Communications Reports Personal area START Help Axuda Info" [ref=f161e14]:
+                - table [ref=f161e15]:
+                  - rowgroup [ref=f161e16]:
+                    - row "Planning Resources Cost Configuration Communications Reports Personal area START Help Axuda Info" [ref=f161e17]:
+                      - cell "Planning Resources Cost Configuration Communications Reports Personal area START Help Axuda Info" [ref=f161e18]:
+                        - generic [ref=f161e19]:
+                          - list [ref=f161e21]:
+                            - listitem [ref=f161e22]:
+                              - link "Planning" [ref=f161e23] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e24]: Planning
+                                - text: 
+                              - text:        
+                            - listitem [ref=f161e25]:
+                              - link "Resources" [ref=f161e26] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e27]: Resources
+                                - text: 
+                              - text:           
+                            - listitem [ref=f161e28]:
+                              - link "Cost" [ref=f161e29] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e30]: Cost
+                                - text: 
+                              - text:      
+                            - listitem [ref=f161e31]:
+                              - link "Configuration" [ref=f161e32] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e33]: Configuration
+                                - text: 
+                              - text:     
+                            - listitem [ref=f161e34]:
+                              - link "Communications" [ref=f161e35] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e36]: Communications
+                                - text: 
+                              - text:     
+                            - listitem [ref=f161e37]:
+                              - link "Reports" [ref=f161e38] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e39]: Reports
+                                - text: 
+                              - text:         
+                            - listitem [ref=f161e40]:
+                              - link "Personal area" [ref=f161e41] [cursor=pointer]:
+                                - /url: javascript:;
+                                - generic [ref=f161e42]: Personal area
+                                - text: 
+                              - text:  
+                          - table [ref=f161e43]:
+                            - rowgroup [ref=f161e44]:
+                              - row "START Help Axuda Info" [ref=f161e45]:
+                                - cell "START" [ref=f161e46]:
+                                  - table [ref=f161e47]:
+                                    - rowgroup [ref=f161e48]:
+                                      - row "START" [ref=f161e49]:
+                                        - cell [ref=f161e50]
+                                        - cell "START" [ref=f161e51]:
+                                          - strong [ref=f161e52]: START
+                                        - cell [ref=f161e53]
+                                        - cell:
+                                          - table:
+                                            - rowgroup:
+                                              - row:
+                                                - cell:
+                                                  - table:
+                                                    - rowgroup:
+                                                      - row
+                                          - table:
+                                            - rowgroup:
+                                              - row:
+                                                - cell:
+                                                  - table:
+                                                    - rowgroup:
+                                                      - row
+                                - cell "Help Axuda Info" [ref=f161e54]:
+                                  - generic [ref=f161e55]:
+                                    - link "Help" [ref=f161e56] [cursor=pointer]:
+                                      - /url: /help/en/index.html
+                                    - img "Axuda" [ref=f161e58]
+                                    - img "Info" [ref=f161e60]
+        - table [ref=f161e62]:
+          - rowgroup [ref=f161e63]:
+            - 'row "user: admin [Log out]" [ref=f161e64]':
+              - cell [ref=f161e65]
+              - 'cell "user: admin" [ref=f161e66]'
+              - cell "[Log out]" [ref=f161e67]:
+                - link "[Log out]" [ref=f161e68] [cursor=pointer]:
+                  - /url: /j_spring_security_logout
+      - text:  
+    - generic [ref=f161e71]:
+      - generic:
+        - table [ref=f161e74]:
+          - rowgroup [ref=f161e75]:
+            - row "Projects Planning Projects List Resources Load Queue-based Resources Planning Logs Pipeline" [ref=f161e76]:
+              - cell "Projects Planning Projects List Resources Load Queue-based Resources Planning Logs Pipeline" [ref=f161e77]:
+                - table [ref=f161e78]:
+                  - rowgroup [ref=f161e79]:
+                    - row [ref=f161e80]:
+                      - cell [ref=f161e81]:
+                        - table [ref=f161e82]:
+                          - rowgroup [ref=f161e83]:
+                            - row [ref=f161e84]:
+                              - cell [ref=f161e85]:
+                                - table [ref=f161e86]:
+                                  - rowgroup [ref=f161e87]:
+                                    - row [ref=f161e88]:
+                                      - cell [ref=f161e89]:
+                                        - button "Create New Project" [ref=f161e90] [cursor=pointer]:
+                                          - img [ref=f161e91]
+                    - row [ref=f161e92]:
+                      - cell [ref=f161e93]:
+                        - img
+                    - row "Projects Planning Projects List Resources Load Queue-based Resources Planning Logs Pipeline" [ref=f161e94]:
+                      - cell "Projects Planning Projects List Resources Load Queue-based Resources Planning Logs Pipeline" [ref=f161e95]:
+                        - table [ref=f161e96]:
+                          - rowgroup [ref=f161e97]:
+                            - row "Projects Planning Projects List Resources Load Queue-based Resources Planning Logs Pipeline" [ref=f161e98]:
+                              - cell "Projects Planning Projects List Resources Load Queue-based Resources Planning Logs Pipeline" [ref=f161e99]:
+                                - table [ref=f161e100]:
+                                  - rowgroup [ref=f161e101]:
+                                    - row "Projects Planning" [ref=f161e102]:
+                                      - cell "Projects Planning" [ref=f161e103]:
+                                        - button "Projects Planning" [ref=f161e104] [cursor=pointer]
+                                    - row [ref=f161e105]:
+                                      - cell [ref=f161e106]:
+                                        - img
+                                    - row:
+                                      - cell
+                                    - row [ref=f161e107]:
+                                      - cell [ref=f161e108]:
+                                        - img
+                                    - row "Projects List" [ref=f161e109]:
+                                      - cell "Projects List" [ref=f161e110]:
+                                        - button "Projects List" [ref=f161e111] [cursor=pointer]
+                                    - row [ref=f161e112]:
+                                      - cell [ref=f161e113]:
+                                        - img
+                                    - row:
+                                      - cell
+                                    - row [ref=f161e114]:
+                                      - cell [ref=f161e115]:
+                                        - img
+                                    - row "Resources Load" [ref=f161e116]:
+                                      - cell "Resources Load" [ref=f161e117]:
+                                        - button "Resources Load" [ref=f161e118] [cursor=pointer]
+                                    - row [ref=f161e119]:
+                                      - cell [ref=f161e120]:
+                                        - img
+                                    - row:
+                                      - cell
+                                    - row [ref=f161e121]:
+                                      - cell [ref=f161e122]:
+                                        - img
+                                    - row "Queue-based Resources Planning" [ref=f161e123]:
+                                      - cell "Queue-based Resources Planning" [ref=f161e124]:
+                                        - button "Queue-based Resources Planning" [ref=f161e125] [cursor=pointer]
+                                    - row [ref=f161e126]:
+                                      - cell [ref=f161e127]:
+                                        - img
+                                    - row:
+                                      - cell
+                                    - row [ref=f161e128]:
+                                      - cell [ref=f161e129]:
+                                        - img
+                                    - row "Logs" [ref=f161e130]:
+                                      - cell "Logs" [ref=f161e131]:
+                                        - button "Logs" [ref=f161e132] [cursor=pointer]
+                                    - row [ref=f161e133]:
+                                      - cell [ref=f161e134]:
+                                        - img
+                                    - row:
+                                      - cell
+                                    - row [ref=f161e135]:
+                                      - cell [ref=f161e136]:
+                                        - img
+                                    - row "Pipeline" [ref=f161e137]:
+                                      - cell "Pipeline" [ref=f161e138]:
+                                        - button "Pipeline" [ref=f161e139] [cursor=pointer]
+                                    - row [ref=f161e140]:
+                                      - cell [ref=f161e141]:
+                                        - img
+                                    - row:
+                                      - cell
+        - text:  
+    - generic:
+      - table [ref=f161e148]:
+        - rowgroup [ref=f161e149]:
+          - row "The admin's account password remains the default one. This is insecure. [Change the password]" [ref=f161e150]:
+            - cell "The admin's account password remains the default one. This is insecure. [Change the password]" [ref=f161e151]:
+              - generic [ref=f161e153]:
+                - text: The admin's account password remains the default one. This is insecure.
+                - link "[Change the password]" [ref=f161e154] [cursor=pointer]:
+                  - /url: /users/users.zul#edit%3D1
+            - cell [ref=f161e155]
+      - text:  
+  - link [active]:
+    - /url: javascript:;
+  - generic [ref=f161e158]: changing perspective

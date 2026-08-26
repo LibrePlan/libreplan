@@ -1,0 +1,281 @@
+- generic [ref=f4e4]:
+  - generic [ref=f4e5]:
+    - table [ref=f4e6]:
+      - rowgroup [ref=f4e7]:
+        - row [ref=f4e752]:
+          - cell [ref=f4e9]:
+            - link [ref=f4e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f4e753]:
+            - table [ref=f4e13]:
+              - rowgroup [ref=f4e14]:
+                - row [ref=f4e754]:
+                  - cell [ref=f4e755]:
+                    - generic [ref=f4e17]:
+                      - menubar [ref=f4e18]:
+                        - menuitem "Planning" [ref=f4e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f4e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f4e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f4e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f4e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f4e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f4e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f4e33]:
+                        - rowgroup [ref=f4e34]:
+                          - row [ref=f4e756]:
+                            - cell [ref=f4e757]:
+                              - table [ref=f4e37]:
+                                - rowgroup [ref=f4e38]:
+                                  - row [ref=f4e758]:
+                                    - cell [ref=f4e40]
+                                    - cell [ref=f4e41]:
+                                      - strong [ref=f4e42]: START
+                                    - cell [ref=f4e43]
+                                    - cell [ref=f4e759]:
+                                      - table [ref=f4e45]:
+                                        - rowgroup [ref=f4e46]:
+                                          - row [ref=f4e760]:
+                                            - cell [ref=f4e761]:
+                                              - table [ref=f4e49]:
+                                                - rowgroup [ref=f4e50]:
+                                                  - row [ref=f4e762]:
+                                                    - cell [ref=f4e763]
+                                                    - cell [ref=f4e765]
+                                                    - cell "Planning" [ref=f4e766]
+                                                    - cell [ref=f4e767]
+                                                    - cell [ref=f4e768]
+                                                    - cell [ref=f4e770]
+                                                    - cell "Logs" [ref=f4e771]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f4e61]:
+                              - generic [ref=f4e62]:
+                                - link "Help" [ref=f4e63] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f4e65]
+                                - img "Info" [ref=f4e67]
+    - table [ref=f4e69]:
+      - rowgroup [ref=f4e70]:
+        - row [ref=f4e71]:
+          - cell [ref=f4e72]
+          - 'cell "user: admin" [ref=f4e73]'
+          - cell [ref=f4e74]:
+            - link "[Log out]" [ref=f4e75] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f4e76]:
+    - table [ref=f4e77]:
+      - rowgroup [ref=f4e78]:
+        - row [ref=f4e79]:
+          - cell [ref=f4e80]:
+            - table [ref=f4e81]:
+              - rowgroup [ref=f4e82]:
+                - row [ref=f4e83]:
+                  - cell [ref=f4e84]:
+                    - table [ref=f4e85]:
+                      - rowgroup [ref=f4e86]:
+                        - row [ref=f4e87]:
+                          - cell [ref=f4e88]:
+                            - table [ref=f4e89]:
+                              - rowgroup [ref=f4e90]:
+                                - row [ref=f4e91]:
+                                  - cell [ref=f4e92]:
+                                    - button "Create New Project" [ref=f4e93] [cursor=pointer]
+                - row [ref=f4e95]:
+                  - cell [ref=f4e96]
+                - row [ref=f4e97]:
+                  - cell [ref=f4e98]:
+                    - table [ref=f4e99]:
+                      - rowgroup [ref=f4e100]:
+                        - row [ref=f4e101]:
+                          - cell [ref=f4e102]:
+                            - table [ref=f4e103]:
+                              - rowgroup [ref=f4e104]:
+                                - row [ref=f4e105]:
+                                  - cell [ref=f4e106]:
+                                    - button "Projects Planning" [ref=f4e107] [cursor=pointer]
+                                - row [ref=f4e108]:
+                                  - cell [ref=f4e109]
+                                - row:
+                                  - cell
+                                - row [ref=f4e110]:
+                                  - cell [ref=f4e111]
+                                - row [ref=f4e112]:
+                                  - cell [ref=f4e113]:
+                                    - button "Projects List" [ref=f4e114] [cursor=pointer]
+                                - row [ref=f4e115]:
+                                  - cell [ref=f4e116]
+                                - row:
+                                  - cell
+                                - row [ref=f4e117]:
+                                  - cell [ref=f4e118]
+                                - row [ref=f4e119]:
+                                  - cell [ref=f4e120]:
+                                    - button "Resources Load" [ref=f4e121] [cursor=pointer]
+                                - row [ref=f4e122]:
+                                  - cell [ref=f4e123]
+                                - row:
+                                  - cell
+                                - row [ref=f4e124]:
+                                  - cell [ref=f4e125]
+                                - row [ref=f4e126]:
+                                  - cell [ref=f4e127]:
+                                    - button "Queue-based Resources Planning" [ref=f4e128] [cursor=pointer]
+                                - row [ref=f4e129]:
+                                  - cell [ref=f4e130]
+                                - row:
+                                  - cell
+                                - row [ref=f4e131]:
+                                  - cell [ref=f4e132]
+                                - row [ref=f4e133]:
+                                  - cell [ref=f4e134]:
+                                    - button "Logs" [ref=f4e135] [cursor=pointer]
+                                - row [ref=f4e136]:
+                                  - cell [ref=f4e137]
+                                - row:
+                                  - cell
+                                - row [ref=f4e138]:
+                                  - cell [ref=f4e139]
+                                - row [ref=f4e140]:
+                                  - cell [ref=f4e141]:
+                                    - button "Pipeline" [ref=f4e142] [cursor=pointer]
+                                - row [ref=f4e143]:
+                                  - cell [ref=f4e144]
+                                - row:
+                                  - cell
+    - text:    
+    - generic [ref=f4e776]:
+      - tablist [ref=f4e777]:
+        - listitem [ref=f4e778] [cursor=pointer]:
+          - generic [ref=f4e779]: Issue logs
+        - listitem [ref=f4e781] [cursor=pointer]:
+          - generic [ref=f4e782]: Risk logs
+      - text:  
+      - generic [ref=f4e784]:
+        - tabpanel [ref=f4e785]:
+          - generic [ref=f4e787]:
+            - table:
+              - rowgroup:
+                - row:
+                  - cell:
+                    - table
+            - text:    
+            - generic [ref=f4e928]:
+              - grid [ref=f4e929]:
+                - rowgroup [ref=f4e933]:
+                  - gridcell "Issue number" [ref=f4e934]
+                  - gridcell [ref=f4e936]:
+                    - textbox [disabled] [ref=f4e938]
+                  - gridcell "Project" [ref=f4e939]
+                  - gridcell [ref=f4e941]:
+                    - combobox [ref=f4e944]:
+                      - textbox [ref=f4e945]
+                      - button [ref=f4e946] [cursor=pointer]:
+                        - generic [ref=f4e947]: 
+                  - gridcell "Type and status" [ref=f4e948]
+                  - gridcell [ref=f4e950]:
+                    - grid [ref=f4e952]:
+                      - rowgroup [ref=f4e958]:
+                        - gridcell "Type" [ref=f4e959]
+                        - gridcell [ref=f4e961]:
+                          - combobox [ref=f4e963]
+                        - gridcell "Status" [ref=f4e964]
+                        - gridcell [ref=f4e966]:
+                          - combobox [ref=f4e968]:
+                            - option "Identified" [selected]
+                            - option "Under Analysis"
+                            - option "Accepted Deviation"
+                            - option "Change Requested"
+                            - option "Correction Planned"
+                            - option "In Correction"
+                            - option "Verification Pending"
+                            - option "Resolved (Compliant)"
+                            - option "Closed (Accepted as-is)"
+                  - gridcell "Creation info" [ref=f4e969]
+                  - gridcell [ref=f4e971]:
+                    - grid [ref=f4e973]:
+                      - rowgroup [ref=f4e979]:
+                        - gridcell "Date raised" [ref=f4e980]
+                        - gridcell [ref=f4e982]:
+                          - combobox [ref=f4e984]:
+                            - textbox [ref=f4e985]
+                            - button [ref=f4e986] [cursor=pointer]:
+                              - generic [ref=f4e987]: 
+                            - text:    
+                        - gridcell "Created by" [ref=f4e988]
+                        - gridcell [ref=f4e990]:
+                          - combobox [ref=f4e993]:
+                            - textbox [disabled] [ref=f4e994]
+                            - button [ref=f4e995]:
+                              - generic [ref=f4e996]: 
+                  - gridcell "Description" [ref=f4e997]
+                  - gridcell [ref=f4e999]:
+                    - textbox [ref=f4e1001]
+                  - gridcell "Categories" [ref=f4e1002]
+                  - gridcell [ref=f4e1004]:
+                    - grid [ref=f4e1006]:
+                      - rowgroup [ref=f4e1012]:
+                        - gridcell "Priority" [ref=f4e1013]
+                        - gridcell [ref=f4e1015]:
+                          - combobox [ref=f4e1017]
+                        - gridcell "Severity" [ref=f4e1018]
+                        - gridcell [ref=f4e1020]:
+                          - combobox [ref=f4e1022]
+                  - gridcell "Assigned to" [ref=f4e1023]
+                  - gridcell [ref=f4e1025]:
+                    - textbox [ref=f4e1027]
+                  - gridcell "Timing" [ref=f4e1028]
+                  - gridcell [ref=f4e1030]:
+                    - table [ref=f4e1032]:
+                      - rowgroup [ref=f4e1033]:
+                        - row [ref=f4e1034]:
+                          - cell [ref=f4e1035]:
+                            - table [ref=f4e1036]:
+                              - rowgroup [ref=f4e1037]:
+                                - row [ref=f4e1038]:
+                                  - cell [ref=f4e1039]:
+                                    - grid [ref=f4e1040]:
+                                      - rowgroup [ref=f4e1046]:
+                                        - gridcell "Deadline" [ref=f4e1047]
+                                        - gridcell [ref=f4e1049]:
+                                          - combobox [ref=f4e1051]:
+                                            - textbox [ref=f4e1052]
+                                            - button [ref=f4e1053] [cursor=pointer]:
+                                              - generic [ref=f4e1054]: 
+                                            - text:    
+                                        - gridcell "Date resolved" [ref=f4e1055]
+                                        - gridcell [ref=f4e1057]:
+                                          - combobox [ref=f4e1059]:
+                                            - textbox [ref=f4e1060]
+                                            - button [ref=f4e1061] [cursor=pointer]:
+                                              - generic [ref=f4e1062]: 
+                                            - text:    
+                  - gridcell "Notes" [ref=f4e1063]
+                  - gridcell [ref=f4e1065]:
+                    - textbox [ref=f4e1067]
+              - button "Save" [ref=f4e1068] [cursor=pointer]
+              - button "Save and Continue" [ref=f4e1069] [cursor=pointer]
+              - button "Cancel" [ref=f4e1070] [cursor=pointer]
+        - text:                
+  - table [ref=f4e744]:
+    - rowgroup [ref=f4e745]:
+      - row [ref=f4e746]:
+        - cell [ref=f4e747]:
+          - generic [ref=f4e749]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f4e750] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f4e751]
+  - text:    

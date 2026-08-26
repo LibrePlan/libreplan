@@ -86,7 +86,7 @@ public class AssignedCriterionRequirementToOrderElementController
         assignedCriterionRequirementToOrderElementModel.confirm();
     }
 
-    public List<CriterionRequirementWrapper> criterionRequirementWrappers() {
+    public List<CriterionRequirementWrapper> getCriterionRequirementWrappers() {
         return assignedCriterionRequirementToOrderElementModel.getCriterionRequirementWrappers();
     }
 
@@ -125,7 +125,7 @@ public class AssignedCriterionRequirementToOrderElementController
     }
 
     protected CriterionRequirementWrapper validateWrappers(List<CriterionRequirementWrapper> list) {
-        return assignedCriterionRequirementToOrderElementModel.validateWrappers(criterionRequirementWrappers());
+        return assignedCriterionRequirementToOrderElementModel.validateWrappers(getCriterionRequirementWrappers());
     }
 
     protected CriterionRequirementWrapper validateHoursGroupWrappers() {

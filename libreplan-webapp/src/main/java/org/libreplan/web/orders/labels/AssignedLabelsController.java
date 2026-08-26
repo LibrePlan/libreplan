@@ -36,6 +36,9 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.RowRenderer;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Textbox;
 
 /**
@@ -69,6 +72,13 @@ public abstract class AssignedLabelsController<T, M> extends GenericForwardCompo
 
         Util.createBindingsFor(self);
         Util.reloadBindings(self);
+        // directLabels' own model="@load(...)" binding already got a (correctly empty, since
+        // getModel().init(element) above hadn't run yet) value pushed during this same page's
+        // very first, eager tab-panel composition - see refreshDirectLabels()'s comment for why
+        // that leaves it never receiving a further push from the binder. Do the same explicit,
+        // direct push here so the initial view reflects whatever's really assigned instead of
+        // that stale first (always empty) snapshot.
+        refreshDirectLabels();
     }
 
     protected abstract void setOuterModel(M orderElementModel);
@@ -152,7 +162,7 @@ public abstract class AssignedLabelsController<T, M> extends GenericForwardCompo
 
     private void assignLabel(Label label) {
         getModel().assignLabel(label);
-        Util.reloadBindings(directLabels);
+        refreshDirectLabels();
     }
 
     private boolean isAssigned(Label label) {
@@ -161,19 +171,75 @@ public abstract class AssignedLabelsController<T, M> extends GenericForwardCompo
 
     public void deleteLabel(Label label) {
         getModel().deleteLabel(label);
-        Util.reloadBindings(directLabels);
+        refreshDirectLabels();
+    }
+
+    /**
+     * directLabels' own model="@load(...)" binding gets its first value pushed very early -
+     * before openWindow()/init() ever runs, while getLabels() still (correctly, per its own
+     * null-element guard) returns empty - and that premature push leaves the binder no longer
+     * treating this component as needing a reload later (Util.reloadBindings(directLabels), even
+     * called with the force strategy, stops producing any client-side update for it from that
+     * point on - confirmed by tracing NewDataSortableGrid.setModel(), which is never invoked
+     * again after this happens, even though the underlying data is correct by then). Bypassing
+     * the binder for this one incremental update - the same wrapped ListModel getLabelsModel()
+     * already builds for the binding - sidesteps whatever state the binder got stuck in.
+     *
+     * rowRenderer="@load(...)" on the same tag needs the identical bypass for the identical
+     * reason - setting only the model without also re-asserting the renderer leaves rows
+     * falling back to their raw toString() in composition contexts where that binding never
+     * fired (see ManageOrderElementAdvancesController's editAdvances fix for the confirmed
+     * live symptom of this exact gap).
+     */
+    private void refreshDirectLabels() {
+        directLabels.setRowRenderer(getDirectLabelsRenderer());
+        directLabels.setModel(getLabelsModel());
     }
 
     public List<Label> getLabels() {
         return getModel().getLabels();
     }
 
+    /**
+     * NewDataSortableGrid.setModel(ListModel) is a strict, non-generic override - unlike plain
+     * Grid, ZK Bind's List-&gt;ListModel auto-wrap does not apply, so directLabels' "model=" needs
+     * an already-wrapped ListModel explicitly.
+     */
+    public ListModel<Label> getLabelsModel() {
+        return new SimpleListModel<>(getLabels());
+    }
+
     public List<Label> getInheritedLabels() {
         return getModel().getInheritedLabels();
     }
 
+    // DEAD CODE START - getAllLabels() has no remaining caller since
+    // _listOrderElementLabels.zul's bandboxSearch stopped binding model= to it (see the comment
+    // there). Left in place pending Jeroen's decision on whether to remove it.
     public List<Label> getAllLabels() {
         return getModel().getAllLabels();
+    }
+    // DEAD CODE END
+
+    public RowRenderer getInheritedLabelsRenderer() {
+        return (row, data, i) -> {
+            final Label label = (Label) data;
+            row.setValue(label);
+
+            row.appendChild(new org.zkoss.zul.Label(label.getType().getName()));
+            row.appendChild(new org.zkoss.zul.Label(label.getName()));
+        };
+    }
+
+    public RowRenderer getDirectLabelsRenderer() {
+        return (row, data, i) -> {
+            final Label label = (Label) data;
+            row.setValue(label);
+
+            row.appendChild(new org.zkoss.zul.Label(label.getType().getName()));
+            row.appendChild(new org.zkoss.zul.Label(label.getName()));
+            row.appendChild(Util.createRemoveButton(event -> deleteLabel(label)));
+        };
     }
 
 }

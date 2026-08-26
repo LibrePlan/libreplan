@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,15 +23,15 @@
 <window id="listWindow" title="${i18n:_t('Machines List')}">
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
-    <div align="right">
+    <div style="text-align: right;">
         <filter id="filter"/>
     </div>
 
     <separator bar="false" spacing="5px" orient="horizontal"/>
 
-    <newdatasortablegrid id="listing" model="@{controller.machines}" mold="paging"
-        rowRenderer="@{controller.machinesRenderer}"
-        pageSize="10" fixedLayout="true" sclass="clickable-rows">
+    <newdatasortablegrid id="listing" model="@load(controller.machines)" mold="paging"
+        rowRenderer="@load(controller.machinesRenderer)"
+        pageSize="10" sclass="clickable-rows">
         <columns>
             <newdatasortablecolumn label="${i18n:_t('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <newdatasortablecolumn label="${i18n:_t('Description')}" sort="auto(lower(description))" />
@@ -40,7 +41,7 @@
         </columns>
     </newdatasortablegrid>
     <button id="show_create_form" onClick="controller.goToCreateForm();"
-        label="@{controller.getShowCreateFormLabel}" sclass="create-button global-action"
-        disabled="@{controller.isCreateButtonDisabled}">
+        label="@load(controller.showCreateFormLabel)" sclass="create-button global-action"
+        disabled="@load(controller.createButtonDisabled)">
     </button>
 </window>

@@ -161,8 +161,20 @@ public class AssignedCriterionRequirementToTemplateModel extends
         return false;
     }
 
+    /**
+     * Not readOnly: see the identical fix and full explanation on
+     * AssignedCriterionRequirementToOrderElementModel.confirm() - reattachOrderElementTemplate()'s
+     * orderElementTemplateDAO.reattach() (-&gt; session.saveOrUpdate()) can genuinely need to write
+     * when the user has just added a new, still-transient DirectCriterionRequirement, and marking
+     * this readOnly let that write happen anyway (readOnly only suppresses the flush, not the id
+     * generator call it triggers) while silently discarding it, permanently corrupting the entity
+     * for any later real save. Currently `close()`/`confirm()` on this controller is never actually
+     * invoked from the templates save flow (verified: OrderTemplatesController.saveAndExit()/
+     * saveAndContinue() go straight to OrderTemplatesModel.confirmSave(), never through close()),
+     * so this exact crash isn't live today - but the same wrong annotation was here, so fixing it
+     * for consistency and in case that ever changes.
+     */
     @Override
-    @Transactional(readOnly = true)
     public void confirm() throws ValidationException{
         reattachOrderElementTemplate();
     }

@@ -36,8 +36,10 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Tab;
 import org.zkoss.zul.Tree;
@@ -132,17 +134,22 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
     public abstract BigDecimal getTotalPrice();
 
     /**
+     * Needed by reloadGridMaterials() below to bypass gridMaterials' own
+     * rowRenderer="@load(...)" binding the same way it bypasses its model="@load(...)" binding.
+     */
+    public abstract RowRenderer getMaterialAssignmentsRenderer();
+
+    /**
      * On selecting category, refresh {@link MaterialAssignment} associated with selected {@link MaterialCategory}.
      */
     public void refreshMaterialAssignments() {
-        final List<A> materials = getAssignedMaterials();
-        gridMaterials.setModel(new SimpleListModel<>(materials));
+        gridMaterials.setModel(getAssignedMaterials());
         reloadGridMaterials();
     }
 
-    public List<A> getAssignedMaterials() {
+    public org.zkoss.zul.ListModel<A> getAssignedMaterials() {
         final Treeitem treeitem = categoriesTree.getSelectedItem();
-        return getAssignedMaterials(treeitem);
+        return new SimpleListModel<>(getAssignedMaterials(treeitem));
     }
 
     private List<A> getAssignedMaterials(Treeitem treeitem) {
@@ -202,7 +209,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         final String text = txtSearchMaterial.getValue();
         final MaterialCategory materialCategory = getSelectedCategory(allCategoriesTree);
         getModel().searchMaterials(text, materialCategory);
-        Util.reloadBindings(lbFoundMaterials);
+        reloadFoundMaterials();
     }
 
     /**
@@ -223,6 +230,24 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
      */
     public List<Material> getMatchingMaterials() {
         return getModel().getMatchingMaterials();
+    }
+
+    public ListitemRenderer getMatchingMaterialsRenderer() {
+        return (Listitem item, Object data, int i) -> {
+            final Material material = (Material) data;
+            item.setValue(material);
+
+            item.appendChild(new Listcell(material.getCode()));
+            item.appendChild(new Listcell(material.getDescription()));
+            item.appendChild(new Listcell(material.getUnitType().getMeasure()));
+
+            Listcell priceCell = new Listcell();
+            priceCell.appendChild(new Label(material.getDefaultUnitPrice().toString()));
+            priceCell.appendChild(new Label(getCurrencySymbol()));
+            item.appendChild(priceCell);
+
+            item.appendChild(new Listcell(material.getCategory().getName()));
+        };
     }
 
     /**
@@ -263,20 +288,52 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         reloadGridMaterials();
     }
 
+    /**
+     * gridMaterials' own model="@load(...)" binding gets its first (empty) value pushed
+     * eagerly during this page's whole-window tab pre-composition, before openWindow()/
+     * initializeEdition() ever runs - same root cause as AssignedLabelsController's
+     * directLabels bug. Util.reloadBindings(gridMaterials) alone never updates the client
+     * after that point, so bypass the binder and set the wrapped ListModel directly, same
+     * as refreshMaterialAssignments() above already does.
+     *
+     * rowRenderer="@load(...)" on the same tag is bypassed the same way and for the same
+     * reason - setting only the model without also re-asserting the renderer leaves rows
+     * falling back to their raw toString() in composition contexts where that binding never
+     * fired (see ManageOrderElementAdvancesController's identical editAdvances/
+     * editAdvancesMeasurement fix for the confirmed symptom).
+     */
     private void reloadGridMaterials() {
         if ( gridMaterials != null ) {
-            Util.reloadBindings(gridMaterials);
+            gridMaterials.setRowRenderer(getMaterialAssignmentsRenderer());
+            gridMaterials.setModel(getAssignedMaterials());
         }
     }
 
     public void clearSelectionAllCategoriesTree() {
         allCategoriesTree.clearSelection();
         retrieveAllMaterials();
-        Util.reloadBindings(lbFoundMaterials);
+        reloadFoundMaterials();
     }
 
     private void retrieveAllMaterials() {
         getModel().searchMaterials("", null);
+    }
+
+    /**
+     * Same root cause and fix as {@link #reloadGridMaterials()}: lbFoundMaterials' own
+     * model="@load(...)" binding gets its binder set up during this window's whole-tree
+     * pre-composition, before any material search has actually run, and in the task-level
+     * (modal window) case Util.reloadBindings(lbFoundMaterials) afterwards is a silent no-op -
+     * same "AnnotateBinderInit only creates/reloads what existed at that moment" bug class.
+     * Bypass the binder and set the wrapped ListModel directly, as reloadGridMaterials() above
+     * already does for its sibling grid - including its itemRenderer="@load(...)", for the same
+     * reason gridMaterials' rowRenderer needs the same treatment.
+     */
+    private void reloadFoundMaterials() {
+        if ( lbFoundMaterials != null ) {
+            lbFoundMaterials.setItemRenderer(getMatchingMaterialsRenderer());
+            lbFoundMaterials.setModel(new ListModelList<>(getModel().getMatchingMaterials()));
+        }
     }
 
     /** Should be public! */
@@ -310,7 +367,7 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
             Treecell cellName = new Treecell();
             cellName.addEventListener("onClick", event ->  {
                 getModel().searchMaterials("", materialCategory);
-                Util.reloadBindings(lbFoundMaterials);
+                reloadFoundMaterials();
             });
 
             lblName.setParent(cellName);
@@ -452,8 +509,8 @@ public abstract class AssignedMaterialsController<T, A> extends GenericForwardCo
         Map<String, java.io.Serializable> args = new HashMap<>();
         args.put("message", message);
         args.put("title", _t("Split new assignment"));
-        args.put("OK", Messagebox.OK);
-        args.put("CANCEL", Messagebox.CANCEL);
+        args.put("OK", Messagebox.Button.OK);
+        args.put("CANCEL", Messagebox.Button.CANCEL);
         args.put("icon", Messagebox.QUESTION);
 
         dialogSplitAssignment = (MessageboxDlg) Executions.createComponents("/orders/_splitMaterialAssignmentDlg.zul",

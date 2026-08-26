@@ -1,0 +1,223 @@
+- generic [ref=f826e4]:
+  - generic:
+    - generic [ref=f826e7]:
+      - table [ref=f826e8]:
+        - rowgroup [ref=f826e9]:
+          - row [ref=f826e10]:
+            - cell [ref=f826e11]:
+              - link [ref=f826e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f826e14]:
+              - table [ref=f826e15]:
+                - rowgroup [ref=f826e16]:
+                  - row [ref=f826e17]:
+                    - cell [ref=f826e18]:
+                      - generic [ref=f826e19]:
+                        - list [ref=f826e21]:
+                          - listitem [ref=f826e22]:
+                            - link "Planning" [ref=f826e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f826e25]:
+                            - link "Resources" [ref=f826e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f826e28]:
+                            - link "Cost" [ref=f826e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f826e31]:
+                            - link "Configuration" [ref=f826e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f826e34]:
+                            - link "Communications" [ref=f826e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f826e37]:
+                            - link "Reports" [ref=f826e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f826e40]:
+                            - link "Personal area" [ref=f826e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f826e43]:
+                          - rowgroup [ref=f826e44]:
+                            - row [ref=f826e45]:
+                              - cell [ref=f826e46]:
+                                - table [ref=f826e47]:
+                                  - rowgroup [ref=f826e48]:
+                                    - row [ref=f826e49]:
+                                      - cell [ref=f826e50]
+                                      - cell [ref=f826e51]:
+                                        - strong [ref=f826e52]: START
+                                      - cell [ref=f826e53]
+                                      - cell [ref=f826e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f826e55]:
+                                          - rowgroup [ref=f826e56]:
+                                            - row [ref=f826e57]:
+                                              - cell [ref=f826e58]:
+                                                - table [ref=f826e59]:
+                                                  - rowgroup [ref=f826e60]:
+                                                    - row [ref=f826e61]:
+                                                      - cell [ref=f826e62]:
+                                                        - table [ref=f826e63]:
+                                                          - rowgroup [ref=f826e64]:
+                                                            - row [ref=f826e65]:
+                                                              - cell [ref=f826e66]:
+                                                                - table [ref=f826e67]:
+                                                                  - rowgroup [ref=f826e68]:
+                                                                    - row [ref=f826e69]:
+                                                                      - cell [ref=f826e70]
+                                                                      - cell [ref=f826e73]
+                                                                      - cell "Cost" [ref=f826e74]
+                                                      - cell [ref=f826e75]
+                                                      - cell [ref=f826e76]:
+                                                        - table [ref=f826e77]:
+                                                          - rowgroup [ref=f826e78]:
+                                                            - row [ref=f826e79]:
+                                                              - cell [ref=f826e80]:
+                                                                - table [ref=f826e81]:
+                                                                  - rowgroup [ref=f826e82]:
+                                                                    - row [ref=f826e83]:
+                                                                      - cell [ref=f826e84]
+                                                                      - cell [ref=f826e87]
+                                                                      - cell "Timesheet Lines List" [ref=f826e88]
+                              - cell [ref=f826e89]:
+                                - generic [ref=f826e90]:
+                                  - link "Help" [ref=f826e91] [cursor=pointer]:
+                                    - /url: /help/en/09-partes.html#id4
+                                  - img "Axuda" [ref=f826e93]
+                                  - img "Info" [ref=f826e95]
+      - table [ref=f826e97]:
+        - rowgroup [ref=f826e98]:
+          - row [ref=f826e99]:
+            - cell [ref=f826e100]
+            - 'cell "user: admin" [ref=f826e101]'
+            - cell [ref=f826e102]:
+              - link "[Log out]" [ref=f826e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f826e106]:
+    - generic:  
+    - generic [ref=f826e109]:
+      - generic [ref=f826e110]: Timesheet Lines List
+      - generic [ref=f826e111]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f826e112]:
+          - generic [ref=f826e113]: Filter timesheet lines by
+          - table [ref=f826e118]:
+            - rowgroup [ref=f826e119]:
+              - row [ref=f826e120]:
+                - cell [ref=f826e121]:
+                  - table [ref=f826e122]:
+                    - rowgroup [ref=f826e123]:
+                      - row [ref=f826e124]:
+                        - cell [ref=f826e125]:
+                          - table [ref=f826e126]:
+                            - rowgroup [ref=f826e127]:
+                              - row [ref=f826e128]:
+                                - cell [ref=f826e129]:
+                                  - table [ref=f826e130]:
+                                    - rowgroup [ref=f826e131]:
+                                      - row [ref=f826e132]:
+                                        - cell "Resource" [ref=f826e133]
+                                        - cell [ref=f826e134]
+                                        - cell "" [ref=f826e135]:
+                                          - generic [ref=f826e136]:
+                                            - textbox [ref=f826e137]
+                                            - generic [ref=f826e138] [cursor=pointer]: 
+                                        - cell [ref=f826e140]
+                                        - cell "task" [ref=f826e141]
+                                        - cell [ref=f826e142]
+                                        - cell "" [ref=f826e143]:
+                                          - generic [ref=f826e145]:
+                                            - textbox [ref=f826e146]
+                                            - generic [ref=f826e147] [cursor=pointer]: 
+                                        - cell [ref=f826e149]
+                                        - cell "from" [ref=f826e150]
+                                        - cell [ref=f826e151]
+                                        - cell "" [ref=f826e152]:
+                                          - generic [ref=f826e153]:
+                                            - textbox [ref=f826e154]
+                                            - generic [ref=f826e155] [cursor=pointer]: 
+                                            - text:    
+                                        - cell [ref=f826e157]
+                                        - cell "to" [ref=f826e158]
+                                        - cell [ref=f826e159]
+                                        - cell "" [ref=f826e160]:
+                                          - generic [ref=f826e161]:
+                                            - textbox [ref=f826e162]
+                                            - generic [ref=f826e163] [cursor=pointer]: 
+                                            - text:    
+                        - cell [ref=f826e165]
+                        - cell "More options" [ref=f826e166]:
+                          - generic [ref=f826e167]:
+                            - generic [ref=f826e168]: More options
+                            - text:  
+                        - cell [ref=f826e171]
+                        - cell [ref=f826e172]:
+                          - button "Filter" [ref=f826e173] [cursor=pointer]
+        - table [ref=f826e174]:
+          - rowgroup [ref=f826e175]:
+            - row [ref=f826e176]:
+              - cell [ref=f826e177]:
+                - table [ref=f826e178]:
+                  - rowgroup [ref=f826e179]:
+                    - row [ref=f826e180]:
+                      - cell "Tasks 0. Total hours 0." [ref=f826e181]
+        - generic [ref=f826e182]:
+          - table [ref=f826e184]:
+            - rowgroup [ref=f826e197]:
+              - row [ref=f826e198]:
+                - columnheader " Date" [ref=f826e199]:
+                  - generic [ref=f826e200] [cursor=pointer]:
+                    - generic [ref=f826e201]: 
+                    - text: Date
+                - columnheader "Resource" [ref=f826e203]
+                - columnheader "Project Code" [ref=f826e205]
+                - columnheader "Project Name" [ref=f826e207]
+                - columnheader "Task Code" [ref=f826e209]
+                - columnheader "Task name" [ref=f826e211]
+                - columnheader "Start hour" [ref=f826e213]
+                - columnheader "Finish hour" [ref=f826e215]
+                - columnheader "Hours" [ref=f826e217]
+                - columnheader "Hours type" [ref=f826e219]
+                - columnheader "Timesheet" [ref=f826e221]
+                - columnheader
+          - table [ref=f826e225]:
+            - rowgroup
+            - rowgroup [ref=f826e238]:
+              - row [ref=f826e239]:
+                - cell [ref=f826e240]
+          - generic [ref=f826e241]:    
+  - generic:
+    - table [ref=f826e245]:
+      - rowgroup [ref=f826e246]:
+        - row [ref=f826e247]:
+          - cell [ref=f826e248]:
+            - generic [ref=f826e250]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f826e251] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f826e252]
+    - text:  

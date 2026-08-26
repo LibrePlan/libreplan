@@ -35,12 +35,20 @@ import org.libreplan.web.common.BaseCRUDController;
 import org.libreplan.web.common.Util;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelArray;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.ext.Sortable;
@@ -77,6 +85,13 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
         txtFilter = (Textbox) listWindow.getFellowIfAny("txtFilter");
         gridQualityFormItems = (Grid) editWindow.getFellowIfAny("gridQualityFormItems");
         gridQualityForms = (Grid) listWindow.getFellowIfAny("qualityFormsList");
+
+        // BaseCRUDController.doAfterCompose() already calls showListWindow() (which reloads
+        // listWindow's bindings), but that happens before AnnotateBinderInit's own later
+        // page-level pass has created any binder at all, so it's a no-op. Redo it here, now that
+        // the binder exists.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     /**
@@ -85,7 +100,39 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
      * @return {@link List<QualityForm>}
      */
     public List<QualityForm> getQualityForms() {
-        return qualityFormModel.getQualityForms(predicate);
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new ListModelList<>(qualityFormModel.getQualityForms(predicate));
+    }
+
+    /**
+     * The list's rows used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer, like
+     * AdvanceTypeCRUDController/CriterionAdminController/LabelTypeCRUDController/MaterialsController
+     * already do, sidesteps that "each" bug entirely.
+     */
+    public RowRenderer getQualityFormRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data, int index) {
+                final QualityForm qualityForm = (QualityForm) data;
+                row.setValue(qualityForm);
+
+                row.appendChild(new Label(qualityForm.getName()));
+                row.appendChild(new Label(qualityForm.getDescription()));
+
+                Hbox hbox = new Hbox();
+                hbox.appendChild(Util.createEditButton(event -> goToEditForm(qualityForm)));
+                hbox.appendChild(Util.createRemoveButton(event -> confirmDelete(qualityForm)));
+                row.appendChild(hbox);
+
+                row.addEventListener(Events.ON_CLICK, event -> goToEditForm(qualityForm));
+            }
+
+        };
     }
 
     /**
@@ -98,12 +145,101 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
     /**
+     * Thin wrapper with a primitive boolean return type, unlike {@link QualityForm#isReportAdvance()}
+     * (returns the boxed {@link Boolean}). ZK's EL BeanELResolver only recognizes an "is"-prefixed
+     * getter as a valid property reader when it returns primitive boolean - with boxed Boolean it
+     * silently throws PropertyNotFoundException ("not readable"), so
+     * "@{controller.qualityForm.reportAdvance}" can never be bound directly.
+     */
+    public boolean isQualityFormReportAdvance() {
+        QualityForm qualityForm = getQualityForm();
+
+        return qualityForm != null && Boolean.TRUE.equals(qualityForm.isReportAdvance());
+    }
+
+    public void setQualityFormReportAdvance(boolean reportAdvance) {
+        QualityForm qualityForm = getQualityForm();
+
+        if (qualityForm != null) {
+            qualityForm.setReportAdvance(reportAdvance);
+        }
+    }
+
+    /**
      * Return all {@link QualityFormItem} assigned to the current {@link QualityForm}.
      *
      * @return {@link List<QualityFormItem>}
      */
     public List<QualityFormItem> getQualityFormItems() {
-        return qualityFormModel.getQualityFormItems();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new ListModelList<>(qualityFormModel.getQualityFormItems());
+    }
+
+    /**
+     * The item rows used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer, like AdvanceTypeCRUDController/
+     * CriterionAdminController/LabelTypeCRUDController/MaterialsController already do, sidesteps
+     * that "each" bug entirely.
+     */
+    public RowRenderer getQualityFormItemRenderer() {
+        return new RowRenderer() {
+
+            @Override
+            public void render(Row row, Object data, int index) {
+                final QualityFormItem item = (QualityFormItem) data;
+                // The checkConstraintQualityFormItem* constraints below read the item back via
+                // ((Row) comp.getParent()).getValue(), and also perform the save themselves as a
+                // validation side effect (item.setName/setPercentage), same as before this fix.
+                row.setValue(item);
+
+                Textbox nameTb = new Textbox(item.getName());
+                nameTb.setWidth("95%");
+                nameTb.setConstraint(checkConstraintQualityFormItemName());
+                row.appendChild(nameTb);
+
+                row.appendChild(new Label(item.getStringPosition()));
+
+                Decimalbox percentageBox = new Decimalbox();
+                percentageBox.setScale(2);
+                percentageBox.setWidth("100px");
+                percentageBox.setVisible(isByPercentage());
+                percentageBox.setValue(item.getPercentage());
+                percentageBox.setConstraint(checkConstraintQualityFormItemPercentage());
+                percentageBox.addEventListener(Events.ON_CHANGE, event -> onChangeQualityFormItemPercentage());
+                row.appendChild(percentageBox);
+
+                Hbox hbox = new Hbox();
+
+                Button upButton = new Button("", "/common/img/ico_subir1.png");
+                upButton.setHoverImage("/common/img/ico_subir.png");
+                upButton.setSclass("icono");
+                upButton.setTooltiptext(_t("Up"));
+                upButton.setVisible(isByItems());
+                upButton.addEventListener(Events.ON_CLICK, event -> upQualityFormItem(item));
+                hbox.appendChild(upButton);
+
+                Button downButton = new Button("", "/common/img/ico_bajar1.png");
+                downButton.setHoverImage("/common/img/ico_bajar.png");
+                downButton.setSclass("icono");
+                downButton.setTooltiptext(_t("Down"));
+                downButton.setVisible(isByItems());
+                downButton.addEventListener(Events.ON_CLICK, event -> downQualityFormItem(item));
+                hbox.appendChild(downButton);
+
+                Button deleteButton = new Button("", "/common/img/ico_borrar1.png");
+                deleteButton.setHoverImage("/common/img/ico_borrar.png");
+                deleteButton.setSclass("icono");
+                deleteButton.setTooltiptext(_t("Delete"));
+                deleteButton.addEventListener(Events.ON_CLICK, event -> confirmDeleteQualityFormItem(item));
+                hbox.appendChild(deleteButton);
+
+                row.appendChild(hbox);
+            }
+
+        };
     }
 
     @Override
@@ -133,7 +269,10 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
      * There should be a better/smarter way Preserving order in the Grid every time a new element is added to its model.
      */
     private void forceSortGridQualityFormItems() {
-        Column column = (Column) gridQualityFormItems.getColumns().getChildren().get(2);
+        // Column 1 is "Position", the only column declared with sort="auto(position)" in the
+        // ZUML - this previously read column 2 ("Percentage", which has no sort configured at
+        // all), so this never actually re-sorted anything.
+        Column column = (Column) gridQualityFormItems.getColumns().getChildren().get(1);
         Sortable model = (Sortable) gridQualityFormItems.getModel();
         if ("ascending".equals(column.getSortDirection())) {
             model.sort(column.getSortAscending(), true);
@@ -170,8 +309,11 @@ public class QualityFormCRUDController extends BaseCRUDController<QualityForm> {
     }
 
 
-    public QualityFormType[] getQualityFormTypes() {
-        return QualityFormType.values();
+    public ListModelArray<QualityFormType> getQualityFormTypes() {
+        // The listbox's "model" property is declared as org.zkoss.zul.ListModel -
+        // AnnotateBinder has no automatic array->ListModel coercion, so returning a plain array
+        // here throws a ClassCastException when the binder tries to load it.
+        return new ListModelArray<>(QualityFormType.values());
     }
 
     public void onChangeQualityFormItemPercentage() {

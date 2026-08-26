@@ -144,4 +144,15 @@ public class OrderAuthorizationController extends GenericForwardComposer{
         };
     }
 
+    public RowRenderer getUserOrderAuthorizationRenderer() {
+        return (row, data, i) -> {
+            final UserOrderAuthorization userOrderAuthorization = (UserOrderAuthorization) data;
+
+            row.appendChild(new Label(userOrderAuthorization.getUser().getLoginName()));
+            row.appendChild(new Label(_t(userOrderAuthorization.getAuthorizationType().getDisplayName())));
+
+            row.appendChild(Util.createRemoveButton(event -> removeOrderAuthorization(userOrderAuthorization)));
+        };
+    }
+
 }

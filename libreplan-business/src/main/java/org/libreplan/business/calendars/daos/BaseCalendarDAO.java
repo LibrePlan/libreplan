@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,9 +27,12 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.calendars.entities.CalendarData;
 import org.libreplan.business.calendars.entities.ResourceCalendar;
@@ -78,11 +82,13 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implemen
             return new ArrayList<BaseCalendar>();
         }
 
-        Criteria c = getSession().createCriteria(BaseCalendar.class)
-                .createCriteria("calendarDataVersions", "v");
-        c.add(Restrictions.eq("v.parent", baseCalendar));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<BaseCalendar> cq = cb.createQuery(BaseCalendar.class);
+        Root<BaseCalendar> root = cq.from(BaseCalendar.class);
+        Join<BaseCalendar, CalendarData> v = root.join("calendarDataVersions");
+        cq.where(cb.equal(v.get("parent"), baseCalendar));
 
-        List<BaseCalendar> list = (List<BaseCalendar>) c.list();
+        List<BaseCalendar> list = getSession().createQuery(cq).getResultList();
         removeResourceCalendarInstances(list);
         return list;
     }
@@ -103,10 +109,12 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implemen
             return new ArrayList<BaseCalendar>();
         }
 
-        Criteria c = getSession().createCriteria(BaseCalendar.class);
-        c.add(Restrictions.eq("name", name).ignoreCase());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<BaseCalendar> cq = cb.createQuery(BaseCalendar.class);
+        Root<BaseCalendar> root = cq.from(BaseCalendar.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.toLowerCase()));
 
-        List<BaseCalendar> list = (List<BaseCalendar>) c.list();
+        List<BaseCalendar> list = getSession().createQuery(cq).getResultList();
         removeResourceCalendarInstances(list);
         return list;
     }
@@ -147,9 +155,12 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implemen
      * @param calendar
      */
     private void checkHasResources(BaseCalendar calendar) {
-        List calendars = getSession().createCriteria(ResourceCalendar.class)
-                .createCriteria("calendarDataVersions", "calendarData")
-                .add(Restrictions.eq("calendarData.parent", calendar)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<ResourceCalendar> cq = cb.createQuery(ResourceCalendar.class);
+        Root<ResourceCalendar> root = cq.from(ResourceCalendar.class);
+        Join<ResourceCalendar, CalendarData> calendarData = root.join("calendarDataVersions");
+        cq.where(cb.equal(calendarData.get("parent"), calendar));
+        List<ResourceCalendar> calendars = getSession().createQuery(cq).getResultList();
         if (!calendars.isEmpty()) {
             throw ValidationException
                     .invalidValueException(
@@ -159,8 +170,11 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implemen
     }
 
     private void checkHasOrders(BaseCalendar calendar) {
-        List orders = getSession().createCriteria(Order.class)
-                .add(Restrictions.eq("calendar", calendar)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Order> cq = cb.createQuery(Order.class);
+        Root<Order> root = cq.from(Order.class);
+        cq.where(cb.equal(root.get("calendar"), calendar));
+        List<Order> orders = getSession().createQuery(cq).getResultList();
         if (!orders.isEmpty()) {
             throw ValidationException
                     .invalidValueException(
@@ -170,8 +184,11 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implemen
     }
 
     private void checkHasTasks(BaseCalendar calendar) {
-        List tasks = getSession().createCriteria(TaskElement.class)
-                .add(Restrictions.eq("calendar", calendar)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TaskElement> cq = cb.createQuery(TaskElement.class);
+        Root<TaskElement> root = cq.from(TaskElement.class);
+        cq.where(cb.equal(root.get("calendar"), calendar));
+        List<TaskElement> tasks = getSession().createQuery(cq).getResultList();
         if (!tasks.isEmpty()) {
             throw ValidationException
                     .invalidValueException(
@@ -181,8 +198,11 @@ public class BaseCalendarDAO extends IntegrationEntityDAO<BaseCalendar> implemen
     }
 
     private void checkHasTemplates(BaseCalendar calendar) {
-        List templates = getSession().createCriteria(OrderTemplate.class)
-                .add(Restrictions.eq("calendar", calendar)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderTemplate> cq = cb.createQuery(OrderTemplate.class);
+        Root<OrderTemplate> root = cq.from(OrderTemplate.class);
+        cq.where(cb.equal(root.get("calendar"), calendar));
+        List<OrderTemplate> templates = getSession().createQuery(cq).getResultList();
         if (!templates.isEmpty()) {
             throw ValidationException
                     .invalidValueException(

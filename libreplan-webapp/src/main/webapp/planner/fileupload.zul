@@ -29,6 +29,7 @@ fileuploaddlg.zul
 		Tue Jul 19 12:06:22     2005, Created by tomyeh
 
 Copyright (C) 2005 Potix Corporation. All Rights Reserved.
+Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
 {{IS_RIGHT
 	This program is distributed under LGPL Version 2.1 in the hope that

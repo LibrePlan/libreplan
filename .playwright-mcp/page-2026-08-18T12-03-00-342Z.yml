@@ -1,0 +1,264 @@
+- generic [ref=f684e4]:
+  - generic [ref=f684e5]:
+    - table [ref=f684e6]:
+      - rowgroup [ref=f684e7]:
+        - row [ref=f684e8]:
+          - cell [ref=f684e9]:
+            - link [ref=f684e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f684e12]:
+            - table [ref=f684e13]:
+              - rowgroup [ref=f684e14]:
+                - row [ref=f684e15]:
+                  - cell [ref=f684e16]:
+                    - generic [ref=f684e17]:
+                      - menubar [ref=f684e18]:
+                        - menuitem "Planning" [ref=f684e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f684e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f684e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f684e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f684e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f684e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f684e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f684e33]:
+                        - rowgroup [ref=f684e34]:
+                          - row [ref=f684e35]:
+                            - cell [ref=f684e36]:
+                              - table [ref=f684e37]:
+                                - rowgroup [ref=f684e38]:
+                                  - row [ref=f684e39]:
+                                    - cell [ref=f684e40]
+                                    - cell [ref=f684e41]:
+                                      - strong [ref=f684e42]: START
+                                    - cell [ref=f684e43]
+                                    - cell [ref=f684e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f684e45]:
+                                        - rowgroup [ref=f684e46]:
+                                          - row [ref=f684e47]:
+                                            - cell [ref=f684e48]:
+                                              - table [ref=f684e49]:
+                                                - rowgroup [ref=f684e50]:
+                                                  - row [ref=f684e51]:
+                                                    - cell [ref=f684e52]:
+                                                      - table [ref=f684e53]:
+                                                        - rowgroup [ref=f684e54]:
+                                                          - row [ref=f684e55]:
+                                                            - cell [ref=f684e56]:
+                                                              - table [ref=f684e57]:
+                                                                - rowgroup [ref=f684e58]:
+                                                                  - row [ref=f684e59]:
+                                                                    - cell [ref=f684e60]
+                                                                    - cell [ref=f684e63]
+                                                                    - cell "Configuration" [ref=f684e64]
+                                                    - cell [ref=f684e65]
+                                                    - cell [ref=f684e66]:
+                                                      - table [ref=f684e67]:
+                                                        - rowgroup [ref=f684e68]:
+                                                          - row [ref=f684e69]:
+                                                            - cell [ref=f684e70]:
+                                                              - table [ref=f684e71]:
+                                                                - rowgroup [ref=f684e72]:
+                                                                  - row [ref=f684e73]:
+                                                                    - cell [ref=f684e74]
+                                                                    - cell [ref=f684e77]
+                                                                    - cell "User Accounts" [ref=f684e78]
+                            - cell [ref=f684e79]:
+                              - generic [ref=f684e80]:
+                                - link "Help" [ref=f684e81] [cursor=pointer]:
+                                  - /url: /help/en/13-usuarios.html#administraci-n-de-usuarios
+                                - img "Axuda" [ref=f684e83]
+                                - img "Info" [ref=f684e85]
+    - table [ref=f684e87]:
+      - rowgroup [ref=f684e88]:
+        - row [ref=f684e89]:
+          - cell [ref=f684e90]
+          - 'cell "user: admin" [ref=f684e91]'
+          - cell [ref=f684e92]:
+            - link "[Log out]" [ref=f684e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f684e94]:
+    - text:    
+    - generic [ref=f684e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:     
+      - generic [ref=f684e419]:
+        - generic [ref=f684e420]: "Edit User: asd"
+        - generic [ref=f684e423]:
+          - generic [ref=f684e424]:
+            - tablist [ref=f684e425]:
+              - listitem [ref=f684e426] [cursor=pointer]:
+                - generic [ref=f684e427]: User data
+            - text:  
+            - tabpanel [ref=f684e430]:
+              - table [ref=f684e431]:
+                - rowgroup [ref=f684e432]:
+                  - row [ref=f684e433]:
+                    - cell [ref=f684e434]:
+                      - table [ref=f684e435]:
+                        - rowgroup [ref=f684e436]:
+                          - row [ref=f684e437]:
+                            - cell "General user data" [ref=f684e438]:
+                              - generic [ref=f684e439]:
+                                - generic [ref=f684e440]: General user data
+                                - generic [ref=f684e443]:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - cell:
+                                          - table:
+                                            - rowgroup
+                                  - grid [ref=f684e444]:
+                                    - rowgroup [ref=f684e448]:
+                                      - gridcell "Username" [ref=f684e449]
+                                      - gridcell [ref=f684e451]:
+                                        - textbox [ref=f684e453]: asd
+                                      - gridcell "First name" [ref=f684e454]
+                                      - gridcell [ref=f684e456]:
+                                        - textbox [disabled] [ref=f684e458]: Adam
+                                      - gridcell "Last name" [ref=f684e459]
+                                      - gridcell [ref=f684e461]:
+                                        - textbox [disabled] [ref=f684e463]: Nowakwsko
+                                      - gridcell "Password" [ref=f684e464]
+                                      - gridcell [ref=f684e466]:
+                                        - textbox [ref=f684e468]
+                                      - gridcell "Password confirmation" [ref=f684e469]
+                                      - gridcell [ref=f684e471]:
+                                        - textbox [ref=f684e473]
+                                      - gridcell "Disabled" [ref=f684e474]
+                                      - gridcell [ref=f684e476]:
+                                        - checkbox [ref=f684e479]
+                                      - gridcell "E-mail" [ref=f684e480]
+                                      - gridcell [ref=f684e482]:
+                                        - textbox [ref=f684e484]: asd
+                                      - gridcell "Authentication type" [ref=f684e485]
+                                      - gridcell [ref=f684e487]:
+                                        - combobox [ref=f684e489]:
+                                          - textbox [ref=f684e490]: Database
+                                          - button [ref=f684e491] [cursor=pointer]:
+                                            - generic [ref=f684e492]: 
+                          - row [ref=f684e493]:
+                            - cell [ref=f684e494]
+                          - row [ref=f684e495]:
+                            - cell "Bound resource Go to edit worker window Unbound resource" [ref=f684e496]:
+                              - generic [ref=f684e497]:
+                                - generic [ref=f684e498]: Bound resource
+                                - generic [ref=f684e501]:
+                                  - grid [ref=f684e502]:
+                                    - rowgroup [ref=f684e506]:
+                                      - gridcell "Has bound resource" [ref=f684e507]
+                                      - gridcell "Yes" [ref=f684e509]
+                                      - gridcell "Bound resource" [ref=f684e511]
+                                      - gridcell "Nowakwsko,Adam (Konstruktor 1)" [ref=f684e513]
+                                  - table [ref=f684e515]:
+                                    - rowgroup [ref=f684e516]:
+                                      - row [ref=f684e517]:
+                                        - cell [ref=f684e518]:
+                                          - table [ref=f684e519]:
+                                            - rowgroup [ref=f684e520]:
+                                              - row [ref=f684e521]:
+                                                - cell [ref=f684e522]:
+                                                  - button "Go to edit worker window" [ref=f684e523] [cursor=pointer]
+                                                - cell [ref=f684e524]
+                                                - cell [ref=f684e525]:
+                                                  - button "Unbound resource" [ref=f684e526] [cursor=pointer]
+                          - row [ref=f684e527]:
+                            - cell [ref=f684e528]
+                          - row [ref=f684e529]:
+                            - cell "Association with roles Add role" [ref=f684e530]:
+                              - generic [ref=f684e531]:
+                                - generic [ref=f684e532]: Association with roles
+                                - generic [ref=f684e535]:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - cell:
+                                          - table:
+                                            - rowgroup
+                                  - table [ref=f684e536]:
+                                    - rowgroup [ref=f684e537]:
+                                      - row [ref=f684e538]:
+                                        - cell [ref=f684e539]:
+                                          - table [ref=f684e540]:
+                                            - rowgroup [ref=f684e541]:
+                                              - row [ref=f684e542]:
+                                                - cell [ref=f684e543]:
+                                                  - combobox [ref=f684e544]:
+                                                    - textbox [ref=f684e545]
+                                                    - button [ref=f684e546] [cursor=pointer]:
+                                                      - generic [ref=f684e547]: 
+                                                - cell [ref=f684e548]
+                                                - cell [ref=f684e549]:
+                                                  - button "Add role" [ref=f684e550] [cursor=pointer]
+                                  - grid [ref=f684e551]:
+                                    - rowgroup [ref=f684e555]:
+                                      - columnheader "Role name" [ref=f684e556]
+                                      - columnheader "Actions" [ref=f684e558]
+                                    - rowgroup [ref=f684e563]:
+                                      - gridcell "Bound user" [ref=f684e564]
+                                      - gridcell [ref=f684e566]:
+                                        - button "Remove" [disabled] [ref=f684e568]
+                          - row [ref=f684e570]:
+                            - cell [ref=f684e571]
+                          - row [ref=f684e572]:
+                            - cell "Association with profiles Add profile" [ref=f684e573]:
+                              - generic [ref=f684e574]:
+                                - generic [ref=f684e575]: Association with profiles
+                                - generic [ref=f684e578]:
+                                  - table:
+                                    - rowgroup:
+                                      - row:
+                                        - cell:
+                                          - table:
+                                            - rowgroup
+                                  - table [ref=f684e579]:
+                                    - rowgroup [ref=f684e580]:
+                                      - row [ref=f684e581]:
+                                        - cell [ref=f684e582]:
+                                          - table [ref=f684e583]:
+                                            - rowgroup [ref=f684e584]:
+                                              - row [ref=f684e585]:
+                                                - cell [ref=f684e586]:
+                                                  - combobox [ref=f684e587]:
+                                                    - textbox [ref=f684e588]
+                                                    - button [ref=f684e589] [cursor=pointer]:
+                                                      - generic [ref=f684e590]: 
+                                                - cell [ref=f684e591]
+                                                - cell [ref=f684e592]:
+                                                  - button "Add profile" [ref=f684e593] [cursor=pointer]
+                                  - grid [ref=f684e594]:
+                                    - rowgroup [ref=f684e598]:
+                                      - columnheader "Profile name" [ref=f684e599]
+                                      - columnheader "Actions" [ref=f684e601]
+                                    - rowgroup
+          - button "Save" [ref=f684e606] [cursor=pointer]
+          - button "Save & Continue" [ref=f684e607] [cursor=pointer]
+          - button "Cancel" [ref=f684e608] [cursor=pointer]
+  - table [ref=f684e411]:
+    - rowgroup [ref=f684e412]:
+      - row [ref=f684e413]:
+        - cell [ref=f684e414]:
+          - generic [ref=f684e416]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f684e417] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f684e418]
+  - text:    

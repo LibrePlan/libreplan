@@ -158,8 +158,8 @@ public class ResourceServiceTest {
 
         WorkerDTO w1 = new WorkerDTO(getUniqueName(), "w1-surname", "w1-nif");
         WorkerDTO w2 = new WorkerDTO(null, "", null, ""); // Missing code, first
-                                                          // name, surname, and
-                                                          // nif.
+                                                          // name, and surname
+                                                          // (nif is optional).
 
         /* Test. */
         List<InstanceConstraintViolationsDTO> instanceConstraintViolationsList =
@@ -179,7 +179,7 @@ public class ResourceServiceTest {
             instanceConstraintViolationsList.get(1).
             constraintViolations.toString(),
             instanceConstraintViolationsList.get(1).
-            constraintViolations.size() == 4); // w2 constraint violations.
+            constraintViolations.size() == 3); // w2 constraint violations.
         assertTrue(resourceDAO.existsByCode(m1.code));
         assertTrue(resourceDAO.existsByCode(w1.code));
 

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,6 +22,7 @@ package org.libreplan.business.test.orders.daos;
 
 import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -35,6 +37,8 @@ import org.joda.time.LocalDate;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import java.util.List;
+
 import org.libreplan.business.calendars.daos.IBaseCalendarDAO;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.IAdHocTransactionService;
@@ -44,6 +48,7 @@ import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.externalcompanies.entities.DeadlineCommunication;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderStatusEnum;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.scenarios.entities.OrderVersion;
@@ -208,8 +213,9 @@ public class OrderDAOTest {
     }
 
     /**
-     * Regression test for a production bug where saving a project ("Test1") failed on the very
-     * first Save click, with no user edits, throwing:
+     * Regression test for a production bug (found on the v1.6.1 line, see the
+     * fix-tasksource-1.6.1 branch) where saving a project failed on the very first Save click,
+     * with no user edits, throwing:
      * <pre>
      * org.hibernate.NonUniqueObjectException: A different object with the same identifier value
      * was already associated with the session : [org.libreplan.business.orders.entities.Order#...]
@@ -230,9 +236,10 @@ public class OrderDAOTest {
      * same id resolves to it instead of creating a conflicting duplicate.
      *
      * This test reproduces the exact Hibernate mechanism directly at the DAO layer - deterministic
-     * and independent of the specific scheduling-tree shape that triggered it in production - and
-     * was verified against the real regression (v1.6.1, live "Test1" data restored from production)
-     * before being reduced to this minimal form. See project memory for the full incident writeup.
+     * and independent of the specific scheduling-tree shape that triggered it in production. Ported
+     * here defensively: the original crash did NOT reproduce under this branch's Hibernate 6 (which
+     * appears to treat the same fetch="join" association as genuinely lazy), but the underlying
+     * detached-order-reattachment gap is identical, so this guards against it regressing here too.
      */
     @Test
     @Transactional
@@ -279,7 +286,7 @@ public class OrderDAOTest {
             });
             fail("Expected saving a stale detached Order after a different instance for the same id "
                     + "was already loaded in the session to throw a NonUniqueObjectException, "
-                    + "reproducing the original 'Test1' project production bug.");
+                    + "reproducing the original v1.6.1 production bug.");
         } catch (RuntimeException expected) {
             assertNonUniqueObjectExceptionSomewhereInCauseChain(expected);
         }
@@ -312,6 +319,138 @@ public class OrderDAOTest {
         }
         throw new AssertionError(
                 "Expected a NonUniqueObjectException somewhere in the cause chain of: " + t, t);
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). findAll/findByCode/getActiveOrders/
+     * getOrdersWithNotEmptyCustomersReferences/existsByNameAnotherTransaction/
+     * findByNameAnotherTransaction had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void testFindAllIncludesSaved() {
+        Order order = createValidOrder("test-" + UUID.randomUUID());
+        orderDAO.save(order);
+
+        boolean found = false;
+        for (Order o : orderDAO.findAll()) {
+            if (o.getId().equals(order.getId())) {
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
+    @Test
+    @Transactional
+    public void testFindByCodeIsCaseInsensitiveAndTrims() throws InstanceNotFoundException {
+        Order order = createValidOrder("test-" + UUID.randomUUID());
+        String mixedCaseCode = "MiXeD-" + UUID.randomUUID();
+        order.setCode(mixedCaseCode);
+        orderDAO.save(order);
+
+        assertEquals(order.getId(), orderDAO.findByCode(mixedCaseCode).getId());
+        assertEquals(order.getId(), orderDAO.findByCode(mixedCaseCode.toLowerCase()).getId());
+        assertEquals(order.getId(), orderDAO.findByCode("  " + mixedCaseCode + "  ").getId());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void testFindByCodeThrowsWhenNotFound() throws InstanceNotFoundException {
+        orderDAO.findByCode("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test
+    @Transactional
+    public void testGetActiveOrdersExcludesCancelledAndStored() {
+        Order active = createValidOrder("test-" + UUID.randomUUID());
+        orderDAO.save(active);
+
+        Order cancelled = createValidOrder("test-" + UUID.randomUUID());
+        cancelled.setState(OrderStatusEnum.CANCELLED);
+        orderDAO.save(cancelled);
+
+        Order stored = createValidOrder("test-" + UUID.randomUUID());
+        stored.setState(OrderStatusEnum.STORED);
+        orderDAO.save(stored);
+
+        boolean activeFound = false;
+        for (Order o : orderDAO.getActiveOrders()) {
+            if (o.getId().equals(active.getId())) {
+                activeFound = true;
+            }
+            assertFalse(o.getId().equals(cancelled.getId()));
+            assertFalse(o.getId().equals(stored.getId()));
+        }
+        assertTrue(activeFound);
+    }
+
+    @Test
+    @Transactional
+    public void testGetOrdersWithNotEmptyCustomersReferencesExcludesNullAndEmpty() {
+        Order withReference = createValidOrder("test-" + UUID.randomUUID());
+        withReference.setCustomerReference("ref-" + UUID.randomUUID());
+        orderDAO.save(withReference);
+
+        Order withEmptyReference = createValidOrder("test-" + UUID.randomUUID());
+        withEmptyReference.setCustomerReference("");
+        orderDAO.save(withEmptyReference);
+
+        Order withNullReference = createValidOrder("test-" + UUID.randomUUID());
+        orderDAO.save(withNullReference);
+
+        List<Order> result = orderDAO.getOrdersWithNotEmptyCustomersReferences();
+        boolean found = false;
+        for (Order o : result) {
+            if (o.getId().equals(withReference.getId())) {
+                found = true;
+            }
+            assertFalse(o.getId().equals(withEmptyReference.getId()));
+            assertFalse(o.getId().equals(withNullReference.getId()));
+        }
+        assertTrue(found);
+    }
+
+    @Test
+    public void testFindByNameAnotherTransactionReturnsMatch() throws InstanceNotFoundException {
+        final String name = "test-" + UUID.randomUUID();
+
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                Order order = createValidOrder(name);
+                orderDAO.save(order);
+                orderDAO.flush();
+                return null;
+            }
+        });
+
+        assertEquals(name, orderDAO.findByNameAnotherTransaction(name).getName());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    public void testFindByNameAnotherTransactionThrowsWhenNotFound() throws InstanceNotFoundException {
+        orderDAO.findByNameAnotherTransaction("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test
+    public void testExistsByNameAnotherTransaction() {
+        final String name = "test-" + UUID.randomUUID();
+
+        transactionService.runOnAnotherTransaction(new IOnTransaction<Void>() {
+            @Override
+            public Void execute() {
+                Order order = createValidOrder(name);
+                orderDAO.save(order);
+                orderDAO.flush();
+                return null;
+            }
+        });
+
+        assertTrue(orderDAO.existsByNameAnotherTransaction(name));
+        assertFalse(orderDAO.existsByNameAnotherTransaction("does-not-exist-" + UUID.randomUUID()));
     }
 
 }

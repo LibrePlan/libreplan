@@ -1,0 +1,105 @@
+- generic [ref=f165e4]:
+  - generic:
+    - generic [ref=f165e7]:
+      - table [ref=f165e8]:
+        - rowgroup [ref=f165e9]:
+          - row "Personal area START Help Axuda Info" [ref=f165e10]:
+            - cell [ref=f165e11]:
+              - link [ref=f165e12] [cursor=pointer]:
+                - /url: /
+                - img [ref=f165e13]
+            - cell "Personal area START Help Axuda Info" [ref=f165e14]:
+              - table [ref=f165e15]:
+                - rowgroup [ref=f165e16]:
+                  - row "Personal area START Help Axuda Info" [ref=f165e17]:
+                    - cell "Personal area START Help Axuda Info" [ref=f165e18]:
+                      - generic [ref=f165e19]:
+                        - list [ref=f165e21]:
+                          - listitem [ref=f165e22]:
+                            - link "Personal area" [ref=f165e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f165e24]: Personal area
+                              - text: 
+                            - text:  
+                        - table [ref=f165e25]:
+                          - rowgroup [ref=f165e26]:
+                            - row "START Help Axuda Info" [ref=f165e27]:
+                              - cell "START" [ref=f165e28]:
+                                - table [ref=f165e29]:
+                                  - rowgroup [ref=f165e30]:
+                                    - row "START" [ref=f165e31]:
+                                      - cell [ref=f165e32]
+                                      - cell "START" [ref=f165e33]:
+                                        - strong [ref=f165e34]: START
+                                      - cell [ref=f165e35]
+                                      - cell:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell "Help Axuda Info" [ref=f165e36]:
+                                - generic [ref=f165e37]:
+                                  - link "Help" [ref=f165e38] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f165e40]
+                                  - img "Info" [ref=f165e42]
+      - table [ref=f165e44]:
+        - rowgroup [ref=f165e45]:
+          - 'row "user: [Log out]" [ref=f165e46]':
+            - cell [ref=f165e47]
+            - cell "user:" [ref=f165e48]
+            - cell "[Log out]" [ref=f165e49]:
+              - link "[Log out]" [ref=f165e50] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f165e53]:
+    - generic:  
+    - table [ref=f165e58]:
+      - rowgroup [ref=f165e59]:
+        - 'row "The page that you are requesting does not exist. If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible. Sorry for the inconvenience." [ref=f165e60]':
+          - 'cell "The page that you are requesting does not exist. If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible. Sorry for the inconvenience." [ref=f165e61]':
+            - table [ref=f165e62]:
+              - rowgroup [ref=f165e63]:
+                - row "The page that you are requesting does not exist." [ref=f165e64]:
+                  - cell "The page that you are requesting does not exist." [ref=f165e65]
+                - row [ref=f165e66]:
+                  - cell [ref=f165e67]:
+                    - img
+                - 'row "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init" [ref=f165e68]':
+                  - 'cell "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init" [ref=f165e69]':
+                    - table [ref=f165e70]:
+                      - rowgroup [ref=f165e71]:
+                        - 'row "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init" [ref=f165e72]':
+                          - 'cell "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init" [ref=f165e73]':
+                            - table [ref=f165e74]:
+                              - rowgroup [ref=f165e75]:
+                                - 'row "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page: Go to init" [ref=f165e76]':
+                                  - cell "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page:" [ref=f165e77]
+                                  - cell [ref=f165e78]:
+                                    - img
+                                  - cell "Go to init" [ref=f165e79]:
+                                    - link "Go to init" [ref=f165e80] [cursor=pointer]:
+                                      - /url: /
+                - row [ref=f165e81]:
+                  - cell [ref=f165e82]:
+                    - img
+                - row "If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible." [ref=f165e83]:
+                  - cell "If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible." [ref=f165e84]
+                - row [ref=f165e85]:
+                  - cell [ref=f165e86]:
+                    - img
+                - row "Sorry for the inconvenience." [ref=f165e87]:
+                  - cell "Sorry for the inconvenience." [ref=f165e88]
+                - row [ref=f165e89]:
+                  - cell [ref=f165e90]:
+                    - img

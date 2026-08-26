@@ -1,0 +1,270 @@
+- generic [ref=f46e4]:
+  - generic [ref=f46e5]:
+    - table [ref=f46e6]:
+      - rowgroup [ref=f46e7]:
+        - row [ref=f46e8]:
+          - cell [ref=f46e9]:
+            - link [ref=f46e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f46e12]:
+            - table [ref=f46e13]:
+              - rowgroup [ref=f46e14]:
+                - row [ref=f46e15]:
+                  - cell [ref=f46e16]:
+                    - generic [ref=f46e17]:
+                      - menubar [ref=f46e18]:
+                        - menuitem "Calendrier" [ref=f46e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Ressources" [ref=f46e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Coût" [ref=f46e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f46e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f46e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Rapports" [ref=f46e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Zone personnelle" [ref=f46e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f46e33]:
+                        - rowgroup [ref=f46e34]:
+                          - row [ref=f46e35]:
+                            - cell [ref=f46e36]:
+                              - table [ref=f46e37]:
+                                - rowgroup [ref=f46e38]:
+                                  - row [ref=f46e39]:
+                                    - cell [ref=f46e40]
+                                    - cell [ref=f46e41]:
+                                      - strong [ref=f46e42]: DEBUT
+                                    - cell [ref=f46e43]
+                                    - cell [ref=f46e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f46e45]:
+                                        - rowgroup [ref=f46e46]:
+                                          - row [ref=f46e47]:
+                                            - cell [ref=f46e48]:
+                                              - table [ref=f46e49]:
+                                                - rowgroup [ref=f46e50]:
+                                                  - row [ref=f46e51]:
+                                                    - cell [ref=f46e52]:
+                                                      - table [ref=f46e53]:
+                                                        - rowgroup [ref=f46e54]:
+                                                          - row [ref=f46e55]:
+                                                            - cell [ref=f46e56]:
+                                                              - table [ref=f46e57]:
+                                                                - rowgroup [ref=f46e58]:
+                                                                  - row [ref=f46e59]:
+                                                                    - cell [ref=f46e60]
+                                                                    - cell [ref=f46e63]
+                                                                    - cell "Zone personnelle" [ref=f46e64]
+                                                    - cell [ref=f46e65]
+                                                    - cell [ref=f46e66]:
+                                                      - table [ref=f46e67]:
+                                                        - rowgroup [ref=f46e68]:
+                                                          - row [ref=f46e69]:
+                                                            - cell [ref=f46e70]:
+                                                              - table [ref=f46e71]:
+                                                                - rowgroup [ref=f46e72]:
+                                                                  - row [ref=f46e73]:
+                                                                    - cell [ref=f46e74]
+                                                                    - cell [ref=f46e77]
+                                                                    - cell "Préférences" [ref=f46e78]
+                            - cell [ref=f46e79]:
+                              - generic [ref=f46e80]:
+                                - link "Aide" [ref=f46e81] [cursor=pointer]:
+                                  - /url: /help/fr/index.html
+                                - img "Axuda" [ref=f46e83]
+                                - img "Info" [ref=f46e85]
+    - table [ref=f46e87]:
+      - rowgroup [ref=f46e88]:
+        - row [ref=f46e89]:
+          - cell [ref=f46e90]
+          - 'cell "utilisateur: admin" [ref=f46e91]'
+          - cell [ref=f46e92]:
+            - link "[Déconnexion]" [ref=f46e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:  
+  - generic [ref=f46e94]:
+    - text:  
+    - generic [ref=f46e95]:
+      - generic [ref=f46e96]: Réglages utilisateur
+      - generic [ref=f46e97]:
+        - table [ref=f46e282]:
+          - rowgroup [ref=f46e283]:
+            - row [ref=f46e284]:
+              - cell [ref=f46e285]:
+                - table [ref=f46e286]:
+                  - rowgroup [ref=f46e287]:
+                    - row [ref=f46e288]:
+                      - cell "Settings saved" [ref=f46e289]
+        - generic [ref=f46e98]:
+          - tablist [ref=f46e99]:
+            - listitem [ref=f46e100] [cursor=pointer]:
+              - generic [ref=f46e101]: Données
+          - text:  
+          - tabpanel [ref=f46e104]:
+            - generic [ref=f46e105]:
+              - generic [ref=f46e106]: Données personnelles
+              - grid [ref=f46e110]:
+                - rowgroup [ref=f46e114]:
+                  - gridcell "Nom d'utilisateur" [ref=f46e115]
+                  - gridcell [ref=f46e117]:
+                    - textbox [disabled] [ref=f46e119]: admin
+                  - gridcell "Prénom" [ref=f46e120]
+                  - gridcell [ref=f46e122]:
+                    - textbox [ref=f46e124]: Jan
+                  - gridcell "Nom" [ref=f46e125]
+                  - gridcell [ref=f46e127]:
+                    - textbox [ref=f46e129]: Kowalski
+                  - gridcell "Email" [ref=f46e130]
+                  - gridcell [ref=f46e132]:
+                    - textbox [ref=f46e134]: vitorasp.pacheco@gmail.com
+            - generic [ref=f46e135]:
+              - generic [ref=f46e136]: Réglages de l'application
+              - grid [ref=f46e140]:
+                - rowgroup [ref=f46e144]:
+                  - gridcell "Choisissez la langue" [ref=f46e145]
+                  - gridcell [ref=f46e281]:
+                    - combobox [ref=f46e149] [cursor=pointer]:
+                      - option "Use browser language configuration"
+                      - option "Català"
+                      - option "Deutsch"
+                      - option "English" [selected]
+                      - option "Español"
+                      - option "Français"
+                      - option "Galego"
+                      - option "Italiano"
+                      - option "Nederlands"
+                      - option "Norwegian Bokmål"
+                      - option "Polski"
+                      - option "Portugese (Brazil)"
+                      - option "Português"
+                      - option "Pусский"
+                      - option "Svenska"
+                      - option "Čeština"
+                      - option "پﺍﺮﺳی"
+                      - option "中文"
+                      - option "日本語"
+                  - gridcell "Graphiques de planification étendus" [ref=f46e150]
+                  - gridcell [ref=f46e152]:
+                    - grid [ref=f46e154]:
+                      - rowgroup [ref=f46e159]:
+                        - gridcell [ref=f46e160]:
+                          - generic [ref=f46e162]:
+                            - checkbox "Vue de la compagnie" [checked] [ref=f46e163] [cursor=pointer]: 
+                            - text: Vue de la compagnie
+                        - gridcell [ref=f46e164]:
+                          - generic [ref=f46e166]:
+                            - checkbox "Vue projet" [checked] [ref=f46e167] [cursor=pointer]: 
+                            - text: Vue projet
+                        - gridcell [ref=f46e168]:
+                          - generic [ref=f46e170]:
+                            - checkbox "Vue de la charge des ressources" [checked] [ref=f46e171] [cursor=pointer]: 
+                            - text: Vue de la charge des ressources
+                  - gridcell "Modes d'affichage de la planification activés" [ref=f46e172]
+                  - gridcell [ref=f46e174]:
+                    - grid [ref=f46e176]:
+                      - rowgroup [ref=f46e181]:
+                        - gridcell [ref=f46e182]:
+                          - generic [ref=f46e184]:
+                            - checkbox "Afficher les ressources" [checked] [ref=f46e185] [cursor=pointer]: 
+                            - text: Afficher les ressources
+                        - gridcell [ref=f46e186]:
+                          - generic [ref=f46e188]:
+                            - checkbox "Afficher l'avancement" [checked] [ref=f46e189] [cursor=pointer]: 
+                            - text: Afficher l'avancement
+                        - gridcell [ref=f46e190]:
+                          - generic [ref=f46e192]:
+                            - checkbox "Afficher les heures signalées" [checked] [ref=f46e193] [cursor=pointer]: 
+                            - text: Afficher les heures signalées
+                        - gridcell [ref=f46e194]:
+                          - generic [ref=f46e196]:
+                            - checkbox "Afficher les étiquettes" [checked] [ref=f46e197] [cursor=pointer]: 
+                            - text: Afficher les étiquettes
+                        - gridcell [ref=f46e198]:
+                          - generic [ref=f46e200]:
+                            - checkbox "Afficher la barre de coût monétaire" [checked] [ref=f46e201] [cursor=pointer]: 
+                            - text: Afficher la barre de coût monétaire
+                  - gridcell "Filtre de la vue projets" [ref=f46e202]
+                  - gridcell [ref=f46e204]:
+                    - table [ref=f46e206]:
+                      - rowgroup [ref=f46e207]:
+                        - row [ref=f46e208]:
+                          - cell [ref=f46e209]:
+                            - table [ref=f46e210]:
+                              - rowgroup [ref=f46e211]:
+                                - row [ref=f46e212]:
+                                  - cell "Filtre d'étiquettes" [ref=f46e213]
+                                  - cell [ref=f46e214]
+                                  - cell [ref=f46e215]:
+                                    - combobox [ref=f46e217]:
+                                      - textbox [ref=f46e218]
+                                      - button [ref=f46e219] [cursor=pointer]:
+                                        - generic [ref=f46e220]: 
+                                  - cell [ref=f46e221]
+                                  - cell "Projets depuis" [ref=f46e222]
+                                  - cell [ref=f46e223]
+                                  - cell [ref=f46e224]:
+                                    - textbox [ref=f46e225]
+                                  - cell [ref=f46e226]
+                                  - cell "mois pour" [ref=f46e227]
+                                  - cell [ref=f46e228]
+                                  - cell [ref=f46e229]:
+                                    - textbox [ref=f46e230]
+                                  - cell [ref=f46e231]
+                                  - cell [ref=f46e232]:
+                                    - generic [ref=f46e233]:
+                                      - checkbox "Exclure les projets terminés" [ref=f46e234] [cursor=pointer]
+                                      - text: Exclure les projets terminés
+                  - gridcell "Filtrer la charge des ressources" [ref=f46e235]
+                  - gridcell [ref=f46e237]:
+                    - table [ref=f46e239]:
+                      - rowgroup [ref=f46e240]:
+                        - row [ref=f46e241]:
+                          - cell [ref=f46e242]:
+                            - table [ref=f46e243]:
+                              - rowgroup [ref=f46e244]:
+                                - row [ref=f46e245]:
+                                  - cell "Filtre de critère" [ref=f46e246]
+                                  - cell [ref=f46e247]
+                                  - cell [ref=f46e248]:
+                                    - combobox [ref=f46e250]:
+                                      - textbox [ref=f46e251]
+                                      - button [ref=f46e252] [cursor=pointer]:
+                                        - generic [ref=f46e253]: 
+                                  - cell [ref=f46e254]
+                                  - cell "Charge des ressources depuis" [ref=f46e255]
+                                  - cell [ref=f46e256]
+                                  - cell [ref=f46e257]:
+                                    - textbox [ref=f46e258]
+                                  - cell [ref=f46e259]
+                                  - cell "mois pour" [ref=f46e260]
+                                  - cell [ref=f46e261]
+                                  - cell [ref=f46e262]:
+                                    - textbox [ref=f46e263]
+        - table [ref=f46e264]:
+          - rowgroup [ref=f46e265]:
+            - row [ref=f46e266]:
+              - cell [ref=f46e267]:
+                - table [ref=f46e268]:
+                  - rowgroup [ref=f46e269]:
+                    - row [ref=f46e270]:
+                      - cell [ref=f46e271]:
+                        - button "Enregistrer" [active] [ref=f46e272] [cursor=pointer]
+  - table [ref=f46e273]:
+    - rowgroup [ref=f46e274]:
+      - row [ref=f46e275]:
+        - cell [ref=f46e276]:
+          - generic [ref=f46e278]:
+            - text: Le mot de passe du compte administrateur est celui par défaut. Ceci n'est pas sûr..
+            - link "[modifier le mot de passe]" [ref=f46e279] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f46e280]
+  - text:  

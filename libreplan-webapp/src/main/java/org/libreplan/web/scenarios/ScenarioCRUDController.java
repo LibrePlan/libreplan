@@ -40,14 +40,20 @@ import org.libreplan.web.common.ITemplateModel.IOnFinished;
 import org.libreplan.web.common.Level;
 import org.libreplan.web.common.Util;
 import org.libreplan.web.security.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.DefaultTreeNode;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.Treecell;
 import org.zkoss.zul.Treeitem;
 import org.zkoss.zul.TreeitemRenderer;
@@ -62,16 +68,35 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
 
     private static final Log LOG = LogFactory.getLog(ScenarioCRUDController.class);
 
-    @Autowired
     private IScenarioModel scenarioModel;
 
-    @Autowired
     private ITemplateModel templateModel;
 
-    @Autowired
     private IScenarioManager scenarioManager;
 
     private ScenariosTreeitemRenderer scenariosTreeitemRenderer = new ScenariosTreeitemRenderer();
+
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        // Resolved before super.doAfterCompose(comp): BaseCRUDController's own doAfterCompose
+        // already calls showListWindow(), which reloads the tree binding - and that binding
+        // (getScenariosTreeModel()) needs scenarioModel to already be set.
+        scenarioModel = (IScenarioModel) SpringUtil.getBean("scenarioModel");
+        templateModel = (ITemplateModel) SpringUtil.getBean("templateModel");
+        scenarioManager = (IScenarioManager) SpringUtil.getBean("scenarioManager");
+
+        super.doAfterCompose(comp);
+        comp.setAttribute("scenarioController", this, true);
+
+        // AnnotateBinderInit's page-level pass (<?init class="AnnotateBinderInit"?>) only calls
+        // Util.createBindingsFor - it never loads the bindings it registers (see the identical
+        // comment in BaseCalendarCRUDController.doAfterCompose), so without an explicit initial
+        // load here the tree stays empty until some other action happens to trigger a reload.
+        // Safe to do here now that scenarioModel/templateModel/scenarioManager are populated
+        // above, before this call - doing it any earlier is what used to break this exact page.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
+    }
 
     public Scenario getScenario() {
         return scenarioModel.getScenario();
@@ -220,6 +245,19 @@ public class ScenarioCRUDController extends BaseCRUDController<Scenario> {
         }
 
         return scenario.getOrders().keySet();
+    }
+
+    public ListModel<Order> getOrdersModel() {
+        return new SimpleListModel<>(new java.util.ArrayList<>(getOrders()));
+    }
+
+    public ListitemRenderer getOrdersRenderer() {
+        return (Listitem item, Object data, int index) -> {
+            final Order order = (Order) data;
+            item.setValue(order);
+            item.appendChild(new Listcell(order.getCode()));
+            item.appendChild(new Listcell(order.getName()));
+        };
     }
 
     @Override

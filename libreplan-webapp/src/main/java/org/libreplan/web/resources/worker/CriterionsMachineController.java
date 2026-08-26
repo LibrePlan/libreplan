@@ -47,22 +47,32 @@ import org.libreplan.web.resources.machine.IAssignedMachineCriterionsModel;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Bandpopup;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
 import org.zkoss.zul.ext.Sortable;
 
@@ -107,7 +117,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
         assignedMachineCriterionsModel.prepareForCreate(machine);
     }
 
-    public List<CriterionSatisfactionDTO> getCriterionSatisfactionDTOs() {
+    public ListModel getCriterionSatisfactionDTOs() {
         List<CriterionSatisfactionDTO> list = new ArrayList<>();
         if (criterionFilterCheckbox.isChecked()) {
             list.addAll(assignedMachineCriterionsModel.getFilterCriterionSatisfactions());
@@ -115,7 +125,7 @@ public class CriterionsMachineController extends GenericForwardComposer {
             list.addAll(assignedMachineCriterionsModel.getAllCriterionSatisfactions());
         }
 
-        return list;
+        return new org.zkoss.zul.ListModelList<>(list);
     }
 
     public void addCriterionSatisfaction() {
@@ -139,12 +149,104 @@ public class CriterionsMachineController extends GenericForwardComposer {
     public void forceSortGridSatisfaction() {
         Column column = (Column) listingCriterions.getColumns().getFirstChild();
         Sortable model = (Sortable) listingCriterions.getModel();
-        if ("ascending".equals(column.getSortDirection())) {
-            model.sort(column.getSortAscending(), true);
+        if (model != null) {
+            if ("ascending".equals(column.getSortDirection())) {
+                model.sort(column.getSortAscending(), true);
+            }
+            if ("descending".equals(column.getSortDirection())) {
+                model.sort(column.getSortDescending(), false);
+            }
         }
-        if ("descending".equals(column.getSortDirection())) {
-            model.sort(column.getSortDescending(), false);
-        }
+    }
+
+    /**
+     * The rows used to be declared with a ZUML "each" template (self="@{each=...}") - under this
+     * app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug entirely
+     * (same fix pattern as WorkerCRUDController.getVirtualWorkersRenderer()).
+     */
+    public RowRenderer getCriterionSatisfactionRowRenderer() {
+        return (row, data, i) -> {
+            final CriterionSatisfactionDTO dto = (CriterionSatisfactionDTO) data;
+            row.setValue(dto);
+
+            Hbox hbox = new Hbox();
+            if ( dto.isNewObject() ) {
+                hbox.appendChild(buildCriterionBandbox(dto));
+            } else {
+                hbox.appendChild(new Label(dto.getCriterionAndType()));
+            }
+            row.appendChild(hbox);
+
+            Datebox startDate = new Datebox();
+            startDate.setWidth("150px");
+            startDate.setValue(dto.getStartDate());
+            startDate.setConstraint(validateStartDate());
+            startDate.addEventListener(Events.ON_CHANGE, event -> changeDate(startDate));
+            row.appendChild(startDate);
+
+            Datebox endDate = new Datebox();
+            endDate.setWidth("150px");
+            endDate.setValue(dto.getEndDate());
+            endDate.setConstraint(validateEndDate());
+            endDate.addEventListener(Events.ON_CHANGE, event -> changeDate(endDate));
+            row.appendChild(endDate);
+
+            Checkbox current = new Checkbox();
+            current.setChecked(dto.isCurrent());
+            current.setDisabled(true);
+            row.appendChild(current);
+
+            Button delete = new Button();
+            delete.setSclass("icono");
+            delete.setImage("/common/img/ico_borrar1.png");
+            delete.setHoverImage("/common/img/ico_borrar.png");
+            delete.setTooltiptext(_t("Delete"));
+            delete.addEventListener(Events.ON_CLICK, event -> remove(dto));
+            row.appendChild(delete);
+        };
+    }
+
+    private Bandbox buildCriterionBandbox(CriterionSatisfactionDTO dto) {
+        final Bandbox bandbox = new Bandbox();
+        bandbox.setWidth("400px");
+        bandbox.setValue(dto.getCriterionAndType());
+        bandbox.setConstraint("no empty");
+        bandbox.setCtrlKeys("#down");
+        bandbox.addEventListener(Events.ON_CTRL_KEY, this::onCtrlKey);
+        bandbox.addEventListener("onChanging", this::onChangingText);
+
+        final Listbox listbox = new Listbox();
+        listbox.setWidth("500px");
+        listbox.setHeight("150px");
+        listbox.setModel(new SimpleListModel<>(getCriterionWithItsTypes()));
+        listbox.setItemRenderer(getCriterionWithItsTypeRenderer());
+        listbox.addEventListener(Events.ON_SELECT, event -> {
+            Listitem selected = listbox.getSelectedItem();
+            selectCriterionAndType(selected, bandbox, dto);
+        });
+        listbox.addEventListener(Events.ON_OK, event -> onOK((KeyEvent) event));
+
+        Listhead listhead = new Listhead();
+        listhead.appendChild(new Listheader("Type"));
+        listhead.appendChild(new Listheader("Criterion"));
+        listbox.appendChild(listhead);
+
+        Bandpopup bandpopup = new Bandpopup();
+        bandpopup.appendChild(listbox);
+        bandbox.appendChild(bandpopup);
+
+        return bandbox;
+    }
+
+    private ListitemRenderer getCriterionWithItsTypeRenderer() {
+        return (item, data, i) -> {
+            final CriterionWithItsType criterionWithItsType = (CriterionWithItsType) data;
+            item.setValue(criterionWithItsType);
+            item.appendChild(new Listcell(criterionWithItsType.getType().getName()));
+            item.appendChild(new Listcell(criterionWithItsType.getNameHierarchy()));
+            item.addEventListener(Events.ON_CLICK, event -> onClick((MouseEvent) event));
+        };
     }
 
     public void remove(CriterionSatisfactionDTO criterionSatisfactionDTO){

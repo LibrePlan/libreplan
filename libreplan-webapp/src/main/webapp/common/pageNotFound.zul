@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2012 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,7 @@
 -->
 
 <?page title="${i18n:_t('LibrePlan: Page not found')}" ?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
@@ -50,7 +51,13 @@
 
             <label value="${i18n:_t('Sorry for the inconvenience.')}" />
 
-            <vbox visible="@{pageErrorController.VisibleOnHelpPage}">
+            <!-- Set directly in PageForErrorOnEvent.doAfterCompose() rather than via a binder
+                 "visible" binding: this vbox's apply= composer's own doAfterCompose runs before
+                 the page-level AnnotateBinderInit pass has created any binder, so a binding here
+                 couldn't be loaded from that same doAfterCompose anyway - and isHelpLink is
+                 already fully determined by then, so there's nothing to gain from going through
+                 the binder for a value that never changes afterwards. -->
+            <vbox id="helpPageNotGeneratedBox">
 
                 <separator height="5px"/>
 

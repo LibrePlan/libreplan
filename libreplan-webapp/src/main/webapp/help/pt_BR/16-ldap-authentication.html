@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Configuração LDAP</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="configuracao-ldap">
+<h1 class="title">Configuração LDAP</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#ativacao" id="toc-entry-1">Ativação</a></li>
+<li><a class="reference internal" href="#configuracao" id="toc-entry-2">Configuração</a></li>
+<li><a class="reference internal" href="#autenticacao" id="toc-entry-3">Autenticação</a></li>
+<li><a class="reference internal" href="#autorizacao" id="toc-entry-4">Autorização</a><ul>
+<li><a class="reference internal" href="#estrategia-de-grupo" id="toc-entry-5">Estratégia de Grupo</a></li>
+<li><a class="reference internal" href="#estrategia-de-propriedade" id="toc-entry-6">Estratégia de Propriedade</a></li>
+<li><a class="reference internal" href="#correspondencia-de-funcoes" id="toc-entry-7">Correspondência de Funções</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Esta tela permite estabelecer uma conexão com o LDAP para delegar
+a autenticação e/ou autorização.</p>
+<p>Está dividida em quatro áreas diferentes, que são explicadas abaixo:</p>
+<div class="section" id="ativacao">
+<h1><a class="toc-backref" href="#toc-entry-1">Ativação</a></h1>
+<p>Esta área é usada para definir as propriedades que determinam como o <em>LibrePlan</em> usa
+o LDAP.</p>
+<p>Se o campo <em>Ativar autenticação LDAP</em> estiver marcado, o <em>LibrePlan</em> consultará
+o LDAP sempre que um usuário tentar fazer login na aplicação.</p>
+<p>O campo <em>Usar funções LDAP</em> marcado significa que é estabelecido um mapeamento entre as funções LDAP e as
+funções do LibrePlan. Consequentemente, as permissões de um usuário no
+LibrePlan dependerão das funções que o usuário possui no LDAP.</p>
+</div>
+<div class="section" id="configuracao">
+<h1><a class="toc-backref" href="#toc-entry-2">Configuração</a></h1>
+<p>Esta seção contém os valores dos parâmetros para acessar o LDAP. <em>Base</em>, <em>UserDN</em> e
+<em>Password</em> são parâmetros usados para conectar ao LDAP e pesquisar usuários. Portanto,
+o usuário especificado deve ter permissão para realizar esta operação no LDAP. Na
+parte inferior desta seção, há um botão para verificar se é possível estabelecer uma conexão LDAP
+com os parâmetros fornecidos. É aconselhável testar a conexão antes de
+continuar a configuração.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Se o seu LDAP estiver configurado para funcionar com autenticação anônima, você pode
+deixar os atributos <em>UserDN</em> e <em>Password</em> em branco.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Em relação à configuração do <em>Active Directory (AD)</em>, o campo <em>Base</em> deve ser a
+localização exata onde o usuário vinculado reside no AD.</p>
+<p class="last">Exemplo: <tt class="docutils literal">ou=organizational_unit,dc=example,dc=org</tt></p>
+</div>
+</div>
+<div class="section" id="autenticacao">
+<h1><a class="toc-backref" href="#toc-entry-3">Autenticação</a></h1>
+<p>Aqui, você pode configurar a propriedade nos nós LDAP onde o nome de usuário fornecido
+deverá ser encontrado. A propriedade <em>UserId</em> deve ser preenchida com o nome da
+propriedade onde o nome de usuário está armazenado no LDAP.</p>
+<p>A caixa de seleção <em>Salvar senhas no banco de dados</em>, quando marcada, significa que a
+senha também é armazenada no banco de dados do LibrePlan. Dessa forma, se o LDAP estiver
+offline ou inacessível, os usuários LDAP podem se autenticar no banco de dados do LibrePlan.
+Se não estiver marcada, os usuários LDAP só podem ser autenticados no LDAP.</p>
+</div>
+<div class="section" id="autorizacao">
+<h1><a class="toc-backref" href="#toc-entry-4">Autorização</a></h1>
+<p>Esta seção permite definir uma estratégia para combinar as funções LDAP com as
+funções do LibrePlan. A primeira escolha é a estratégia a ser usada, dependendo da
+implementação do LDAP.</p>
+<div class="section" id="estrategia-de-grupo">
+<h2><a class="toc-backref" href="#toc-entry-5">Estratégia de Grupo</a></h2>
+<p>Quando esta estratégia é usada, indica que o LDAP tem uma estratégia de grupos de funções.
+Isso significa que os usuários no LDAP são nós que estão diretamente sob um ramo que
+representa o grupo.</p>
+<p>O exemplo a seguir representa uma estrutura LDAP válida para usar a estratégia de grupo.</p>
+<ul>
+<li><p class="first">Estrutura LDAP:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=groups
+   |- cn=admins
+   |- cn=itpeople
+   |- cn=workers
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p>Neste caso, cada grupo terá um atributo, por exemplo, chamado <tt class="docutils literal">member</tt>,
+com a lista de usuários pertencentes ao grupo:</p>
+<ul class="simple">
+<li><tt class="docutils literal">cn=admins</tt>:<ul>
+<li><tt class="docutils literal">member: uid=admin1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=itpeople</tt>:<ul>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it2,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=workers</tt>:<ul>
+<li><tt class="docutils literal">member: uid=worker1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker2,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker3,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+</ul>
+<p>A configuração para este caso é a seguinte:</p>
+<ul class="simple">
+<li>Estratégia de pesquisa de funções: <tt class="docutils literal">Group strategy</tt></li>
+<li>Caminho do grupo: <tt class="docutils literal">ou=groups</tt></li>
+<li>Propriedade da função: <tt class="docutils literal">member</tt></li>
+<li>Consulta de pesquisa de funções: <tt class="docutils literal"><span class="pre">uid=[USER_ID],ou=people,dc=example,dc=org</span></tt></li>
+</ul>
+<p>E, por exemplo, se você quiser combinar algumas funções:</p>
+<ul class="simple">
+<li>Administração: <tt class="docutils literal">cn=admins;cn=itpeople</tt></li>
+<li>Leitor de serviço web: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Escritor de serviço web: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Leitura de todos os projetos permitida: <tt class="docutils literal">cn=admins</tt></li>
+<li>Edição de todos os projetos permitida: <tt class="docutils literal">cn=admins</tt></li>
+<li>Criação de projetos permitida: <tt class="docutils literal">cn=workers</tt></li>
+</ul>
+</div>
+<div class="section" id="estrategia-de-propriedade">
+<h2><a class="toc-backref" href="#toc-entry-6">Estratégia de Propriedade</a></h2>
+<p>Quando um administrador decide usar esta estratégia, indica que cada usuário
+é um nó LDAP e, dentro do nó, existe uma propriedade que representa
+o(s) grupo(s) do usuário. Neste caso, a configuração não requer o
+parâmetro <em>Caminho do grupo</em>.</p>
+<p>O exemplo a seguir representa uma estrutura LDAP válida para usar a estratégia de propriedade.</p>
+<ul>
+<li><p class="first">Estrutura LDAP:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p><strong>Com Atributo</strong></p>
+<p>Neste caso, cada usuário terá um atributo, por exemplo, chamado <tt class="docutils literal">group</tt>,
+com o nome do grupo ao qual pertence:</p>
+<ul class="simple">
+<li><tt class="docutils literal">uid=admin1</tt>:<ul>
+<li><tt class="docutils literal">group: admins</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it1</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it2</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker1</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker2</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker3</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Esta estratégia tem uma restrição: cada usuário só pode pertencer a um grupo.</p>
+</div>
+<p>A configuração para este caso é a seguinte:</p>
+<ul class="simple">
+<li>Estratégia de pesquisa de funções: <tt class="docutils literal">Property strategy</tt></li>
+<li>Caminho do grupo:</li>
+<li>Propriedade da função: <tt class="docutils literal">group</tt></li>
+<li>Consulta de pesquisa de funções: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>E, por exemplo, se você quiser combinar algumas funções:</p>
+<ul class="simple">
+<li>Administração: <tt class="docutils literal">admins;itpeople</tt></li>
+<li>Leitor de serviço web: <tt class="docutils literal">itpeople</tt></li>
+<li>Escritor de serviço web: <tt class="docutils literal">itpeople</tt></li>
+<li>Leitura de todos os projetos permitida: <tt class="docutils literal">admins</tt></li>
+<li>Edição de todos os projetos permitida: <tt class="docutils literal">admins</tt></li>
+<li>Criação de projetos permitida: <tt class="docutils literal">workers</tt></li>
+</ul>
+<p><strong>Por Identificador de Usuário</strong></p>
+<p>Você pode até usar uma solução alternativa para especificar funções do LibrePlan diretamente aos usuários
+sem ter um atributo em cada usuário LDAP.</p>
+<p>Neste caso, você especificará quais usuários têm as diferentes funções do LibrePlan
+por <tt class="docutils literal">uid</tt>.</p>
+<p>A configuração para este caso é a seguinte:</p>
+<ul class="simple">
+<li>Estratégia de pesquisa de funções: <tt class="docutils literal">Property strategy</tt></li>
+<li>Caminho do grupo:</li>
+<li>Propriedade da função: <tt class="docutils literal">uid</tt></li>
+<li>Consulta de pesquisa de funções: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>E, por exemplo, se você quiser combinar algumas funções:</p>
+<ul class="simple">
+<li>Administração: <tt class="docutils literal">admin1;it1</tt></li>
+<li>Leitor de serviço web: <tt class="docutils literal">it1;it2</tt></li>
+<li>Escritor de serviço web: <tt class="docutils literal">it1;it2</tt></li>
+<li>Leitura de todos os projetos permitida: <tt class="docutils literal">admin1</tt></li>
+<li>Edição de todos os projetos permitida: <tt class="docutils literal">admin1</tt></li>
+<li>Criação de projetos permitida: <tt class="docutils literal">worker1;worker2;worker3</tt></li>
+</ul>
+</div>
+<div class="section" id="correspondencia-de-funcoes">
+<h2><a class="toc-backref" href="#toc-entry-7">Correspondência de Funções</a></h2>
+<p>Na parte inferior desta seção, há uma tabela com todas as funções do LibrePlan
+e um campo de texto ao lado de cada uma. Isso é para a correspondência de funções. Por exemplo,
+se um administrador decidir que a função <em>Administração</em> do LibrePlan corresponde
+às funções <em>admin</em> e <em>administrators</em> do LDAP, o campo de texto deve conter:
+&quot;<tt class="docutils literal">admin;administrators</tt>&quot;. O caractere para separar as funções é &quot;<tt class="docutils literal">;</tt>&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Se você quiser especificar que todos os usuários ou todos os grupos têm uma permissão, você
+pode usar um asterisco (<tt class="docutils literal">*</tt>) como curinga para se referir a eles. Por exemplo, se
+você quiser que todos tenham a função <em>Criação de projetos permitida</em>, você configurará
+a correspondência de funções da seguinte forma:</p>
+<ul class="last simple">
+<li>Criação de projetos permitida: <tt class="docutils literal">*</tt></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

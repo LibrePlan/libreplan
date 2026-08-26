@@ -65,6 +65,16 @@ public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCo
         appURI = (Textbox) editWindow.getFellow("appURI");
         ourCompanyLogin = (Textbox) editWindow.getFellow("ourCompanyLogin");
         ourCompanyPassword = (Textbox) editWindow.getFellow("ourCompanyPassword");
+
+        // BaseCRUDController.doAfterCompose() already calls showListWindow() (which reloads
+        // listWindow's bindings), but that happens before AnnotateBinderInit's own later
+        // page-level pass has created any binder at all, so it's a no-op. Redo it here, now that
+        // the binder exists. Only listWindow is reloaded - editWindow's bindings reference
+        // controller.company, which is still null at this point (only set up by
+        // initCreate()/initEdit(), called later); showEditWindow() reloads editWindow's own
+        // bindings once that has happened.
+        org.libreplan.web.common.Util.createBindingsFor(comp);
+        org.libreplan.web.common.Util.reloadBindings(listWindow);
     }
 
     private void clearAutocompleteUser() {
@@ -92,7 +102,46 @@ public class ExternalCompanyCRUDController extends BaseCRUDController<ExternalCo
         for (ExternalCompany company : getCompanies()) {
             result.add(new ExternalCompanyDTO(company));
         }
-        return result;
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(result);
+    }
+
+    /**
+     * The list's rows used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug entirely.
+     */
+    public org.zkoss.zul.RowRenderer getCompaniesRenderer() {
+        return (row, data, index) -> {
+            final ExternalCompanyDTO dto = (ExternalCompanyDTO) data;
+            row.setValue(dto);
+            row.addEventListener(
+                    org.zkoss.zk.ui.event.Events.ON_CLICK, event -> goToEditForm(dto.getCompany()));
+
+            row.appendChild(new org.zkoss.zul.Label(dto.getName()));
+            row.appendChild(new org.zkoss.zul.Label(dto.getNif()));
+
+            org.zkoss.zul.Checkbox client = new org.zkoss.zul.Checkbox();
+            client.setChecked(dto.getClient());
+            client.setDisabled(true);
+            row.appendChild(client);
+
+            org.zkoss.zul.Checkbox subcontractor = new org.zkoss.zul.Checkbox();
+            subcontractor.setChecked(dto.getSubcontractor());
+            subcontractor.setDisabled(true);
+            row.appendChild(subcontractor);
+
+            row.appendChild(new org.zkoss.zul.Label(dto.getCompanyUser()));
+
+            org.zkoss.zul.Hbox hbox = new org.zkoss.zul.Hbox();
+            hbox.appendChild(
+                    org.libreplan.web.common.Util.createEditButton(event -> goToEditForm(dto.getCompany())));
+            hbox.appendChild(
+                    org.libreplan.web.common.Util.createRemoveButton(event -> confirmDelete(dto.getCompany())));
+            row.appendChild(hbox);
+        };
     }
 
     public ExternalCompany getCompany() {

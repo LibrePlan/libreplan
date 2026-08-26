@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Zarządzanie Zasobami</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="zarzadzanie-zasobami">
+<h1 class="title">Zarządzanie Zasobami</h1>
+
+<div class="contents topic" id="contents">
+<span id="recursos"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#zasoby-personalne" id="toc-entry-1">Zasoby Personalne</a></li>
+<li><a class="reference internal" href="#zasoby-maszynowe" id="toc-entry-2">Zasoby Maszynowe</a></li>
+<li><a class="reference internal" href="#zarzadzanie-zasobami-1" id="toc-entry-3">Zarządzanie Zasobami</a><ul>
+<li><a class="reference internal" href="#zarzadzanie-pracownikami" id="toc-entry-4">Zarządzanie Pracownikami</a></li>
+<li><a class="reference internal" href="#zarzadzanie-maszynami" id="toc-entry-5">Zarządzanie Maszynami</a></li>
+<li><a class="reference internal" href="#wirtualne-grupy-pracownikow" id="toc-entry-6">Wirtualne Grupy Pracowników</a></li>
+<li><a class="reference internal" href="#zasoby-oparte-na-kolejce" id="toc-entry-7">Zasoby Oparte na Kolejce</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Program zarządza dwoma odrębnymi typami zasobów: personelem i maszynami.</p>
+<div class="section" id="zasoby-personalne">
+<h1><a class="toc-backref" href="#toc-entry-1">Zasoby Personalne</a></h1>
+<p>Zasoby personalne reprezentują pracowników firmy. Ich kluczowe cechy to:</p>
+<ul class="simple">
+<li>Spełniają jedno lub więcej kryteriów ogólnych lub specyficznych dla pracowników.</li>
+<li>Mogą być konkretnie przypisane do zadania.</li>
+<li>Mogą być generycznie przypisane do zadania, które wymaga kryterium zasobu.</li>
+<li>Mogą mieć domyślny lub specyficzny kalendarz, zależnie od potrzeb.</li>
+</ul>
+</div>
+<div class="section" id="zasoby-maszynowe">
+<h1><a class="toc-backref" href="#toc-entry-2">Zasoby Maszynowe</a></h1>
+<p>Zasoby maszynowe reprezentują maszyny firmy. Ich kluczowe cechy to:</p>
+<ul class="simple">
+<li>Spełniają jedno lub więcej kryteriów ogólnych lub specyficznych dla maszyn.</li>
+<li>Mogą być konkretnie przypisane do zadania.</li>
+<li>Mogą być generycznie przypisane do zadania, które wymaga kryterium maszynowego.</li>
+<li>Mogą mieć domyślny lub specyficzny kalendarz, zależnie od potrzeb.</li>
+<li>Program zawiera ekran konfiguracji, na którym można zdefiniować wartość <em>alfa</em> reprezentującą stosunek maszyny do pracownika.<ul>
+<li>Wartość <em>alfa</em> wskazuje ilość czasu pracownika wymaganego do obsługi maszyny. Na przykład wartość alfa równa 0,5 oznacza, że każde 8 godzin pracy maszyny wymaga 4 godzin czasu pracownika.</li>
+<li>Użytkownicy mogą przypisać wartość <em>alfa</em> konkretnie do pracownika, wyznaczając tego pracownika do obsługi maszyny przez dany procent czasu.</li>
+<li>Użytkownicy mogą również dokonać generycznego przypisania na podstawie kryterium, tak aby procent użycia był przypisany do wszystkich zasobów spełniających to kryterium i posiadających dostępny czas. Przypisanie generyczne działa podobnie do przypisania generycznego dla zadań, jak opisano wcześniej.</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="zarzadzanie-zasobami-1">
+<h1><a class="toc-backref" href="#toc-entry-3">Zarządzanie Zasobami</a></h1>
+<p>Użytkownicy mogą tworzyć, edytować i dezaktywować (ale nie trwale usuwać) pracowników i maszyny w firmie, przechodząc do sekcji &quot;Zasoby&quot;. Ta sekcja zapewnia następujące funkcje:</p>
+<ul class="simple">
+<li><strong>Lista pracowników:</strong> Wyświetla numerowaną listę pracowników, umożliwiając użytkownikom zarządzanie ich danymi.</li>
+<li><strong>Lista maszyn:</strong> Wyświetla numerowaną listę maszyn, umożliwiając użytkownikom zarządzanie ich danymi.</li>
+</ul>
+<div class="section" id="zarzadzanie-pracownikami">
+<h2><a class="toc-backref" href="#toc-entry-4">Zarządzanie Pracownikami</a></h2>
+<p>Zarządzanie pracownikami jest dostępne przez przejście do sekcji &quot;Zasoby&quot;, a następnie wybranie &quot;Lista pracowników&quot;. Użytkownicy mogą edytować dowolnego pracownika na liście, klikając standardową ikonę edycji.</p>
+<p>Podczas edytowania pracownika użytkownicy mogą uzyskać dostęp do następujących zakładek:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Dane pracownika:</strong> Ta zakładka umożliwia użytkownikom edytowanie podstawowych danych identyfikacyjnych pracownika:</p>
+<ul class="simple">
+<li>Imię</li>
+<li>Nazwisko(-a)</li>
+<li>Krajowy dokument tożsamości (DNI)</li>
+<li>Zasób oparty na kolejce (patrz sekcja dotycząca zasobów opartych na kolejce)</li>
+</ul>
+<div class="figure">
+<img alt="images/worker-personal-data.png" src="images/worker-personal-data.png" style="width: 444.5px; height: 102.0px;" />
+<p class="caption">Edytowanie danych osobowych pracowników</p>
+</div>
+</li>
+<li><p class="first"><strong>Kryteria:</strong> Ta zakładka służy do konfigurowania kryteriów spełnianych przez pracownika. Użytkownicy mogą przypisywać dowolne kryteria pracownicze lub ogólne, które uznają za stosowne. Kluczowe jest, aby pracownicy spełniali kryteria, aby zmaksymalizować funkcjonalność programu. Aby przypisać kryteria:</p>
+<ol class="lowerroman simple">
+<li>Kliknij przycisk &quot;Dodaj kryteria&quot;.</li>
+<li>Wyszukaj kryterium do dodania i wybierz najbardziej odpowiednie.</li>
+<li>Kliknij przycisk &quot;Dodaj&quot;.</li>
+<li>Wybierz datę początkową, od której kryterium staje się obowiązujące.</li>
+<li>Wybierz datę końcową stosowania kryterium do zasobu. Ta data jest opcjonalna, jeśli kryterium jest uważane za bezterminowe.</li>
+</ol>
+<div class="figure">
+<img alt="images/worker-criterions.png" src="images/worker-criterions.png" style="width: 443.5px; height: 147.0px;" />
+<p class="caption">Kojarzenie kryteriów z pracownikami</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalendarz:</strong> Ta zakładka umożliwia użytkownikom konfigurowanie konkretnego kalendarza dla pracownika. Wszyscy pracownicy mają przypisany domyślny kalendarz; możliwe jest jednak przypisanie konkretnego kalendarza do każdego pracownika na podstawie istniejącego kalendarza.</p>
+<div class="figure">
+<img alt="images/worker-calendar.png" src="images/worker-calendar.png" style="width: 442.5px; height: 247.0px;" />
+<p class="caption">Zakładka kalendarza dla zasobu</p>
+</div>
+</li>
+<li><p class="first"><strong>Kategoria kosztów:</strong> Ta zakładka umożliwia użytkownikom konfigurowanie kategorii kosztów spełnianej przez pracownika w danym okresie. Informacje te służą do obliczania kosztów związanych z pracownikiem w projekcie.</p>
+<div class="figure">
+<img alt="images/worker-costcategory.png" src="images/worker-costcategory.png" style="width: 443.0px; height: 129.0px;" />
+<p class="caption">Zakładka kategorii kosztów dla zasobu</p>
+</div>
+</li>
+</ol>
+<p>Przypisanie zasobów jest wyjaśnione w sekcji &quot;Przypisanie zasobów&quot;.</p>
+</div>
+<div class="section" id="zarzadzanie-maszynami">
+<h2><a class="toc-backref" href="#toc-entry-5">Zarządzanie Maszynami</a></h2>
+<p>Maszyny są traktowane jako zasoby do wszystkich celów. Dlatego, podobnie jak pracownicy, maszyny mogą być zarządzane i przypisywane do zadań. Przypisanie zasobów jest omówione w sekcji &quot;Przypisanie zasobów&quot;, która wyjaśni specyficzne cechy maszyn.</p>
+<p>Maszyny są zarządzane z poziomu wpisu menu &quot;Zasoby&quot;. Ta sekcja ma operację o nazwie &quot;Lista maszyn&quot;, która wyświetla maszyny firmy. Użytkownicy mogą edytować lub usuwać maszynę z tej listy.</p>
+<p>Podczas edytowania maszyn system wyświetla serię zakładek do zarządzania różnymi szczegółami:</p>
+<ol class="arabic">
+<li><p class="first"><strong>Dane maszyny:</strong> Ta zakładka umożliwia użytkownikom edytowanie danych identyfikacyjnych maszyny:</p>
+<ol class="lowerroman simple">
+<li>Nazwa</li>
+<li>Kod maszyny</li>
+<li>Opis maszyny</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-data.png" src="images/machine-data.png" style="width: 444.0px; height: 97.0px;" />
+<p class="caption">Edytowanie danych maszyny</p>
+</div>
+</li>
+<li><p class="first"><strong>Kryteria:</strong> Podobnie jak w przypadku zasobów pracowniczych, ta zakładka służy do dodawania kryteriów spełnianych przez maszynę. Maszynom można przypisać dwa typy kryteriów: specyficzne dla maszyn lub ogólne. Kryteria pracownicze nie mogą być przypisywane maszynom. Aby przypisać kryteria:</p>
+<ol class="lowerroman simple">
+<li>Kliknij przycisk &quot;Dodaj kryteria&quot;.</li>
+<li>Wyszukaj kryterium do dodania i wybierz najbardziej odpowiednie.</li>
+<li>Wybierz datę początkową, od której kryterium staje się obowiązujące.</li>
+<li>Wybierz datę końcową stosowania kryterium do zasobu. Ta data jest opcjonalna, jeśli kryterium jest uważane za bezterminowe.</li>
+<li>Kliknij przycisk &quot;Zapisz i kontynuuj&quot;.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-criterions.png" src="images/machine-criterions.png" style="width: 444.0px; height: 140.0px;" />
+<p class="caption">Przypisywanie kryteriów do maszyn</p>
+</div>
+</li>
+<li><p class="first"><strong>Kalendarz:</strong> Ta zakładka umożliwia użytkownikom konfigurowanie konkretnego kalendarza dla maszyny. Wszystkie maszyny mają przypisany domyślny kalendarz; możliwe jest jednak przypisanie konkretnego kalendarza do każdej maszyny na podstawie istniejącego kalendarza.</p>
+<div class="figure">
+<img alt="images/machine-calendar.png" src="images/machine-calendar.png" style="width: 443.5px; height: 216.5px;" />
+<p class="caption">Przypisywanie kalendarzy do maszyn</p>
+</div>
+</li>
+<li><p class="first"><strong>Konfiguracja maszyny:</strong> Ta zakładka umożliwia użytkownikom konfigurowanie stosunku maszyn do zasobów pracowniczych. Maszyna ma wartość alfa wskazującą stosunek maszyny do pracownika. Jak wspomniano wcześniej, wartość alfa równa 0,5 wskazuje, że 0,5 osoby jest wymagane na każdy pełny dzień pracy maszyny. Na podstawie wartości alfa system automatycznie przypisuje pracowników powiązanych z maszyną po przypisaniu maszyny do zadania. Kojarzenie pracownika z maszyną można wykonać na dwa sposoby:</p>
+<ol class="lowerroman simple">
+<li><strong>Przypisanie konkretne:</strong> Przypisz zakres dat, w których pracownik jest przypisany do maszyny. Jest to przypisanie konkretne, ponieważ system automatycznie przypisuje godziny do pracownika, gdy maszyna jest zaplanowana.</li>
+<li><strong>Przypisanie generyczne:</strong> Przypisz kryteria, które muszą być spełnione przez pracowników przypisanych do maszyny. Tworzy to generyczne przypisanie pracowników spełniających kryteria.</li>
+</ol>
+<div class="figure">
+<img alt="images/machine-configuration.png" src="images/machine-configuration.png" style="width: 442.5px; height: 231.5px;" />
+<p class="caption">Konfiguracja maszyn</p>
+</div>
+</li>
+<li><p class="first"><strong>Kategoria kosztów:</strong> Ta zakładka umożliwia użytkownikom konfigurowanie kategorii kosztów spełnianej przez maszynę w danym okresie. Informacje te służą do obliczania kosztów związanych z maszyną w projekcie.</p>
+<div class="figure">
+<img alt="images/machine-costcategory.png" src="images/machine-costcategory.png" style="width: 439.5px; height: 103.0px;" />
+<p class="caption">Przypisywanie kategorii kosztów do maszyn</p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="wirtualne-grupy-pracownikow">
+<h2><a class="toc-backref" href="#toc-entry-6">Wirtualne Grupy Pracowników</a></h2>
+<p>Program pozwala użytkownikom tworzyć wirtualne grupy pracowników, które nie są prawdziwymi pracownikami, lecz symulowanym personelem. Te grupy umożliwiają użytkownikom modelowanie zwiększonej zdolności produkcyjnej w określonych momentach, na podstawie ustawień kalendarza.</p>
+<p>Wirtualne grupy pracowników umożliwiają użytkownikom ocenę, jak planowanie projektu byłoby zmienione przez zatrudnienie i przypisanie personelu spełniającego określone kryteria, pomagając tym samym w procesie podejmowania decyzji.</p>
+<p>Zakładki do tworzenia wirtualnych grup pracowników są takie same jak te do konfigurowania pracowników:</p>
+<ul class="simple">
+<li>Dane ogólne</li>
+<li>Przypisane kryteria</li>
+<li>Kalendarze</li>
+<li>Powiązane godziny</li>
+</ul>
+<p>Różnica między wirtualnymi grupami pracowników a rzeczywistymi pracownikami polega na tym, że wirtualne grupy pracowników mają nazwę grupy i ilość, reprezentującą liczbę rzeczywistych osób w grupie. Istnieje również pole komentarzy, w którym można podać dodatkowe informacje, takie jak projekt, który wymagałby zatrudnienia odpowiadającego wirtualnej grupie pracowników.</p>
+<div class="figure">
+<img alt="images/virtual-resources.png" src="images/virtual-resources.png" style="width: 424.5px; height: 109.0px;" />
+<p class="caption">Zasoby wirtualne</p>
+</div>
+</div>
+<div class="section" id="zasoby-oparte-na-kolejce">
+<h2><a class="toc-backref" href="#toc-entry-7">Zasoby Oparte na Kolejce</a></h2>
+<p>Zasoby oparte na kolejce to specyficzny typ elementów produkcyjnych, które mogą być albo nieprzypisane, albo mieć 100% zaangażowanie. Innymi słowy, nie mogą mieć zaplanowanego więcej niż jednego zadania w tym samym czasie i nie mogą być przeciążone.</p>
+<p>Dla każdego zasobu opartego na kolejce automatycznie tworzona jest kolejka. Zadaniami zaplanowanymi dla tych zasobów można zarządzać konkretnie przy użyciu dostarczonych metod przypisania, tworząc automatyczne przypisania między zadaniami a kolejkami spełniającymi wymagane kryteria lub przenosząc zadania między kolejkami.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

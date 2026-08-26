@@ -1,0 +1,599 @@
+- generic [ref=f9e1]:
+  - generic [ref=f9e4]:
+    - generic [ref=f9e5]:
+      - table [ref=f9e6]:
+        - rowgroup [ref=f9e7]:
+          - row [ref=f9e1635]:
+            - cell [ref=f9e9]:
+              - link [ref=f9e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f9e1636]:
+              - table [ref=f9e13]:
+                - rowgroup [ref=f9e14]:
+                  - row [ref=f9e1637]:
+                    - cell [ref=f9e1638]:
+                      - generic [ref=f9e17]:
+                        - menubar [ref=f9e18]:
+                          - menuitem "Planning" [ref=f9e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f9e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f9e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f9e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f9e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f9e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f9e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f9e33]:
+                          - rowgroup [ref=f9e34]:
+                            - row [ref=f9e1639]:
+                              - cell [ref=f9e1640]:
+                                - table [ref=f9e37]:
+                                  - rowgroup [ref=f9e38]:
+                                    - row [ref=f9e1641]:
+                                      - cell [ref=f9e40]
+                                      - cell [ref=f9e41]:
+                                        - strong [ref=f9e42]: START
+                                      - cell [ref=f9e43]
+                                      - cell [ref=f9e1642]:
+                                        - table [ref=f9e45]:
+                                          - rowgroup [ref=f9e46]:
+                                            - row [ref=f9e1643]:
+                                              - cell [ref=f9e1644]:
+                                                - table [ref=f9e49]:
+                                                  - rowgroup [ref=f9e50]:
+                                                    - row [ref=f9e1645]:
+                                                      - cell [ref=f9e1646]
+                                                      - cell [ref=f9e1648]
+                                                      - cell "Planning" [ref=f9e1649]
+                                                      - cell [ref=f9e1650]
+                                                      - cell [ref=f9e1651]
+                                                      - cell [ref=f9e1653]
+                                                      - cell "Project Scheduling" [ref=f9e1654]
+                                                      - cell [ref=f9e1655]
+                                                      - cell [ref=f9e1656]
+                                                      - cell [ref=f9e1658]
+                                                      - cell "test1" [ref=f9e1659]
+                                                      - cell [ref=f9e1660]
+                                                      - cell "PRE-SALES" [ref=f9e1661]
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell [ref=f9e61]:
+                                - generic [ref=f9e62]:
+                                  - link "Help" [ref=f9e63] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f9e65]
+                                  - img "Info" [ref=f9e67]
+      - table [ref=f9e69]:
+        - rowgroup [ref=f9e70]:
+          - row [ref=f9e71]:
+            - cell [ref=f9e72]
+            - 'cell "user: admin" [ref=f9e73]'
+            - cell [ref=f9e74]:
+              - link "[Log out]" [ref=f9e75] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f9e76]:
+      - table [ref=f9e77]:
+        - rowgroup [ref=f9e78]:
+          - row [ref=f9e1662]:
+            - cell [ref=f9e1663]:
+              - table [ref=f9e81]:
+                - rowgroup [ref=f9e82]:
+                  - row [ref=f9e83]:
+                    - cell [ref=f9e84]:
+                      - table [ref=f9e85]:
+                        - rowgroup [ref=f9e86]:
+                          - row [ref=f9e87]:
+                            - cell [ref=f9e88]:
+                              - table [ref=f9e89]:
+                                - rowgroup [ref=f9e90]:
+                                  - row [ref=f9e91]:
+                                    - cell [ref=f9e1664]:
+                                      - button "Save" [ref=f9e1665] [cursor=pointer]
+                                    - cell [ref=f9e1667]
+                                    - cell [ref=f9e1668]:
+                                      - button "Cancel" [ref=f9e1669] [cursor=pointer]
+                  - row [ref=f9e95]:
+                    - cell [ref=f9e96]
+                  - row [ref=f9e1671]:
+                    - cell [ref=f9e1672]:
+                      - table [ref=f9e99]:
+                        - rowgroup [ref=f9e100]:
+                          - row [ref=f9e1673]:
+                            - cell [ref=f9e1674]:
+                              - table [ref=f9e103]:
+                                - rowgroup [ref=f9e104]:
+                                  - row [ref=f9e1675]:
+                                    - cell [ref=f9e1676]:
+                                      - button "Project Scheduling" [ref=f9e1677] [cursor=pointer]
+                                  - row [ref=f9e108]:
+                                    - cell [ref=f9e109]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e110]:
+                                    - cell [ref=f9e111]
+                                  - row [ref=f9e1678]:
+                                    - cell [ref=f9e1679]:
+                                      - button "Project Details" [ref=f9e1680] [cursor=pointer]
+                                  - row [ref=f9e115]:
+                                    - cell [ref=f9e116]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e117]:
+                                    - cell [ref=f9e118]
+                                  - row [ref=f9e119]:
+                                    - cell [ref=f9e120]:
+                                      - button "Resources Load" [ref=f9e121] [cursor=pointer]
+                                  - row [ref=f9e122]:
+                                    - cell [ref=f9e123]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e124]:
+                                    - cell [ref=f9e125]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e129]:
+                                    - cell [ref=f9e130]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e131]:
+                                    - cell [ref=f9e132]
+                                  - row [ref=f9e1681]:
+                                    - cell [ref=f9e1682]:
+                                      - button "Advanced Allocation" [ref=f9e1683] [cursor=pointer]
+                                  - row [ref=f9e1684]:
+                                    - cell [ref=f9e1685]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e1686]:
+                                    - cell [ref=f9e1687]
+                                  - row [ref=f9e133]:
+                                    - cell [ref=f9e134]:
+                                      - button "Logs" [ref=f9e135] [cursor=pointer]
+                                  - row [ref=f9e136]:
+                                    - cell [ref=f9e137]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e138]:
+                                    - cell [ref=f9e139]
+                                  - row [ref=f9e1688]:
+                                    - cell [ref=f9e1689]:
+                                      - button "MonteCarlo Method" [ref=f9e1690] [cursor=pointer]
+                                  - row [ref=f9e1691]:
+                                    - cell [ref=f9e1692]
+                                  - row:
+                                    - cell
+                                  - row [ref=f9e1693]:
+                                    - cell [ref=f9e1694]
+                                  - row [ref=f9e1695]:
+                                    - cell [ref=f9e1696]:
+                                      - button "Dashboard" [ref=f9e1697] [cursor=pointer]
+                                  - row [ref=f9e143]:
+                                    - cell [ref=f9e144]
+                                  - row:
+                                    - cell
+      - text:    
+      - generic [ref=f9e1698]:
+        - generic [ref=f9e2164]:
+          - grid [ref=f9e2165]:
+            - rowgroup [ref=f9e2175]:
+              - row [ref=f9e2176]:
+                - columnheader [ref=f9e2177]
+                - columnheader "Optimistic" [ref=f9e2179]
+                - columnheader "Normal" [ref=f9e2181]
+                - columnheader "Pessimistic" [ref=f9e2183]
+              - columnheader "Task" [ref=f9e2185]
+              - columnheader "Duration" [ref=f9e2187]
+              - columnheader "Estimated days" [ref=f9e2189]
+              - columnheader "Probability %" [ref=f9e2191]
+              - columnheader "Estimated days" [ref=f9e2193]
+              - columnheader "Probability %" [ref=f9e2195]
+              - columnheader "Estimated days" [ref=f9e2197]
+              - columnheader "Probability %" [ref=f9e2199]
+            - generic [ref=f9e2210]:    
+          - separator [ref=f9e2211]
+          - table [ref=f9e2212]:
+            - rowgroup [ref=f9e2213]:
+              - row [ref=f9e2214]:
+                - cell [ref=f9e2215]:
+                  - table [ref=f9e2216]:
+                    - rowgroup [ref=f9e2217]:
+                      - row [ref=f9e2218]:
+                        - cell [ref=f9e2219]:
+                          - grid [ref=f9e2220]:
+                            - rowgroup [ref=f9e2225]:
+                              - gridcell "Critical path" [ref=f9e2226]
+                              - gridcell [ref=f9e2228]:
+                                - combobox [ref=f9e2230]
+          - separator [ref=f9e2231]
+          - table [ref=f9e2232]:
+            - rowgroup [ref=f9e2233]:
+              - row [ref=f9e2234]:
+                - cell [ref=f9e2235]:
+                  - table [ref=f9e2236]:
+                    - rowgroup [ref=f9e2237]:
+                      - row [ref=f9e2238]:
+                        - cell [ref=f9e2239]:
+                          - grid [ref=f9e2240]:
+                            - rowgroup
+        - generic [ref=f9e2286]:
+          - generic [ref=f9e2287]:
+            - generic [ref=f9e2288]: Progress
+            - table [ref=f9e2292]:
+              - rowgroup [ref=f9e2293]:
+                - row [ref=f9e2294]:
+                  - cell [ref=f9e2295]:
+                    - table [ref=f9e2296]:
+                      - rowgroup [ref=f9e2297]:
+                        - row [ref=f9e2298]:
+                          - cell [ref=f9e2299]
+                          - cell
+                          - cell [ref=f9e2301]
+          - generic [ref=f9e2303]:
+            - generic [ref=f9e2304]: Cost
+            - table [ref=f9e2308]:
+              - rowgroup [ref=f9e2309]:
+                - row [ref=f9e2310]:
+                  - cell [ref=f9e2311]:
+                    - table [ref=f9e2312]:
+                      - rowgroup [ref=f9e2313]:
+                        - row [ref=f9e2314]:
+                          - cell [ref=f9e2315]:
+                            - table [ref=f9e2317]:
+                              - rowgroup [ref=f9e2318]:
+                                - row [ref=f9e2319]:
+                                  - cell [ref=f9e2320]:
+                                    - table [ref=f9e2321]:
+                                      - rowgroup [ref=f9e2322]:
+                                        - row [ref=f9e2323]:
+                                          - cell [ref=f9e2324]:
+                                            - table [ref=f9e2325]:
+                                              - rowgroup [ref=f9e2326]:
+                                                - row [ref=f9e2327]:
+                                                  - cell [ref=f9e2328]:
+                                                    - table [ref=f9e2329]:
+                                                      - rowgroup [ref=f9e2330]:
+                                                        - row [ref=f9e2331]:
+                                                          - cell [ref=f9e2332]:
+                                                            - table [ref=f9e2333]:
+                                                              - rowgroup [ref=f9e2334]:
+                                                                - row [ref=f9e2335]:
+                                                                  - cell [ref=f9e2336]:
+                                                                    - table [ref=f9e2337]:
+                                                                      - rowgroup [ref=f9e2338]:
+                                                                        - row [ref=f9e2339]:
+                                                                          - cell "Current state indicators" [ref=f9e2340]
+                                                        - row [ref=f9e2341]:
+                                                          - cell [ref=f9e2342]
+                                                        - row:
+                                                          - cell:
+                                                            - table:
+                                                              - rowgroup:
+                                                                - row:
+                                                                  - cell:
+                                                                    - table
+                                                        - row [ref=f9e2343]:
+                                                          - cell [ref=f9e2344]
+                                                        - row [ref=f9e2345]:
+                                                          - cell [ref=f9e2346]:
+                                                            - table [ref=f9e2348]:
+                                                              - rowgroup [ref=f9e2349]:
+                                                                - row [ref=f9e2350]:
+                                                                  - cell [ref=f9e2351]:
+                                                                    - table [ref=f9e2352]:
+                                                                      - rowgroup [ref=f9e2353]:
+                                                                        - row [ref=f9e2354]:
+                                                                          - cell [ref=f9e2355]:
+                                                                            - table [ref=f9e2356]:
+                                                                              - rowgroup [ref=f9e2357]:
+                                                                                - row [ref=f9e2358]:
+                                                                                  - cell [ref=f9e2359]:
+                                                                                    - table [ref=f9e2360]:
+                                                                                      - rowgroup [ref=f9e2361]:
+                                                                                        - row [ref=f9e2362]:
+                                                                                          - cell [ref=f9e2363]:
+                                                                                            - table [ref=f9e2364]:
+                                                                                              - rowgroup [ref=f9e2365]:
+                                                                                                - row [ref=f9e2366]:
+                                                                                                  - cell [ref=f9e2367]:
+                                                                                                    - table [ref=f9e2368]:
+                                                                                                      - rowgroup [ref=f9e2369]:
+                                                                                                        - row [ref=f9e2370]:
+                                                                                                          - cell [ref=f9e2371]
+                                                                                                        - row [ref=f9e2373]:
+                                                                                                          - cell [ref=f9e2374]
+                                                                                                        - row [ref=f9e2375]:
+                                                                                                          - cell [ref=f9e2376]
+                                                                                        - row [ref=f9e2378]:
+                                                                                          - cell [ref=f9e2379]
+                                                                                        - row [ref=f9e2380]:
+                                                                                          - cell "Hours invested" [ref=f9e2381]
+                                                                                        - row [ref=f9e2383]:
+                                                                                          - cell [ref=f9e2384]
+                                                                                        - row [ref=f9e2385]:
+                                                                                          - cell [ref=f9e2386]
+                                                                          - cell [ref=f9e2388]
+                                                                          - cell [ref=f9e2389]:
+                                                                            - table [ref=f9e2390]:
+                                                                              - rowgroup [ref=f9e2391]:
+                                                                                - row [ref=f9e2392]:
+                                                                                  - cell [ref=f9e2393]:
+                                                                                    - table [ref=f9e2394]:
+                                                                                      - rowgroup [ref=f9e2395]:
+                                                                                        - row [ref=f9e2396]:
+                                                                                          - cell [ref=f9e2397]:
+                                                                                            - table [ref=f9e2398]:
+                                                                                              - rowgroup [ref=f9e2399]:
+                                                                                                - row [ref=f9e2400]:
+                                                                                                  - cell [ref=f9e2401]:
+                                                                                                    - table [ref=f9e2402]:
+                                                                                                      - rowgroup [ref=f9e2403]:
+                                                                                                        - row [ref=f9e2404]:
+                                                                                                          - cell [ref=f9e2405]
+                                                                                                        - row [ref=f9e2407]:
+                                                                                                          - cell [ref=f9e2408]
+                                                                                                        - row [ref=f9e2409]:
+                                                                                                          - cell [ref=f9e2410]
+                                                                                        - row [ref=f9e2412]:
+                                                                                          - cell [ref=f9e2413]
+                                                                                        - row [ref=f9e2414]:
+                                                                                          - cell "Remaining time" [ref=f9e2415]
+                                                                                        - row [ref=f9e2417]:
+                                                                                          - cell [ref=f9e2418]
+                                                                                        - row [ref=f9e2419]:
+                                                                                          - cell [ref=f9e2420]
+                                          - cell
+                                          - cell [ref=f9e2422]:
+                                            - table:
+                                              - rowgroup:
+                                                - row:
+                                                  - cell:
+                                                    - table
+                                          - cell
+                                          - cell [ref=f9e2423]:
+                                            - table [ref=f9e2424]:
+                                              - rowgroup [ref=f9e2425]:
+                                                - row [ref=f9e2426]:
+                                                  - cell [ref=f9e2427]:
+                                                    - table [ref=f9e2428]:
+                                                      - rowgroup [ref=f9e2429]:
+                                                        - row [ref=f9e2430]:
+                                                          - cell [ref=f9e2431]:
+                                                            - table [ref=f9e2432]:
+                                                              - rowgroup [ref=f9e2433]:
+                                                                - row [ref=f9e2434]:
+                                                                  - cell [ref=f9e2435]:
+                                                                    - table [ref=f9e2436]:
+                                                                      - rowgroup [ref=f9e2437]:
+                                                                        - row [ref=f9e2438]:
+                                                                          - cell "Project closing previsions" [ref=f9e2439]
+                                                        - row [ref=f9e2440]:
+                                                          - cell [ref=f9e2441]
+                                                        - row [ref=f9e2442]:
+                                                          - cell [ref=f9e2443]:
+                                                            - table [ref=f9e2445]:
+                                                              - rowgroup [ref=f9e2446]:
+                                                                - row [ref=f9e2447]:
+                                                                  - cell [ref=f9e2448]:
+                                                                    - table [ref=f9e2449]:
+                                                                      - rowgroup [ref=f9e2450]:
+                                                                        - row [ref=f9e2451]:
+                                                                          - cell [ref=f9e2452]:
+                                                                            - table [ref=f9e2453]:
+                                                                              - rowgroup [ref=f9e2454]:
+                                                                                - row [ref=f9e2455]:
+                                                                                  - cell [ref=f9e2456]:
+                                                                                    - table [ref=f9e2457]:
+                                                                                      - rowgroup [ref=f9e2458]:
+                                                                                        - row [ref=f9e2459]:
+                                                                                          - cell [ref=f9e2460]:
+                                                                                            - table [ref=f9e2461]:
+                                                                                              - rowgroup [ref=f9e2462]:
+                                                                                                - row [ref=f9e2463]:
+                                                                                                  - cell [ref=f9e2464]:
+                                                                                                    - table [ref=f9e2465]:
+                                                                                                      - rowgroup [ref=f9e2466]:
+                                                                                                        - row [ref=f9e2467]:
+                                                                                                          - cell [ref=f9e2468]
+                                                                                                        - row [ref=f9e2470]:
+                                                                                                          - cell [ref=f9e2471]
+                                                                                                        - row [ref=f9e2472]:
+                                                                                                          - cell [ref=f9e2473]
+                                                                                        - row [ref=f9e2475]:
+                                                                                          - cell [ref=f9e2476]
+                                                                                        - row [ref=f9e2477]:
+                                                                                          - cell [ref=f9e2478]
+                                                                                        - row [ref=f9e2480]:
+                                                                                          - cell [ref=f9e2481]
+                                                                                        - row [ref=f9e2482]:
+                                                                                          - cell [ref=f9e2483]
+                                                                          - cell [ref=f9e2485]
+                                                                          - cell [ref=f9e2486]:
+                                                                            - table [ref=f9e2487]:
+                                                                              - rowgroup [ref=f9e2488]:
+                                                                                - row [ref=f9e2489]:
+                                                                                  - cell [ref=f9e2490]:
+                                                                                    - table [ref=f9e2491]:
+                                                                                      - rowgroup [ref=f9e2492]:
+                                                                                        - row [ref=f9e2493]:
+                                                                                          - cell [ref=f9e2494]
+                                                                                        - row [ref=f9e2496]:
+                                                                                          - cell [ref=f9e2497]
+                                                                                        - row [ref=f9e2498]:
+                                                                                          - cell [ref=f9e2499]
+          - generic [ref=f9e2501]:
+            - generic [ref=f9e2502]: Resources
+            - table [ref=f9e2506]:
+              - rowgroup [ref=f9e2507]:
+                - row [ref=f9e2508]:
+                  - cell [ref=f9e2509]:
+                    - table [ref=f9e2510]:
+                      - rowgroup [ref=f9e2511]:
+                        - row [ref=f9e2512]:
+                          - cell [ref=f9e2513]
+                          - cell
+                          - cell [ref=f9e2515]:
+                            - table [ref=f9e2516]:
+                              - rowgroup [ref=f9e2517]:
+                                - row [ref=f9e2518]:
+                                  - cell [ref=f9e2519]:
+                                    - table [ref=f9e2520]:
+                                      - rowgroup [ref=f9e2521]:
+                                        - row [ref=f9e2522]:
+                                          - cell [ref=f9e2523]:
+                                            - table [ref=f9e2524]:
+                                              - rowgroup [ref=f9e2525]:
+                                                - row [ref=f9e2526]:
+                                                  - cell [ref=f9e2527]:
+                                                    - table [ref=f9e2528]:
+                                                      - rowgroup [ref=f9e2529]:
+                                                        - row [ref=f9e2530]:
+                                                          - cell "Resources usage" [ref=f9e2531]
+                                        - row [ref=f9e2532]:
+                                          - cell [ref=f9e2533]
+                                        - row [ref=f9e2534]:
+                                          - cell [ref=f9e2535]:
+                                            - table [ref=f9e2537]:
+                                              - rowgroup [ref=f9e2538]:
+                                                - row [ref=f9e2539]:
+                                                  - cell [ref=f9e2540]:
+                                                    - table [ref=f9e2541]:
+                                                      - rowgroup [ref=f9e2542]:
+                                                        - row [ref=f9e2543]:
+                                                          - cell [ref=f9e2544]:
+                                                            - table [ref=f9e2545]:
+                                                              - rowgroup [ref=f9e2546]:
+                                                                - row [ref=f9e2547]:
+                                                                  - cell [ref=f9e2548]:
+                                                                    - table [ref=f9e2549]:
+                                                                      - rowgroup [ref=f9e2550]:
+                                                                        - row [ref=f9e2551]:
+                                                                          - cell "Overtime ratio" [ref=f9e2552]
+                                                                        - row [ref=f9e2553]:
+                                                                          - cell [ref=f9e2554]
+                                                                        - row [ref=f9e2555]:
+                                                                          - cell [ref=f9e2556]
+                                                          - cell [ref=f9e2558]
+                                                          - cell [ref=f9e2559]:
+                                                            - table [ref=f9e2560]:
+                                                              - rowgroup [ref=f9e2561]:
+                                                                - row [ref=f9e2562]:
+                                                                  - cell [ref=f9e2563]:
+                                                                    - table [ref=f9e2564]:
+                                                                      - rowgroup [ref=f9e2565]:
+                                                                        - row [ref=f9e2566]:
+                                                                          - cell "Availability ratio" [ref=f9e2567]
+                                                                        - row [ref=f9e2568]:
+                                                                          - cell [ref=f9e2569]
+                                                                        - row [ref=f9e2570]:
+                                                                          - cell [ref=f9e2571]
+                                        - row [ref=f9e2573]:
+                                          - cell [ref=f9e2574]
+                                        - row [ref=f9e2575]:
+                                          - cell [ref=f9e2576]
+                                        - row [ref=f9e2578]:
+                                          - cell [ref=f9e2579]
+                                        - row [ref=f9e2580]:
+                                          - cell "Load percentage of resources participating in the project while they are assigned" [ref=f9e2581]
+          - generic [ref=f9e2582]:
+            - generic [ref=f9e2583]: Time
+            - table [ref=f9e2587]:
+              - rowgroup [ref=f9e2588]:
+                - row [ref=f9e2589]:
+                  - cell [ref=f9e2590]:
+                    - table [ref=f9e2591]:
+                      - rowgroup [ref=f9e2592]:
+                        - row [ref=f9e2593]:
+                          - cell [ref=f9e2594]
+                          - cell
+                          - cell [ref=f9e2596]:
+                            - table [ref=f9e2597]:
+                              - rowgroup [ref=f9e2598]:
+                                - row [ref=f9e2599]:
+                                  - cell [ref=f9e2600]:
+                                    - table [ref=f9e2601]:
+                                      - rowgroup [ref=f9e2602]:
+                                        - row [ref=f9e2603]:
+                                          - cell [ref=f9e2604]
+                                        - row [ref=f9e2606]:
+                                          - cell [ref=f9e2607]
+                                        - row [ref=f9e2608]:
+                                          - cell [ref=f9e2609]
+    - table [ref=f9e731]:
+      - rowgroup [ref=f9e732]:
+        - row [ref=f9e733]:
+          - cell [ref=f9e734]:
+            - generic [ref=f9e736]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f9e737] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f9e738]
+    - text:    
+  - generic [ref=f9e2241]:
+    - generic [ref=f9e2242]: "LibrePlan: Runtime Error"
+    - generic [ref=f9e2244]:
+      - generic [ref=f9e2245]: Message - Method setSpans not found for class org.zkoss.zul.Row
+      - generic [ref=f9e2248]:
+        - grid [ref=f9e2249]:
+          - rowgroup [ref=f9e2253]:
+            - gridcell "Exception type" [ref=f9e2254]
+            - gridcell "class org.zkoss.zk.ui.metainfo.PropertyNotFoundException" [ref=f9e2256]
+            - gridcell "Status code" [ref=f9e2258]
+            - gridcell "500" [ref=f9e2260]
+            - gridcell "Stacktrace" [ref=f9e2262]
+            - gridcell [ref=f9e2264]:
+              - textbox [ref=f9e2266]: "org.zkoss.zk.ui.metainfo.PropertyNotFoundException: Method setSpans not found for class org.zkoss.zul.Row at org.zkoss.zk.ui.metainfo.Property.resolve(Property.java:230) at org.zkoss.zk.ui.metainfo.Property.assign0(Property.java:260) at org.zkoss.zk.ui.metainfo.Property.assign(Property.java:186) at org.zkoss.zk.ui.metainfo.ComponentInfo.applyProperties(ComponentInfo.java:743) at org.zkoss.zk.ui.impl.AbstractUiFactory.newComponent(AbstractUiFactory.java:150) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:930) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:945) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:847) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:805) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.createComponents(UiEngineImpl.java:1154) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents0(AbstractExecution.java:342) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents(AbstractExecution.java:303) at org.zkoss.zk.ui.Executions.createComponents(Executions.java:176) at org.libreplan.web.planner.tabs.MonteCarloTabCreator$1.create(MonteCarloTabCreator.java:110) at org.libreplan.web.planner.tabs.CreatedOnDemandTab.show(CreatedOnDemandTab.java:81) at org.libreplan.web.planner.tabs.TabOnModeType.show(TabOnModeType.java:134) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:65) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:59) at org.zkoss.ganttz.TabsRegistry.lambda$registerAtMenu$0(TabsRegistry.java:101) at org.libreplan.web.common.CustomMenuController.lambda$doNotCallTwice$0(CustomMenuController.java:741) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f9e2267]:
+          - rowgroup [ref=f9e2268]:
+            - row [ref=f9e2269]:
+              - cell [ref=f9e2270]:
+                - table [ref=f9e2271]:
+                  - rowgroup [ref=f9e2272]:
+                    - row [ref=f9e2273]:
+                      - cell [ref=f9e2274]:
+                        - button "Continue" [ref=f9e2275] [cursor=pointer]
+                      - cell [ref=f9e2276]
+                      - cell [ref=f9e2277]:
+                        - button "Reload" [ref=f9e2278] [cursor=pointer]
+                      - cell [ref=f9e2279]
+                      - cell [ref=f9e2280]:
+                        - button "Exit session" [ref=f9e2281] [cursor=pointer]
+  - generic [ref=f9e2611]:
+    - generic [ref=f9e2612]: "LibrePlan: Runtime Error"
+    - generic [ref=f9e2614]:
+      - generic [ref=f9e2615]: Message - Method setType not found for class org.zkoss.zul.Script
+      - generic [ref=f9e2618]:
+        - grid [ref=f9e2619]:
+          - rowgroup [ref=f9e2623]:
+            - gridcell "Exception type" [ref=f9e2624]
+            - gridcell "class org.zkoss.zk.ui.metainfo.PropertyNotFoundException" [ref=f9e2626]
+            - gridcell "Status code" [ref=f9e2628]
+            - gridcell "500" [ref=f9e2630]
+            - gridcell "Stacktrace" [ref=f9e2632]
+            - gridcell [ref=f9e2634]:
+              - textbox [active] [ref=f9e2636]: "org.zkoss.zk.ui.metainfo.PropertyNotFoundException: Method setType not found for class org.zkoss.zul.Script at org.zkoss.zk.ui.metainfo.Property.resolve(Property.java:230) at org.zkoss.zk.ui.metainfo.Property.assign0(Property.java:260) at org.zkoss.zk.ui.metainfo.Property.assign(Property.java:186) at org.zkoss.zk.ui.metainfo.ComponentInfo.applyProperties(ComponentInfo.java:743) at org.zkoss.zk.ui.impl.AbstractUiFactory.newComponent(AbstractUiFactory.java:150) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild0(UiEngineImpl.java:930) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:900) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:787) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreateChild(UiEngineImpl.java:847) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate0(UiEngineImpl.java:805) at org.zkoss.zk.ui.impl.UiEngineImpl.execCreate(UiEngineImpl.java:751) at org.zkoss.zk.ui.impl.UiEngineImpl.createComponents(UiEngineImpl.java:1154) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents0(AbstractExecution.java:342) at org.zkoss.zk.ui.impl.AbstractExecution.createComponents(AbstractExecution.java:303) at org.zkoss.zk.ui.Executions.createComponents(Executions.java:176) at org.libreplan.web.planner.tabs.DashboardTabCreator$1.create(DashboardTabCreator.java:108) at org.libreplan.web.planner.tabs.CreatedOnDemandTab.show(CreatedOnDemandTab.java:81) at org.libreplan.web.planner.tabs.TabOnModeType.show(TabOnModeType.java:134) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:65) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:59) at org.zkoss.ganttz.TabsRegistry.lambda$registerAtMenu$0(TabsRegistry.java:101) at org.libreplan.web.common.CustomMenuController.lambda$doNotCallTwice$0(CustomMenuController.java:741) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f9e2637]:
+          - rowgroup [ref=f9e2638]:
+            - row [ref=f9e2639]:
+              - cell [ref=f9e2640]:
+                - table [ref=f9e2641]:
+                  - rowgroup [ref=f9e2642]:
+                    - row [ref=f9e2643]:
+                      - cell [ref=f9e2644]:
+                        - button "Continue" [ref=f9e2645] [cursor=pointer]
+                      - cell [ref=f9e2646]
+                      - cell [ref=f9e2647]:
+                        - button "Reload" [ref=f9e2648] [cursor=pointer]
+                      - cell [ref=f9e2649]
+                      - cell [ref=f9e2650]:
+                        - button "Exit session" [ref=f9e2651] [cursor=pointer]

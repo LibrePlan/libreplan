@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,13 +28,14 @@
         ]]>
     </zscript>
 
-    <n:script language="javascript">
-
-        function closeBandbox(bandbox) {
-            zAu.send(new zk.Event(bandbox, "closeBandbox"));
-        }
-
-    </n:script>
+    <!--
+      closeBandbox() used to be declared here as a per-instance native <n:script>. Every
+      BandboxMultipleSearch/BandboxSearch instance redeclared the identical global function, and
+      re-mounting that native stub after a detach+reattach cycle (e.g. switching planner tabs)
+      would fail with "Unknown stub" client errors, aborting the rest of that AU response and
+      leaving the reattached tab blank. The function is stateless, so it's now loaded once,
+      globally, via common/js/bandbox-search.js (included from common/layout/template.zul).
+    -->
 
     <bandbox id="bandbox" autodrop="true">
         <bandpopup>

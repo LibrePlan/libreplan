@@ -1,0 +1,258 @@
+- generic [ref=f29e4]:
+  - generic [ref=f29e5]:
+    - table [ref=f29e6]:
+      - rowgroup [ref=f29e7]:
+        - row [ref=f29e763]:
+          - cell [ref=f29e9]:
+            - link [ref=f29e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f29e764]:
+            - table [ref=f29e13]:
+              - rowgroup [ref=f29e14]:
+                - row [ref=f29e765]:
+                  - cell [ref=f29e766]:
+                    - generic [ref=f29e17]:
+                      - menubar [ref=f29e18]:
+                        - menuitem "Planning" [ref=f29e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f29e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f29e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f29e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f29e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f29e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f29e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f29e33]:
+                        - rowgroup [ref=f29e34]:
+                          - row [ref=f29e767]:
+                            - cell [ref=f29e768]:
+                              - table [ref=f29e37]:
+                                - rowgroup [ref=f29e38]:
+                                  - row [ref=f29e769]:
+                                    - cell [ref=f29e40]
+                                    - cell [ref=f29e41]:
+                                      - strong [ref=f29e42]: START
+                                    - cell [ref=f29e43]
+                                    - cell [ref=f29e770]:
+                                      - table [ref=f29e45]:
+                                        - rowgroup [ref=f29e46]:
+                                          - row [ref=f29e771]:
+                                            - cell [ref=f29e772]:
+                                              - table [ref=f29e49]:
+                                                - rowgroup [ref=f29e50]:
+                                                  - row [ref=f29e773]:
+                                                    - cell [ref=f29e774]
+                                                    - cell [ref=f29e776]
+                                                    - cell "Planning" [ref=f29e777]
+                                                    - cell [ref=f29e778]
+                                                    - cell [ref=f29e779]
+                                                    - cell [ref=f29e781]
+                                                    - cell "Projects List" [ref=f29e782]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f29e61]:
+                              - generic [ref=f29e62]:
+                                - link "Help" [ref=f29e63] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f29e65]
+                                - img "Info" [ref=f29e67]
+    - table [ref=f29e69]:
+      - rowgroup [ref=f29e70]:
+        - row [ref=f29e71]:
+          - cell [ref=f29e72]
+          - 'cell "user: admin" [ref=f29e73]'
+          - cell [ref=f29e74]:
+            - link "[Log out]" [ref=f29e75] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f29e76]:
+    - table [ref=f29e77]:
+      - rowgroup [ref=f29e78]:
+        - row [ref=f29e79]:
+          - cell [ref=f29e80]:
+            - table [ref=f29e81]:
+              - rowgroup [ref=f29e82]:
+                - row [ref=f29e83]:
+                  - cell [ref=f29e84]:
+                    - table [ref=f29e85]:
+                      - rowgroup [ref=f29e86]:
+                        - row [ref=f29e87]:
+                          - cell [ref=f29e88]:
+                            - table [ref=f29e89]:
+                              - rowgroup [ref=f29e90]:
+                                - row [ref=f29e91]:
+                                  - cell [ref=f29e92]:
+                                    - button "Create New Project" [ref=f29e93] [cursor=pointer]
+                - row [ref=f29e95]:
+                  - cell [ref=f29e96]
+                - row [ref=f29e97]:
+                  - cell [ref=f29e98]:
+                    - table [ref=f29e99]:
+                      - rowgroup [ref=f29e100]:
+                        - row [ref=f29e101]:
+                          - cell [ref=f29e102]:
+                            - table [ref=f29e103]:
+                              - rowgroup [ref=f29e104]:
+                                - row [ref=f29e105]:
+                                  - cell [ref=f29e106]:
+                                    - button "Projects Planning" [ref=f29e107] [cursor=pointer]
+                                - row [ref=f29e108]:
+                                  - cell [ref=f29e109]
+                                - row:
+                                  - cell
+                                - row [ref=f29e110]:
+                                  - cell [ref=f29e111]
+                                - row [ref=f29e112]:
+                                  - cell [ref=f29e113]:
+                                    - button "Projects List" [active] [ref=f29e114] [cursor=pointer]
+                                - row [ref=f29e115]:
+                                  - cell [ref=f29e116]
+                                - row:
+                                  - cell
+                                - row [ref=f29e117]:
+                                  - cell [ref=f29e118]
+                                - row [ref=f29e119]:
+                                  - cell [ref=f29e120]:
+                                    - button "Resources Load" [ref=f29e121] [cursor=pointer]
+                                - row [ref=f29e122]:
+                                  - cell [ref=f29e123]
+                                - row:
+                                  - cell
+                                - row [ref=f29e124]:
+                                  - cell [ref=f29e125]
+                                - row [ref=f29e126]:
+                                  - cell [ref=f29e127]:
+                                    - button "Queue-based Resources Planning" [ref=f29e128] [cursor=pointer]
+                                - row [ref=f29e129]:
+                                  - cell [ref=f29e130]
+                                - row:
+                                  - cell
+                                - row [ref=f29e131]:
+                                  - cell [ref=f29e132]
+                                - row [ref=f29e133]:
+                                  - cell [ref=f29e134]:
+                                    - button "Logs" [ref=f29e135] [cursor=pointer]
+                                - row [ref=f29e136]:
+                                  - cell [ref=f29e137]
+                                - row:
+                                  - cell
+                                - row [ref=f29e138]:
+                                  - cell [ref=f29e139]
+                                - row [ref=f29e140]:
+                                  - cell [ref=f29e141]:
+                                    - button "Pipeline" [ref=f29e142] [cursor=pointer]
+                                - row [ref=f29e143]:
+                                  - cell [ref=f29e144]
+                                - row:
+                                  - cell
+    - text:    
+    - generic [ref=f29e784]:
+      - table [ref=f29e785]:
+        - rowgroup [ref=f29e786]:
+          - row [ref=f29e787]:
+            - cell [ref=f29e788]:
+              - table [ref=f29e789]:
+                - rowgroup [ref=f29e790]:
+                  - row [ref=f29e791]:
+                    - cell [ref=f29e792]:
+                      - table [ref=f29e793]:
+                        - rowgroup [ref=f29e794]:
+                          - row [ref=f29e795]:
+                            - cell [ref=f29e796]:
+                              - table [ref=f29e797]:
+                                - rowgroup [ref=f29e798]:
+                                  - row [ref=f29e799]:
+                                    - cell [ref=f29e800]:
+                                      - table [ref=f29e801]:
+                                        - rowgroup [ref=f29e802]:
+                                          - row [ref=f29e803]:
+                                            - cell [ref=f29e804]:
+                                              - table [ref=f29e805]:
+                                                - rowgroup [ref=f29e806]:
+                                                  - row [ref=f29e807]:
+                                                    - cell "Project" [ref=f29e808]
+                                                    - cell [ref=f29e809]
+                                                    - cell [ref=f29e810]:
+                                                      - textbox [ref=f29e811]
+                                                    - cell [ref=f29e812]
+                                                    - cell "with" [ref=f29e813]
+                                                    - cell [ref=f29e814]
+                                                    - cell [ref=f29e815]:
+                                                      - combobox [ref=f29e817]:
+                                                        - textbox [ref=f29e818]
+                                                        - button [ref=f29e819] [cursor=pointer]:
+                                                          - generic [ref=f29e820]: 
+                                                    - cell [ref=f29e821]
+                                                    - cell "from" [ref=f29e822]
+                                                    - cell [ref=f29e823]
+                                                    - cell [ref=f29e824]:
+                                                      - combobox [ref=f29e825]:
+                                                        - textbox [ref=f29e826]
+                                                        - button [ref=f29e827] [cursor=pointer]:
+                                                          - generic [ref=f29e828]: 
+                                                        - text:    
+                                                    - cell [ref=f29e829]
+                                                    - cell "to" [ref=f29e830]
+                                                    - cell [ref=f29e831]
+                                                    - cell [ref=f29e832]:
+                                                      - combobox [ref=f29e833]:
+                                                        - textbox [ref=f29e834]
+                                                        - button [ref=f29e835] [cursor=pointer]:
+                                                          - generic [ref=f29e836]: 
+                                                        - text:    
+                                                    - cell [ref=f29e837]
+                                                    - cell "Exclude finished projects" [ref=f29e838]
+                                                    - cell [ref=f29e839]
+                                                    - cell [ref=f29e840]:
+                                                      - checkbox [ref=f29e842]
+                                                    - cell [ref=f29e843]
+                                                    - cell [ref=f29e844]:
+                                                      - button "Apply filtering to tasks satisfying required criteria" [ref=f29e845] [cursor=pointer]
+                                    - cell [ref=f29e847]
+                                    - cell [ref=f29e848]:
+                                      - button "Delete all projects" [ref=f29e849] [cursor=pointer]
+                    - cell [ref=f29e850]
+      - text:    
+      - generic [ref=f29e851]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - grid [ref=f29e854]:
+          - rowgroup [ref=f29e866]:
+            - columnheader "Name" [ref=f29e867]
+            - columnheader "Code" [ref=f29e869]
+            - columnheader [ref=f29e871]:
+              - generic [ref=f29e872] [cursor=pointer]:
+                - generic [ref=f29e873]: 
+                - text: Starting date
+            - columnheader "Deadline" [ref=f29e875]
+            - columnheader "Customer" [ref=f29e877]
+            - columnheader "Total Budget" [ref=f29e879]
+            - columnheader "Planned Budget" [ref=f29e881]
+            - columnheader "Hours" [ref=f29e883]
+            - columnheader "State" [ref=f29e885]
+            - columnheader "Operations" [ref=f29e887]
+          - generic [ref=f29e900]: No projects
+          - generic [ref=f29e901]:    
+  - table [ref=f29e755]:
+    - rowgroup [ref=f29e756]:
+      - row [ref=f29e757]:
+        - cell [ref=f29e758]:
+          - generic [ref=f29e760]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f29e761] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f29e762]
+  - text:    

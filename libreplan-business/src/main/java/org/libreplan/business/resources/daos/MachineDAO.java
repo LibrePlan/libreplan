@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,8 +24,11 @@ package org.libreplan.business.resources.daos;
 
 import java.util.List;
 
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.Machine;
@@ -50,18 +54,6 @@ public class MachineDAO extends IntegrationEntityDAO<Machine>
     @Override
     public List<Machine> getAll() {
         return list(Machine.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Machine> findByNameOrCode(String name, boolean limitingResource) {
-        final String containsName = "%" + name + "%";
-        return getSession().createCriteria(Machine.class).add(
-                Restrictions.and(
-                        Restrictions.eq("limitingResource",limitingResource),
-                        Restrictions.or(
-                                Restrictions.ilike("name", containsName),
-                                Restrictions.ilike("code", containsName)))).list();
     }
 
     @Override

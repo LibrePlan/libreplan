@@ -1,0 +1,460 @@
+- generic [ref=f611e4]:
+  - generic [ref=f611e5]:
+    - table [ref=f611e6]:
+      - rowgroup [ref=f611e7]:
+        - row [ref=f611e8]:
+          - cell [ref=f611e9]:
+            - link [ref=f611e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f611e12]:
+            - table [ref=f611e13]:
+              - rowgroup [ref=f611e14]:
+                - row [ref=f611e15]:
+                  - cell [ref=f611e16]:
+                    - generic [ref=f611e17]:
+                      - menubar [ref=f611e18]:
+                        - menuitem "Planning" [ref=f611e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f611e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f611e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f611e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f611e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f611e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f611e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f611e33]:
+                        - rowgroup [ref=f611e34]:
+                          - row [ref=f611e35]:
+                            - cell [ref=f611e36]:
+                              - table [ref=f611e37]:
+                                - rowgroup [ref=f611e38]:
+                                  - row [ref=f611e39]:
+                                    - cell [ref=f611e40]
+                                    - cell [ref=f611e41]:
+                                      - strong [ref=f611e42]: START
+                                    - cell [ref=f611e43]
+                                    - cell [ref=f611e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f611e45]:
+                                        - rowgroup [ref=f611e46]:
+                                          - row [ref=f611e47]:
+                                            - cell [ref=f611e48]:
+                                              - table [ref=f611e49]:
+                                                - rowgroup [ref=f611e50]:
+                                                  - row [ref=f611e51]:
+                                                    - cell [ref=f611e52]:
+                                                      - table [ref=f611e53]:
+                                                        - rowgroup [ref=f611e54]:
+                                                          - row [ref=f611e55]:
+                                                            - cell [ref=f611e56]:
+                                                              - table [ref=f611e57]:
+                                                                - rowgroup [ref=f611e58]:
+                                                                  - row [ref=f611e59]:
+                                                                    - cell [ref=f611e60]
+                                                                    - cell [ref=f611e63]
+                                                                    - cell "Cost" [ref=f611e64]
+                                                    - cell [ref=f611e65]
+                                                    - cell [ref=f611e66]:
+                                                      - table [ref=f611e67]:
+                                                        - rowgroup [ref=f611e68]:
+                                                          - row [ref=f611e69]:
+                                                            - cell [ref=f611e70]:
+                                                              - table [ref=f611e71]:
+                                                                - rowgroup [ref=f611e72]:
+                                                                  - row [ref=f611e73]:
+                                                                    - cell [ref=f611e74]
+                                                                    - cell [ref=f611e77]
+                                                                    - cell "Expenses" [ref=f611e78]
+                            - cell [ref=f611e79]:
+                              - generic [ref=f611e80]:
+                                - link "Help" [ref=f611e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f611e83]
+                                - img "Info" [ref=f611e85]
+    - table [ref=f611e87]:
+      - rowgroup [ref=f611e88]:
+        - row [ref=f611e89]:
+          - cell [ref=f611e90]
+          - 'cell "user: admin" [ref=f611e91]'
+          - cell [ref=f611e92]:
+            - link "[Log out]" [ref=f611e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f611e94]:
+    - text:    
+    - generic [ref=f611e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:    
+      - generic [ref=f611e152]:
+        - generic [ref=f611e153]: "Create Expense Sheet: EXPENSE_SHEET0005"
+        - generic [ref=f611e156]:
+          - generic [ref=f611e157]:
+            - generic [ref=f611e158]: Identification
+            - generic [ref=f611e161]:
+              - separator [ref=f611e162]
+              - table [ref=f611e163]:
+                - rowgroup [ref=f611e164]:
+                  - row [ref=f611e165]:
+                    - cell [ref=f611e166]:
+                      - table [ref=f611e167]:
+                        - rowgroup [ref=f611e168]:
+                          - row [ref=f611e169]:
+                            - cell [ref=f611e170]:
+                              - grid [ref=f611e171]:
+                                - rowgroup [ref=f611e175]:
+                                  - gridcell "Code" [ref=f611e176]
+                                  - gridcell [ref=f611e178]:
+                                    - table [ref=f611e180]:
+                                      - rowgroup [ref=f611e181]:
+                                        - row [ref=f611e182]:
+                                          - cell [ref=f611e183]:
+                                            - table [ref=f611e184]:
+                                              - rowgroup [ref=f611e185]:
+                                                - row [ref=f611e186]:
+                                                  - cell [ref=f611e187]:
+                                                    - textbox [disabled] [ref=f611e188]: EXPENSE_SHEET0005
+                                                  - cell [ref=f611e189]
+                                                  - cell [ref=f611e190]:
+                                                    - generic [ref=f611e191]:
+                                                      - checkbox "Generate code" [checked] [ref=f611e192]
+                                                      - text: Generate code
+                                  - gridcell "Description" [ref=f611e193]
+                                  - gridcell [ref=f611e342]:
+                                    - textbox [ref=f611e197]: Test expense sheet
+                                  - gridcell "Type" [ref=f611e198]
+                                  - gridcell "Regular" [ref=f611e200]
+          - separator [ref=f611e202]
+          - generic [ref=f611e203]:
+            - generic [ref=f611e204]: Expense properties
+            - generic [ref=f611e207]:
+              - separator [ref=f611e208]
+              - table [ref=f611e209]:
+                - rowgroup [ref=f611e210]:
+                  - row [ref=f611e211]:
+                    - cell [ref=f611e212]:
+                      - table [ref=f611e213]:
+                        - rowgroup [ref=f611e214]:
+                          - row [ref=f611e215]:
+                            - cell [ref=f611e216]:
+                              - table [ref=f611e217]:
+                                - rowgroup [ref=f611e218]:
+                                  - row [ref=f611e219]:
+                                    - cell [ref=f611e220]:
+                                      - table [ref=f611e221]:
+                                        - rowgroup [ref=f611e222]:
+                                          - row [ref=f611e223]:
+                                            - cell "Task of project" [ref=f611e224]
+                                            - cell [ref=f611e225]
+                                            - cell [ref=f611e226]:
+                                              - combobox [ref=f611e228]:
+                                                - textbox [ref=f611e229]
+                                                - button [ref=f611e230] [cursor=pointer]:
+                                                  - generic [ref=f611e231]: 
+                          - row [ref=f611e232]:
+                            - cell [ref=f611e233]
+                          - row [ref=f611e234]:
+                            - cell [ref=f611e235]:
+                              - table [ref=f611e236]:
+                                - rowgroup [ref=f611e237]:
+                                  - row [ref=f611e238]:
+                                    - cell [ref=f611e239]:
+                                      - table [ref=f611e240]:
+                                        - rowgroup [ref=f611e241]:
+                                          - row [ref=f611e242]:
+                                            - cell "Expense date" [ref=f611e243]
+                                            - cell [ref=f611e244]
+                                            - cell [ref=f611e245]:
+                                              - combobox [ref=f611e246]:
+                                                - textbox [ref=f611e247]: Aug 18, 2026
+                                                - button [ref=f611e248] [cursor=pointer]:
+                                                  - generic [ref=f611e249]: 
+                                                - text:    
+          - separator [ref=f611e250]
+          - generic [ref=f611e251]:
+            - generic [ref=f611e252]: Expense lines
+            - generic [ref=f611e255]:
+              - table [ref=f611e256]:
+                - rowgroup [ref=f611e257]:
+                  - row [ref=f611e258]:
+                    - cell [ref=f611e259]:
+                      - table [ref=f611e260]:
+                        - rowgroup [ref=f611e261]:
+                          - row [ref=f611e262]:
+                            - cell "Task" [ref=f611e263]
+                            - cell [ref=f611e264]
+                            - cell [ref=f611e265]:
+                              - combobox [ref=f611e267]:
+                                - textbox [active] [ref=f611e268]
+                                - button [ref=f611e269] [cursor=pointer]:
+                                  - generic [ref=f611e270]: 
+                                - dialog [ref=f611e343]:
+                                  - table [ref=f611e345]:
+                                    - rowgroup [ref=f611e346]:
+                                      - row [ref=f611e347]:
+                                        - cell [ref=f611e348]:
+                                          - table [ref=f611e349]:
+                                            - rowgroup [ref=f611e350]:
+                                              - row [ref=f611e351]:
+                                                - cell [ref=f611e352]:
+                                                  - generic [ref=f611e353]:
+                                                    - table [ref=f611e355]:
+                                                      - rowgroup [ref=f611e360]:
+                                                        - row [ref=f611e361]:
+                                                          - columnheader "Task name (Task code)" [ref=f611e362]
+                                                          - columnheader "Project name (Project code)" [ref=f611e364]
+                                                          - columnheader [ref=f611e366]
+                                                    - table [ref=f611e368]:
+                                                      - rowgroup [ref=f611e372]:
+                                                        - row [ref=f611e373]:
+                                                          - cell "start up (ORDER0006-0001)" [ref=f611e374] [cursor=pointer]
+                                                          - cell "Test project Libre Palan (ORDER0006)" [ref=f611e376] [cursor=pointer]
+                                                        - row [ref=f611e378]:
+                                                          - cell "atribuição de tarefas (ORDER0006-0002)" [ref=f611e379] [cursor=pointer]
+                                                          - cell "Test project Libre Palan (ORDER0006)" [ref=f611e381] [cursor=pointer]
+                                                        - row [ref=f611e383]:
+                                                          - cell "execução do plano (ORDER0006-0004)" [ref=f611e384] [cursor=pointer]
+                                                          - cell "Test project Libre Palan (ORDER0006)" [ref=f611e386] [cursor=pointer]
+                                                        - row [ref=f611e388]:
+                                                          - cell "verificar cabos eléctricos com malha e sem malha (ORDER0006-0005)" [ref=f611e389] [cursor=pointer]
+                                                          - cell "Test project Libre Palan (ORDER0006)" [ref=f611e391] [cursor=pointer]
+                                                        - row [ref=f611e393]:
+                                                          - cell "verificar variadores de ajustar (ORDER0006-0006)" [ref=f611e394] [cursor=pointer]
+                                                          - cell "Test project Libre Palan (ORDER0006)" [ref=f611e396] [cursor=pointer]
+                                                        - row [ref=f611e398]:
+                                                          - cell "Phase 1 (ORDER0047-0001)" [ref=f611e399] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e401] [cursor=pointer]'
+                                                        - row [ref=f611e403]:
+                                                          - cell "Task 1 (ORDER0047-0003)" [ref=f611e404] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e406] [cursor=pointer]'
+                                                        - row [ref=f611e408]:
+                                                          - cell "Task 2 (ORDER0047-0004)" [ref=f611e409] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e411] [cursor=pointer]'
+                                                        - row [ref=f611e413]:
+                                                          - cell "Task 3 (ORDER0047-0005)" [ref=f611e414] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e416] [cursor=pointer]'
+                                                        - row [ref=f611e418]:
+                                                          - cell "Phase 2 (ORDER0047-0002)" [ref=f611e419] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e421] [cursor=pointer]'
+                                                        - row [ref=f611e423]:
+                                                          - cell "Task 4 (ORDER0047-0006)" [ref=f611e424] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e426] [cursor=pointer]'
+                                                        - row [ref=f611e428]:
+                                                          - cell "Task 5 (ORDER0047-0007)" [ref=f611e429] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #1 (THE_4101)" [ref=f611e431] [cursor=pointer]'
+                                                        - row [ref=f611e433]:
+                                                          - cell "Install New Launcher (ORDER0005-0001)" [ref=f611e434] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e436] [cursor=pointer]
+                                                        - row [ref=f611e438]:
+                                                          - cell "Install mini launcher in vacuum (ORDER0005-0002)" [ref=f611e439] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e441] [cursor=pointer]
+                                                        - row [ref=f611e443]:
+                                                          - cell "Set up launch electronics + test (ORDER0005-0003)" [ref=f611e444] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e446] [cursor=pointer]
+                                                        - row [ref=f611e448]:
+                                                          - cell "Spec out launch electronics (ORDER0005-0004)" [ref=f611e449] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e451] [cursor=pointer]
+                                                        - row [ref=f611e453]:
+                                                          - cell "Design PCB + order parts (ORDER0005-0005)" [ref=f611e454] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e456] [cursor=pointer]
+                                                        - row [ref=f611e458]:
+                                                          - cell "Wait for delivery (ORDER0005-0006)" [ref=f611e459] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e461] [cursor=pointer]
+                                                        - row [ref=f611e463]:
+                                                          - cell "Build launcher PCB + test (ORDER0005-0007)" [ref=f611e464] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e466] [cursor=pointer]
+                                                        - row [ref=f611e468]:
+                                                          - cell "Set up 1560 nm interferometer (ORDER0005-0008)" [ref=f611e469] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e471] [cursor=pointer]
+                                                        - row [ref=f611e473]:
+                                                          - cell "Integrate laser lock firmware (ORDER0005-0011)" [ref=f611e474] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e476] [cursor=pointer]
+                                                        - row [ref=f611e478]:
+                                                          - cell "Set up laser with wavelength control (ORDER0005-0009)" [ref=f611e479] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e481] [cursor=pointer]
+                                                        - row [ref=f611e483]:
+                                                          - cell "Set up laser lock (ORDER0005-0010)" [ref=f611e484] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e486] [cursor=pointer]
+                                                        - row [ref=f611e488]:
+                                                          - cell "Interferometer connections (ORDER0005-0012)" [ref=f611e489] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e491] [cursor=pointer]
+                                                        - row [ref=f611e493]:
+                                                          - cell "Test interferometer offline (ORDER0005-0013)" [ref=f611e494] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e496] [cursor=pointer]
+                                                        - row [ref=f611e498]:
+                                                          - cell "Design output coupler mount (ORDER0005-0014)" [ref=f611e499] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e501] [cursor=pointer]
+                                                        - row [ref=f611e503]:
+                                                          - cell "Order mount and wait for delivery (ORDER0005-0015)" [ref=f611e504] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e506] [cursor=pointer]
+                                                        - row [ref=f611e508]:
+                                                          - cell "Install interferometer + test (ORDER0005-0016)" [ref=f611e509] [cursor=pointer]
+                                                          - cell "miniGrav prototype (ORDER0005)" [ref=f611e511] [cursor=pointer]
+                                                        - row [ref=f611e513]:
+                                                          - cell "VRATNICE (ORDER0017-0001)" [ref=f611e514] [cursor=pointer]
+                                                          - cell "new test project (ORDER0017)" [ref=f611e516] [cursor=pointer]
+                                                        - row [ref=f611e518]:
+                                                          - cell "DILNA AUTO (ORDER0017-0002)" [ref=f611e519] [cursor=pointer]
+                                                          - cell "new test project (ORDER0017)" [ref=f611e521] [cursor=pointer]
+                                                        - row [ref=f611e523]:
+                                                          - cell "R2 (ORDER0017-0003)" [ref=f611e524] [cursor=pointer]
+                                                          - cell "new test project (ORDER0017)" [ref=f611e526] [cursor=pointer]
+                                                        - row [ref=f611e528]:
+                                                          - cell "AAA (ORDER0029-0001)" [ref=f611e529] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e531] [cursor=pointer]
+                                                        - row [ref=f611e533]:
+                                                          - cell "AA2 (ORDER0029-0004)" [ref=f611e534] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e536] [cursor=pointer]
+                                                        - row [ref=f611e538]:
+                                                          - cell "AA22 (ORDER0029-0005)" [ref=f611e539] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e541] [cursor=pointer]
+                                                        - row [ref=f611e543]:
+                                                          - cell "AA21 (ORDER0029-0006)" [ref=f611e544] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e546] [cursor=pointer]
+                                                        - row [ref=f611e548]:
+                                                          - cell "AA1 (ORDER0029-0002)" [ref=f611e549] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e551] [cursor=pointer]
+                                                        - row [ref=f611e553]:
+                                                          - cell "AA11 (ORDER0029-0007)" [ref=f611e554] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e556] [cursor=pointer]
+                                                        - row [ref=f611e558]:
+                                                          - cell "AA3 (ORDER0029-0003)" [ref=f611e559] [cursor=pointer]
+                                                          - cell "GAS stations (ORDER0029)" [ref=f611e561] [cursor=pointer]
+                                                        - row [ref=f611e563]:
+                                                          - cell "test (ORDER0035-0001)" [ref=f611e564] [cursor=pointer]
+                                                          - cell "OpenWeb (ORDER0035)" [ref=f611e566] [cursor=pointer]
+                                                        - row [ref=f611e568]:
+                                                          - cell "test2 (ORDER0035-0002)" [ref=f611e569] [cursor=pointer]
+                                                          - cell "OpenWeb (ORDER0035)" [ref=f611e571] [cursor=pointer]
+                                                        - row [ref=f611e573]:
+                                                          - cell "T1 (ORDER0021-0001)" [ref=f611e574] [cursor=pointer]
+                                                          - cell "Projet UT (ORDER0021)" [ref=f611e576] [cursor=pointer]
+                                                        - row [ref=f611e578]:
+                                                          - cell "T2 (ORDER0021-0003)" [ref=f611e579] [cursor=pointer]
+                                                          - cell "Projet UT (ORDER0021)" [ref=f611e581] [cursor=pointer]
+                                                        - row [ref=f611e583]:
+                                                          - cell "T3 (ORDER0021-0002)" [ref=f611e584] [cursor=pointer]
+                                                          - cell "Projet UT (ORDER0021)" [ref=f611e586] [cursor=pointer]
+                                                        - row [ref=f611e588]:
+                                                          - cell "feasability (ORDER0052-0001)" [ref=f611e589] [cursor=pointer]
+                                                          - cell "stadium (ORDER0052)" [ref=f611e591] [cursor=pointer]
+                                                        - row [ref=f611e593]:
+                                                          - cell "analysis (ORDER0052-0003)" [ref=f611e594] [cursor=pointer]
+                                                          - cell "stadium (ORDER0052)" [ref=f611e596] [cursor=pointer]
+                                                        - row [ref=f611e598]:
+                                                          - cell "report (ORDER0052-0004)" [ref=f611e599] [cursor=pointer]
+                                                          - cell "stadium (ORDER0052)" [ref=f611e601] [cursor=pointer]
+                                                        - row [ref=f611e603]:
+                                                          - cell "qdr (ORDER0052-0002)" [ref=f611e604] [cursor=pointer]
+                                                          - cell "stadium (ORDER0052)" [ref=f611e606] [cursor=pointer]
+                                                        - row [ref=f611e608]:
+                                                          - cell "Phase 1 (ORDER0048-0001)" [ref=f611e609] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #2 (ORDER0048)" [ref=f611e611] [cursor=pointer]'
+                                                        - row [ref=f611e613]:
+                                                          - cell "Task 1 (ORDER0048-0003)" [ref=f611e614] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #2 (ORDER0048)" [ref=f611e616] [cursor=pointer]'
+                                                        - row [ref=f611e618]:
+                                                          - cell "Task 2 (ORDER0048-0004)" [ref=f611e619] [cursor=pointer]
+                                                          - 'cell "THE_Testproject #2 (ORDER0048)" [ref=f611e621] [cursor=pointer]'
+                                                        - row [ref=f611e623]:
+                                                          - cell [ref=f611e624] [cursor=pointer]
+                                                        - row [ref=f611e626]:
+                                                          - cell [ref=f611e627] [cursor=pointer]
+                                                        - row [ref=f611e629]:
+                                                          - cell [ref=f611e630] [cursor=pointer]
+                                                        - row [ref=f611e632]:
+                                                          - cell [ref=f611e633] [cursor=pointer]
+                                                        - row [ref=f611e635]:
+                                                          - cell [ref=f611e636] [cursor=pointer]
+                                                        - row [ref=f611e638]:
+                                                          - cell [ref=f611e639] [cursor=pointer]
+                                                        - row [ref=f611e641]:
+                                                          - cell [ref=f611e642] [cursor=pointer]
+                                                        - row [ref=f611e644]:
+                                                          - cell [ref=f611e645] [cursor=pointer]
+                                                        - row [ref=f611e647]:
+                                                          - cell [ref=f611e648] [cursor=pointer]
+                                                        - row [ref=f611e650]:
+                                                          - cell [ref=f611e651] [cursor=pointer]
+                                                        - row [ref=f611e653]:
+                                                          - cell [ref=f611e654] [cursor=pointer]
+                                                        - row [ref=f611e656]:
+                                                          - cell [ref=f611e657] [cursor=pointer]
+                                                        - row [ref=f611e659]:
+                                                          - cell [ref=f611e660] [cursor=pointer]
+                                                        - row [ref=f611e662]:
+                                                          - cell [ref=f611e663] [cursor=pointer]
+                                                      - rowgroup:
+                                                        - row
+                            - cell [ref=f611e271]
+                            - cell [ref=f611e272]:
+                              - separator [ref=f611e273]
+                            - cell [ref=f611e274]
+                            - cell "Value" [ref=f611e275]
+                            - cell [ref=f611e276]
+                            - cell [ref=f611e277]:
+                              - textbox [ref=f611e278]: 0 €
+                            - cell [ref=f611e279]
+                            - cell [ref=f611e280]:
+                              - separator [ref=f611e281]
+                            - cell [ref=f611e282]
+                            - cell "Concept" [ref=f611e283]
+                            - cell [ref=f611e284]
+                            - cell [ref=f611e285]:
+                              - textbox [ref=f611e286]
+                            - cell [ref=f611e287]
+                            - cell [ref=f611e288]:
+                              - separator [ref=f611e289]
+                            - cell [ref=f611e290]
+                            - cell "Resource" [ref=f611e291]
+                            - cell [ref=f611e292]
+                            - cell [ref=f611e293]:
+                              - combobox [ref=f611e295]:
+                                - textbox [ref=f611e296]
+                                - button [ref=f611e297] [cursor=pointer]:
+                                  - generic [ref=f611e298]: 
+                            - cell [ref=f611e299]
+                            - cell [ref=f611e300]:
+                              - separator [ref=f611e301]
+                            - cell [ref=f611e302]
+                            - cell [ref=f611e303]:
+                              - button "New" [ref=f611e304] [cursor=pointer]
+              - separator [ref=f611e305]
+              - grid [ref=f611e306]:
+                - rowgroup [ref=f611e315]:
+                  - columnheader "Task" [ref=f611e316]
+                  - columnheader "Value" [ref=f611e318]
+                  - columnheader "Concept" [ref=f611e320]
+                  - columnheader "Date" [ref=f611e322]
+                  - columnheader "Resource" [ref=f611e324]
+                  - columnheader "Code" [ref=f611e326]
+                  - columnheader "Operations" [ref=f611e328]
+                - rowgroup
+                - generic [ref=f611e338]:    
+          - button "Save" [ref=f611e339] [cursor=pointer]
+          - button "Save & Continue" [ref=f611e340] [cursor=pointer]
+          - button "Cancel" [ref=f611e341] [cursor=pointer]
+  - table [ref=f611e144]:
+    - rowgroup [ref=f611e145]:
+      - row [ref=f611e146]:
+        - cell [ref=f611e147]:
+          - generic [ref=f611e149]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f611e150] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f611e151]
+  - text:    

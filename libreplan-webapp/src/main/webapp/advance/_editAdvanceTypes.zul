@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -27,7 +28,7 @@
         </tabs>
         <tabpanels>
             <tabpanel>
-                <grid fixedLayout="true">
+                <grid>
                     <columns>
                         <column width="200px" />
                         <column  />
@@ -36,45 +37,46 @@
                     <rows>
                         <row>
                             <label value="${i18n:_t('Unit name')}" />
-                            <textbox id="unitName" value="@{controller.advanceType.unitName}"
-                                     constraint="@{controller.distinctNames}"
+                            <textbox id="unitName"
+                                     value="@load(controller.advanceType.unitName) @save(controller.advanceType.unitName)"
+                                     constraint="@load(controller.distinctNames())"
                                      width="300px"
-                                     disabled="@{controller.immutable}"
+                                     disabled="@load(controller.immutable)"
                                      onBlur="controller.updateWindowTitle()"
                                      sclass="focus-element" />
                         </row>
                         <row>
                             <label value="${i18n:_t('Active')}" />
-                            <checkbox checked="@{controller.advanceType.active}"
-                                      disabled="@{controller.immutable}" />
+                            <checkbox checked="@load(controller.advanceType.active) @save(controller.advanceType.active)"
+                                      disabled="@load(controller.immutable)" />
                         </row>
                         <row>
                             <label value="${i18n:_t('Default max value')}" />
                             <decimalbox id="defaultMaxValue"
                                         scale="2"
                                         width="300px"
-                                        value="@{controller.defaultMaxValue}"
-                                        constraint="@{controller.greaterThanPrecision}"
-                                        disabled="@{controller.percentage}" />
+                                        value="@load(controller.defaultMaxValue) @save(controller.defaultMaxValue)"
+                                        constraint="@load(controller.greaterThanPrecision())"
+                                        disabled="@load(controller.percentage)" />
                         </row>
                         <row>
                             <label value="${i18n:_t('Precision')}" />
                             <decimalbox id="precision"
                                         scale="4"
                                         width="300px"
-                                        value = "@{controller.advanceType.unitPrecision}"
-                                        constraint = "@{controller.lessThanDefaultMaxValue}"
-                                        disabled="@{controller.immutable}" />
+                                        value = "@load(controller.advanceType.unitPrecision) @save(controller.advanceType.unitPrecision)"
+                                        constraint = "@load(controller.lessThanDefaultMaxValue())"
+                                        disabled="@load(controller.immutable)" />
                         </row>
                         <row>
                             <label value="${i18n:_t('Type')}" />
-                            <label value="@{controller.advanceType.type}" />
+                            <label value="@load(controller.advanceType.type)" />
                         </row>
                         <row>
                             <label value="${i18n:_t('Percentage')}" />
                             <checkbox id="percentage"
-                                      checked="@{controller.percentage}"
-                                      disabled="@{controller.immutable}" />
+                                      checked="@load(controller.percentage) @save(controller.percentage)"
+                                      disabled="@load(controller.immutable)" />
                         </row>
                     </rows>
                 </grid>
@@ -86,11 +88,11 @@
             autodisable="self"
             label="${arg.save_button_label}"
             sclass="save-button global-action"
-            disabled="@{controller.immutable}" />
+            disabled="@load(controller.immutable)" />
     <button onClick="controller.saveAndContinue();"
             label="${arg.save_and_continue_button_label}"
             sclass="save-button global-action"
-            disabled="@{controller.immutable}" />
+            disabled="@load(controller.immutable)" />
     <button onClick="controller.cancelForm();"
             label="${arg.cancel_button_label}"
             sclass="cancel-button global-action" />

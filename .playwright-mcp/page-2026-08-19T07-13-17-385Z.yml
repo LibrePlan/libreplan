@@ -1,0 +1,253 @@
+- generic [ref=f54e1]:
+  - generic [ref=f54e4]:
+    - generic [ref=f54e5]:
+      - table [ref=f54e6]:
+        - rowgroup [ref=f54e7]:
+          - row [ref=f54e1560]:
+            - cell [ref=f54e9]:
+              - link [ref=f54e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f54e1561]:
+              - table [ref=f54e13]:
+                - rowgroup [ref=f54e14]:
+                  - row [ref=f54e1562]:
+                    - cell [ref=f54e1563]:
+                      - generic [ref=f54e17]:
+                        - menubar [ref=f54e18]:
+                          - menuitem "Planning" [ref=f54e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f54e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f54e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f54e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f54e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f54e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f54e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f54e33]:
+                          - rowgroup [ref=f54e34]:
+                            - row [ref=f54e1564]:
+                              - cell [ref=f54e1565]:
+                                - table [ref=f54e37]:
+                                  - rowgroup [ref=f54e38]:
+                                    - row [ref=f54e1566]:
+                                      - cell [ref=f54e40]
+                                      - cell [ref=f54e41]:
+                                        - strong [ref=f54e42]: START
+                                      - cell [ref=f54e43]
+                                      - cell [ref=f54e1567]:
+                                        - table [ref=f54e45]:
+                                          - rowgroup [ref=f54e46]:
+                                            - row [ref=f54e1568]:
+                                              - cell [ref=f54e1569]:
+                                                - table [ref=f54e49]:
+                                                  - rowgroup [ref=f54e50]:
+                                                    - row [ref=f54e1570]:
+                                                      - cell [ref=f54e1571]
+                                                      - cell [ref=f54e1573]
+                                                      - cell "Planning" [ref=f54e1574]
+                                                      - cell [ref=f54e1575]
+                                                      - cell [ref=f54e1576]
+                                                      - cell [ref=f54e1578]
+                                                      - cell "Project Details" [ref=f54e1579]
+                                                      - cell [ref=f54e1580]
+                                                      - cell [ref=f54e1581]
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                              - cell [ref=f54e61]:
+                                - generic [ref=f54e62]:
+                                  - link "Help" [ref=f54e63] [cursor=pointer]:
+                                    - /url: /help/en/index.html
+                                  - img "Axuda" [ref=f54e65]
+                                  - img "Info" [ref=f54e67]
+      - table [ref=f54e69]:
+        - rowgroup [ref=f54e70]:
+          - row [ref=f54e71]:
+            - cell [ref=f54e72]
+            - 'cell "user: admin" [ref=f54e73]'
+            - cell [ref=f54e74]:
+              - link "[Log out]" [ref=f54e75] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f54e76]:
+      - table [ref=f54e77]:
+        - rowgroup [ref=f54e78]:
+          - row [ref=f54e79]:
+            - cell [ref=f54e80]:
+              - table [ref=f54e81]:
+                - rowgroup [ref=f54e82]:
+                  - row [ref=f54e83]:
+                    - cell [ref=f54e84]:
+                      - table [ref=f54e85]:
+                        - rowgroup [ref=f54e86]:
+                          - row [ref=f54e87]:
+                            - cell [ref=f54e88]:
+                              - table [ref=f54e89]:
+                                - rowgroup [ref=f54e90]:
+                                  - row [ref=f54e91]:
+                                    - cell [ref=f54e1583]:
+                                      - button "Save Project" [ref=f54e1584] [cursor=pointer]
+                                    - cell [ref=f54e1586]
+                                    - cell [ref=f54e1587]:
+                                      - button "Cancel editing" [ref=f54e1588] [cursor=pointer]
+                  - row [ref=f54e95]:
+                    - cell [ref=f54e96]
+                  - row [ref=f54e97]:
+                    - cell [ref=f54e98]:
+                      - table [ref=f54e99]:
+                        - rowgroup [ref=f54e100]:
+                          - row [ref=f54e101]:
+                            - cell [ref=f54e102]:
+                              - table [ref=f54e103]:
+                                - rowgroup [ref=f54e104]:
+                                  - row [ref=f54e105]:
+                                    - cell [ref=f54e106]:
+                                      - button "Projects Planning" [ref=f54e107] [cursor=pointer]
+                                  - row [ref=f54e108]:
+                                    - cell [ref=f54e109]
+                                  - row:
+                                    - cell
+                                  - row [ref=f54e110]:
+                                    - cell [ref=f54e111]
+                                  - row [ref=f54e112]:
+                                    - cell [ref=f54e113]:
+                                      - button "Projects List" [ref=f54e114] [cursor=pointer]
+                                  - row [ref=f54e115]:
+                                    - cell [ref=f54e116]
+                                  - row:
+                                    - cell
+                                  - row [ref=f54e117]:
+                                    - cell [ref=f54e118]
+                                  - row [ref=f54e119]:
+                                    - cell [ref=f54e120]:
+                                      - button "Resources Load" [ref=f54e121] [cursor=pointer]
+                                  - row [ref=f54e122]:
+                                    - cell [ref=f54e123]
+                                  - row:
+                                    - cell
+                                  - row [ref=f54e124]:
+                                    - cell [ref=f54e125]
+                                  - row [ref=f54e126]:
+                                    - cell [ref=f54e127]:
+                                      - button "Queue-based Resources Planning" [ref=f54e128] [cursor=pointer]
+                                  - row [ref=f54e129]:
+                                    - cell [ref=f54e130]
+                                  - row:
+                                    - cell
+                                  - row [ref=f54e131]:
+                                    - cell [ref=f54e132]
+                                  - row [ref=f54e133]:
+                                    - cell [ref=f54e134]:
+                                      - button "Logs" [ref=f54e135] [cursor=pointer]
+                                  - row [ref=f54e136]:
+                                    - cell [ref=f54e137]
+                                  - row:
+                                    - cell
+                                  - row [ref=f54e138]:
+                                    - cell [ref=f54e139]
+                                  - row [ref=f54e140]:
+                                    - cell [ref=f54e141]:
+                                      - button "Pipeline" [ref=f54e142] [cursor=pointer]
+                                  - row [ref=f54e143]:
+                                    - cell [ref=f54e144]
+                                  - row:
+                                    - cell
+      - text:    
+      - generic [ref=f54e1590]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table:
+                  - rowgroup:
+                    - row:
+                      - text:           
+                      - cell:
+                        - table:
+                          - rowgroup:
+                            - row:
+                              - cell:
+                                - table
+        - text:    
+        - generic [ref=f54e1591]:
+          - table:
+            - rowgroup:
+              - row:
+                - cell:
+                  - table
+          - text:     
+          - generic [ref=f54e1594]:
+            - tablist [ref=f54e1595]:
+              - listitem [ref=f54e1596] [cursor=pointer]:
+                - generic [ref=f54e1597]: WBS (tasks)
+              - listitem [ref=f54e1599] [cursor=pointer]:
+                - generic [ref=f54e1600]: General data
+              - listitem [ref=f54e1602] [cursor=pointer]:
+                - generic [ref=f54e1603]: Cost
+              - listitem [ref=f54e1605] [cursor=pointer]:
+                - generic [ref=f54e1606]: Progress
+              - listitem [ref=f54e1608] [cursor=pointer]:
+                - generic [ref=f54e1609]: Labels
+              - listitem [ref=f54e1611] [cursor=pointer]:
+                - generic [ref=f54e1612]: Criterion Requirement
+              - listitem [ref=f54e1614] [cursor=pointer]:
+                - generic [ref=f54e1615]: Materials
+              - listitem [ref=f54e1617] [cursor=pointer]:
+                - generic [ref=f54e1618]: Task quality forms
+              - listitem [ref=f54e1620] [cursor=pointer]:
+                - generic [ref=f54e1621]: Files
+              - listitem [ref=f54e1623] [cursor=pointer]:
+                - generic [ref=f54e1624]: Authorizations
+            - text:  
+            - generic [ref=f54e1626]:
+              - text:    
+              - tabpanel [ref=f54e1627]
+              - text:                                     
+    - table [ref=f54e755]:
+      - rowgroup [ref=f54e756]:
+        - row [ref=f54e757]:
+          - cell [ref=f54e758]:
+            - generic [ref=f54e760]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f54e761] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f54e762]
+    - text:    
+  - generic [ref=f54e1628]:
+    - generic [ref=f54e1629]: "LibrePlan: Runtime Error"
+    - generic [ref=f54e1631]:
+      - generic [ref=f54e1632]: Message - class java.util.ArrayList cannot be converted to interface org.zkoss.zul.ListModel.
+      - generic [ref=f54e1635]:
+        - grid [ref=f54e1636]:
+          - rowgroup [ref=f54e1640]:
+            - gridcell "Exception type" [ref=f54e1641]
+            - gridcell "class java.lang.ClassCastException" [ref=f54e1643]
+            - gridcell "Status code" [ref=f54e1645]
+            - gridcell "500" [ref=f54e1647]
+            - gridcell "Stacktrace" [ref=f54e1649]
+            - gridcell [ref=f54e1651]:
+              - textbox [active] [ref=f54e1653]: "java.lang.ClassCastException: class java.util.ArrayList cannot be converted to interface org.zkoss.zul.ListModel. at org.zkoss.lang.Classes.coerce(Classes.java:1470) at org.zkoss.lang.reflect.Fields.set(Fields.java:154) at org.zkoss.bind.impl.PropertyExpression.setValue(PropertyExpression.java:75) at org.zkoss.bind.impl.LoadPropertyBindingImpl.load(LoadPropertyBindingImpl.java:90) at org.zkoss.bind.impl.PropertyBindingHandler.doLoadBinding(PropertyBindingHandler.java:140) at org.zkoss.bind.impl.PropertyBindingHandler.doLoad(PropertyBindingHandler.java:346) at org.zkoss.bind.impl.BinderImpl.loadComponentProperties0(BinderImpl.java:2595) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2562) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent0(BinderImpl.java:2567) at org.zkoss.bind.impl.BinderImpl.loadComponent(BinderImpl.java:2497) at org.libreplan.web.common.Util.reloadBindings(Util.java:155) at org.libreplan.web.common.Util.reloadBindings(Util.java:147) at org.libreplan.web.common.Util.reloadBindings(Util.java:118) at org.libreplan.web.orders.OrderCRUDController.addEditWindowIfNecessary(OrderCRUDController.java:416) at org.libreplan.web.orders.OrderCRUDController.prepareEditWindow(OrderCRUDController.java:1145) at org.libreplan.web.orders.OrderCRUDController.initEdit(OrderCRUDController.java:1113) at org.libreplan.web.planner.tabs.OrdersTabCreator$4.afterShowAction(OrdersTabCreator.java:168) at org.libreplan.web.planner.tabs.CreatedOnDemandTab.show(CreatedOnDemandTab.java:95) at org.libreplan.web.planner.tabs.TabOnModeType.changeTab(TabOnModeType.java:85) at org.libreplan.web.planner.tabs.TabOnModeType.lambda$new$0(TabOnModeType.java:76) at org.libreplan.web.planner.tabs.Mode.fireModeTypeChanged(Mode.java:101) at org.libreplan.web.planner.tabs.Mode.changeTo(Mode.java:92) at org.libreplan.web.planner.tabs.Mode.goToOrderMode(Mode.java:81) at org.libreplan.web.planner.tabs.MultipleTabsPlannerController.lambda$changeModeTo$0(MultipleTabsPlannerController.java:617) at org.zkoss.ganttz.TabsRegistry.show(TabsRegistry.java:64) at org.libreplan.web.planner.tabs.MultipleTabsPlannerController$2.goToOrderDetails(MultipleTabsPlannerController.java:317) at org.libreplan.web.orders.OrderCRUDController.goToEditForm(OrderCRUDController.java:1107) at org.libreplan.web.orders.OrderCRUDController$OrdersRowRenderer.lambda$render$0(OrderCRUDController.java:1308) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470) Caused by: java.lang.NoSuchMethodException: org.zkoss.zul.ListModel: no constructor for [[]] at org.zkoss.lang.Classes.newInstance(Classes.java:101) at org.zkoss.lang.Classes.coerce(Classes.java:1466) ... 41 more"
+        - table [ref=f54e1654]:
+          - rowgroup [ref=f54e1655]:
+            - row [ref=f54e1656]:
+              - cell [ref=f54e1657]:
+                - table [ref=f54e1658]:
+                  - rowgroup [ref=f54e1659]:
+                    - row [ref=f54e1660]:
+                      - cell [ref=f54e1661]:
+                        - button "Continue" [ref=f54e1662] [cursor=pointer]
+                      - cell [ref=f54e1663]
+                      - cell [ref=f54e1664]:
+                        - button "Reload" [ref=f54e1665] [cursor=pointer]
+                      - cell [ref=f54e1666]
+                      - cell [ref=f54e1667]:
+                        - button "Exit session" [ref=f54e1668] [cursor=pointer]

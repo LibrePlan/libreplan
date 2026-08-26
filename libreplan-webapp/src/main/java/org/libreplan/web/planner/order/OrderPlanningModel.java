@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -61,6 +62,8 @@ import org.libreplan.web.planner.allocation.IResourceAllocationCommand;
 import org.libreplan.web.planner.calendar.CalendarAllocationController;
 import org.libreplan.web.planner.calendar.ICalendarAllocationCommand;
 import org.libreplan.web.planner.chart.Chart;
+import org.libreplan.web.planner.chart.ChartFiller;
+import org.libreplan.web.planner.chart.ChartSeries;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.libreplan.web.planner.chart.IChartFiller;
@@ -82,8 +85,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkforge.timeplot.Plotinfo;
-import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.PlannerConfiguration;
@@ -351,7 +352,8 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         addPrintSupport(configuration, order);
         Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
-        chartComponent.setHeight("200px");
+        // Kept in sync with ChartFiller.CHART_HEIGHT_PX - see CompanyPlanningModel for why.
+        chartComponent.setHeight((ChartFiller.CHART_HEIGHT_PX + 50) + "px");
         appendTabs(chartComponent);
 
         setDefaultButtonState(configuration,user);
@@ -372,11 +374,11 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         Tabpanels chartTabpanels = new Tabpanels();
 
         // Create 'Load' tab
-        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+        Div chartLoadTimeplot = createEmptyTimeplot();
         chartTabpanels.appendChild(createLoadTimeplotTab(chartLoadTimeplot));
 
         // Create 'Earned value' tab
-        Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
+        Div chartEarnedValueTimeplot = createEmptyTimeplot();
         this.earnedValueChartFiller = createOrderEarnedValueChartFiller(planner.getTimeTracker());
         chartTabpanels.appendChild(createEarnedValueTab(chartEarnedValueTimeplot, earnedValueChartFiller));
 
@@ -465,19 +467,17 @@ public class OrderPlanningModel implements IOrderPlanningModel {
                         }));
     }
 
-    private Timeplot createEmptyTimeplot() {
-        Timeplot timeplot = new Timeplot();
-        timeplot.appendChild(new Plotinfo());
-        return timeplot;
+    private Div createEmptyTimeplot() {
+        return new Div();
     }
 
-    private Tabpanel createLoadTimeplotTab(Timeplot loadChart) {
+    private Tabpanel createLoadTimeplotTab(Div loadChart) {
         Tabpanel result = new Tabpanel();
         appendLoadChartAndLegend(result, loadChart);
         return result;
     }
 
-    private void appendLoadChartAndLegend(Tabpanel loadChartPanel, Timeplot loadChart) {
+    private void appendLoadChartAndLegend(Tabpanel loadChartPanel, Div loadChart) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
         hbox.setSclass("load-chart");
@@ -498,7 +498,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
     }
 
     private Tabpanel createEarnedValueTab(
-            Timeplot chartEarnedValueTimeplot, OrderEarnedValueChartFiller earnedValueChartFiller) {
+            Div chartEarnedValueTimeplot, OrderEarnedValueChartFiller earnedValueChartFiller) {
 
         Tabpanel result = new Tabpanel();
         appendEarnedValueChartAndLegend(result, chartEarnedValueTimeplot, earnedValueChartFiller);
@@ -507,7 +507,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
 
     private void appendEarnedValueChartAndLegend(
             Tabpanel earnedValueChartPanel,
-            Timeplot chartEarnedValueTimeplot,
+            Div chartEarnedValueTimeplot,
             final OrderEarnedValueChartFiller earnedValueChartFiller) {
 
         Vbox vbox = new Vbox();
@@ -524,6 +524,9 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         this.earnedValueChartLegendDatebox =
                 new Datebox(initialDateForIndicatorValues.toDateTimeAtStartOfDay().toDate());
 
+        // No width was ever set here, so the box shrinks to ZK's own default (~90px) - too narrow
+        // to show a full "MMM d, yyyy" date (e.g. "Aug 25, 2026") without clipping.
+        this.earnedValueChartLegendDatebox.setWidth("110px");
         this.earnedValueChartLegendDatebox.setConstraint(dateMustBeInsideVisualizationArea(earnedValueChartFiller));
         dateHbox.appendChild(this.earnedValueChartLegendDatebox);
 
@@ -548,7 +551,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         earnedValueChartPanel.appendChild(hbox);
     }
 
-    private void setupLoadChart(Timeplot chartLoadTimeplot, Planner planner, ChangeHooker changeHooker) {
+    private void setupLoadChart(Div chartLoadTimeplot, Planner planner, ChangeHooker changeHooker) {
         Chart loadChart = setupChart(
                 new OrderLoadChartFiller(planningState.getOrder()),
                 chartLoadTimeplot,
@@ -557,7 +560,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         refillLoadChartWhenNeeded(changeHooker, planner, loadChart, false);
     }
 
-    private void setupEarnedValueChart(Timeplot chartEarnedValueTimeplot,
+    private void setupEarnedValueChart(Div chartEarnedValueTimeplot,
                                        OrderEarnedValueChartFiller earnedValueChartFiller,
                                        Planner planner,
                                        ChangeHooker changeHooker) {
@@ -1052,7 +1055,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         };
     }
 
-    private Chart setupChart(IChartFiller loadChartFiller, Timeplot chartComponent, Planner planner) {
+    private Chart setupChart(IChartFiller loadChartFiller, Div chartComponent, Planner planner) {
         TimeTracker timeTracker = planner.getTimeTracker();
         Chart result = new Chart(chartComponent, loadChartFiller, timeTracker);
         result.setZoomLevel(planner.getZoomLevel());
@@ -1132,7 +1135,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
         }
 
         @Override
-        protected Plotinfo[] getPlotInfo(Interval interval) {
+        protected ChartSeries[] getPlotInfo(Interval interval) {
             resourceLoadCalculator.setOrder(order, planningState.getAssignmentsCalculator());
 
             ContiguousDaysLine<EffortDuration> maxCapacityOnResources =
@@ -1143,25 +1146,20 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             ContiguousDaysLine<EffortDuration> orderOverload = resourceLoadCalculator.getOrderOverload();
             ContiguousDaysLine<EffortDuration> allOverload = resourceLoadCalculator.getAllOverload();
 
-            Plotinfo plotOrderLoad = createPlotinfoFromDurations(
-                    groupAsNeededByZoom(toSortedMap(ContiguousDaysLine.min(orderLoad, maxCapacityOnResources))),
-                    interval);
+            ChartSeries plotOrderLoad = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(ContiguousDaysLine.min(orderLoad, maxCapacityOnResources))));
 
-            Plotinfo plotOtherLoad = createPlotinfoFromDurations(
-                    groupAsNeededByZoom(toSortedMap(min(allLoad, maxCapacityOnResources))),
-                    interval);
+            ChartSeries plotOtherLoad = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(min(allLoad, maxCapacityOnResources))));
 
-            Plotinfo plotMaxCapacity = createPlotinfoFromDurations(
-                    groupAsNeededByZoom(toSortedMap(maxCapacityOnResources)),
-                    interval);
+            ChartSeries plotMaxCapacity = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(maxCapacityOnResources)));
 
-            Plotinfo plotOrderOverload = createPlotinfoFromDurations(
-                    groupAsNeededByZoom(toSortedMap(sum(orderOverload, maxCapacityOnResources))),
-                    interval);
+            ChartSeries plotOrderOverload = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(sum(orderOverload, maxCapacityOnResources))));
 
-            Plotinfo plotOtherOverload = createPlotinfoFromDurations(
-                    groupAsNeededByZoom(toSortedMap(sum(allOverload, maxCapacityOnResources))),
-                    interval);
+            ChartSeries plotOtherOverload = createPlotinfoFromDurations(
+                    groupAsNeededByZoom(toSortedMap(sum(allOverload, maxCapacityOnResources))));
 
             plotOrderLoad.setFillColor(COLOR_ASSIGNED_LOAD);
             plotOrderLoad.setLineWidth(0);
@@ -1179,7 +1177,7 @@ public class OrderPlanningModel implements IOrderPlanningModel {
             plotOtherOverload.setFillColor(COLOR_OVERLOAD_GLOBAL);
             plotOtherOverload.setLineWidth(0);
 
-            return new Plotinfo[] { plotOtherOverload, plotOrderOverload, plotMaxCapacity, plotOtherLoad, plotOrderLoad };
+            return new ChartSeries[] { plotOtherOverload, plotOrderOverload, plotMaxCapacity, plotOtherLoad, plotOrderLoad };
         }
 
     }

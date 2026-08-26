@@ -1,0 +1,131 @@
+- generic [ref=f1025e4]:
+  - generic [ref=f1025e5]:
+    - table [ref=f1025e6]:
+      - rowgroup [ref=f1025e7]:
+        - row [ref=f1025e8]:
+          - cell [ref=f1025e9]:
+            - link [ref=f1025e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f1025e12]:
+            - table [ref=f1025e13]:
+              - rowgroup [ref=f1025e14]:
+                - row [ref=f1025e15]:
+                  - cell [ref=f1025e16]:
+                    - generic [ref=f1025e17]:
+                      - menubar [ref=f1025e18]:
+                        - menuitem "Planning" [ref=f1025e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f1025e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f1025e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f1025e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f1025e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f1025e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f1025e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f1025e33]:
+                        - rowgroup [ref=f1025e34]:
+                          - row [ref=f1025e35]:
+                            - cell [ref=f1025e36]:
+                              - table [ref=f1025e37]:
+                                - rowgroup [ref=f1025e38]:
+                                  - row [ref=f1025e39]:
+                                    - cell [ref=f1025e40]
+                                    - cell [ref=f1025e41]:
+                                      - strong [ref=f1025e42]: START
+                                    - cell [ref=f1025e43]
+                                    - cell [ref=f1025e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f1025e45]:
+                                        - rowgroup [ref=f1025e46]:
+                                          - row [ref=f1025e47]:
+                                            - cell [ref=f1025e48]:
+                                              - table [ref=f1025e49]:
+                                                - rowgroup [ref=f1025e50]:
+                                                  - row [ref=f1025e51]:
+                                                    - cell [ref=f1025e52]:
+                                                      - table [ref=f1025e53]:
+                                                        - rowgroup [ref=f1025e54]:
+                                                          - row [ref=f1025e55]:
+                                                            - cell [ref=f1025e56]:
+                                                              - table [ref=f1025e57]:
+                                                                - rowgroup [ref=f1025e58]:
+                                                                  - row [ref=f1025e59]:
+                                                                    - cell [ref=f1025e60]
+                                                                    - cell [ref=f1025e63]
+                                                                    - cell "Communications" [ref=f1025e64]
+                                                    - cell [ref=f1025e65]
+                                                    - cell [ref=f1025e66]:
+                                                      - table [ref=f1025e67]:
+                                                        - rowgroup [ref=f1025e68]:
+                                                          - row [ref=f1025e69]:
+                                                            - cell [ref=f1025e70]:
+                                                              - table [ref=f1025e71]:
+                                                                - rowgroup [ref=f1025e72]:
+                                                                  - row [ref=f1025e73]:
+                                                                    - cell [ref=f1025e74]
+                                                                    - cell [ref=f1025e77]
+                                                                    - cell "Send To Subcontractors" [ref=f1025e78]
+                            - cell [ref=f1025e79]:
+                              - generic [ref=f1025e80]:
+                                - link "Help" [ref=f1025e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f1025e83]
+                                - img "Info" [ref=f1025e85]
+    - table [ref=f1025e87]:
+      - rowgroup [ref=f1025e88]:
+        - row [ref=f1025e89]:
+          - cell [ref=f1025e90]
+          - 'cell "user: admin" [ref=f1025e91]'
+          - cell [ref=f1025e92]:
+            - link "[Log out]" [ref=f1025e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f1025e94]:
+    - text:    
+    - generic [ref=f1025e96]:
+      - generic [ref=f1025e97]: Communications To Subcontractors
+      - generic [ref=f1025e98]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - grid [ref=f1025e99]:
+          - rowgroup [ref=f1025e112]:
+            - columnheader "Subcontracting date" [ref=f1025e113]
+            - columnheader "Last communication" [ref=f1025e115]
+            - columnheader "Company" [ref=f1025e117]
+            - columnheader "Project code" [ref=f1025e119]
+            - columnheader "Project name" [ref=f1025e121]
+            - columnheader "Subcontracting code" [ref=f1025e123]
+            - columnheader "Task name" [ref=f1025e125]
+            - columnheader "Budget" [ref=f1025e127]
+            - columnheader "Delivery date" [ref=f1025e129]
+            - columnheader [ref=f1025e131]:
+              - generic [ref=f1025e132] [cursor=pointer]:
+                - generic [ref=f1025e133]: 
+                - text: State
+            - columnheader "Operations" [ref=f1025e135]
+          - rowgroup
+          - generic [ref=f1025e149]:    
+  - table [ref=f1025e150]:
+    - rowgroup [ref=f1025e151]:
+      - row [ref=f1025e152]:
+        - cell [ref=f1025e153]:
+          - generic [ref=f1025e155]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f1025e156] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f1025e157]
+  - text:    

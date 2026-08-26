@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,10 +24,11 @@ package org.libreplan.business.materials.daos;
 
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.materials.entities.Material;
@@ -59,9 +61,11 @@ public class UnitTypeDAO extends IntegrationEntityDAO<UnitType> implements
                     .getName());
         }
 
-        UnitType unitType = (UnitType) getSession().createCriteria(
-                UnitType.class).add(
-                Restrictions.eq("measure", measure)).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<UnitType> cq = cb.createQuery(UnitType.class);
+        Root<UnitType> root = cq.from(UnitType.class);
+        cq.where(cb.equal(root.get("measure"), measure));
+        UnitType unitType = getSession().createQuery(cq).uniqueResult();
 
         if (unitType == null) {
             throw new InstanceNotFoundException(measure, getEntityClass()
@@ -93,9 +97,11 @@ public class UnitTypeDAO extends IntegrationEntityDAO<UnitType> implements
     @Transactional(readOnly=true)
     public UnitType findByNameCaseInsensitive(String measure)
             throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(UnitType.class);
-        c.add(Restrictions.ilike("measure", measure, MatchMode.EXACT));
-        UnitType result = (UnitType) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<UnitType> cq = cb.createQuery(UnitType.class);
+        Root<UnitType> root = cq.from(UnitType.class);
+        cq.where(cb.equal(cb.lower(root.get("measure")), measure.toLowerCase()));
+        UnitType result = getSession().createQuery(cq).uniqueResult();
 
         if (result == null) {
             throw new InstanceNotFoundException(measure,
@@ -108,8 +114,11 @@ public class UnitTypeDAO extends IntegrationEntityDAO<UnitType> implements
     @Override
     @Transactional(readOnly=true)
     public boolean isUnitTypeUsedInAnyMaterial(UnitType unitType) {
-        Criteria c = getSession().createCriteria(Material.class);
-        return !c.add(Restrictions.eq("unitType", unitType)).list().isEmpty();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Material> cq = cb.createQuery(Material.class);
+        Root<Material> root = cq.from(Material.class);
+        cq.where(cb.equal(root.get("unitType"), unitType));
+        return !getSession().createQuery(cq).getResultList().isEmpty();
     }
 
 }

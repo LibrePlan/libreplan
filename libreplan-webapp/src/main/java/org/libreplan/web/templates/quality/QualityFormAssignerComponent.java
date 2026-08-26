@@ -33,6 +33,14 @@ import org.libreplan.web.orders.AssignedTaskQualityFormsToOrderElementController
 import org.libreplan.web.orders.AssignedTaskQualityFormsToOrderElementController.ICheckQualityFormAssigned;
 import org.libreplan.web.templates.IOrderTemplatesModel;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -62,11 +70,37 @@ public class QualityFormAssignerComponent extends HtmlMacroComponent {
         return new ArrayList<QualityForm>(result);
     }
 
-    public List<QualityForm> getAssigned() {
+    public ListModel<QualityForm> getAssigned() {
         if (template == null) {
-            return Collections.emptyList();
+            return new ListModelList<>(Collections.emptyList());
         }
-        return new ArrayList<QualityForm>(template.getQualityForms());
+        return new ListModelList<>(template.getQualityForms());
+    }
+
+    /**
+     * The rows used to be declared with a ZUML "each" template (self="@{each=...}") - under this
+     * app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug entirely
+     * (same fix pattern as elsewhere in this sweep, e.g. WorkerCRUDController.getWorkersRenderer()).
+     */
+    public RowRenderer getAssignedRenderer() {
+        return (Row row, Object data, int i) -> {
+            final QualityForm qualityForm = (QualityForm) data;
+            row.setValue(qualityForm);
+
+            row.appendChild(new Label());
+            row.appendChild(new Label(qualityForm.getName()));
+            row.appendChild(new Label(String.valueOf(qualityForm.getQualityFormType())));
+
+            Hbox hbox = new Hbox();
+            Button delete = new Button();
+            delete.setSclass("icono");
+            delete.setImage("/common/img/ico_borrar1.png");
+            delete.setHoverImage("/common/img/ico_borrar.png");
+            delete.addEventListener(Events.ON_CLICK, event -> remove(qualityForm));
+            hbox.appendChild(delete);
+            row.appendChild(hbox);
+        };
     }
 
     public void onAssignTaskQualityForm() {

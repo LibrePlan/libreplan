@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.libreplan</groupId>
         <artifactId>libreplan</artifactId>
-        <version>1.6.1</version>
+        <version>1.7.0</version>
     </parent>
     <artifactId>libreplan-webapp</artifactId>
     <packaging>war</packaging>
@@ -314,8 +314,8 @@
 
         <!-- Apache Commons Fileupload (required by ZK) -->
         <dependency>
-            <groupId>commons-fileupload</groupId>
-            <artifactId>commons-fileupload</artifactId>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-fileupload2-jakarta-servlet5</artifactId>
         </dependency>
 
         <!-- ZK  -->
@@ -378,22 +378,29 @@
             <scope>test</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymockclassextension</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <!-- Servlet -->
         <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>javax.servlet-api</artifactId>
+            <groupId>jakarta.servlet</groupId>
+            <artifactId>jakarta.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
         </dependency>
 
         <!-- Java mail -->
         <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
+            <groupId>jakarta.mail</groupId>
+            <artifactId>jakarta.mail-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.angus</groupId>
+            <artifactId>angus-mail</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
         </dependency>
 
         <!-- JAXB API (required for Java 9+) -->
@@ -402,21 +409,31 @@
             <artifactId>jakarta.xml.bind-api</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
+            <groupId>org.glassfish.jaxb</groupId>
+            <artifactId>jaxb-runtime</artifactId>
         </dependency>
 
-        <!-- SOAP API (required for Java 9+) -->
+        <!--
+          SOAP API (required for Java 9+). 1.4.x's Maven coordinates are jakarta.xml.soap but the
+          actual Java package inside the jar is still javax.xml.soap - that package only became
+          jakarta.xml.soap starting with the 2.0.x (Jakarta EE 9) generation, which is what
+          TimSoapClient.java's jakarta.xml.soap.* imports need.
+        -->
+        <dependency>
+            <groupId>jakarta.xml.soap</groupId>
+            <artifactId>jakarta.xml.soap-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
         <dependency>
             <groupId>com.sun.xml.messaging.saaj</groupId>
             <artifactId>saaj-impl</artifactId>
-            <version>1.5.1</version>
+            <version>2.0.1</version>
         </dependency>
 
         <!-- JAX-RS API -->
         <dependency>
-            <groupId>javax.ws.rs</groupId>
-            <artifactId>javax.ws.rs-api</artifactId>
+            <groupId>jakarta.ws.rs</groupId>
+            <artifactId>jakarta.ws.rs-api</artifactId>
         </dependency>
 
         <!-- CXF -->
@@ -437,24 +454,19 @@
 
         <!-- Jackson -->
         <dependency>
-            <groupId>com.fasterxml.jackson.jaxrs</groupId>
-            <artifactId>jackson-jaxrs-json-provider</artifactId>
+            <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+            <artifactId>jackson-jakarta-rs-json-provider</artifactId>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
-            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
         </dependency>
 
-        <!-- ZK Timeplot -->
+        <!-- Chart.js (webjar) - replaces the old ZK Timeplot widget, see root pom.xml comment -->
         <dependency>
-            <groupId>org.zkoss.zkforge</groupId>
-            <artifactId>timelinez</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>dev.libreplan.zkoss</groupId>
-            <artifactId>timeplotz</artifactId>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>chart.js</artifactId>
         </dependency>
 
         <!-- JGraphT  -->
@@ -473,6 +485,16 @@
         <dependency>
             <groupId>net.sf.mpxj</groupId>
             <artifactId>mpxj</artifactId>
+        </dependency>
+
+        <!-- javax.xml.bind shim for mpxj:9.0.0 only - see the comment on it in root pom.xml -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
         </dependency>
 
         <!-- ZK fileupload -->

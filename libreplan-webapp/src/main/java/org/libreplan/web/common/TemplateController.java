@@ -87,6 +87,10 @@ public class TemplateController extends GenericForwardComposer {
     }
 
     public void changeScenario() throws SuspendNotAllowedException, InterruptedException {
+        // AnnotateBinderInit's page-level init pass only registers bindings, it never loads them,
+        // and this popup starts out hidden (visible="false") so it never got an initial reload -
+        // without this, scenarioBandboxSearch would show empty every time the popup opens.
+        Util.reloadBindings(window);
         window.doModal();
     }
 

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,13 +22,17 @@
 
 package org.libreplan.business.planner.daos;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.hibernate.Criteria;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
 import org.hibernate.Hibernate;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.planner.entities.ResourceAllocation;
@@ -48,26 +53,36 @@ import org.springframework.transaction.annotation.Transactional;
 @Scope(BeanDefinition.SCOPE_SINGLETON)
 public class TaskElementDAO extends GenericDAOHibernate<TaskElement, Long> implements ITaskElementDAO {
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<TaskElement> findChildrenOf(TaskGroup each) {
-        return getSession().createCriteria(TaskElement.class).add(
-                Restrictions.eq("parent", each)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TaskElement> cq = cb.createQuery(TaskElement.class);
+        Root<TaskElement> root = cq.from(TaskElement.class);
+        cq.where(cb.equal(root.get("parent"), each));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<TaskElement> listFilteredByDate(Date start, Date end) {
-        Criteria criteria  = getSession().createCriteria(TaskElement.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TaskElement> cq = cb.createQuery(TaskElement.class);
+        Root<TaskElement> root = cq.from(TaskElement.class);
+        // Both restrictions (when present) must be ANDed together - matching the original
+        // Criteria.add()/add() cumulative-AND behavior. A second cq.where() call would
+        // otherwise silently replace rather than combine with the first.
+        List<Predicate> predicates = new ArrayList<>();
         if(start != null) {
-            criteria.add(Restrictions.ge("endDate.date",
-                    LocalDate.fromDateFields(start)));
+            predicates.add(cb.greaterThanOrEqualTo(
+                    root.get("endDate").get("date"), LocalDate.fromDateFields(start)));
         }
         if(end != null) {
-            criteria.add(Restrictions.le("startDate.date",
-                    LocalDate.fromDateFields(end)));
+            predicates.add(cb.lessThanOrEqualTo(
+                    root.get("startDate").get("date"), LocalDate.fromDateFields(end)));
         }
-        return criteria.list();
+        if (!predicates.isEmpty()) {
+            cq.where(predicates.toArray(new Predicate[0]));
+        }
+        return getSession().createQuery(cq).getResultList();
     }
 
     private void updateSumOfAllocatedHours(TaskElement taskElement) {

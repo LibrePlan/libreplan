@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -34,6 +35,7 @@ import org.libreplan.business.common.entities.JobClassNameEnum;
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.quartz.CronExpression;
 import org.quartz.CronTrigger;
+import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
@@ -260,7 +262,7 @@ public class SchedulerManager implements ISchedulerManager {
     private JobDetailFactoryBean createJobDetailBean(JobSchedulerConfiguration jobSchedulerConfiguration) {
         final JobDetailFactoryBean jobDetailBean = new JobDetailFactoryBean();
 
-        Class<?> jobClass = getJobClass(jobSchedulerConfiguration.getJobClassName());
+        Class<? extends Job> jobClass = getJobClass(jobSchedulerConfiguration.getJobClassName());
         if ( jobClass == null ) {
             return null;
         }
@@ -285,9 +287,10 @@ public class SchedulerManager implements ISchedulerManager {
      * @param jobClassName
      *            job className
      */
-    private Class<?> getJobClass(JobClassNameEnum jobClassName) {
+    private Class<? extends Job> getJobClass(JobClassNameEnum jobClassName) {
         try {
-            return Class.forName(jobClassName.getPackageName() + "." + jobClassName.getName());
+            return Class.forName(jobClassName.getPackageName() + "." + jobClassName.getName())
+                    .asSubclass(Job.class);
         } catch (ClassNotFoundException e) {
             LOG.error("Unable to get class object '" + jobClassName + "'", e);
         }

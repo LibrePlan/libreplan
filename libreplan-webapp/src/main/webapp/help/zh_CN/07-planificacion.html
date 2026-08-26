@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>任务规划</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">任务规划</h1>
+
+<div class="contents topic" id="contents">
+<span id="planificacion"></span><p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">任务规划</a><ul>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">规划视图</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">资源负载视图</a></li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-4">项目列表视图</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-5">高级分配视图</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">任务规划</a></h1>
+<p>LibrePlan 中的规划是贯穿整个用户指南描述的过程，其中关于项目和资源分配的章节尤为重要。本章描述在项目和甘特图正确配置后的基本规划程序。</p>
+<div class="figure">
+<img alt="images/planning-view.png" src="images/planning-view.png" style="width: 354.2px; height: 229.24999999999997px;" />
+<p class="caption">工作规划视图</p>
+</div>
+<p>与公司概览一样，项目规划视图根据正在分析的信息分为几个视图。特定项目可用的视图包括：</p>
+<ul class="simple">
+<li>规划视图</li>
+<li>资源负载视图</li>
+<li>项目列表视图</li>
+<li>高级分配视图</li>
+</ul>
+<div class="section" id="section-3">
+<h2><a class="toc-backref" href="#toc-entry-2">规划视图</a></h2>
+<p>规划视图结合了三种不同的角度：</p>
+<ul class="simple">
+<li><strong>项目规划：</strong> 项目规划以甘特图形式显示在程序的右上方。此视图允许用户临时移动任务、在任务之间指定依赖关系、定义里程碑以及建立限制。</li>
+<li><strong>资源负载：</strong> 资源负载视图位于界面右下方，根据分配显示资源可用性，而非任务的分配情况。此视图中显示的信息如下：<ul>
+<li><strong>紫色区域：</strong> 表示资源负载低于其容量的 100%。</li>
+<li><strong>绿色区域：</strong> 表示由于资源被规划用于另一个项目，资源负载低于 100%。</li>
+<li><strong>橙色区域：</strong> 表示由于当前项目，资源负载超过 100%。</li>
+<li><strong>黄色区域：</strong> 表示由于其他项目，资源负载超过 100%。</li>
+</ul>
+</li>
+<li><strong>图表视图和挣值指标：</strong> 可以从「挣值」选项卡查看。生成的图表基于挣值技术，指标针对项目的每个工作日计算。计算的指标包括：<ul>
+<li><strong>BCWS（计划工作的预算成本）：</strong> 截至某日期的计划工时数的累积时间函数。在任务的计划开始时为 0，在结束时等于计划工时总数。与所有累积图表一样，它将始终增加。任务的函数是截至计算日期每日分配的总和。此函数在所有时间都有值，前提是已分配资源。</li>
+<li><strong>ACWP（已执行工作的实际成本）：</strong> 截至某日期工作报告中报告工时的累积时间函数。此函数在任务的第一份工作报告日期之前只有 0 的值，随着时间流逝和工作报告工时的增加，其值将继续增加。在最后一份工作报告日期之后没有值。</li>
+<li><strong>BCWP（已执行工作的预算成本）：</strong> 包含将任务进度乘以估计完成任务所需工作量的结果值的累积时间函数。随着时间流逝，此函数的值增加，进度值也增加。进度乘以所有任务的估计工时总数。BCWP 值是正在计算的任务的值的总和。进度在配置时被汇总。</li>
+<li><strong>CV（成本差异）：</strong> CV = BCWP - ACWP</li>
+<li><strong>SV（排程差异）：</strong> SV = BCWP - BCWS</li>
+<li><strong>BAC（完工预算）：</strong> BAC = max (BCWS)</li>
+<li><strong>EAC（完工估算）：</strong> EAC = (ACWP / BCWP) * BAC</li>
+<li><strong>VAC（完工差异）：</strong> VAC = BAC - EAC</li>
+<li><strong>ETC（完工尚需估算）：</strong> ETC = EAC - ACWP</li>
+<li><strong>CPI（成本绩效指数）：</strong> CPI = BCWP / ACWP</li>
+<li><strong>SPI（排程绩效指数）：</strong> SPI = BCWP / BCWS</li>
+</ul>
+</li>
+</ul>
+<p>在项目规划视图中，用户可以执行以下操作：</p>
+<ul class="simple">
+<li><strong>分配依赖关系：</strong> 在任务上右键点击，选择「添加依赖关系」，然后将鼠标指针拖曳到应分配依赖关系的任务。<ul>
+<li>要更改依赖关系类型，在依赖关系上右键点击并选择所需的类型。</li>
+</ul>
+</li>
+<li><strong>创建新里程碑：</strong> 点击要在其之前添加里程碑的任务，然后选择「添加里程碑」选项。里程碑可以通过用鼠标指针选择里程碑并将其拖曳到所需位置来移动。</li>
+<li><strong>在不干扰依赖关系的情况下移动任务：</strong> 在任务主体上右键点击并将其拖曳到所需位置。如果没有限制或依赖关系被违反，系统将更新资源对任务的每日分配，并将任务放置在选定的日期。</li>
+<li><strong>分配限制：</strong> 点击相关任务并选择「任务属性」选项。将出现一个带有可修改的「限制」字段的弹出窗口。限制可能与依赖关系冲突，这就是为什么每个项目都指定依赖关系是否优先于限制。可以建立的限制包括：<ul>
+<li><strong>尽早开始：</strong> 表示任务必须尽快开始。</li>
+<li><strong>不早于：</strong> 表示任务不得在某个日期之前开始。</li>
+<li><strong>在特定日期开始：</strong> 表示任务必须在特定日期开始。</li>
+</ul>
+</li>
+</ul>
+<p>规划视图还提供几个作为查看选项的程序：</p>
+<ul class="simple">
+<li><strong>缩放级别：</strong> 用户可以选择所需的缩放级别。有几个缩放级别：年度、四个月、月度、每周和每日。</li>
+<li><strong>搜索筛选器：</strong> 用户可以根据标签或标准筛选任务。</li>
+<li><strong>关键路径：</strong> 由于使用 <em>Dijkstra</em> 算法计算图上的路径，关键路径被实现。可以通过点击查看选项中的「关键路径」按钮来查看。</li>
+<li><strong>显示标签：</strong> 使用户能够查看分配给项目中任务的标签，可以在屏幕上查看或打印。</li>
+<li><strong>显示资源：</strong> 使用户能够查看分配给项目中任务的资源，可以在屏幕上查看或打印。</li>
+<li><strong>打印：</strong> 使用户能够打印正在查看的甘特图。</li>
+</ul>
+</div>
+<div class="section" id="section-4">
+<h2><a class="toc-backref" href="#toc-entry-3">资源负载视图</a></h2>
+<p>资源负载视图提供资源列表，其中包含产生工作量的任务或标准的列表。每个任务或标准都以甘特图形式显示，以便可以看到负载的开始和结束日期。根据资源的负载是高于还是低于 100% 显示不同的颜色：</p>
+<ul class="simple">
+<li><strong>绿色：</strong> 负载低于 100%</li>
+<li><strong>橙色：</strong> 100% 负载</li>
+<li><strong>红色：</strong> 负载超过 100%</li>
+</ul>
+<div class="figure">
+<img alt="images/resource-load.png" src="images/resource-load.png" style="width: 353.5px; height: 228.89999999999998px;" />
+<p class="caption">特定项目的资源负载视图</p>
+</div>
+<p>如果将鼠标指针放在资源的甘特图上，将显示员工的负载百分比。</p>
+</div>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-4">项目列表视图</a></h2>
+<p>项目列表视图允许用户访问项目编辑和删除选项。请参阅「项目」章节以了解更多信息。</p>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-5">高级分配视图</a></h2>
+<p>高级分配视图在「资源分配」章节中详细说明。</p>
+</div>
+</div>
+</div>
+</body>
+</html>

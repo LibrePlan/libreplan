@@ -113,4 +113,36 @@
         </update>
     </changeSet>
 
+    <changeSet id="backfill-order-element-external-code-postgresql"
+        author="jeroen" dbms="postgresql">
+        <comment>
+            order_table.external_code was an orphaned duplicate mapping of the single
+            OrderElement.externalCode field (see Orders.hbm.xml), so both columns were written on
+            every save. The duplicate mapping has been removed and order_table.external_code is now
+            unmapped; copy across any value that never reached order_element.
+        </comment>
+        <sql>
+            UPDATE order_element oe
+            SET external_code = ot.external_code
+            FROM order_table ot
+            WHERE ot.order_element_id = oe.id
+              AND ot.external_code IS NOT NULL
+              AND (oe.external_code IS NULL OR oe.external_code &lt;&gt; ot.external_code);
+        </sql>
+    </changeSet>
+
+    <changeSet id="backfill-order-element-external-code-mysql"
+        author="jeroen" dbms="mysql">
+        <comment>
+            MySQL equivalent of backfill-order-element-external-code-postgresql.
+        </comment>
+        <sql>
+            UPDATE order_element oe
+            JOIN order_table ot ON ot.order_element_id = oe.id
+            SET oe.external_code = ot.external_code
+            WHERE ot.external_code IS NOT NULL
+              AND (oe.external_code IS NULL OR oe.external_code &lt;&gt; ot.external_code);
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

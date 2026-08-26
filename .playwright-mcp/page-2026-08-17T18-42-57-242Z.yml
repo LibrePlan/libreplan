@@ -1,0 +1,180 @@
+- generic [ref=f216e4]:
+  - generic [ref=f216e5]:
+    - table [ref=f216e6]:
+      - rowgroup [ref=f216e7]:
+        - row [ref=f216e8]:
+          - cell [ref=f216e9]:
+            - link [ref=f216e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f216e12]:
+            - table [ref=f216e13]:
+              - rowgroup [ref=f216e14]:
+                - row [ref=f216e15]:
+                  - cell [ref=f216e16]:
+                    - generic [ref=f216e17]:
+                      - menubar [ref=f216e18]:
+                        - menuitem "Planning" [ref=f216e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f216e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f216e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f216e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f216e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f216e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f216e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f216e33]:
+                        - rowgroup [ref=f216e34]:
+                          - row [ref=f216e35]:
+                            - cell [ref=f216e36]:
+                              - table [ref=f216e37]:
+                                - rowgroup [ref=f216e38]:
+                                  - row [ref=f216e39]:
+                                    - cell [ref=f216e40]
+                                    - cell [ref=f216e41]:
+                                      - strong [ref=f216e42]: START
+                                    - cell [ref=f216e43]
+                                    - cell [ref=f216e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f216e45]:
+                                        - rowgroup [ref=f216e46]:
+                                          - row [ref=f216e47]:
+                                            - cell [ref=f216e48]:
+                                              - table [ref=f216e49]:
+                                                - rowgroup [ref=f216e50]:
+                                                  - row [ref=f216e51]:
+                                                    - cell [ref=f216e52]:
+                                                      - table [ref=f216e53]:
+                                                        - rowgroup [ref=f216e54]:
+                                                          - row [ref=f216e55]:
+                                                            - cell [ref=f216e56]:
+                                                              - table [ref=f216e57]:
+                                                                - rowgroup [ref=f216e58]:
+                                                                  - row [ref=f216e59]:
+                                                                    - cell [ref=f216e60]
+                                                                    - cell [ref=f216e63]
+                                                                    - cell "Resources" [ref=f216e64]
+                                                    - cell [ref=f216e65]
+                                                    - cell [ref=f216e66]:
+                                                      - table [ref=f216e67]:
+                                                        - rowgroup [ref=f216e68]:
+                                                          - row [ref=f216e69]:
+                                                            - cell [ref=f216e70]:
+                                                              - table [ref=f216e71]:
+                                                                - rowgroup [ref=f216e72]:
+                                                                  - row [ref=f216e73]:
+                                                                    - cell [ref=f216e74]
+                                                                    - cell [ref=f216e77]
+                                                                    - cell "Calendars" [ref=f216e78]
+                            - cell [ref=f216e79]:
+                              - generic [ref=f216e80]:
+                                - link "Help" [ref=f216e81] [cursor=pointer]:
+                                  - /url: /help/en/03-calendarios.html
+                                - img "Axuda" [ref=f216e83]
+                                - img "Info" [ref=f216e85]
+    - table [ref=f216e87]:
+      - rowgroup [ref=f216e88]:
+        - row [ref=f216e89]:
+          - cell [ref=f216e90]
+          - 'cell "user: admin" [ref=f216e91]'
+          - cell [ref=f216e92]:
+            - link "[Log out]" [ref=f216e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f216e94]:
+    - text:    
+    - generic [ref=f216e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f216e97]:
+        - generic [ref=f216e98]: Calendars List
+        - generic [ref=f216e99]:
+          - generic [ref=f216e100]:
+            - table [ref=f216e102]:
+              - rowgroup [ref=f216e108]:
+                - row [ref=f216e109]:
+                  - columnheader "Name" [ref=f216e110]
+                  - columnheader "Inherits from date" [ref=f216e112]
+                  - columnheader "Inherits up to date" [ref=f216e114]
+                  - columnheader "Operations" [ref=f216e116]
+                  - columnheader
+            - table [ref=f216e119]:
+              - rowgroup [ref=f216e125]:
+                - row [ref=f216e126]:
+                  - cell "Default" [ref=f216e127] [cursor=pointer]
+                  - cell "---" [ref=f216e130] [cursor=pointer]
+                  - cell "---" [ref=f216e132] [cursor=pointer]
+                  - cell [ref=f216e134] [cursor=pointer]:
+                    - generic [ref=f216e135]:
+                      - button "Create derived" [ref=f216e136]
+                      - button "Create copy" [ref=f216e138]
+                      - button "Edit" [ref=f216e140]
+                      - button "Remove" [disabled] [ref=f216e142]
+                - row [ref=f216e144]:
+                  - cell "new" [ref=f216e145] [cursor=pointer]
+                  - cell "---" [ref=f216e148] [cursor=pointer]
+                  - cell "---" [ref=f216e150] [cursor=pointer]
+                  - cell [ref=f216e152] [cursor=pointer]:
+                    - generic [ref=f216e153]:
+                      - button "Create derived" [ref=f216e154]
+                      - button "Create copy" [ref=f216e156]
+                      - button "Edit" [ref=f216e158]
+                      - button "Remove" [ref=f216e160]
+                - row [ref=f216e162]:
+                  - cell " Standard" [ref=f216e163] [cursor=pointer]:
+                    - generic [ref=f216e164]:
+                      - generic [ref=f216e165]: 
+                      - text: Standard
+                  - cell "---" [ref=f216e167] [cursor=pointer]
+                  - cell "---" [ref=f216e169] [cursor=pointer]
+                  - cell [ref=f216e171] [cursor=pointer]:
+                    - generic [ref=f216e172]:
+                      - button "Create derived" [ref=f216e173]
+                      - button "Create copy" [ref=f216e175]
+                      - button "Edit" [ref=f216e177]
+                      - button "Remove" [ref=f216e179]
+                - row [ref=f216e181]:
+                  - cell "Unnamed Resource" [ref=f216e182] [cursor=pointer]
+                  - cell "---" [ref=f216e186] [cursor=pointer]
+                  - cell "---" [ref=f216e188] [cursor=pointer]
+                  - cell [ref=f216e190] [cursor=pointer]:
+                    - generic [ref=f216e191]:
+                      - button "Create derived" [ref=f216e192]
+                      - button "Create copy" [ref=f216e194]
+                      - button "Edit" [ref=f216e196]
+                      - button "Remove" [ref=f216e198]
+                - row [ref=f216e200]:
+                  - cell "Test1" [ref=f216e201] [cursor=pointer]
+                  - cell "---" [ref=f216e204] [cursor=pointer]
+                  - cell "---" [ref=f216e206] [cursor=pointer]
+                  - cell [ref=f216e208] [cursor=pointer]:
+                    - generic [ref=f216e209]:
+                      - button "Create derived" [ref=f216e210]
+                      - button "Create copy" [ref=f216e212]
+                      - button "Edit" [ref=f216e214]
+                      - button "Remove" [ref=f216e216]
+          - button "Create" [ref=f216e218] [cursor=pointer]
+      - text:                                  
+  - table [ref=f216e219]:
+    - rowgroup [ref=f216e220]:
+      - row [ref=f216e221]:
+        - cell [ref=f216e222]:
+          - generic [ref=f216e224]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f216e225] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f216e226]
+  - text:    

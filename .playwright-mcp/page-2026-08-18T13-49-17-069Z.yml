@@ -1,0 +1,225 @@
+- generic [ref=f886e4]:
+  - generic [ref=f886e5]:
+    - table [ref=f886e6]:
+      - rowgroup [ref=f886e7]:
+        - row [ref=f886e8]:
+          - cell [ref=f886e9]:
+            - link [ref=f886e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f886e12]:
+            - table [ref=f886e13]:
+              - rowgroup [ref=f886e14]:
+                - row [ref=f886e15]:
+                  - cell [ref=f886e16]:
+                    - generic [ref=f886e17]:
+                      - menubar [ref=f886e18]:
+                        - menuitem "Planning" [ref=f886e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f886e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f886e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f886e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f886e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f886e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f886e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f886e33]:
+                        - rowgroup [ref=f886e34]:
+                          - row [ref=f886e35]:
+                            - cell [ref=f886e36]:
+                              - table [ref=f886e37]:
+                                - rowgroup [ref=f886e38]:
+                                  - row [ref=f886e39]:
+                                    - cell [ref=f886e40]
+                                    - cell [ref=f886e41]:
+                                      - strong [ref=f886e42]: START
+                                    - cell [ref=f886e43]
+                                    - cell [ref=f886e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f886e45]:
+                                        - rowgroup [ref=f886e46]:
+                                          - row [ref=f886e47]:
+                                            - cell [ref=f886e48]:
+                                              - table [ref=f886e49]:
+                                                - rowgroup [ref=f886e50]:
+                                                  - row [ref=f886e51]:
+                                                    - cell [ref=f886e52]:
+                                                      - table [ref=f886e53]:
+                                                        - rowgroup [ref=f886e54]:
+                                                          - row [ref=f886e55]:
+                                                            - cell [ref=f886e56]:
+                                                              - table [ref=f886e57]:
+                                                                - rowgroup [ref=f886e58]:
+                                                                  - row [ref=f886e59]:
+                                                                    - cell [ref=f886e60]
+                                                                    - cell [ref=f886e63]
+                                                                    - cell "Cost" [ref=f886e64]
+                                                    - cell [ref=f886e65]
+                                                    - cell [ref=f886e66]:
+                                                      - table [ref=f886e67]:
+                                                        - rowgroup [ref=f886e68]:
+                                                          - row [ref=f886e69]:
+                                                            - cell [ref=f886e70]:
+                                                              - table [ref=f886e71]:
+                                                                - rowgroup [ref=f886e72]:
+                                                                  - row [ref=f886e73]:
+                                                                    - cell [ref=f886e74]
+                                                                    - cell [ref=f886e77]
+                                                                    - cell "Cost Categories" [ref=f886e78]
+                            - cell [ref=f886e79]:
+                              - generic [ref=f886e80]:
+                                - link "Help" [ref=f886e81] [cursor=pointer]:
+                                  - /url: /help/en/14-custos.html#categor-as-de-custo
+                                - img "Axuda" [ref=f886e83]
+                                - img "Info" [ref=f886e85]
+    - table [ref=f886e87]:
+      - rowgroup [ref=f886e88]:
+        - row [ref=f886e89]:
+          - cell [ref=f886e90]
+          - 'cell "user: admin" [ref=f886e91]'
+          - cell [ref=f886e92]:
+            - link "[Log out]" [ref=f886e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f886e94]:
+    - text:    
+    - generic [ref=f886e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:     
+      - generic [ref=f886e195]:
+        - generic [ref=f886e196]: "Edit Cost Category: RAD"
+        - generic [ref=f886e199]:
+          - generic [ref=f886e200]:
+            - tablist [ref=f886e201]:
+              - listitem [ref=f886e202] [cursor=pointer]:
+                - generic [ref=f886e203]: Category data
+            - text:  
+            - tabpanel [ref=f886e206]:
+              - table [ref=f886e207]:
+                - rowgroup [ref=f886e208]:
+                  - row [ref=f886e209]:
+                    - cell [ref=f886e210]:
+                      - table [ref=f886e211]:
+                        - rowgroup [ref=f886e212]:
+                          - row [ref=f886e213]:
+                            - cell [ref=f886e214]:
+                              - grid [ref=f886e215]:
+                                - rowgroup [ref=f886e219]:
+                                  - gridcell "Code:" [ref=f886e220]
+                                  - gridcell [ref=f886e222]:
+                                    - table [ref=f886e224]:
+                                      - rowgroup [ref=f886e225]:
+                                        - row [ref=f886e226]:
+                                          - cell [ref=f886e227]:
+                                            - table [ref=f886e228]:
+                                              - rowgroup [ref=f886e229]:
+                                                - row [ref=f886e230]:
+                                                  - cell [ref=f886e231]:
+                                                    - textbox [disabled] [ref=f886e232]: COST_CATEGORY0002
+                                                  - cell [ref=f886e233]
+                                                  - cell [ref=f886e234]:
+                                                    - generic [ref=f886e235]:
+                                                      - checkbox "Generate code" [checked] [ref=f886e236]
+                                                      - text: Generate code
+                                  - gridcell "Name:" [ref=f886e237]
+                                  - gridcell [ref=f886e239]:
+                                    - textbox [active] [ref=f886e241]: RAD
+                                  - gridcell "Enabled:" [ref=f886e242]
+                                  - gridcell [ref=f886e244]:
+                                    - checkbox [checked] [ref=f886e247]
+                          - row [ref=f886e248]:
+                            - cell [ref=f886e249]
+                          - row [ref=f886e250]:
+                            - cell [ref=f886e251]:
+                              - generic [ref=f886e252]:
+                                - generic [ref=f886e253]: Hour costs
+                                - generic [ref=f886e256]:
+                                  - table [ref=f886e257]:
+                                    - rowgroup [ref=f886e258]:
+                                      - row [ref=f886e259]:
+                                        - cell [ref=f886e260]:
+                                          - table [ref=f886e261]:
+                                            - rowgroup [ref=f886e262]:
+                                              - row [ref=f886e263]:
+                                                - cell [ref=f886e264]:
+                                                  - button "Add new row" [ref=f886e265] [cursor=pointer]
+                                  - grid [ref=f886e266]:
+                                    - rowgroup [ref=f886e274]:
+                                      - columnheader "Code" [ref=f886e275]
+                                      - columnheader "Type" [ref=f886e277]
+                                      - columnheader "Price per hour" [ref=f886e279]
+                                      - columnheader "Start date" [ref=f886e281]
+                                      - columnheader "End date" [ref=f886e283]
+                                      - columnheader "Operations" [ref=f886e285]
+                                    - rowgroup [ref=f886e294]:
+                                      - gridcell [ref=f886e295]:
+                                        - textbox [disabled] [ref=f886e297]: COST_CATEGORY0002-0001
+                                      - gridcell [ref=f886e348]:
+                                        - combobox [ref=f886e300]:
+                                          - option "Default"
+                                          - option "Overtime" [selected]
+                                      - gridcell [ref=f886e301]:
+                                        - textbox [ref=f886e303]: 56 €
+                                      - gridcell [ref=f886e304]:
+                                        - combobox [ref=f886e306]:
+                                          - textbox [ref=f886e307]: Apr 1, 2025
+                                          - button [ref=f886e308] [cursor=pointer]:
+                                            - generic [ref=f886e309]: 
+                                          - text:    
+                                      - gridcell [ref=f886e310]:
+                                        - combobox [ref=f886e312]:
+                                          - textbox [ref=f886e313]: Dec 31, 2025
+                                          - button [ref=f886e314] [cursor=pointer]:
+                                            - generic [ref=f886e315]: 
+                                          - text:    
+                                      - gridcell [ref=f886e316]:
+                                        - button "Delete" [ref=f886e318] [cursor=pointer]
+                                      - gridcell [ref=f886e320]:
+                                        - textbox [disabled] [ref=f886e322]: COST_CATEGORY0002-0002
+                                      - gridcell [ref=f886e323]:
+                                        - combobox [ref=f886e325]:
+                                          - option "Default" [selected]
+                                          - option "Overtime"
+                                      - gridcell [ref=f886e326]:
+                                        - textbox [ref=f886e328]: 67.78 €
+                                      - gridcell [ref=f886e329]:
+                                        - combobox [ref=f886e331]:
+                                          - textbox [ref=f886e332]: Jan 1, 2026
+                                          - button [ref=f886e333] [cursor=pointer]:
+                                            - generic [ref=f886e334]: 
+                                          - text:    
+                                      - gridcell [ref=f886e335]:
+                                        - combobox [ref=f886e337]:
+                                          - textbox [ref=f886e338]
+                                          - button [ref=f886e339] [cursor=pointer]:
+                                            - generic [ref=f886e340]: 
+                                          - text:    
+                                      - gridcell [ref=f886e341]:
+                                        - button "Delete" [ref=f886e343] [cursor=pointer]
+          - button "Save" [ref=f886e345] [cursor=pointer]
+          - button "Save & Continue" [ref=f886e346] [cursor=pointer]
+          - button "Cancel" [ref=f886e347] [cursor=pointer]
+  - table [ref=f886e187]:
+    - rowgroup [ref=f886e188]:
+      - row [ref=f886e189]:
+        - cell [ref=f886e190]:
+          - generic [ref=f886e192]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f886e193] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f886e194]
+  - text:    

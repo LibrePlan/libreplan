@@ -1,0 +1,46 @@
+# Raw javax.* import inventory for Phase 5 scoping
+# Generated 2026-08-12 via:
+#   grep -rhoE '^import javax\.[a-zA-Z0-9_.]+' --include=*.java libreplan-business/src libreplan-webapp/src ganttzk/src
+#   | sed -E 's/^import (javax\.[a-zA-Z0-9_]+\.[a-zA-Z0-9_]+)\..*/\1/' | sort | uniq -c | sort -rn
+# See Phase-5-jakarta-migration-scope.md for the classification (Jakarta EE vs JDK-native) and analysis.
+
+    263 javax.xml.bind
+    147 javax.ws.rs
+    123 javax.validation.constraints
+     38 import javax.validation.Valid
+     37 javax.xml.datatype
+     37 import javax.annotation.Resource
+     27 javax.servlet.http
+      9 javax.xml.soap
+      9 import javax.servlet.ServletContext
+      5 import javax.servlet.ServletException
+      4 javax.net.ssl
+      4 import javax.validation.ConstraintViolation
+      4 import javax.mail.MessagingException
+      3 import javax.validation.Validator
+      3 import javax.validation.Validation
+      3 import javax.mail.Transport
+      3 import javax.mail.Session
+      2 javax.naming.directory
+      2 javax.mail.internet
+      2 import javax.validation.ValidatorFactory
+      2 import javax.servlet.ServletContextListener
+      2 import javax.servlet.ServletContextEvent
+      1 import javax.transaction.Synchronization
+      1 import javax.transaction.Status
+      1 import javax.servlet.ServletConfig
+      1 import javax.naming.NamingException
+      1 import javax.naming.InitialContext
+      1 import javax.naming.Context
+      1 import javax.management.ReflectionException
+      1 import javax.management.Query
+      1 import javax.management.ObjectName
+      1 import javax.management.MBeanServer
+      1 import javax.management.MBeanException
+      1 import javax.management.MalformedObjectNameException
+      1 import javax.management.InstanceNotFoundException
+      1 import javax.management.AttributeNotFoundException
+      1 import javax.mail.PasswordAuthentication
+      1 import javax.mail.Message
+      1 import javax.mail.AuthenticationFailedException
+      1 import javax.annotation.PostConstruct

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -95,7 +96,7 @@ public class ResourceDAOTest {
     @Autowired
     private IUserDAO userDAO;
 
-    @javax.annotation.Resource
+    @jakarta.annotation.Resource
     private IDataBootstrap configurationBootstrap;
 
     @Before
@@ -264,6 +265,15 @@ public class ResourceDAOTest {
 
             return null;
         });
+    }
+
+    @Test
+    @Transactional
+    public void getRowCountReflectsSavedResources() {
+        Number previous = resourceDAO.getRowCount();
+        resourceDAO.save(givenValidWorker());
+        resourceDAO.save(givenValidWorker());
+        assertEquals(previous.longValue() + 2, resourceDAO.getRowCount().longValue());
     }
 
 }

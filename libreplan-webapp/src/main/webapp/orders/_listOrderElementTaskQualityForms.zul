@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -30,7 +31,7 @@
                     <label value="${i18n:_t('Assign quality form')}" />
                     <hbox style="margin-left: 5px;">
                         <bandboxSearch id="bdQualityForms" finder="QualityFormBandboxFinder"
-                                       model="@{assignedTaskQualityFormsController.notAssignedQualityForms}"
+                                       model="@load(assignedTaskQualityFormsController.notAssignedQualityForms)"
                                        widthBandbox="200px"
                                        widthListbox="600px"/>
                         <button label="${i18n:_t('Assign')}" sclass="add-button"
@@ -41,9 +42,8 @@
                 <separator bar="false" spacing="40px" orient="vertical"/>
 
                 <grid id="assignedTaskQualityForms" height="300px"
-                      fixedLayout="true"
-                      rowRenderer = "@{assignedTaskQualityFormsController.taskQualityFormsRowRenderer}"
-                      model="@{assignedTaskQualityFormsController.taskQualityForms}"
+                      rowRenderer = "@load(assignedTaskQualityFormsController.taskQualityFormsRowRenderer)"
+                      model="@load(assignedTaskQualityFormsController.taskQualityForms)"
                       onInitRender ="assignedTaskQualityFormsController.sortTaskQualityForms();">
                     <columns>
                         <column width="25px"/>

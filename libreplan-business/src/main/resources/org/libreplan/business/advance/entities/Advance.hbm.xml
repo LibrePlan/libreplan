@@ -97,7 +97,7 @@
 
         <version name="version" access="property" type="long" />
 
-        <property name="date" access="field"/>
+        <property name="date" access="field" type="org.libreplan.business.workingday.hibernate.LocalDateType"/>
 
         <property name="value" scale="2" access="field" />
 

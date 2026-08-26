@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2011 WirelessGalicia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +23,7 @@
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan_zk.css"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?taglib uri="/WEB-INF/tld/i18n.tld" prefix="i18n"?>
 <?variable-resolver class="org.zkoss.zkplus.spring.DelegatingVariableResolver"?>
 
@@ -34,12 +35,12 @@
 
         <vbox id="messagesContainer" />
 
-        <div align="right">
+        <div style="text-align: right;">
             <label sclass="subtitulo" value="${i18n:_t('Show')}:" />
 
             <listbox id="listFilter" mold="select" rows="1"
-                     model="@{controller.filterItems}"
-                     selectedItem="@{controller.currentFilterItem}"
+                     model="@load(controller.filterItems)"
+                     selectedItem="@load(controller.currentFilterItem)@save(controller.currentFilterItem)"
                      itemRenderer="org.libreplan.web.common.EnumsListitemRenderer">
             </listbox>
 
@@ -50,9 +51,9 @@
         <separator bar="false" spacing="20px" orient="horizontal"/>
 
         <grid id="listing"
-              model="@{controller.subcontractorCommunications}"
-              rowRenderer="@{controller.subcontractorCommunicationRenderer}"
-              mold="paging" pageSize="10" fixedLayout="true">
+              model="@load(controller.subcontractorCommunications)"
+              rowRenderer="@load(controller.subcontractorCommunicationRenderer)"
+              mold="paging" pageSize="10">
             <columns>
                 <column label="${i18n:_t('Communication Type')}" align="center" width="140px"
                         sort="auto(lower(communicationType))"/>
@@ -83,16 +84,12 @@
 
 
         <popup id="pp">
-            <grid id="listingValues" width="300px" fixedLayout="true">
+            <grid id="listingValues" width="300px">
                 <columns>
                     <column label="${i18n:_t('Progress %')}" width="150px"/>
                     <column label="${i18n:_t('Date')}" width="150px"/>
                 </columns>
                 <rows>
-                    <row self="@{each='value'}" value="@{value}">
-                        <label value="@{value.progress}"/>
-                        <label value="@{value.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-                    </row>
                 </rows>
             </grid>
         </popup>

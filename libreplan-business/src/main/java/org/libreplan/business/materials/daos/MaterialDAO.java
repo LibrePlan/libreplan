@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,9 +28,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.materials.entities.Material;
@@ -85,19 +89,26 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<Material> findMaterialsInCategories(String text,
             Set<MaterialCategory> categories) {
-        Criteria criteria = this.getSession().createCriteria(Material.class);
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Material> cq = cb.createQuery(Material.class);
+        Root<Material> root = cq.from(Material.class);
 
-        text = "%" + text + "%";
-        criteria.add(Restrictions.or(Restrictions.ilike("code", text), Restrictions.ilike("description", text)));
-        criteria.add(Restrictions.eq("disabled", false));
+        String wildcarded = "%" + text.toLowerCase() + "%";
+        Predicate matchesCodeOrDescription = cb.or(
+                cb.like(cb.lower(root.get("code")), wildcarded),
+                cb.like(cb.lower(root.get("description")), wildcarded));
+
         if (categories != null && !categories.isEmpty()) {
-            criteria.add(Restrictions.in("category", categories));
+            cq.where(matchesCodeOrDescription, cb.equal(root.get("disabled"), false),
+                    root.get("category").in(categories));
+        } else {
+            cq.where(matchesCodeOrDescription, cb.equal(root.get("disabled"), false));
         }
-        return criteria.list();
+
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -117,10 +128,12 @@ public class MaterialDAO extends IntegrationEntityDAO<Material> implements
             throw new InstanceNotFoundException(null, Material.class.getName());
         }
 
-        Criteria criteria = getSession().createCriteria(Material.class);
-        criteria.add(Restrictions.eq("code", code).ignoreCase());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Material> cq = cb.createQuery(Material.class);
+        Root<Material> root = cq.from(Material.class);
+        cq.where(cb.equal(cb.lower(root.get("code")), code.toLowerCase()));
 
-        List<Material> list = criteria.list();
+        List<Material> list = getSession().createQuery(cq).getResultList();
         if (list.size() != 1) {
             throw new InstanceNotFoundException(code, Material.class.getName());
         }

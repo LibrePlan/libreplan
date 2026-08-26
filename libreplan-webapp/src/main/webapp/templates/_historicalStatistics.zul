@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -37,34 +38,34 @@
                         <rows>
                             <row>
                                 <label value="${i18n:_t('Number of applications')}"/>
-                                <label value="@{historicalStatistics.applications}"/>
+                                <label value="@load(historicalStatistics.applications)"/>
                             </row>
                             <row>
                                 <label value="${i18n:_t('Number of finished applications')}"/>
-                                <label value="@{historicalStatistics.finishApplications}"/>
+                                <label value="@load(historicalStatistics.finishApplications)"/>
                             </row>
                             <row>
                                 <label value="${i18n:_t('Estimated hours average')}"/>
-                                <label value="@{historicalStatistics.averageEstimatedHours}"/>
+                                <label value="@load(historicalStatistics.averageEstimatedHours)"/>
                             </row>
                             <row>
                                 <label value="${i18n:_t('Average of worked hours in finished applications')}"/>
-                                <label value="@{historicalStatistics.averageWorkedHours}"/>
+                                <label value="@load(historicalStatistics.averageWorkedHours)"/>
                             </row>
                             <row>
                                 <label value="${i18n:_t('Maximum/minimum of estimated hours')}"/>
                                 <hbox>
-                                    <label value="@{historicalStatistics.maxEstimatedHours}"/>
+                                    <label value="@load(historicalStatistics.maxEstimatedHours)"/>
                                     <label value=" / "/>
-                                    <label value="@{historicalStatistics.minEstimatedHours}"/>
+                                    <label value="@load(historicalStatistics.minEstimatedHours)"/>
                                 </hbox>
                             </row>
                             <row>
                                 <label value="${i18n:_t('Maximum/minimum of worked hours in finished applications')}"/>
                                 <hbox>
-                                    <label value="@{historicalStatistics.maxWorkedHours}"/>
+                                    <label value="@load(historicalStatistics.maxWorkedHours)"/>
                                     <label value=" / "/>
-                                    <label value="@{historicalStatistics.minWorkedHours}"/>
+                                    <label value="@load(historicalStatistics.minWorkedHours)"/>
                                 </hbox>
                             </row>
                         </rows>

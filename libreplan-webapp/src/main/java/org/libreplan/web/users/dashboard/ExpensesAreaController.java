@@ -35,8 +35,6 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
-import java.util.List;
-
 import static org.libreplan.web.I18nHelper._t;
 
 /**
@@ -106,6 +104,10 @@ public class ExpensesAreaController extends GenericForwardComposer {
         messagesForUser = new MessagesForUser(comp.getFellow("messagesContainer"));
 
         injectObjects();
+
+        // AnnotateBinderInit's page-level pass only registers bindings, never loads them.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private void injectObjects() {
@@ -126,8 +128,8 @@ public class ExpensesAreaController extends GenericForwardComposer {
         expenseSheetCRUDController.goToCreatePersonalExpenseSheet();
     }
 
-    public List<ExpenseSheet> getPersonalExpenseSheets() {
-        return expensesAreaModel.getPersonalExpenseSheets();
+    public org.zkoss.zul.ListModel getPersonalExpenseSheets() {
+        return new org.zkoss.zul.ListModelList<>(expensesAreaModel.getPersonalExpenseSheets());
     }
 
     public RowRenderer getExpenseSheetsRenderer() {

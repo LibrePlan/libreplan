@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -42,10 +43,17 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.HtmlMacroComponent;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,18 +97,45 @@ public class OrderElementHistoricalAssignmentComponent extends HtmlMacroComponen
         this.globalView = globalView;
     }
 
-    public List<OrderElementHistoricAssignmentDTO> getOrderElementsWithThisAssignedTemplate() {
+    public ListModel<OrderElementHistoricAssignmentDTO> getOrderElementsWithThisAssignedTemplate() {
         if ((model == null) || (template == null) || template.isNewObject()) {
-            return Collections.emptyList();
+            return new ListModelList<>(Collections.emptyList());
         } else {
-            return this.adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<List<OrderElementHistoricAssignmentDTO>>() {
+            List<OrderElementHistoricAssignmentDTO> dtos =
+                    this.adHocTransactionService.runOnReadOnlyTransaction(new IOnTransaction<List<OrderElementHistoricAssignmentDTO>>() {
                 @Override
                 public List<OrderElementHistoricAssignmentDTO> execute() {
                     model.getOrderElementsOnConversation().reattach();
                     return createOrderElementHistoricAssignmentDTOs(orderElements);
                 }
             });
+            return new ListModelList<>(dtos);
         }
+    }
+
+    /**
+     * The rows used to be declared with a ZUML "each" template (self="@{each=...}") - under this
+     * app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug entirely
+     * (same fix pattern as elsewhere in this sweep, e.g. WorkerCRUDController.getWorkersRenderer()).
+     */
+    public RowRenderer getOrderElementsWithThisAssignedTemplateRenderer() {
+        return (Row row, Object data, int i) -> {
+            final OrderElementHistoricAssignmentDTO dto = (OrderElementHistoricAssignmentDTO) data;
+            row.setValue(dto);
+
+            row.appendChild(new Label(dto.getOrderCode()));
+            row.appendChild(new Label(dto.getName()));
+            row.appendChild(new Label(dto.getOrderElementCode()));
+            row.appendChild(new Label(dto.getOrderElementName()));
+            row.appendChild(new Label(dto.getEstimatedHours()));
+            row.appendChild(new Label(dto.getWorkedHours()));
+
+            Button view = new Button();
+            view.setLabel(_t("View"));
+            view.addEventListener(Events.ON_CLICK, event -> view(dto));
+            row.appendChild(view);
+        };
     }
 
     private List<OrderElementHistoricAssignmentDTO> createOrderElementHistoricAssignmentDTOs(

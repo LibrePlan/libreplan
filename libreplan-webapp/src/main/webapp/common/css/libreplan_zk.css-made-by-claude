@@ -1,0 +1,1409 @@
+/*
+ * libreplan_zk_breeze.css
+ *
+ * Auto-generated candidate for the Breeze theme: contains only the
+ * structural/layout declarations from libreplan_zk.css-disabled.
+ * Cosmetic declarations (color, background, border, shadow) were
+ * stripped because they were tuned against the Sapphire theme and
+ * conflict with Breeze's own defaults. See libreplan_zk_cosmetic_review.css
+ * for the removed declarations, to re-apply selectively after visual QA.
+ */
+
+/*
+ * libreplan_zk.css LibrePlan
+ *
+ * This stylesheet contains declarations for ZK overriden components
+ * according to the ZK Style Guides [http://www.zkoss.org/doc/styleguide]
+ * to integrate the custom appearance of the web application.
+ */
+
+/* ----- Predefined Height dependent styles ----- */
+
+.scheduling-graphics {
+    height: 200px;
+}
+
+.main-layout {
+    height: 560px;
+}
+
+.taskheaders-border {
+    width: 300px;
+}
+
+.plannerlayout #watermark {
+    height: 99999px !important;
+}
+
+.plannerlayout .taskspanel-gap #timetracker {
+    overflow-y: hidden;
+}
+
+.leftpanelcontainer {
+    overflow-x: scroll;
+}
+
+body {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.headings {
+    height: 90px;
+}
+
+table {
+    margin: 0;
+    padding: 0;
+}
+
+.errorbox {
+    margin: 40px;
+    padding: 40px;
+}
+
+.warningbox {
+    margin: 40px;
+    padding: 40px;
+}
+
+/* Buttons styles */
+
+.icono .z-button-cm,
+body .z-window-embedded .icono .z-button-cm,
+body .z-window-modal .icono .z-button-cm,
+body .advanced-allocation-layout .icono .z-button-cm {
+    padding: 0;
+}
+
+.z-button {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: normal;
+    min-height: 16px;
+}
+
+/* Perspective and planner buttons */
+.perspectives-column {
+    padding-top: 0;
+    overflow-y: auto;
+}
+
+.perspectives-column .global-commands {
+    margin-bottom: 0;
+}
+
+.toolbar-box .z-button {
+    padding: 1px 2px 2px 2px;
+}
+
+.planner-command .z-button-cm,
+.planner-icon .z-button-cm {
+    padding: 2px;
+}
+
+.toolbar-box .z-button .z-button-cm,
+.advanced-allocation-layout .z-north-body .z-button-cm {
+    height: 24px;
+    padding: 2px;
+}
+
+.sub_menu_active.z-button {
+    padding: 2px;
+    margin: 2px;
+}
+
+.sub_menu .z-button-cm:hover {
+    text-decoration: underline;
+}
+
+/* Global action button styles
+--------------------------------------------------- */
+.global-action.z-button,
+.save-button.z-button[disabled],
+.create-button.z-button[disabled] {
+    margin-top: 10px;
+    font-weight: bold;
+    padding: 4px 25px !important;
+    font-size: 12px;
+    margin-right: 10px;
+}
+
+.global-action.z-button:active,
+.global-action.z-button:hover,
+.global-action.z-button:focus {
+    margin-right: 10px;
+    /* Do not optimize it */
+    background-color: #C3EAAF;
+}
+
+/* Embed tabbpanels button destyling */
+.z-tabpanel .global-action.z-button .z-button-cm {
+    padding: 2px 18px;
+    margin-left: 5px;
+}
+
+/* --- END -- Button styles --
+=================================================== */
+
+.vertical_separator {
+    width: 14px;
+    height: 20px;
+    margin-top: 4px;
+}
+
+.footer {
+    clear: both;
+    margin: 20px;
+    font-size: 12px;
+}
+
+/* ------------- OrderElement tree  -------------  */
+.orderTree input {
+    height: 18px;
+    padding-left: 2px;
+}
+
+.orderTree .z-datebox-input {
+    height: 20px;
+}
+
+/* Allows tasknumber span to have fixed width */
+.orderTree .tasknumber {
+    display: inline-block;
+}
+
+.orderTree td {
+    padding: 0 !important;
+}
+
+/* Cleaning window borders */
+.z-window-embedded-tr,.z-window-embedded-tl {
+    display: none;
+}
+
+.z-window.z-window-noborder.z-window-embedded {
+    padding-left: 6px;
+}
+
+.message_ERROR, .message_INFO {
+    padding: 15px;
+    margin: 10px;
+    width: 367px;
+}
+
+.message_WARNING {
+    padding: 10px 5px;
+    margin: 5px;
+}
+
+.message_WARNING img, .message_ERROR img {
+    display: none;
+}
+
+.message_INFO span {
+    position: relative;
+    left: 10px;
+}
+
+#messages-div {
+    position: fixed;
+    margin-top: -10px;
+}
+
+h4.message_WARNING {
+    padding: 10px 5px;
+    margin: 25px;
+    font-size: 12px;
+    font-weight: normal;
+    width: 400px;
+}
+
+.main-area .z-center-body > .z-div > .z-window-embedded {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+/* Hide inner second level embed window titles */
+.z-window-embedded .z-window-embedded .z-window-embedded .z-window-embedded-hl {
+    display: none;
+}
+
+.subtitulo {
+    font-weight: bold;
+}
+
+/* ------ Overridden norrmoz.css.dsp styles ------ */
+.z-label,.z-radio-content,.z-checkbox-content,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
+div.z-tree-footer-content, div.z-tree-cell-content, div.z-tree-col-content, .z-listbox,
+div.z-footer-content, div.z-row-content, div.z-group-content, div.z-group-foot-content,
+div.z-column-content, div.z-listfooter-content, div.z-listcell-content, .z-bandbox, .z-bandbox-input {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+div.z-row-content {
+    padding: 0;
+}
+
+.z-word-wrap {
+    word-wrap: normal;
+}
+
+.z-word-wrap .z-auxheader-content {
+    word-wrap: normal;
+}
+
+/*
+Only if header is embedded than we should use header with bullet ico.
+Else we will use header with blue image. (.z-window-header)
+*/
+.z-window-embedded .z-window-popup-header,
+.z-window-embedded .z-window-highlighted-header,
+.z-window-embedded .z-window-overlapped-header,
+.z-window-embedded .z-window-header {
+    font-family: Georgia, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    padding-bottom: 10px;
+    font-weight: normal;
+    padding-left: 22px;
+}
+
+.caption-title .z-caption-content {
+    font-size: 18px;
+}
+
+.z-tabs-scroll .z-tabs-content {
+    padding-bottom: 0;
+}
+
+.z-textbox,.z-decimalbox,.z-intbox,.z-longbox, .z-combobox-inp,
+.z-doublebox, .z-datebox,  .z-datebox-input, .z-datebox-focus .z-datebox-input {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    padding-left: 2px;
+}
+
+.leftpanelgap .z-textbox, .leftpanelgap .z-decimalbox, .leftpanelgap .z-intbox,
+.leftpanelgap .z-longbox, .leftpanelgap .z-doublebox, .leftpanelgap .z-datebox,
+.leftpanelgap .z-datebox-input, .leftpanelgap .z-datebox-focus .z-datebox-input,
+.leftpanelgap .z-datebox-input {
+    font-size: 11px;
+}
+
+div.z-footer-content,div.z-row-content,div.z-group-content,div.z-group-foot-content,div.z-column-content,div.z-tree-col-content {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.z-word-wrap div.z-tree-cell-content,.z-word-wrap div.z-tree-footer-content,
+.z-word-wrap div.z-tree-col-content {
+    word-wrap: normal;
+}
+
+.z-tabs-scroll {
+    padding-bottom: 0;
+}
+
+.z-tab .z-tab-text {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.z-tab-seld .z-tab-text {
+    /* color: #0F3B82;
+    */
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.z-tabpanel,.z-tabbox-ver .z-tabpanels {
+    padding: 5px;
+}
+
+.message_INFO {
+    margin: 10px;
+    padding: 15px 15px 15px 50px;
+    width: 367px;
+}
+
+div.z-grid {
+    overflow: hidden;
+}
+
+#timetrackerheader .second_level_ {
+    -webkit-margin-start: -1px;
+}
+
+.listdetails div.z-tree-body td.z-treecell {
+    padding: 0;
+}
+
+.listdetails .z-tree-header {
+    position: relative;
+}
+
+.z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
+.z-listbox .z-longbox,.z-listbox .z-doublebox {
+    height: auto;
+}
+
+.orderTree .z-textbox,.orderTree .z-decimalbox,
+.orderTree .z-intbox,.orderTree .z-longbox,
+.orderTree .z-doublebox, .orderTree .z-datebox {
+    height: 21px;
+    width: 100%;
+}
+
+.listdetails .z-textbox, .listdetails .z-decimalbox,
+.listdetails .z-intbox, .listdetails .z-longbox,
+.listdetails .z-doublebox, .listdetails .z-tree .z-datebox-input {
+    height: 15px;
+}
+
+.listdetails .z-tree .z-datebox-input {
+    padding-top: 3px;
+}
+
+.listdetails input {
+    padding-top: 5px;
+}
+
+.z-tree .z-datebox-input {
+    height: 25px;
+}
+
+.orderTree .operations {
+    width: 50px;
+}
+
+.orderTree .name {
+    min-width: 120px;
+}
+
+.orderTree .hours {
+    width: 50px;
+}
+
+/* After ZK8, this code is not working */
+.orderTree .code {
+    min-width: 110px;
+}
+
+.orderTree .scheduling_state {
+    min-width: 140px;
+}
+
+.orderTree .estimated_init,
+.orderTree .estimated_end {
+    width: 100px;
+}
+
+.orderTree .tasknumber {
+    display: none;
+}
+
+.orderTree div.z-tree-cell-content {
+    padding: 0;
+}
+
+.orderelements-tab .z-datebox-focus .z-datebox-input,
+.orderelements-tab .z-datebox-input {
+    width: auto;
+}
+
+.listdetails .z-datebox-focus .z-datebox-input {
+    height: 17px;
+    font-size: 11px !important;
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.taskTreeCols div.z-tree-header, .taskTreeCols div.z-tree-header tr {
+    width: 100% !important;
+    overflow: visible;
+}
+
+.advance-measurement {
+    width: 340px;
+}
+
+.assignedresources .icono .z-button-tr,
+.assignedresources .icono td.z-button-br {
+    display: none;
+}
+
+.assignedresources .z-listbox input {
+    height: 17px !important;
+}
+
+/* ------- Chart legends  ------- */
+.legend {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    padding: 5px;
+}
+
+.legend-container {
+    width: 226px;
+    height: 190px;
+}
+
+.legend td {
+    vertical-align: bottom;
+}
+
+.legend .title {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.legend-row {
+    margin: 2px;
+}
+
+.legend .capability {
+    height: 7px;
+    width: 25px;
+    margin-right: 5px;
+}
+
+.legend .overload {
+    height: 10px;
+    width: 25px;
+    margin-right: 5px;
+}
+
+.legend .overload-other {
+    height: 10px;
+    width: 25px;
+    margin-right: 5px;
+}
+
+.legend .load {
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
+.legend .load-other {
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
+.legend .full-load {
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
+.resources-full-load {
+    display: none;
+}
+
+.resourcesloadlayout .resources-full-load {
+    display: block;
+}
+
+.legend .resourceload {
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
+.resourcesloadlayout .legend-container {
+    width: 186px;
+}
+
+/* Graphical improvements */
+
+.z-panel-header, .z-panel-head {
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.z-panel-body {
+    margin: 0 10px 0 10px;
+}
+
+.orderTree .tasknumber {
+    /* Pending removal from the code */
+    display: none;
+}
+
+.orderTree .not-scheduled span,
+.orderTree .partially-scheduled span,
+.orderTree .completely-scheduled span {
+    float: left;
+}
+
+.orderTree .not-scheduled button.z-button,
+.orderTree .partially-scheduled button.z-button,
+.orderTree .completely-scheduled button.z-button {
+    margin: -12px -6px -20px 0;
+}
+
+.orderTree .not-scheduled span.scheduling-state,
+.orderTree .partially-scheduled span.scheduling-state,
+.orderTree .completely-scheduled span.scheduling-state {
+    font-weight: bold;
+    margin: 4px 3px 2px 0;
+    padding: 1px 5px;
+    height: 14px;
+    font-size: 9px;
+}
+
+.scheduling-state {
+    cursor: move;
+}
+
+span.z-dottree-tee-open,
+span.z-dottree-tee-close,
+span.z-dottree-line {
+    min-height: 25px;
+}
+
+.z-menu-text {
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 8px;
+}
+
+.z-menu-icon {
+    display: none !important;
+}
+
+.z-menubar-horizontal {
+    padding: 0;
+}
+
+.z-menubar-horizontal li {
+    margin: 0 4px 0 4px;
+}
+
+.z-menu-content {
+    padding-right: 10px;
+}
+
+.z-menu-content:focus > .z-menu-text,
+.z-menu-content:active > .z-menu-text {
+    text-decoration: underline;
+}
+
+.submenu {
+    display: block;
+}
+
+.current-section .z-menu {
+    font-weight: normal;
+}
+
+.user_row .cerrar_sesion {
+    display: inline;
+}
+
+.migas_linea {
+    cursor: default;
+}
+
+/* ---- Perspectives ------ */
+.perspective, .perspective-active {
+    width: 84px;
+    /* height: 94px;
+    */
+    margin: 0 2px;
+}
+
+.perspective tr td, .perspective-active  tr td {
+    font-weight: normal;
+    font-size: 10px;
+}
+
+.perspective ,
+.perspective-active {
+    padding-top: 60px;
+    /* border-radius: 2px;
+}
+
+.perspective-active {
+    /*border-radius: 2px;
+    */
+    color: #FFFFFF;
+}
+
+.perspectives-label {
+    display: none;
+}
+
+.resourceload-details-container table {
+    height: 35px;
+}
+
+.z-button.perspective,
+.z-button.perspective-active {
+    padding-top: 60px;
+    white-space: normal;
+}
+
+.perspective.hidden {
+    display: none;
+}
+
+.global-dashboard-grid {
+    margin-top: 5px;
+}
+
+.perspectives-column {
+    display: none;
+}
+
+/* ---- Toolbar ------ */
+
+.toolbar-box .z-button-cm {
+    height: 24px;
+}
+
+.toolbar-box .z-label {
+    padding-left: 4px;
+}
+
+.toolbar-box button.z-button {
+    margin: 2px 3px 0 0;
+}
+
+.toolbar-box {
+    font-size: 11px;
+}
+
+.toolbar-box table.z-button-disd:active {
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.toolbar-box .z-button {
+    font-size: 11px;
+}
+
+/* =================================================== */
+
+.vertical-separator {
+    display: none;
+}
+
+.main-area > .z-center-body:first-child {
+    width: auto !important;
+}
+
+.main-area {
+    overflow: auto;
+}
+
+.orderslayout-area {
+    overflow-y: auto;
+}
+
+.orderslayout-area > .z-center-body {
+    height: auto !important;
+}
+
+.orderelements-tab {
+    overflow-x: auto;
+}
+
+.z-treerow.z-treerow-selected > .z-treecell,
+.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected:hover > .z-treecell,
+.z-listitem.z-listitem-selected > .z-listcell,
+.z-listitem.z-listitem-selected:hover > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus:hover > .z-listcell {
+    /*background: #fdd772;
+    !* Dark orange *!*/
+    background: linear-gradient(to bottom, #fdd772 0, #fdd772 100%);
+}
+
+tr.z-treerow-selected input {
+    /* Soft orange */
+    background: #fdf3da none;
+}
+
+tr.z-treerow-over input {
+    /* Soft blue */
+    background: #eff2f6 none;
+}
+
+tr.z-treerow-over input {
+    /* Soft blue */
+    background: #eff2f6 none;
+}
+
+.timeplot-canvas {
+    position: relative;
+    overflow: hidden;
+}
+
+.resources-load .timetracker-secondlevel {
+    height: 2000px;
+}
+
+.scheduling-graphics .z-tabs {
+    width: 60px !important;
+}
+
+.scheduling-graphics .z-tab .z-tab-text {
+    white-space: normal;
+    text-overflow: clip;
+}
+
+/* Display value tab in normal white space */
+.scheduling-graphics  .z-tabbox-left>.z-tabs .z-tab-selected .z-tab-text {
+    white-space: normal;
+}
+
+.earned-parameter-column {
+    width: 102px;
+}
+
+.z-panel-body {
+    padding: 10px;
+}
+
+.resources-load .z-west-body .z-tree-header ,
+.limiting-resources .z-west-body .z-tree-header {
+    width: 100% !important;
+}
+
+.z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+}
+
+.allocation-criterion-selector span.z-dottree-ico,
+.allocation-criterion-selector span.z-dottree-line {
+    min-height: 14px;
+}
+
+.allocation-criterion-selector .z-treecell-content {
+    line-height: inherit;
+}
+
+.timeplot-copyright {
+    display: none;
+}
+
+.timeplot-grid-label {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    z-index: 2;
+    font-size: 9px;
+    font-weight: bold;
+}
+
+.migas_linea span.scheduling-state {
+    font-weight: normal;
+    margin: 4px 3px 2px 10px;
+    padding: 1px 5px;
+    cursor: default;
+    text-transform: lowercase;
+}
+
+.z-menupopup .z-menu-image, .z-menupopup .z-menuitem-image {
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 16px;
+    margin-right: 11px;
+    margin-left: 3px;
+}
+
+.advanced-allocation-layout .global-action.z-button {
+    margin-top: 1px;
+}
+
+.help-tooltip {
+    cursor: help;
+}
+
+/* For horizontal scrolling */
+.timeTrackedTableWithLeftPane .z-grid-body table {
+    position: relative;
+}
+
+.timeTrackedTableWithLeftPane div.z-grid-body {
+    overflow: visible;
+}
+
+.advanced-allocation-layout #timeTracker .z-vbox {
+    position: relative;
+}
+
+.resource-allocation-checkbox input {
+    margin-bottom: -1px;
+}
+
+.allocation-not-satisfied td.z-row-inner {
+    /* Important rule will overlap rule for z-row: hover */
+    background-color: #EECCCC !important;
+}
+
+/* Advanced allocation */
+
+.advanced-allocation-layout #timeTrackedTableWithLeftPane div.z-grid {
+    overflow: auto;
+}
+
+.advanced-allocation-layout .timetrackergap {
+    overflow: visible;
+}
+
+.clickable-rows tr.z-row:hover .z-row-inner {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.listdetails .clickable-rows:hover {
+    text-decoration: underline;
+}
+
+/* ----------- Limiting Resources window ------- */
+.not-workable-hours {
+    position: relative;
+    z-index: -2;
+    top: -1px;
+    height: 12px;
+    float: right;
+}
+
+.current-queue-information .z-grid-body {
+    overflow: hidden;
+}
+
+.current-queue-information {
+    margin: 5px;
+}
+
+.z-fieldset {
+    margin-right: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+}
+
+.tooltip-actions {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.projects-list .date,
+.projects-list .operations {
+    width: 100px;
+}
+
+.projects-list .customer {
+    max-width: 150px;
+}
+
+.edit-task-window .z-tab-accordion {
+    display: none;
+}
+
+.edit-task-window .message_ERROR,
+.edit-task-window .message_INFO {
+    width: auto;
+}
+
+.filtering-area {
+    height: 30px;
+    white-space: nowrap;
+}
+
+.filter-more-options {
+    overflow: visible;
+}
+
+.filter-more-options .z-groupbox-content {
+    width: 612px;
+    left: -492px;
+    position: relative;
+}
+
+.filter-more-options .z-groupbox-header {
+    margin-top: 0;
+    min-height: 24px;
+    height: 24px;
+}
+
+.filter-more-options .z-groupbox-bl {
+    display: none;
+}
+
+.filter-more-options .z-groupbox-tl {
+    height: 1px;
+}
+
+.filter-more-options .z-groupbox-hl .z-groupbox-header {
+    padding-bottom: 1px;
+}
+
+.filter-more-options .z-caption .z-caption-content,
+.filter-more-options .z-caption .z-caption-r {
+    font-size: 11px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.filter-more-options .z-groupbox-hl {
+    cursor: pointer;
+}
+
+#ganttpanel #timetracker {
+    overflow: hidden;
+}
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column,
+.second_level_ #watermark .bankHoliday {
+    height: 99999px;
+}
+
+.calendar-exceptions div.z-grid-body {
+    overflow: hidden;
+}
+
+.color-sample {
+    height: 10px;
+    width: 20px;
+}
+
+/* Expand vertical boxes for non-FireFox browsers */
+.z-vbox {
+    width: 100%;
+}
+
+.earned-parameter-column .z-label,
+.earned-parameter-column .z-checkbox-content {
+    font-size: 10px;
+}
+
+.earned-parameter-column {
+    white-space: nowrap;
+}
+
+.progress-types.z-combobox {
+    position: relative;
+    left: -9px;
+}
+
+.progress-types {
+    margin-left: -12px;
+}
+
+.progress-types.z-combobox .z-combobox-inp {
+    margin: 0;
+    padding: 0;
+    width: 0;
+}
+
+.progress-types.z-combobox input {
+    display: none;
+    font-size: 0;
+}
+
+.show-advances img {
+    position: relative;
+    left: -6px;
+}
+
+.advanced-allocation-layout .second_level_ th {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.advanced-allocation-layout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    cursor: default;
+}
+
+.advanced-assignment-area td .z-intbox,
+.advanced-assignment-area td .z-textbox {
+    height: 20px;
+}
+
+.advanced-assignment-area td .limiting.z-intbox,
+.advanced-assignment-area td .limiting.z-textbox {
+    height: 20px;
+    /* LIMITING_ASSIGNED */
+    color: #555555;
+    -moz-opacity: 1;
+}
+
+.advanced-assignment-area td .limiting.z-intbox[value="0"],
+.advanced-assignment-area td .limiting.z-textbox[value="0"] {
+    /* LIMITING_UNNASSIGNED */
+    color: #555555;
+}
+
+.advanced-assignment-area > .z-center-body {
+    overflow: visible !important;
+}
+
+.z-calendar td.z-calendar-selected,
+.z-calendar .z-calendar-body td.z-calendar-selected {
+    padding: 0;
+}
+
+td.z-calendar-selected {
+    font-weight: bold;
+}
+
+.add-resources-or-criteria div {
+    white-space: nowrap;
+}
+
+.z-datebox-pp {
+    width: auto !important;
+}
+
+.advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-header,
+.advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-body,
+.advanced-assignment-area .z-center-body {
+    width: auto !important;
+}
+
+/* Icons and toolbar buttons */
+
+.icono .z-button-tl, .icono .z-button-tm, .icono .z-button-tr,
+.icono .z-button-cl, .icono .z-button-cr,
+.icono .z-button-bl, .icono .z-button-bm, .icono .z-button-br {
+    display: none;
+}
+
+.perspectives-column .z-button-tl, .perspectives-column .z-button-tm, .perspectives-column .z-button-tr,
+.perspectives-column .z-button-cl, .perspectives-column .z-button-cr,
+.perspectives-column .z-button-bl, .perspectives-column .z-button-bm, .perspectives-column .z-button-br {
+    display: none;
+}
+
+.toolbar-box .z-button-tl, .toolbar-box .z-button-tm, .toolbar-box .z-button-tr,
+.toolbar-box .z-button-cl, .toolbar-box .z-button-cr,
+.toolbar-box .z-button-bl, .toolbar-box .z-button-bm, .toolbar-box .z-button-br {
+    display: none;
+}
+
+.planner-command.z-button .z-button-tl, .planner-command.z-button .z-button-tm, .planner-command.z-button .z-button-tr,
+.planner-command.z-button .z-button-cl, .planner-command.z-button .z-button-cr,
+.planner-command.z-button .z-button-bl, .planner-command.z-button .z-button-bm, .planner-command.z-button .z-button-br {
+    display: none;
+}
+
+.global-commands .z-button {
+    padding-bottom: 0;
+    padding-top: 1px;
+}
+
+.global-commands {
+    margin-bottom: 10px;
+}
+
+.z-button tbody {
+    /* green0 (normal background) */
+    color: #58A758;
+}
+
+.assigned-hours-input {
+    width: 60px;
+    margin-left: -20px;
+}
+
+.assigned-resources-input {
+    width: 40px;
+    float: left;
+    margin-left: 15px;
+}
+
+.assigned-resources-label {
+    cursor: default;
+}
+
+.assignedresources .details div.z-column-content {
+    font-weight: normal;
+}
+
+.assignedresources .z-auxheader-content {
+    font-weight: bold;
+}
+
+.scheduling-graphics .z-south-header {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.timeplot-container {
+    height: 170px !important;
+    margin-left: 8px;
+}
+
+.workerwindow .calendar-tabbox .z-tabs {
+    display: none;
+}
+
+.workerwindow .calendar-tabbox .calendar-options-tabbox .z-tabs {
+    display: block;
+}
+
+.calendar-tabbox .z-textbox {
+    height: auto;
+}
+
+.calendar-tabbox .z-calendar {
+    margin: 5px;
+}
+
+.day-details .z-columns {
+    display: none;
+}
+
+.day-details {
+    margin: 5px;
+}
+
+.day-details img {
+    display: none;
+}
+
+.materials-accordion .z-tab-accordion-header {
+    display: none;
+}
+
+.earned-value-chart .legend-container {
+    width: 226px;
+}
+
+select {
+    font-size: 12px;
+}
+
+.z-separator-vertical-bar {
+    height: 22px;
+    width: 0;
+}
+
+.logo-area img {
+    margin-right: 10px;
+}
+
+.logo-area {
+    width: 1px;
+}
+
+.template-tree-tabpanel {
+    overflow-x: auto;
+}
+
+select {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size: 11px;
+}
+
+.scheduling-graphics .z-tabs-space {
+    width: 0;
+}
+
+.entity-sequences-grid tr.z-row td.z-row-inner {
+    padding-bottom: 8px;
+    padding-top: 4px;
+}
+
+.bandbox-workreport-task input {
+    width: 250px;
+}
+
+.communication-not-reviewed div.z-row-content .z-label {
+    font-weight: bold;
+}
+
+.current-delivery-date div.z-row-content .z-label {
+    font-weight: bold;
+}
+
+.remarked {
+    font-weight: bold;
+}
+
+.z-menupopup a:focus {
+    text-decoration: none !important;
+}
+
+.icono {
+    margin: -8px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+.z-radio {
+    padding: 3px;
+}
+
+.z-label {
+    padding-left: 4px;
+}
+
+.z-row-content {
+    margin: 1px;
+}
+
+/*
+  Made for edit email template page text area.
+  If it will break something, add class for text area and remove this restriction.
+*/
+textarea {
+    resize: none;
+}
+
+/* Synchronization window ( Job Scheduling ) */
+.job-scheduling-manual-header .z-window-header {
+    padding-left: 6px;
+}
+
+.z-window-header-move {
+    padding-left: 6px;
+}
+
+.hour-cost-button {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.hour-cost-grid {
+    margin: 0 10px 10px 10px;
+}
+
+.more-options-label {
+    top: -4px !important;
+    padding-left: 6px !important;
+}
+
+.completely-scheduled.z-treecell {
+    min-width: 140px;
+}
+
+.depth_1.z-treecell {
+    min-width: 1152px;
+}
+
+.orderTree.z-dottree > .z-dottree-body > table > .z-treechildren > .z-treerow > td:nth-child(4) {
+    min-width: 50px;
+}
+
+/* Rewrite width for auto generate table */
+.normalResourceAllocation > div > table {
+    width: 100% !important;
+}
+
+/* Doesn't show tabpanel, because it isn't necessary */
+.tabNormalAllocation > .z-tabpanel > .z-tab {
+    display: none;
+}
+
+.scheduling-graphics .z-tabpanels .z-tabpanel {
+    padding: 0 !important;
+}
+
+.scheduling-graphics .z-south-header {
+    height: 23px;
+    padding-top: 0;
+}
+
+/* It needs for correctly show tree item in project planning */
+.allocationTreeCol > div > table > tbody > tr > td > .z-treecell-content > span.z-dottree-line {
+    display: inline-block;
+}
+
+.queue-element-information {
+    margin: 5px;
+}
+
+.margin-border {
+    margin: 5px;
+}
+
+.orderTree button.icono {
+    padding-right: 0;
+    padding-left: 0;
+    margin-left: 2px;
+}
+
+.timetrackergap .z-column-content {
+    top: -7px;
+}
+
+.timetrackergap .z-grid {
+    height: 16px;
+}
+
+.planner-command.clicked.z-button,
+.planner-command.clicked.z-button:focus {
+    /* blue (active background)*/
+    border-top: 1px solid #006699;
+    padding: 2px;
+}
+
+/* It needs for correct work (correct width) collapse component in Project Planning and Project Scheduling */
+.scroll-collapse {
+    width: 99%;
+}
+
+.report-margin {
+    margin: 10px 0 10px 0;
+}
+
+.bandbox-margin {
+    margin-left: 5px;
+}
+
+.grid-margin {
+    margin: 0 0 5px 5px;
+}
+
+.hbox-margin {
+    margin: 5px 0 0 5px;
+}
+
+.label-middle td tr td {
+    vertical-align: middle;
+}
+
+.label-middle td tr td > span {
+    font-size: 12px;
+}
+
+.z-tree-line + button {
+    height: 16px;
+}
+
+.decimal-max-value {
+    width: 85px;
+}
+
+.checkbox-margin > input {
+    margin-bottom: -2px;
+}
+
+.padding-bottom-queue {
+    padding-bottom: 6px;
+}
+
+.more-options-caption div {
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.expenses-sheet-code-wide-table table {
+    width: 60%;
+}

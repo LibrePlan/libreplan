@@ -34,6 +34,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.SimpleListModel;
@@ -73,6 +74,9 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
         injectsObjects();
 
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private void injectsObjects() {
@@ -92,8 +96,8 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
         }
     }
 
-    public FilterCommunicationEnum[] getFilterItems(){
-        return FilterCommunicationEnum.values();
+    public ListModel<FilterCommunicationEnum> getFilterItems(){
+        return new SimpleListModel<>(FilterCommunicationEnum.values());
     }
 
     public FilterCommunicationEnum getCurrentFilterItem() {
@@ -107,7 +111,7 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
 
     private void refreshCustomerCommunicationsList(){
         // Update the customer communication list
-        listing.setModel(new SimpleListModel<>(getCustomerCommunications()));
+        listing.setModel(getCustomerCommunications());
         listing.invalidate();
     }
 
@@ -115,17 +119,17 @@ public class CustomerCommunicationCRUDController extends GenericForwardComposer 
         customerCommunicationModel.confirmSave(customerCommunication);
     }
 
-    public List<CustomerCommunication> getCustomerCommunications() {
+    public ListModel<CustomerCommunication> getCustomerCommunications() {
         FilterCommunicationEnum currentFilter = customerCommunicationModel.getCurrentFilter();
 
         switch(currentFilter) {
 
             case NOT_REVIEWED:
-                return customerCommunicationModel.getCustomerCommunicationWithoutReviewed();
+                return new SimpleListModel<>(customerCommunicationModel.getCustomerCommunicationWithoutReviewed());
 
             case ALL:
             default:
-                return customerCommunicationModel.getCustomerAllCommunications();
+                return new SimpleListModel<>(customerCommunicationModel.getCustomerAllCommunications());
         }
     }
 

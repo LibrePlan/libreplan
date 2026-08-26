@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Bericht über geleistete Stunden nach Ressource</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="bericht-uber-geleistete-stunden-nach-ressource">
+<h1 class="title">Bericht über geleistete Stunden nach Ressource</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#zweck" id="toc-entry-1">Zweck</a></li>
+<li><a class="reference internal" href="#eingabeparameter-und-filter" id="toc-entry-2">Eingabeparameter und Filter</a></li>
+<li><a class="reference internal" href="#ausgabe" id="toc-entry-3">Ausgabe</a><ul>
+<li><a class="reference internal" href="#kopfzeile" id="toc-entry-4">Kopfzeile</a></li>
+<li><a class="reference internal" href="#fuszzeile" id="toc-entry-5">Fußzeile</a></li>
+<li><a class="reference internal" href="#hauptteil" id="toc-entry-6">Hauptteil</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="zweck">
+<h1><a class="toc-backref" href="#toc-entry-1">Zweck</a></h1>
+<p>Dieser Bericht extrahiert eine Liste von Aufgaben und die Zeit, die Ressourcen ihnen innerhalb eines bestimmten Zeitraums gewidmet haben. Mehrere Filter ermöglichen es Benutzern, die Abfrage zu verfeinern, um nur die gewünschten Informationen zu erhalten und irrelevante Daten auszuschließen.</p>
+</div>
+<div class="section" id="eingabeparameter-und-filter">
+<h1><a class="toc-backref" href="#toc-entry-2">Eingabeparameter und Filter</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Daten</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Typ</em>: Optional.</li>
+<li><dl class="first docutils">
+<dt><em>Zwei Datumsfelder</em>:</dt>
+<dd><ul class="first last">
+<li><em>Startdatum:</em> Dies ist das früheste Datum für einzuschließende Arbeitsberichte. Arbeitsberichte mit Datum vor dem <em>Startdatum</em> werden ausgeschlossen. Wenn dieser Parameter leer gelassen wird, werden Arbeitsberichte nicht nach <em>Startdatum</em> gefiltert.</li>
+<li><em>Enddatum:</em> Dies ist das späteste Datum für einzuschließende Arbeitsberichte. Arbeitsberichte mit Datum nach dem <em>Enddatum</em> werden ausgeschlossen. Wenn dieser Parameter leer gelassen wird, werden Arbeitsberichte nicht nach <em>Enddatum</em> gefiltert.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filter nach Mitarbeitern:</strong>
+*   <em>Typ:</em> Optional.
+*   <em>Funktionsweise:</em> Sie können einen oder mehrere Mitarbeiter auswählen, um die Arbeitsberichte auf die von diesen bestimmten Mitarbeitern erfasste Zeit zu beschränken. Um einen Mitarbeiter als Filter hinzuzufügen, suchen Sie ihn in der Auswahl und klicken Sie auf die Schaltfläche <em>Hinzufügen</em>. Wenn dieser Filter leer gelassen wird, werden Arbeitsberichte unabhängig vom Mitarbeiter abgerufen.</li>
+<li><strong>Filter nach Etiketten:</strong>
+*   <em>Typ:</em> Optional.
+*   <em>Funktionsweise:</em> Sie können ein oder mehrere Etiketten als Filter hinzufügen, indem Sie in der Auswahl danach suchen und auf die Schaltfläche <em>Hinzufügen</em> klicken. Diese Etiketten werden verwendet, um die Aufgaben auszuwählen, die bei der Berechnung der ihnen gewidmeten Stunden in die Ergebnisse einbezogen werden sollen. Dieser Filter kann auf Stundenzettel, Aufgaben, beides oder keines angewendet werden.</li>
+<li><strong>Filter nach Kriterien:</strong>
+*   <em>Typ:</em> Optional.
+*   <em>Funktionsweise:</em> Sie können ein oder mehrere Kriterien auswählen, indem Sie in der Auswahl danach suchen und dann auf die Schaltfläche <em>Hinzufügen</em> klicken. Diese Kriterien werden verwendet, um die Ressourcen auszuwählen, die mindestens eines davon erfüllen. Der Bericht zeigt die gesamte Zeit, die von Ressourcen aufgewendet wurde, die eines der ausgewählten Kriterien erfüllen.</li>
+</ul>
+</div>
+<div class="section" id="ausgabe">
+<h1><a class="toc-backref" href="#toc-entry-3">Ausgabe</a></h1>
+<div class="section" id="kopfzeile">
+<h2><a class="toc-backref" href="#toc-entry-4">Kopfzeile</a></h2>
+<p>Die Berichtskopfzeile zeigt die Filter an, die für den aktuellen Bericht konfiguriert und angewendet wurden.</p>
+</div>
+<div class="section" id="fuszzeile">
+<h2><a class="toc-backref" href="#toc-entry-5">Fußzeile</a></h2>
+<p>Das Datum, an dem der Bericht erstellt wurde, ist in der Fußzeile aufgeführt.</p>
+</div>
+<div class="section" id="hauptteil">
+<h2><a class="toc-backref" href="#toc-entry-6">Hauptteil</a></h2>
+<p>Der Berichtshauptteil besteht aus mehreren Informationsgruppen.</p>
+<ul>
+<li><p class="first">Die erste Aggregationsebene erfolgt nach Ressource. Die gesamte von einer Ressource aufgewendete Zeit wird unterhalb der Kopfzeile zusammen angezeigt. Jede Ressource wird identifiziert durch:</p>
+<ul class="simple">
+<li><em>Mitarbeiter:</em> Nachname, Vorname.</li>
+<li><em>Maschine:</em> Name.</li>
+</ul>
+<p>Eine Zusammenfassungszeile zeigt die Gesamtzahl der von der Ressource geleisteten Stunden.</p>
+</li>
+<li><p class="first">Die zweite Gruppierungsebene erfolgt nach <em>Datum</em>. Alle Berichte einer bestimmten Ressource am gleichen Datum werden zusammen angezeigt.</p>
+<p>Eine Zusammenfassungszeile zeigt die Gesamtzahl der von der Ressource an diesem Datum geleisteten Stunden.</p>
+</li>
+<li><p class="first">Die letzte Ebene listet die Arbeitsberichte des Mitarbeiters an diesem Tag auf. Die für jede Arbeitsberichtszeile angezeigten Informationen sind:</p>
+<ul class="simple">
+<li><em>Aufgabencode:</em> Der Code der Aufgabe, der die erfassten Stunden zugeordnet werden.</li>
+<li><em>Aufgabenname:</em> Der Name der Aufgabe, der die erfassten Stunden zugeordnet werden.</li>
+<li><em>Startzeit:</em> Dies ist optional. Es ist die Zeit, zu der die Ressource mit der Arbeit an der Aufgabe begann.</li>
+<li><em>Endzeit:</em> Dies ist optional. Es ist die Zeit, zu der die Ressource die Arbeit an der Aufgabe am angegebenen Datum beendete.</li>
+<li><em>Textfelder:</em> Dies ist optional. Wenn die Arbeitsberichtszeile Textfelder hat, werden die ausgefüllten Werte hier angezeigt. Das Format ist: &lt;Name des Textfelds&gt;:&lt;Wert&gt;</li>
+<li><em>Etiketten:</em> Dies hängt davon ab, ob das Arbeitsberichtsmodell ein Etikettenfeld in seiner Definition hat. Wenn es mehrere Etiketten gibt, werden sie in derselben Spalte angezeigt. Das Format ist: &lt;Name des Etikettentyps&gt;:&lt;Wert des Etiketts&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

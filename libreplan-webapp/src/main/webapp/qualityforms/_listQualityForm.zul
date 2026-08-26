@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,7 @@
 -->
 
 <window id="${arg.id}" title="${i18n:_t('Quality Forms List')}">
-    <div align="right">
+    <div style="text-align: right;">
         <hbox align="end" sclass="label-middle">
             <!-- Filter by name -->
             <label value="${i18n:_t('Filter quality forms by')}:"/>
@@ -32,30 +33,14 @@
 
     <separator bar="false" spacing="5px" orient="vertical"/>
 
-    <grid id="qualityFormsList" model="@{controller.qualityForms}" sclass="clickable-rows"
-          mold="paging" pageSize="10" fixedLayout="true">
+    <grid id="qualityFormsList" model="@load(controller.qualityForms)"
+          rowRenderer="@load(controller.qualityFormRenderer)" sclass="clickable-rows"
+          mold="paging" pageSize="10">
         <columns>
             <column label="${i18n:_t('Name')}" sort="auto(lower(name))" sortDirection="ascending" />
             <column label="${i18n:_t('Description')}" />
             <column label="${i18n:_t('Operations')}" width="120px"/>
         </columns>
-        <rows>
-            <row self="@{each='qualityForm'}" value="@{qualityForm}" onClick="controller.goToEditForm(self.value)">
-                <label value="@{qualityForm.name}" />
-                <label value="@{qualityForm.description}" />
-                <hbox>
-                    <button sclass="icono" image="/common/img/ico_editar1.png"
-                            hoverImage="/common/img/ico_editar.png"
-                            tooltiptext="${i18n:_t('Edit')}"
-                            onClick="controller.goToEditForm(self.parent.parent.value);"/>
-
-                    <button sclass="icono" image="/common/img/ico_borrar1.png"
-                            hoverImage="/common/img/ico_borrar.png"
-                            tooltiptext="${i18n:_t('Delete')}"
-                            onClick="controller.confirmDelete(self.parent.parent.value);"/>
-                </hbox>
-            </row>
-        </rows>
     </grid>
     <button label="${i18n:_t('Create')}"
             onClick="controller.goToCreateForm()"

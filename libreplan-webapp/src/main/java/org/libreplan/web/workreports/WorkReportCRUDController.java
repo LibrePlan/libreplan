@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -83,9 +84,12 @@ import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
@@ -141,7 +145,7 @@ public class WorkReportCRUDController
 
     private BandboxSearch bandboxSelectOrderElementInHead;
 
-    private ListModel allHoursType;
+    private List<TypeOfWorkHours> allHoursType;
 
     private static final String ITEM = "item";
 
@@ -188,6 +192,15 @@ public class WorkReportCRUDController
         injectsObjects();
 
         comp.setAttribute("controller", this);
+
+        // AnnotateBinderInit's own page-level pass (<?init class="AnnotateBinderInit"?>) only
+        // calls Util.createBindingsFor - it never loads the bindings it registers, and it runs
+        // strictly after this doAfterCompose finishes, so goToList()'s own Util.reloadBindings
+        // call below would otherwise find no binder yet and silently no-op. Create and do the
+        // first load here instead.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
+
         goToList();
         if ( listType != null ) {
             // listType is null in reports -> work report lines
@@ -216,7 +229,7 @@ public class WorkReportCRUDController
     }
 
     private void initializeHoursType() {
-        allHoursType = new SimpleListModel<>(workReportModel.getAllHoursType());
+        allHoursType = workReportModel.getAllHoursType();
     }
 
     /**
@@ -246,7 +259,37 @@ public class WorkReportCRUDController
     }
 
     public List<WorkReportDTO> getWorkReportDTOs() {
-        return workReportModel.getWorkReportDTOs();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(workReportModel.getWorkReportDTOs());
+    }
+
+    /**
+     * The list's rows used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug
+     * entirely, the same way WorkReportListRenderer (below, for the timesheet lines grid) already
+     * does.
+     */
+    public RowRenderer getWorkReportDTORenderer() {
+        return (row, data, index) -> {
+            final WorkReportDTO workReportDTO = (WorkReportDTO) data;
+            row.setValue(workReportDTO);
+
+            row.appendChild(new org.zkoss.zul.Label(Util.formatDate(workReportDTO.getDateStart())));
+            row.appendChild(new org.zkoss.zul.Label(Util.formatDate(workReportDTO.getDateFinish())));
+            row.appendChild(new org.zkoss.zul.Label(workReportDTO.getType()));
+            row.appendChild(new org.zkoss.zul.Label(workReportDTO.getHours().toFormattedString()));
+            row.appendChild(new org.zkoss.zul.Label(workReportDTO.getCode()));
+
+            Hbox hbox = new Hbox();
+            hbox.appendChild(Util.createEditButton(event -> goToEditForm(workReportDTO)));
+            hbox.appendChild(Util.createRemoveButton(event -> showConfirmDelete(workReportDTO)));
+            row.appendChild(hbox);
+
+            row.addEventListener(Events.ON_CLICK, event -> goToEditForm(workReportDTO));
+        };
     }
 
     private OnlyOneVisible getVisibility() {
@@ -790,6 +833,13 @@ public class WorkReportCRUDController
         appendColumns(listWorkReportLines);
         listWorkReportLines.setSortedColumn((NewDataSortableColumn) listWorkReportLines.getColumns().getFirstChild());
 
+        // rowRenderer="@{controller.renderer}" in the ZUML never registers with AnnotateBinder
+        // (no "load"/"save" keyword in the raw annotation text), so without this the grid falls
+        // back to rendering each row as a single cell showing WorkReportLine's raw
+        // Object.toString(). Set it explicitly here instead, in the same place the model itself
+        // is already set imperatively.
+        listWorkReportLines.setRowRenderer(getRenderer());
+
         listWorkReportLines.setModel(new SimpleListModel<>(getWorkReportLines().toArray()));
     }
 
@@ -816,8 +866,11 @@ public class WorkReportCRUDController
             if ( !getWorkReport().getWorkReportType().getDateIsSharedByLines() ) {
                 NewDataSortableColumn columnDate = new NewDataSortableColumn();
                 columnDate.setLabel(_t("Date"));
+                // No hflex: workreports.css already gives ".date-column" a fixed width, and hflex
+                // (an inline style ZK applies to the header <th> only, not the body <td>s) would
+                // override that for the header while the body cells kept using the CSS width,
+                // leaving the header and body columns different widths.
                 columnDate.setSclass("date-column");
-                columnDate.setHflex("1");
                 Util.setSort(columnDate, "auto=(date)");
                 columnDate.setSortDirection(ASCENDING);
 
@@ -828,7 +881,6 @@ public class WorkReportCRUDController
             if ( !getWorkReport().getWorkReportType().getResourceIsSharedInLines() ) {
                 NewDataSortableColumn columnResource = new NewDataSortableColumn();
                 columnResource.setLabel(_t("Resource"));
-                columnResource.setHflex("1");
                 columnResource.setSclass("resource-column");
                 columns.appendChild(columnResource);
             }
@@ -837,7 +889,6 @@ public class WorkReportCRUDController
                 NewDataSortableColumn columnCode = new NewDataSortableColumn();
                 columnCode.setLabel(_t("Task"));
                 columnCode.setSclass("order-code-column");
-                columnCode.setHflex("1");
                 columns.appendChild(columnCode);
             }
 
@@ -895,13 +946,11 @@ public class WorkReportCRUDController
         columns.appendChild(columnFinsihed);
         columnCode.setLabel(_t("Code"));
         columnCode.setSclass("code-column");
-        columnCode.setHflex("1");
         columns.appendChild(columnCode);
         NewDataSortableColumn columnOperations = new NewDataSortableColumn();
         columnOperations.setLabel(_t("Op."));
         columnOperations.setSclass("operations-column");
         columnOperations.setTooltiptext(_t("Operations"));
-        columnOperations.setHflex("min");
         columns.appendChild(columnOperations);
 
         columns.setParent(grid);
@@ -914,6 +963,28 @@ public class WorkReportCRUDController
 
     public WorkReport getWorkReport() {
         return workReportModel.getWorkReport();
+    }
+
+    /**
+     * Thin wrapper with a primitive boolean return type, unlike
+     * {@link org.libreplan.business.common.IntegrationEntity#isCodeAutogenerated()} (returns the
+     * boxed {@link Boolean}). ZK's EL BeanELResolver only recognizes an "is"-prefixed getter as a
+     * valid property reader when it returns primitive boolean - with boxed Boolean it silently
+     * throws PropertyNotFoundException ("not readable"), so
+     * "@{controller.workReport.codeAutogenerated}" can never be bound directly.
+     */
+    public boolean isWorkReportCodeAutogenerated() {
+        WorkReport workReport = getWorkReport();
+
+        return workReport != null && Boolean.TRUE.equals(workReport.isCodeAutogenerated());
+    }
+
+    public void setWorkReportCodeAutogenerated(boolean codeAutogenerated) {
+        WorkReport workReport = getWorkReport();
+
+        if (workReport != null) {
+            workReport.setCodeAutogenerated(codeAutogenerated);
+        }
     }
 
     /**
@@ -1035,7 +1106,8 @@ public class WorkReportCRUDController
                     value -> line.setFinished(BooleanUtils.isTrue(value))
             );
 
-            if ( !line.isFinished() && workReportModel.isFinished(line.getOrderElement()) ) {
+            if ( !line.isFinished() && line.getOrderElement() != null
+                    && workReportModel.isFinished(line.getOrderElement()) ) {
                 finished.setDisabled(true);
             }
 
@@ -1151,28 +1223,52 @@ public class WorkReportCRUDController
             final WorkReportLine workReportLine = row.getValue();
             final Listbox lbHoursType = new Listbox();
             lbHoursType.setMold("select");
-            lbHoursType.setModel(allHoursType);
-            lbHoursType.renderAll();
-            lbHoursType.applyProperties();
 
-            if ( lbHoursType.getItems().isEmpty() ) {
+            if ( allHoursType.isEmpty() ) {
+                lbHoursType.setModel(new SimpleListModel<>(allHoursType));
+                lbHoursType.renderAll();
+                lbHoursType.applyProperties();
                 row.appendChild(lbHoursType);
 
                 return;
             }
 
-            // First time is rendered, select first item
+            // Pick which TypeOfWorkHours should be pre-selected: the existing value if the line
+            // already has one, otherwise (for a brand new row) the first available option.
+            // Compared by name (like ComponentsFinder.findItemByValue below does), not equals():
+            // TypeOfWorkHours has no equals()/hashCode() override, and `type` here almost never
+            // is the exact same object instance as its counterpart in the shared `allHoursType`
+            // list (different query/association), so reference-equality would never match.
             TypeOfWorkHours type = workReportLine.getTypeOfWorkHours();
-            if ( workReportLine.isNewObject() && type == null)  {
-                Listitem item = lbHoursType.getItemAtIndex(0);
-                item.setSelected(true);
-                setHoursType(workReportLine, item);
-            } else {
-                // If workReportLine has a type, select item with that type
-                Listitem item = ComponentsFinder.findItemByValue(lbHoursType, type);
-                if ( item != null ) {
-                    lbHoursType.selectItem(item);
-                }
+            boolean isNewSelection = workReportLine.isNewObject() && type == null;
+            final String nameToSelect = isNewSelection ? allHoursType.get(0).getName() : type.toString();
+
+            // A fresh ListModel per row is required here, not the shared `allHoursType` list
+            // wrapped once: org.zkoss.zul.AbstractListModel (the base of SimpleListModel)
+            // implements Selectable and stores the current selection INSIDE the model instance
+            // itself. Sharing one SimpleListModel across every row's Listbox meant selecting an
+            // item in any row mutated that one shared model's selection, which every other row's
+            // Listbox (bound to the same instance) then reflected too.
+            //
+            // Selection is set via an ItemRenderer (item.setSelected(...) called per-item, as
+            // each Listitem is actually created) rather than via a post-hoc
+            // Listbox.selectItem()/Listitem.setSelected() call on an already fully-built but
+            // still-unattached component tree: that approach left the Java-side flag set but the
+            // rendered <select> showing no <option selected> - the "select" mold only reflects
+            // whichever item the renderer itself marked selected while building each option, not
+            // a flag flipped on an existing Listitem afterwards.
+            lbHoursType.setModel(new SimpleListModel<>(allHoursType));
+            lbHoursType.setItemRenderer((item, data, index) -> {
+                TypeOfWorkHours hoursType = (TypeOfWorkHours) data;
+                item.setLabel(hoursType.toString());
+                item.setValue(hoursType);
+                item.setSelected(hoursType.toString().equals(nameToSelect));
+            });
+            lbHoursType.renderAll();
+            lbHoursType.applyProperties();
+
+            if ( isNewSelection ) {
+                setHoursType(workReportLine, ComponentsFinder.findItemByValue(lbHoursType, allHoursType.get(0)));
             }
 
             lbHoursType.addEventListener(Events.ON_SELECT, event -> {
@@ -1421,7 +1517,10 @@ public class WorkReportCRUDController
     }
 
     public List<Object> getFieldsAndLabelsHeading() {
-        return workReportModel.getFieldsAndLabelsHeading();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(workReportModel.getFieldsAndLabelsHeading());
     }
 
     public List<Object> getFieldsAndLabelsLine(WorkReportLine workReportLine) {
@@ -1475,7 +1574,10 @@ public class WorkReportCRUDController
             result.add(0, getDefaultWorkReportType());
         }
 
-        return result;
+        // The listbox's "model" property is declared as org.zkoss.zul.ListModel -
+        // AnnotateBinder has no automatic List->ListModel coercion, so returning a plain List
+        // here throws a ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(result);
     }
 
     public List<WorkReportType> getWorkReportTypes() {
@@ -1485,11 +1587,27 @@ public class WorkReportCRUDController
             this.firstType = result.get(2);
         }
 
-        return result;
+        return new org.zkoss.zul.ListModelList<>(result);
     }
 
     public WorkReportType getDefaultWorkReportType() {
         return workReportModel.getDefaultType();
+    }
+
+    /**
+     * The listType/listTypeToAssign dropdowns used to be declared with a ZUML "each" template
+     * (<listitem self="@{each=...}"><listcell label="@{workReportType.name}"/></listitem>) - under
+     * this app's AnnotateBinder/ZK 10 stack that never resolved, leaving the closed-state display
+     * showing the WorkReportType's raw Object.toString() instead of its name. Building items
+     * programmatically via ListitemRenderer, like UnitTypeListRenderer (MaterialsController)
+     * already does, sidesteps that bug entirely.
+     */
+    public ListitemRenderer<WorkReportType> getWorkReportTypeRenderer() {
+        return (listItem, data, index) -> {
+            final WorkReportType workReportType = (WorkReportType) data;
+            listItem.setValue(workReportType);
+            listItem.appendChild(new Listcell(workReportType.getName()));
+        };
     }
 
     /**

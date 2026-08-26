@@ -1,0 +1,150 @@
+- generic [active] [ref=f274e1]:
+  - generic [ref=f274e4]:
+    - generic [ref=f274e5]:
+      - table [ref=f274e6]:
+        - rowgroup [ref=f274e7]:
+          - row [ref=f274e8]:
+            - cell [ref=f274e9]:
+              - link [ref=f274e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f274e12]:
+              - table [ref=f274e13]:
+                - rowgroup [ref=f274e14]:
+                  - row [ref=f274e15]:
+                    - cell [ref=f274e16]:
+                      - generic [ref=f274e17]:
+                        - menubar [ref=f274e18]:
+                          - menuitem "Planning" [ref=f274e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f274e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f274e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f274e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f274e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f274e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f274e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f274e33]:
+                          - rowgroup [ref=f274e34]:
+                            - row [ref=f274e35]:
+                              - cell [ref=f274e36]:
+                                - table [ref=f274e37]:
+                                  - rowgroup [ref=f274e38]:
+                                    - row [ref=f274e39]:
+                                      - cell [ref=f274e40]
+                                      - cell [ref=f274e41]:
+                                        - strong [ref=f274e42]: START
+                                      - cell [ref=f274e43]
+                                      - cell [ref=f274e44]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f274e45]:
+                                          - rowgroup [ref=f274e46]:
+                                            - row [ref=f274e47]:
+                                              - cell [ref=f274e48]:
+                                                - table [ref=f274e49]:
+                                                  - rowgroup [ref=f274e50]:
+                                                    - row [ref=f274e51]:
+                                                      - cell [ref=f274e52]:
+                                                        - table [ref=f274e53]:
+                                                          - rowgroup [ref=f274e54]:
+                                                            - row [ref=f274e55]:
+                                                              - cell [ref=f274e56]:
+                                                                - table [ref=f274e57]:
+                                                                  - rowgroup [ref=f274e58]:
+                                                                    - row [ref=f274e59]:
+                                                                      - cell [ref=f274e60]
+                                                                      - cell [ref=f274e63]
+                                                                      - cell "Resources" [ref=f274e64]
+                                                      - cell [ref=f274e65]
+                                                      - cell [ref=f274e66]:
+                                                        - table [ref=f274e67]:
+                                                          - rowgroup [ref=f274e68]:
+                                                            - row [ref=f274e69]:
+                                                              - cell [ref=f274e70]:
+                                                                - table [ref=f274e71]:
+                                                                  - rowgroup [ref=f274e72]:
+                                                                    - row [ref=f274e73]:
+                                                                      - cell [ref=f274e74]
+                                                                      - cell [ref=f274e77]
+                                                                      - cell "Material Units" [ref=f274e78]
+                              - cell [ref=f274e79]:
+                                - generic [ref=f274e80]:
+                                  - link "Help" [ref=f274e81] [cursor=pointer]:
+                                    - /url: /help/en/11-materiales.html#administraci-n-de-materiais
+                                  - img "Axuda" [ref=f274e83]
+                                  - img "Info" [ref=f274e85]
+      - table [ref=f274e87]:
+        - rowgroup [ref=f274e88]:
+          - row [ref=f274e89]:
+            - cell [ref=f274e90]
+            - 'cell "user: admin" [ref=f274e91]'
+            - cell [ref=f274e92]:
+              - link "[Log out]" [ref=f274e93] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f274e94]:
+      - text:    
+      - generic [ref=f274e96]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - text:     
+        - generic [ref=f274e269]:
+          - generic [ref=f274e270]: "Edit Material Unit: kg"
+          - generic [ref=f274e273]:
+            - generic [ref=f274e274]:
+              - tablist [ref=f274e275]:
+                - listitem [ref=f274e276] [cursor=pointer]:
+                  - generic [ref=f274e277]: Edit
+              - text:  
+              - tabpanel [ref=f274e280]:
+                - grid [ref=f274e281]:
+                  - rowgroup [ref=f274e285]:
+                    - gridcell "Code" [ref=f274e286]
+                    - gridcell [ref=f274e288]:
+                      - table [ref=f274e290]:
+                        - rowgroup [ref=f274e291]:
+                          - row [ref=f274e292]:
+                            - cell [ref=f274e293]:
+                              - table [ref=f274e294]:
+                                - rowgroup [ref=f274e295]:
+                                  - row [ref=f274e296]:
+                                    - cell [ref=f274e297]:
+                                      - textbox [disabled] [ref=f274e298]: UNIT_TYPE0002
+                                    - cell [ref=f274e299]
+                                    - cell [ref=f274e300]:
+                                      - generic [ref=f274e301]:
+                                        - checkbox "Generate code" [checked] [ref=f274e302]
+                                        - text: Generate code
+                    - gridcell "Name" [ref=f274e303]
+                    - gridcell [ref=f274e311]:
+                      - textbox [ref=f274e307]: km
+            - button "Save" [ref=f274e308] [cursor=pointer]
+            - button "Save & Continue" [ref=f274e309] [cursor=pointer]
+            - button "Cancel" [ref=f274e310] [cursor=pointer]
+    - table [ref=f274e261]:
+      - rowgroup [ref=f274e262]:
+        - row [ref=f274e263]:
+          - cell [ref=f274e264]:
+            - generic [ref=f274e266]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f274e267] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f274e268]
+    - text:    
+  - generic [ref=f274e312]:
+    - generic [ref=f274e314]: 
+    - generic "Click to re-enter data" [ref=f274e315]: The meausure name is not valid. There is another unit type with the same measure name
+    - generic [ref=f274e316] [cursor=pointer]: 

@@ -1,0 +1,411 @@
+- generic [ref=f187e4]:
+  - generic [ref=f187e5]:
+    - table [ref=f187e6]:
+      - rowgroup [ref=f187e7]:
+        - row [ref=f187e8]:
+          - cell [ref=f187e9]:
+            - link [ref=f187e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f187e12]:
+            - table [ref=f187e13]:
+              - rowgroup [ref=f187e14]:
+                - row [ref=f187e15]:
+                  - cell [ref=f187e16]:
+                    - generic [ref=f187e17]:
+                      - menubar [ref=f187e18]:
+                        - menuitem "Planning" [ref=f187e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f187e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f187e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f187e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f187e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f187e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f187e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f187e33]:
+                        - rowgroup [ref=f187e34]:
+                          - row [ref=f187e35]:
+                            - cell [ref=f187e36]:
+                              - table [ref=f187e37]:
+                                - rowgroup [ref=f187e38]:
+                                  - row [ref=f187e39]:
+                                    - cell [ref=f187e40]
+                                    - cell [ref=f187e41]:
+                                      - strong [ref=f187e42]: START
+                                    - cell [ref=f187e43]
+                                    - cell [ref=f187e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f187e45]:
+                                        - rowgroup [ref=f187e46]:
+                                          - row [ref=f187e47]:
+                                            - cell [ref=f187e48]:
+                                              - table [ref=f187e49]:
+                                                - rowgroup [ref=f187e50]:
+                                                  - row [ref=f187e51]:
+                                                    - cell [ref=f187e52]:
+                                                      - table [ref=f187e53]:
+                                                        - rowgroup [ref=f187e54]:
+                                                          - row [ref=f187e55]:
+                                                            - cell [ref=f187e56]:
+                                                              - table [ref=f187e57]:
+                                                                - rowgroup [ref=f187e58]:
+                                                                  - row [ref=f187e59]:
+                                                                    - cell [ref=f187e60]
+                                                                    - cell [ref=f187e63]
+                                                                    - cell "Resources" [ref=f187e64]
+                                                    - cell [ref=f187e65]
+                                                    - cell [ref=f187e66]:
+                                                      - table [ref=f187e67]:
+                                                        - rowgroup [ref=f187e68]:
+                                                          - row [ref=f187e69]:
+                                                            - cell [ref=f187e70]:
+                                                              - table [ref=f187e71]:
+                                                                - rowgroup [ref=f187e72]:
+                                                                  - row [ref=f187e73]:
+                                                                    - cell [ref=f187e74]
+                                                                    - cell [ref=f187e77]
+                                                                    - cell "Calendars" [ref=f187e78]
+                            - cell [ref=f187e79]:
+                              - generic [ref=f187e80]:
+                                - link "Help" [ref=f187e81] [cursor=pointer]:
+                                  - /url: /help/en/03-calendarios.html
+                                - img "Axuda" [ref=f187e83]
+                                - img "Info" [ref=f187e85]
+    - table [ref=f187e87]:
+      - rowgroup [ref=f187e88]:
+        - row [ref=f187e89]:
+          - cell [ref=f187e90]
+          - 'cell "user: admin" [ref=f187e91]'
+          - cell [ref=f187e92]:
+            - link "[Log out]" [ref=f187e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f187e94]:
+    - text:    
+    - generic [ref=f187e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text: 
+      - generic [ref=f187e227]:
+        - generic [ref=f187e228]: "Edit Calendar: Default"
+        - generic [ref=f187e231]:
+          - generic [ref=f187e232]:
+            - tablist [ref=f187e233]:
+              - listitem [ref=f187e234] [cursor=pointer]:
+                - generic [ref=f187e235]: Calendar data
+            - text:  
+            - tabpanel [ref=f187e238]:
+              - grid [ref=f187e239]:
+                - rowgroup [ref=f187e243]:
+                  - gridcell "Type" [ref=f187e244]
+                  - gridcell [ref=f187e246]:
+                    - table [ref=f187e248]:
+                      - rowgroup [ref=f187e249]:
+                        - row [ref=f187e250]:
+                          - cell [ref=f187e251]:
+                            - table [ref=f187e252]:
+                              - rowgroup [ref=f187e253]:
+                                - row [ref=f187e254]:
+                                  - cell [ref=f187e255]
+              - table [ref=f187e257]:
+                - rowgroup [ref=f187e258]:
+                  - row [ref=f187e259]:
+                    - cell [ref=f187e260]:
+                      - table [ref=f187e261]:
+                        - rowgroup [ref=f187e262]:
+                          - row [ref=f187e263]:
+                            - cell [ref=f187e264]:
+                              - table [ref=f187e265]:
+                                - rowgroup [ref=f187e266]:
+                                  - row [ref=f187e267]:
+                                    - cell [ref=f187e268]:
+                                      - table [ref=f187e269]:
+                                        - rowgroup [ref=f187e270]:
+                                          - row [ref=f187e271]:
+                                            - cell [ref=f187e272]:
+                                              - generic [ref=f187e273]:
+                                                - generic [ref=f187e274]:
+                                                  - link "Prev" [ref=f187e275] [cursor=pointer]:
+                                                    - /url: javascript:;
+                                                    - generic "Prev" [ref=f187e276]: 
+                                                  - link "Aug 2026" [ref=f187e277] [cursor=pointer]:
+                                                    - /url: javascript:;
+                                                  - link "Next" [ref=f187e278] [cursor=pointer]:
+                                                    - /url: javascript:;
+                                                    - generic "Next" [ref=f187e279]: 
+                                                - grid [ref=f187e280]:
+                                                  - rowgroup [ref=f187e281]:
+                                                    - row [ref=f187e282]:
+                                                      - columnheader "Sunday" [ref=f187e283]: Sun
+                                                      - columnheader "Monday" [ref=f187e284]: Mon
+                                                      - columnheader "Tuesday" [ref=f187e285]: Tue
+                                                      - columnheader "Wednesday" [ref=f187e286]: Wed
+                                                      - columnheader "Thursday" [ref=f187e287]: Thu
+                                                      - columnheader "Friday" [ref=f187e288]: Fri
+                                                      - columnheader "Saturday" [ref=f187e289]: Sat
+                                                  - rowgroup [ref=f187e290]:
+                                                    - row [ref=f187e291]:
+                                                      - gridcell "26 July, 2026" [ref=f187e292] [cursor=pointer]: "26"
+                                                      - gridcell "27 July, 2026" [ref=f187e293] [cursor=pointer]: "27"
+                                                      - gridcell "28 July, 2026" [ref=f187e294] [cursor=pointer]: "28"
+                                                      - gridcell "29 July, 2026" [ref=f187e295] [cursor=pointer]: "29"
+                                                      - gridcell "30 July, 2026" [ref=f187e296] [cursor=pointer]: "30"
+                                                      - gridcell "31 July, 2026" [ref=f187e297] [cursor=pointer]: "31"
+                                                      - gridcell "1 August, 2026" [ref=f187e298] [cursor=pointer]: "1"
+                                                    - row [ref=f187e299]:
+                                                      - gridcell "2 August, 2026" [ref=f187e300] [cursor=pointer]: "2"
+                                                      - gridcell "3 August, 2026" [ref=f187e301] [cursor=pointer]: "3"
+                                                      - gridcell "4 August, 2026" [ref=f187e302] [cursor=pointer]: "4"
+                                                      - gridcell "5 August, 2026" [ref=f187e303] [cursor=pointer]: "5"
+                                                      - gridcell "6 August, 2026" [ref=f187e304] [cursor=pointer]: "6"
+                                                      - gridcell "7 August, 2026" [ref=f187e305] [cursor=pointer]: "7"
+                                                      - gridcell "8 August, 2026" [ref=f187e306] [cursor=pointer]: "8"
+                                                    - row [ref=f187e307]:
+                                                      - gridcell "9 August, 2026" [ref=f187e308] [cursor=pointer]: "9"
+                                                      - gridcell "10 August, 2026" [ref=f187e309] [cursor=pointer]: "10"
+                                                      - gridcell "11 August, 2026" [ref=f187e310] [cursor=pointer]: "11"
+                                                      - gridcell "12 August, 2026" [ref=f187e311] [cursor=pointer]: "12"
+                                                      - gridcell "13 August, 2026" [ref=f187e312] [cursor=pointer]: "13"
+                                                      - gridcell "14 August, 2026" [ref=f187e313] [cursor=pointer]: "14"
+                                                      - gridcell "15 August, 2026" [ref=f187e314] [cursor=pointer]: "15"
+                                                    - row [ref=f187e315]:
+                                                      - gridcell "16 August, 2026" [ref=f187e316] [cursor=pointer]: "16"
+                                                      - gridcell "17 August, 2026" [ref=f187e317] [cursor=pointer]: "17"
+                                                      - gridcell "18 August, 2026" [ref=f187e318] [cursor=pointer]: "18"
+                                                      - gridcell "19 August, 2026" [ref=f187e319] [cursor=pointer]: "19"
+                                                      - gridcell "20 August, 2026" [ref=f187e320] [cursor=pointer]: "20"
+                                                      - gridcell "21 August, 2026" [ref=f187e321] [cursor=pointer]: "21"
+                                                      - gridcell "22 August, 2026" [ref=f187e322] [cursor=pointer]: "22"
+                                                    - row [ref=f187e323]:
+                                                      - gridcell "23 August, 2026" [ref=f187e324] [cursor=pointer]: "23"
+                                                      - gridcell "24 August, 2026" [ref=f187e325] [cursor=pointer]: "24"
+                                                      - gridcell "25 August, 2026" [ref=f187e326] [cursor=pointer]: "25"
+                                                      - gridcell "26 August, 2026" [ref=f187e327] [cursor=pointer]: "26"
+                                                      - gridcell "27 August, 2026" [ref=f187e328] [cursor=pointer]: "27"
+                                                      - gridcell "28 August, 2026" [ref=f187e329] [cursor=pointer]: "28"
+                                                      - gridcell "29 August, 2026" [ref=f187e330] [cursor=pointer]: "29"
+                                                    - row [ref=f187e331]:
+                                                      - gridcell "30 August, 2026" [ref=f187e332] [cursor=pointer]: "30"
+                                                      - gridcell "31 August, 2026" [ref=f187e333] [cursor=pointer]: "31"
+                                                      - gridcell "1 September, 2026" [ref=f187e334] [cursor=pointer]: "1"
+                                                      - gridcell "2 September, 2026" [ref=f187e335] [cursor=pointer]: "2"
+                                                      - gridcell "3 September, 2026" [ref=f187e336] [cursor=pointer]: "3"
+                                                      - gridcell "4 September, 2026" [ref=f187e337] [cursor=pointer]: "4"
+                                                      - gridcell "5 September, 2026" [ref=f187e338] [cursor=pointer]: "5"
+                                          - row [ref=f187e339]:
+                                            - cell [ref=f187e340]
+                                          - row [ref=f187e341]:
+                                            - cell [ref=f187e342]:
+                                              - grid [ref=f187e343]:
+                                                - rowgroup [ref=f187e347]:
+                                                  - row [ref=f187e348]:
+                                                    - columnheader "Day properties" [ref=f187e349]
+                                                - rowgroup [ref=f187e354]:
+                                                  - gridcell "Day" [ref=f187e355]
+                                                  - gridcell [ref=f187e357]:
+                                                    - combobox [ref=f187e359]:
+                                                      - textbox [disabled] [ref=f187e360]
+                                                      - text:     
+                                                  - gridcell "Type" [ref=f187e361]
+                                                  - gridcell [ref=f187e363]
+                                                  - gridcell "Workable time" [ref=f187e366]
+                                                  - gridcell [ref=f187e368]
+                            - cell [ref=f187e371]
+                            - cell [ref=f187e372]:
+                              - generic [ref=f187e373]:
+                                - tablist [ref=f187e374]:
+                                  - listitem [ref=f187e375] [cursor=pointer]:
+                                    - generic [ref=f187e376]: Exceptions
+                                  - listitem [ref=f187e378] [cursor=pointer]:
+                                    - generic [ref=f187e379]: Work week
+                                - text:  
+                                - tabpanel [ref=f187e382]:
+                                  - table [ref=f187e383]:
+                                    - rowgroup [ref=f187e384]:
+                                      - row [ref=f187e385]:
+                                        - cell [ref=f187e386]:
+                                          - table [ref=f187e387]:
+                                            - rowgroup [ref=f187e388]:
+                                              - row [ref=f187e389]:
+                                                - cell [ref=f187e390]:
+                                                  - grid [ref=f187e391]:
+                                                    - rowgroup [ref=f187e395]:
+                                                      - gridcell "Period" [ref=f187e396]
+                                                      - gridcell [ref=f187e398]:
+                                                        - table [ref=f187e400]:
+                                                          - rowgroup [ref=f187e401]:
+                                                            - row [ref=f187e402]:
+                                                              - cell [ref=f187e403]:
+                                                                - table [ref=f187e404]:
+                                                                  - rowgroup [ref=f187e405]:
+                                                                    - row [ref=f187e406]:
+                                                                      - cell "Start Date:" [ref=f187e407]
+                                                                      - cell [ref=f187e408]
+                                                                      - cell [ref=f187e409]:
+                                                                        - combobox [ref=f187e410]:
+                                                                          - textbox [ref=f187e411]
+                                                                          - button [ref=f187e412] [cursor=pointer]:
+                                                                            - generic [ref=f187e413]: 
+                                                                          - text:    
+                                                                      - cell [ref=f187e414]
+                                                                      - cell "End Date:" [ref=f187e415]
+                                                                      - cell [ref=f187e416]
+                                                                      - cell [ref=f187e417]:
+                                                                        - combobox [ref=f187e418]:
+                                                                          - textbox [ref=f187e419]
+                                                                          - button [ref=f187e420] [cursor=pointer]:
+                                                                            - generic [ref=f187e421]: 
+                                                                          - text:    
+                                                      - gridcell "Dedication" [ref=f187e422]
+                                                      - gridcell [ref=f187e424]:
+                                                        - table [ref=f187e426]:
+                                                          - rowgroup [ref=f187e427]:
+                                                            - row [ref=f187e428]:
+                                                              - cell [ref=f187e429]:
+                                                                - table [ref=f187e430]:
+                                                                  - rowgroup [ref=f187e431]:
+                                                                    - row [ref=f187e432]:
+                                                                      - cell "Normal Effort:" [ref=f187e433]
+                                                                      - cell [ref=f187e434]
+                                                                      - cell [ref=f187e435]:
+                                                                        - table [ref=f187e436]:
+                                                                          - rowgroup [ref=f187e437]:
+                                                                            - row [ref=f187e438]:
+                                                                              - cell [ref=f187e439]:
+                                                                                - table [ref=f187e440]:
+                                                                                  - rowgroup [ref=f187e441]:
+                                                                                    - row [ref=f187e442]:
+                                                                                      - cell [ref=f187e443]:
+                                                                                        - table [ref=f187e444]:
+                                                                                          - rowgroup [ref=f187e445]:
+                                                                                            - row [ref=f187e446]:
+                                                                                              - cell [ref=f187e447]:
+                                                                                                - table [ref=f187e448]:
+                                                                                                  - rowgroup [ref=f187e449]:
+                                                                                                    - row [ref=f187e450]:
+                                                                                                      - cell [ref=f187e451]:
+                                                                                                        - spinbutton [ref=f187e452]: "0"
+                                                                                                        - generic [ref=f187e453] [cursor=pointer]:
+                                                                                                          - generic [ref=f187e454]: 
+                                                                                                          - generic [ref=f187e456]: 
+                                                                                                      - cell [ref=f187e458]
+                                                                                                      - cell [ref=f187e459]:
+                                                                                                        - spinbutton [ref=f187e460]: "0"
+                                                                                                        - generic [ref=f187e461] [cursor=pointer]:
+                                                                                                          - generic [ref=f187e462]: 
+                                                                                                          - generic [ref=f187e464]: 
+                                                                      - cell [ref=f187e466]
+                                                                      - cell "Overtime Effort:" [ref=f187e467]
+                                                                      - cell [ref=f187e468]
+                                                                      - cell [ref=f187e469]:
+                                                                        - table [ref=f187e470]:
+                                                                          - rowgroup [ref=f187e471]:
+                                                                            - row [ref=f187e472]:
+                                                                              - cell [ref=f187e473]:
+                                                                                - table [ref=f187e474]:
+                                                                                  - rowgroup [ref=f187e475]:
+                                                                                    - row [ref=f187e476]:
+                                                                                      - cell [ref=f187e477]:
+                                                                                        - table [ref=f187e478]:
+                                                                                          - rowgroup [ref=f187e479]:
+                                                                                            - row [ref=f187e480]:
+                                                                                              - cell [ref=f187e481]:
+                                                                                                - table [ref=f187e482]:
+                                                                                                  - rowgroup [ref=f187e483]:
+                                                                                                    - row [ref=f187e484]:
+                                                                                                      - cell [ref=f187e485]:
+                                                                                                        - spinbutton [disabled] [ref=f187e486]: "0"
+                                                                                                        - generic [ref=f187e487]:
+                                                                                                          - generic [ref=f187e488]: 
+                                                                                                          - generic [ref=f187e490]: 
+                                                                                                      - cell [ref=f187e492]
+                                                                                                      - cell [ref=f187e493]:
+                                                                                                        - spinbutton [disabled] [ref=f187e494]: "0"
+                                                                                                        - generic [ref=f187e495]:
+                                                                                                          - generic [ref=f187e496]: 
+                                                                                                          - generic [ref=f187e498]: 
+                                                                                      - cell [ref=f187e500]
+                                                                                      - cell [ref=f187e501]:
+                                                                                        - generic "Infinitely Over Assignable" [ref=f187e502]:
+                                                                                          - checkbox "Unlimited" [checked] [ref=f187e503]
+                                                                                          - text: Unlimited
+                                                      - gridcell "Exception Type" [ref=f187e504]
+                                                      - gridcell [ref=f187e506]:
+                                                        - combobox [ref=f187e508]:
+                                                          - textbox [ref=f187e509]: NO_EXCEPTION
+                                                          - button [ref=f187e510] [cursor=pointer]:
+                                                            - generic [ref=f187e511]: 
+                                              - row [ref=f187e512]:
+                                                - cell [ref=f187e513]
+                                              - row:
+                                                - cell:
+                                                  - table:
+                                                    - rowgroup:
+                                                      - row:
+                                                        - cell:
+                                                          - table:
+                                                            - rowgroup:
+                                                              - row
+                                              - row [ref=f187e514]:
+                                                - cell [ref=f187e515]
+                                              - row [ref=f187e516]:
+                                                - cell "Exceptions list Day Exception Type Normal Effort Extra Effort Code Origin Op." [ref=f187e517]:
+                                                  - generic [ref=f187e518]:
+                                                    - generic [ref=f187e519]: Exceptions list
+                                                    - generic [ref=f187e523]:
+                                                      - table [ref=f187e525]:
+                                                        - rowgroup [ref=f187e533]:
+                                                          - row "Day Exception Type Normal Effort Extra Effort Code Origin Op." [ref=f187e534]:
+                                                            - columnheader "Day" [ref=f187e535]
+                                                            - columnheader "Exception Type" [ref=f187e537]
+                                                            - columnheader "Normal Effort" [ref=f187e539]
+                                                            - columnheader "Extra Effort" [ref=f187e541]
+                                                            - columnheader "Code"
+                                                            - columnheader "Origin" [ref=f187e544]
+                                                            - columnheader "Op." [ref=f187e546]
+                                                            - columnheader
+                                                      - table [ref=f187e549]:
+                                                        - rowgroup
+                                                        - rowgroup [ref=f187e557]:
+                                                          - row [ref=f187e558]:
+                                                            - cell [ref=f187e559]
+          - table [ref=f187e560]:
+            - rowgroup [ref=f187e561]:
+              - row [ref=f187e562]:
+                - cell [ref=f187e563]:
+                  - table [ref=f187e564]:
+                    - rowgroup [ref=f187e565]:
+                      - row [ref=f187e566]:
+                        - cell [ref=f187e567]:
+                          - button "Save" [ref=f187e568] [cursor=pointer]
+                        - cell [ref=f187e569]
+                        - cell [ref=f187e570]:
+                          - button "Save and Continue" [ref=f187e571] [cursor=pointer]
+                        - cell [ref=f187e572]
+                        - cell [ref=f187e573]:
+                          - button "Cancel" [ref=f187e574] [cursor=pointer]
+      - text:            
+  - table [ref=f187e219]:
+    - rowgroup [ref=f187e220]:
+      - row [ref=f187e221]:
+        - cell [ref=f187e222]:
+          - generic [ref=f187e224]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f187e225] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f187e226]
+  - text:    

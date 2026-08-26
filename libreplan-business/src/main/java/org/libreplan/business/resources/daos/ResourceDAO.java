@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,9 +27,11 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.hibernate.Query;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.labels.entities.Label;
 import org.libreplan.business.reports.dtos.HoursWorkedPerResourceDTO;
@@ -90,18 +93,6 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements IReso
 
     public List<Resource> getResources() {
         return list(Resource.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Resource> getAllLimitingResources() {
-        return getSession().createCriteria(Resource.class).add(Restrictions.eq("limitingResource", true)).list();
-    }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public List<Resource> getAllNonLimitingResources() {
-        return getSession().createCriteria(Resource.class).add(Restrictions.eq("limitingResource", false)).list();
     }
 
     @Override
@@ -265,8 +256,11 @@ public class ResourceDAO extends IntegrationEntityDAO<Resource> implements IReso
 
     @Override
     public Number getRowCount() {
-        return (Number) getSession()
-                .createCriteria(Resource.class).setProjection(Projections.rowCount()).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<Resource> root = cq.from(Resource.class);
+        cq.select(cb.count(root));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     private List<HoursWorkedPerWorkerInAMonthDTO> toDTO(List<Object> rows) {

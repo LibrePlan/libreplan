@@ -129,10 +129,10 @@
         <property name="date" access="field"/>
 
         <property name="clockStart" access="field"
-                  type="org.jadira.usertype.dateandtime.joda.PersistentLocalTimeAsMillisInteger" column="clock_start" />
+                  type="org.libreplan.business.workingday.hibernate.LocalTimeAsMillisIntegerType" column="clock_start" />
 
         <property name="clockFinish" access="field"
-                  type="org.jadira.usertype.dateandtime.joda.PersistentLocalTimeAsMillisInteger" column="clock_finish" />
+                  type="org.libreplan.business.workingday.hibernate.LocalTimeAsMillisIntegerType" column="clock_finish" />
 
         <!-- Indexed -->
         <many-to-one name="workReport" class="org.libreplan.business.workreports.entities.WorkReport"

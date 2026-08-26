@@ -1,0 +1,184 @@
+- generic [ref=f681e4]:
+  - generic [ref=f681e5]:
+    - table [ref=f681e6]:
+      - rowgroup [ref=f681e7]:
+        - row [ref=f681e8]:
+          - cell [ref=f681e9]:
+            - link [ref=f681e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f681e12]:
+            - table [ref=f681e13]:
+              - rowgroup [ref=f681e14]:
+                - row [ref=f681e15]:
+                  - cell [ref=f681e16]:
+                    - generic [ref=f681e17]:
+                      - menubar [ref=f681e18]:
+                        - menuitem "Planning" [ref=f681e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f681e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f681e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f681e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f681e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f681e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f681e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f681e33]:
+                        - rowgroup [ref=f681e34]:
+                          - row [ref=f681e35]:
+                            - cell [ref=f681e36]:
+                              - table [ref=f681e37]:
+                                - rowgroup [ref=f681e38]:
+                                  - row [ref=f681e39]:
+                                    - cell [ref=f681e40]
+                                    - cell [ref=f681e41]:
+                                      - strong [ref=f681e42]: START
+                                    - cell [ref=f681e43]
+                                    - cell [ref=f681e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f681e45]:
+                                        - rowgroup [ref=f681e46]:
+                                          - row [ref=f681e47]:
+                                            - cell [ref=f681e48]:
+                                              - table [ref=f681e49]:
+                                                - rowgroup [ref=f681e50]:
+                                                  - row [ref=f681e51]:
+                                                    - cell [ref=f681e52]:
+                                                      - table [ref=f681e53]:
+                                                        - rowgroup [ref=f681e54]:
+                                                          - row [ref=f681e55]:
+                                                            - cell [ref=f681e56]:
+                                                              - table [ref=f681e57]:
+                                                                - rowgroup [ref=f681e58]:
+                                                                  - row [ref=f681e59]:
+                                                                    - cell [ref=f681e60]
+                                                                    - cell [ref=f681e63]
+                                                                    - cell "Configuration" [ref=f681e64]
+                                                    - cell [ref=f681e65]
+                                                    - cell [ref=f681e66]:
+                                                      - table [ref=f681e67]:
+                                                        - rowgroup [ref=f681e68]:
+                                                          - row [ref=f681e69]:
+                                                            - cell [ref=f681e70]:
+                                                              - table [ref=f681e71]:
+                                                                - rowgroup [ref=f681e72]:
+                                                                  - row [ref=f681e73]:
+                                                                    - cell [ref=f681e74]
+                                                                    - cell [ref=f681e77]
+                                                                    - cell "Profiles" [ref=f681e78]
+                            - cell [ref=f681e79]:
+                              - generic [ref=f681e80]:
+                                - link "Help" [ref=f681e81] [cursor=pointer]:
+                                  - /url: /help/en/13-usuarios.html#administraci-n-de-perfiles
+                                - img "Axuda" [ref=f681e83]
+                                - img "Info" [ref=f681e85]
+    - table [ref=f681e87]:
+      - rowgroup [ref=f681e88]:
+        - row [ref=f681e89]:
+          - cell [ref=f681e90]
+          - 'cell "user: admin" [ref=f681e91]'
+          - cell [ref=f681e92]:
+            - link "[Log out]" [ref=f681e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f681e94]:
+    - text:    
+    - generic [ref=f681e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:     
+      - generic [ref=f681e233]:
+        - generic [ref=f681e234]: "Edit Profile: Human Resources & Costs Manager"
+        - generic [ref=f681e237]:
+          - generic [ref=f681e238]:
+            - tablist [ref=f681e239]:
+              - listitem [ref=f681e240] [cursor=pointer]:
+                - generic [ref=f681e241]: Profile data
+            - text:  
+            - tabpanel [ref=f681e244]:
+              - table [ref=f681e245]:
+                - rowgroup [ref=f681e246]:
+                  - row [ref=f681e247]:
+                    - cell [ref=f681e248]:
+                      - table [ref=f681e249]:
+                        - rowgroup [ref=f681e250]:
+                          - row [ref=f681e251]:
+                            - cell [ref=f681e252]:
+                              - grid [ref=f681e253]:
+                                - rowgroup [ref=f681e257]:
+                                  - gridcell "Name" [ref=f681e258]
+                                  - gridcell [ref=f681e260]:
+                                    - textbox [active] [ref=f681e262]: Human Resources & Costs Manager
+              - generic [ref=f681e263]:
+                - generic [ref=f681e264]: Association with roles
+                - generic [ref=f681e267]:
+                  - table [ref=f681e268]:
+                    - rowgroup [ref=f681e269]:
+                      - row [ref=f681e270]:
+                        - cell [ref=f681e271]:
+                          - table [ref=f681e272]:
+                            - rowgroup [ref=f681e273]:
+                              - row [ref=f681e274]:
+                                - cell [ref=f681e275]:
+                                  - combobox [ref=f681e276]:
+                                    - textbox [ref=f681e277]
+                                    - button [ref=f681e278] [cursor=pointer]:
+                                      - generic [ref=f681e279]: 
+                                - cell [ref=f681e280]
+                                - cell [ref=f681e281]:
+                                  - button "Add role" [ref=f681e282] [cursor=pointer]
+                  - grid [ref=f681e283]:
+                    - rowgroup [ref=f681e287]:
+                      - columnheader "Role name" [ref=f681e288]
+                      - columnheader "Actions" [ref=f681e290]
+                    - rowgroup [ref=f681e295]:
+                      - gridcell "Calendars" [ref=f681e296]
+                      - gridcell [ref=f681e298]:
+                        - button "Remove" [ref=f681e300] [cursor=pointer]
+                      - gridcell "Virtual Workers" [ref=f681e302]
+                      - gridcell [ref=f681e304]:
+                        - button "Remove" [ref=f681e306] [cursor=pointer]
+                      - gridcell "Project Costs Report" [ref=f681e308]
+                      - gridcell [ref=f681e310]:
+                        - button "Remove" [ref=f681e312] [cursor=pointer]
+                      - gridcell "Workers" [ref=f681e314]
+                      - gridcell [ref=f681e316]:
+                        - button "Remove" [ref=f681e318] [cursor=pointer]
+                      - gridcell "Hours Types" [ref=f681e320]
+                      - gridcell [ref=f681e322]:
+                        - button "Remove" [ref=f681e324] [cursor=pointer]
+                      - gridcell "Machines" [ref=f681e326]
+                      - gridcell [ref=f681e328]:
+                        - button "Remove" [ref=f681e330] [cursor=pointer]
+                      - gridcell "Cost Categories" [ref=f681e332]
+                      - gridcell [ref=f681e334]:
+                        - button "Remove" [ref=f681e336] [cursor=pointer]
+                      - gridcell "Calendar Exception Days" [ref=f681e338]
+                      - gridcell [ref=f681e340]:
+                        - button "Remove" [ref=f681e342] [cursor=pointer]
+          - button "Save" [ref=f681e344] [cursor=pointer]
+          - button "Save & Continue" [ref=f681e345] [cursor=pointer]
+          - button "Cancel" [ref=f681e346] [cursor=pointer]
+  - table [ref=f681e225]:
+    - rowgroup [ref=f681e226]:
+      - row [ref=f681e227]:
+        - cell [ref=f681e228]:
+          - generic [ref=f681e230]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f681e231] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f681e232]
+  - text:    

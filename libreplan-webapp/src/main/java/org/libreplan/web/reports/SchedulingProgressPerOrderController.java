@@ -34,7 +34,9 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,7 +76,15 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
                 (ISchedulingProgressPerOrderModel) SpringUtil.getBean("schedulingProgressPerOrderModel");
 
         comp.setAttribute("controller", this, true);
+
+        // Populated directly here (not via the ZUL "@load" binding) since this runs during
+        // doAfterCompose, before the page's binder has had a chance to load anything yet -
+        // setSelectedIndex(0) on a still-empty, binder-populated listbox would throw
+        // "Out of bound: 0 while size=0".
+        lbAdvanceType.setModel(new org.zkoss.zul.ListModelList<>(getAdvanceTypeDTOs()));
+        lbAdvanceType.setItemRenderer(getAdvanceTypeDTOsRenderer());
         lbAdvanceType.setSelectedIndex(0);
+
         schedulingProgressPerOrderModel.init();
     }
 
@@ -94,6 +104,10 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
      */
     public List<Order> getSelectedOrders() {
         return Collections.unmodifiableList(schedulingProgressPerOrderModel.getSelectedOrders());
+    }
+
+    public ListitemRenderer getOrdersRenderer() {
+        return ReportListitemRenderers.orderRenderer(this::onRemoveOrder);
     }
 
     public void onSelectOrder() {
@@ -201,6 +215,14 @@ public class SchedulingProgressPerOrderController extends LibrePlanReportControl
         }
 
         return result;
+    }
+
+    public ListitemRenderer getAdvanceTypeDTOsRenderer() {
+        return (item, data, index) -> {
+            final AdvanceTypeDTO advanceTypeDTO = (AdvanceTypeDTO) data;
+            item.setValue(advanceTypeDTO);
+            item.appendChild(new Listcell(advanceTypeDTO.getName()));
+        };
     }
 
     public void checkCannotBeHigher(Datebox dbStarting, Datebox dbEnding) {

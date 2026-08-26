@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,8 +26,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.Writer;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +36,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.Vbox;
 
 public class PageForErrorOnEvent extends GenericForwardComposer {
 
@@ -54,13 +57,18 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
         if ( stacktrace != null ) {
             stacktrace.setValue(getStacktrace());
         }
+
+        Vbox helpPageNotGeneratedBox = (Vbox) comp.getFellowIfAny("helpPageNotGeneratedBox");
+        if ( helpPageNotGeneratedBox != null ) {
+            helpPageNotGeneratedBox.setVisible(isHelpLink);
+        }
     }
 
     private void logError() {
-        String urlPath = (String) Executions.getCurrent().getAttribute("javax.servlet.forward.servlet_path");
-        Throwable exception = (Throwable) Executions.getCurrent().getAttribute("javax.servlet.error.exception");
-        String errorMessage = (String) Executions.getCurrent().getAttribute("javax.servlet.error.message");
-        Integer code = (Integer) Executions.getCurrent().getAttribute("javax.servlet.error.status_code");
+        String urlPath = (String) Executions.getCurrent().getAttribute(RequestDispatcher.FORWARD_SERVLET_PATH);
+        Throwable exception = (Throwable) Executions.getCurrent().getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+        String errorMessage = (String) Executions.getCurrent().getAttribute(RequestDispatcher.ERROR_MESSAGE);
+        Integer code = (Integer) Executions.getCurrent().getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
 
         if (urlPath != null && urlPath.contains("help")) {
             isHelpLink = true;
@@ -69,7 +77,7 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
         if ( code != null ) {
             errorMessage += " [Status Code: " + code + "]";
             if ( code == HttpServletResponse.SC_FORBIDDEN ) {
-                String uri = (String) Executions.getCurrent().getAttribute("javax.servlet.error.request_uri");
+                String uri = (String) Executions.getCurrent().getAttribute(RequestDispatcher.ERROR_REQUEST_URI);
                 errorMessage += " [Request URI: " + uri + "]";
             }
         }
@@ -91,7 +99,7 @@ public class PageForErrorOnEvent extends GenericForwardComposer {
     }
 
     private String getStacktrace() {
-        Throwable exception = (Throwable) Executions.getCurrent().getAttribute("javax.servlet.error.exception");
+        Throwable exception = (Throwable) Executions.getCurrent().getAttribute(RequestDispatcher.ERROR_EXCEPTION);
         if ( exception != null ) {
             Writer stacktrace = new StringWriter();
             exception.printStackTrace(new PrintWriter(stacktrace));

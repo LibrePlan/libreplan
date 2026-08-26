@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,9 +32,9 @@ import java.util.Date;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
@@ -42,7 +43,9 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.daos.IConfigurationDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
+import org.libreplan.business.orders.daos.IOrderSyncInfoDAO;
 import org.libreplan.business.orders.entities.Order;
+import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.daos.ITaskSourceDAO;
 import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
@@ -69,6 +72,9 @@ public class ScenariosBootstrapTest {
 
     @Autowired
     private IOrderDAO orderDAO;
+
+    @Autowired
+    private IOrderSyncInfoDAO orderSyncInfoDAO;
 
     @Autowired
     private IConfigurationDAO configurationDAO;
@@ -102,17 +108,24 @@ public class ScenariosBootstrapTest {
             Session session = sessionFactory.getCurrentSession();
 
             Query deleteSchedulingStatesByOrderVersion =
-                    session.createSQLQuery("DELETE FROM scheduling_states_by_order_version");
+                    session.createNativeQuery("DELETE FROM scheduling_states_by_order_version");
 
             deleteSchedulingStatesByOrderVersion.executeUpdate();
             session.flush();
 
-            Query deleteSchedulingDataForVersion = session.createSQLQuery("DELETE FROM scheduling_data_for_version");
+            Query deleteSchedulingDataForVersion = session.createNativeQuery("DELETE FROM scheduling_data_for_version");
 
             deleteSchedulingDataForVersion.executeUpdate();
             session.flush();
 
             for (Order order : orderDAO.findAll()) {
+                // OrderSyncInfo has a non-cascading FK back to Order - left behind, it makes the
+                // delete below fail with a foreign key constraint violation. See
+                // doc/technical/jdk25-migration/Phase5-found-bugs.md item 9 and the matching
+                // production fix in OrderModel.removeOrderFromDB()/ScenarioModel.remove().
+                for (OrderSyncInfo each : orderSyncInfoDAO.findByOrder(order)) {
+                    orderSyncInfoDAO.remove(each.getId());
+                }
                 orderDAO.remove(order.getId());
             }
 

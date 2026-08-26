@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Dashboard di Progetto</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="dashboard-di-progetto">
+<h1 class="title">Dashboard di Progetto</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#indicatori-di-prestazione-dell-avanzamento" id="toc-entry-1">Indicatori di Prestazione dell'Avanzamento</a><ul>
+<li><a class="reference internal" href="#percentuale-di-avanzamento-del-progetto" id="toc-entry-2">Percentuale di Avanzamento del Progetto</a></li>
+<li><a class="reference internal" href="#stato-delle-attivita" id="toc-entry-3">Stato delle Attività</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indicatori-di-costo" id="toc-entry-4">Indicatori di Costo</a></li>
+<li><a class="reference internal" href="#risorse" id="toc-entry-5">Risorse</a><ul>
+<li><a class="reference internal" href="#istogramma-della-deviazione-stimata-sulle-attivita-completate" id="toc-entry-6">Istogramma della Deviazione Stimata sulle Attività Completate</a></li>
+<li><a class="reference internal" href="#indice-di-straordinario" id="toc-entry-7">Indice di Straordinario</a></li>
+<li><a class="reference internal" href="#indice-di-disponibilita" id="toc-entry-8">Indice di Disponibilità</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#tempo" id="toc-entry-9">Tempo</a><ul>
+<li><a class="reference internal" href="#anticipo-o-ritardo-nel-completamento-delle-attivita" id="toc-entry-10">Anticipo o Ritardo nel Completamento delle Attività</a></li>
+<li><a class="reference internal" href="#violazioni-delle-scadenze" id="toc-entry-11">Violazioni delle Scadenze</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Il dashboard di progetto è una prospettiva di <em>LibrePlan</em> che contiene un insieme di <strong>KPI (Indicatori Chiave di Prestazione)</strong> per aiutare a valutare le prestazioni di un progetto in termini di:</p>
+<blockquote>
+<ul class="simple">
+<li>Avanzamento del lavoro</li>
+<li>Costi</li>
+<li>Stato delle risorse allocate</li>
+<li>Vincoli temporali</li>
+</ul>
+</blockquote>
+<div class="section" id="indicatori-di-prestazione-dell-avanzamento">
+<h1><a class="toc-backref" href="#toc-entry-1">Indicatori di Prestazione dell'Avanzamento</a></h1>
+<p>Vengono calcolati due indicatori: la percentuale di avanzamento del progetto e lo stato delle attività.</p>
+<div class="section" id="percentuale-di-avanzamento-del-progetto">
+<h2><a class="toc-backref" href="#toc-entry-2">Percentuale di Avanzamento del Progetto</a></h2>
+<p>Questo grafico mostra l'avanzamento complessivo di un progetto, confrontandolo con l'avanzamento previsto in base al diagramma di <em>Gantt</em>.</p>
+<p>L'avanzamento è rappresentato da due barre:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Avanzamento Corrente:</em> L'avanzamento corrente in base alle misurazioni effettuate.</li>
+<li><em>Avanzamento Previsto:</em> L'avanzamento che il progetto avrebbe dovuto raggiungere a questo punto, secondo il piano di progetto.</li>
+</ul>
+</blockquote>
+<p>Per visualizzare il valore misurato effettivo per ciascuna barra, passare il cursore del mouse sopra la barra.</p>
+<p>L'avanzamento complessivo del progetto viene stimato utilizzando diversi metodi, poiché non esiste un approccio unico e universalmente corretto:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Avanzamento Distribuito:</strong> È il tipo di avanzamento impostato come avanzamento distribuito a livello di progetto. In questo caso, non è possibile calcolare un valore atteso e viene visualizzata solo la barra corrente.</li>
+<li><strong>Per Tutte le Ore delle Attività:</strong> L'avanzamento di tutte le attività del progetto viene mediato per calcolare il valore complessivo. Questa è una media ponderata che considera il numero di ore allocate a ciascuna attività.</li>
+<li><strong>Per Ore del Percorso Critico:</strong> L'avanzamento delle attività appartenenti a uno qualsiasi dei percorsi critici del progetto viene mediato per ottenere il valore complessivo. Questa è una media ponderata che considera le ore totali allocate per ciascuna attività coinvolta.</li>
+<li><strong>Per Durata del Percorso Critico:</strong> L'avanzamento delle attività appartenenti a uno qualsiasi dei percorsi critici viene mediato utilizzando una media ponderata, ma questa volta considerando la durata di ciascuna attività coinvolta invece delle ore assegnate.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="stato-delle-attivita">
+<h2><a class="toc-backref" href="#toc-entry-3">Stato delle Attività</a></h2>
+<p>Un grafico a torta mostra la percentuale delle attività del progetto nei diversi stati. Gli stati definiti sono:</p>
+<blockquote>
+<ul class="simple">
+<li><strong>Terminato:</strong> Attività completate, identificate da un valore di avanzamento del 100%.</li>
+<li><strong>In Corso:</strong> Attività attualmente in corso. Queste attività hanno un valore di avanzamento diverso da 0% o 100%, oppure è stato tracciato del tempo di lavoro.</li>
+<li><strong>Pronto per Iniziare:</strong> Attività con 0% di avanzamento, nessun tempo tracciato, tutte le attività dipendenti con <em>FINISH_TO_START</em> sono <em>terminate</em> e tutte le attività dipendenti con <em>START_TO_START</em> sono <em>terminate</em> o <em>in corso</em>.</li>
+<li><strong>Bloccato:</strong> Attività con 0% di avanzamento, nessun tempo tracciato, e con attività dipendenti precedenti che non sono né <em>in corso</em> né nello stato <em>pronto per iniziare</em>.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="indicatori-di-costo">
+<h1><a class="toc-backref" href="#toc-entry-4">Indicatori di Costo</a></h1>
+<p>Vengono calcolati diversi indicatori di costo basati sulla <em>Gestione del Valore Guadagnato</em>:</p>
+<blockquote>
+<ul>
+<li><p class="first"><strong>CV (Varianza dei Costi):</strong> La differenza tra la <em>curva del Valore Guadagnato</em> e la <em>curva del Costo Effettivo</em> al momento corrente. I valori positivi indicano un beneficio e i valori negativi indicano una perdita.</p>
+</li>
+<li><p class="first"><strong>ACWP (Costo Effettivo del Lavoro Eseguito):</strong> Il numero totale di ore tracciate nel progetto al momento corrente.</p>
+</li>
+<li><p class="first"><strong>CPI (Indice di Prestazione dei Costi):</strong> Il rapporto <em>Valore Guadagnato / Costo Effettivo</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&gt; 100 è favorevole, indica che il progetto è sotto budget.</li>
+<li>= 100 è anche favorevole, indica che il costo è esattamente in linea con il piano.</li>
+<li>&lt; 100 è sfavorevole, indica che il costo per completare il lavoro è superiore al previsto.</li>
+</ul>
+</blockquote>
+</li>
+<li><p class="first"><strong>ETC (Stima per Completare):</strong> Il tempo rimanente per completare il progetto.</p>
+</li>
+<li><p class="first"><strong>BAC (Budget al Completamento):</strong> La quantità totale di lavoro allocato nel piano di progetto.</p>
+</li>
+<li><p class="first"><strong>EAC (Stima al Completamento):</strong> La proiezione del manager del costo totale al completamento del progetto, basata sul <em>CPI</em>.</p>
+</li>
+<li><p class="first"><strong>VAC (Varianza al Completamento):</strong> La differenza tra il <em>BAC</em> e l'<em>EAC</em>.</p>
+<blockquote>
+<ul class="simple">
+<li>&lt; 0 indica che il progetto è oltre il budget.</li>
+<li>&gt; 0 indica che il progetto è sotto budget.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="risorse">
+<h1><a class="toc-backref" href="#toc-entry-5">Risorse</a></h1>
+<p>Per analizzare il progetto dal punto di vista delle risorse, vengono forniti due indici e un istogramma.</p>
+<div class="section" id="istogramma-della-deviazione-stimata-sulle-attivita-completate">
+<h2><a class="toc-backref" href="#toc-entry-6">Istogramma della Deviazione Stimata sulle Attività Completate</a></h2>
+<p>Questo istogramma calcola la deviazione tra il numero di ore allocate alle attività del progetto e il numero effettivo di ore ad esse dedicate.</p>
+<p>La deviazione è calcolata come percentuale per tutte le attività terminate, e le deviazioni calcolate sono rappresentate in un istogramma. L'asse verticale mostra il numero di attività all'interno di ciascun intervallo di deviazione. Vengono calcolati dinamicamente sei intervalli di deviazione.</p>
+</div>
+<div class="section" id="indice-di-straordinario">
+<h2><a class="toc-backref" href="#toc-entry-7">Indice di Straordinario</a></h2>
+<p>Questo indice riassume il sovraccarico delle risorse allocate alle attività del progetto. Viene calcolato usando la formula: <strong>indice di straordinario = sovraccarico / (carico + sovraccarico)</strong>.</p>
+<blockquote>
+<ul class="simple">
+<li>= 0 è favorevole, indica che le risorse non sono sovraccaricate.</li>
+<li>&gt; 0 è sfavorevole, indica che le risorse sono sovraccaricate.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="indice-di-disponibilita">
+<h2><a class="toc-backref" href="#toc-entry-8">Indice di Disponibilità</a></h2>
+<p>Questo indice riassume la capacità libera delle risorse attualmente allocate al progetto. Pertanto, misura la disponibilità delle risorse a ricevere ulteriori allocazioni senza essere sovraccaricate. Viene calcolato come: <strong>indice di disponibilità = (1 - carico/capacità) * 100</strong></p>
+<blockquote>
+<ul class="simple">
+<li>I valori possibili sono compresi tra 0% (completamente assegnato) e 100% (non assegnato).</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="section" id="tempo">
+<h1><a class="toc-backref" href="#toc-entry-9">Tempo</a></h1>
+<p>Sono inclusi due grafici: un istogramma per la deviazione temporale nel tempo di completamento delle attività del progetto e un grafico a torta per le violazioni delle scadenze.</p>
+<div class="section" id="anticipo-o-ritardo-nel-completamento-delle-attivita">
+<h2><a class="toc-backref" href="#toc-entry-10">Anticipo o Ritardo nel Completamento delle Attività</a></h2>
+<p>Questo calcolo determina la differenza in giorni tra il tempo di fine pianificato per le attività del progetto e il loro tempo di fine effettivo. La data di completamento pianificata viene presa dal diagramma di <em>Gantt</em> e la data di fine effettiva viene presa dall'ultimo tempo tracciato per l'attività.</p>
+<p>Il ritardo o l'anticipo nel completamento delle attività è rappresentato in un istogramma. L'asse verticale mostra il numero di attività con un valore di differenza di giorni di anticipo/ritardo corrispondente all'intervallo di giorni dell'ascissa. Vengono calcolati sei intervalli dinamici di deviazione del completamento delle attività.</p>
+<blockquote>
+<ul class="simple">
+<li>I valori negativi indicano il completamento in anticipo rispetto alla pianificazione.</li>
+<li>I valori positivi indicano il completamento in ritardo rispetto alla pianificazione.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="violazioni-delle-scadenze">
+<h2><a class="toc-backref" href="#toc-entry-11">Violazioni delle Scadenze</a></h2>
+<p>Questa sezione calcola il margine con la scadenza del progetto, se impostata. Inoltre, un grafico a torta mostra la percentuale di attività che rispettano la loro scadenza. Nel grafico sono inclusi tre tipi di valori:</p>
+<blockquote>
+<ul class="simple">
+<li>Percentuale di attività senza una scadenza configurata.</li>
+<li>Percentuale di attività terminate con una data di fine effettiva successiva alla loro scadenza. La data di fine effettiva viene presa dall'ultimo tempo tracciato per l'attività.</li>
+<li>Percentuale di attività terminate con una data di fine effettiva precedente alla loro scadenza.</li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+</body>
+</html>

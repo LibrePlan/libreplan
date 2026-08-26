@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,9 +24,10 @@ package org.libreplan.business.planner.limiting.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.planner.limiting.entities.LimitingResourceQueueElement;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -48,22 +50,24 @@ public class LimitingResourceQueueElementDAO extends
         return list(LimitingResourceQueueElement.class);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<LimitingResourceQueueElement> getAssigned() {
-        Criteria criteria = getSession().createCriteria(LimitingResourceQueueElement.class);
-        criteria.add(Restrictions.isNotNull("limitingResourceQueue"));
-        criteria.addOrder(Order.asc("creationTimestamp"));
-        return criteria.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<LimitingResourceQueueElement> cq = cb.createQuery(LimitingResourceQueueElement.class);
+        Root<LimitingResourceQueueElement> root = cq.from(LimitingResourceQueueElement.class);
+        cq.where(cb.isNotNull(root.get("limitingResourceQueue")));
+        cq.orderBy(cb.asc(root.get("creationTimestamp")));
+        return getSession().createQuery(cq).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<LimitingResourceQueueElement> getUnassigned() {
-        Criteria criteria = getSession().createCriteria(LimitingResourceQueueElement.class);
-        criteria.add(Restrictions.isNull("limitingResourceQueue"));
-        criteria.addOrder(Order.asc("creationTimestamp"));
-        return criteria.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<LimitingResourceQueueElement> cq = cb.createQuery(LimitingResourceQueueElement.class);
+        Root<LimitingResourceQueueElement> root = cq.from(LimitingResourceQueueElement.class);
+        cq.where(cb.isNull(root.get("limitingResourceQueue")));
+        cq.orderBy(cb.asc(root.get("creationTimestamp")));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

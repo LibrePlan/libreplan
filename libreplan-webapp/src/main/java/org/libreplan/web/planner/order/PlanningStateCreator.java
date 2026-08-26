@@ -209,7 +209,24 @@ public class PlanningStateCreator {
         }
 
         Scenario currentScenario = scenarioManager.getCurrent();
-        OrderVersion orderVersion = currentScenario.addOrder(order);
+
+        // Deliberately NOT calling currentScenario.addOrder(order) here (which is what this used
+        // to do): Scenario.orders is mapped cascade="save-update" in Scenarios.hbm.xml, and
+        // currentScenario is already a persistent, session-managed entity - so adding a still-
+        // transient Order to it would cascade-save the Order immediately, even inside this
+        // read-only "just building the create-project form" step (this method is called from
+        // OrderModel.prepareForCreate()/prepareCreationFrom(), both @Transactional(readOnly=true)).
+        // Order uses Hibernate's increment id generator, which assigns a real id synchronously in
+        // memory the moment cascade-save fires - no SQL needed - so the Order permanently ends up
+        // with a live id but no real backing row. When the user later actually saves, Hibernate
+        // then treats it as a detached-entity reattach instead of a fresh insert, checks
+        // getVersion() for optimistic locking, finds null, and throws
+        // "Detached entity ... has an uninitialized version value 'null'". Reproduced live: this
+        // crashed every "Create New Project" attempt with a 500 error before this fix.
+        // The real association with the scenario's persistent `orders` map is now recorded later,
+        // in UsingOwnerScenario.saveVersioningInfo() - the point the order is genuinely persisted,
+        // inside a real writable transaction.
+        OrderVersion orderVersion = OrderVersion.createInitialVersion(currentScenario);
         order.setVersionForScenario(currentScenario, orderVersion);
         order.useSchedulingDataFor(currentScenario);
     }
@@ -615,6 +632,12 @@ public class PlanningStateCreator {
             OrderVersion orderVersion = order.getCurrentVersionInfo().getOrderVersion();
 
             if (order.isNewObject()) {
+                // Counterpart of the setupScenario() change above: this is where the (order,
+                // orderVersion) pair actually becomes part of currentScenario's persistent `orders`
+                // map, now that we're inside a real writable transaction about to genuinely save
+                // the order (SaveCommandBuilder.doTheSaving() calls orderDAO.save(order) right
+                // after this), not the earlier read-only form-building step.
+                currentScenario.addOrder(order, orderVersion);
                 scenarioDAO.updateDerivedScenariosWithNewVersion(null, order, currentScenario, orderVersion);
             }
 
@@ -974,6 +997,20 @@ public class PlanningStateCreator {
         }
 
         public void reattach() {
+            // A still-new order (order.isNewObject()) has never been through a real save, so
+            // there is nothing to reattach - the order.getVersion() getter deliberately returns
+            // null while isNewObject() is true (see BaseEntity.getVersion()/
+            // dontPoseAsTransientObjectAnymore()), and orderDAO.reattach() -> saveOrUpdate()
+            // would otherwise cascade-assign it a real id via the "increment" generator without
+            // ever seeding a version, permanently corrupting the object (every later Hibernate
+            // operation on it - including the genuine save - then fails with "Detached entity ...
+            // has an uninitialized version value 'null'"). Reproduced live: this crashed
+            // "Create New Project" -> Accept via ProjectDetailsController.accept() calling
+            // orderModel.initEdit()/tabs.goToOrderDetails() on the not-yet-saved order.
+            if (order.isNewObject()) {
+                return;
+            }
+
             orderDAO.reattach(order);
 
             if (getRootTask() != null) {

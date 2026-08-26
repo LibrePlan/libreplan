@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?page id="work_report_admin" title="${i18n:_t('LibrePlan: Transfer Projects Between Scenarios')}" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 <?link rel="stylesheet" type="text/css" href="/common/css/libreplan.css"?>
@@ -33,7 +34,7 @@
 
     <vbox id="messagesContainer"></vbox>
 
-                <grid fixedLayout="true">
+                <grid>
                     <columns>
                         <column label="${i18n:_t('Source scenario')}"/>
                         <column label="${i18n:_t('Destination scenario')}"/>
@@ -45,22 +46,22 @@
                         <bandboxSearch
                     id="sourceScenarioBandboxSearch"
                     finder="ScenarioBandboxFinder"
-                    model="@{transferOrdersController.scenarios}"
-                    selectedElement="@{transferOrdersController.sourceScenario}" />
+                    model="@load(transferOrdersController.scenarios)"
+                    selectedElement="@load(transferOrdersController.sourceScenario)" />
                     </hbox>
                     <hbox>
                       <label value="${i18n:_t('Select destination')}"/>
                 <bandboxSearch
                     id="destinationScenarioBandboxSearch"
                     finder="ScenarioBandboxFinder"
-                    model="@{transferOrdersController.scenarios}"
-                    selectedElement="@{transferOrdersController.destinationScenario}" />
+                    model="@load(transferOrdersController.scenarios)"
+                    selectedElement="@load(transferOrdersController.destinationScenario)" />
                     </hbox>
                         </row>
                         <row  style="padding:10px; vertical-align:top;">
             <listbox id="sourceScenarioOrders"
-                model="@{transferOrdersController.sourceScenarioOrders}"
-                itemRenderer="@{transferOrdersController.sourceOrderRenderer}">
+                model="@load(transferOrdersController.sourceScenarioOrdersModel)"
+                itemRenderer="@load(transferOrdersController.sourceOrderRenderer)">
                 <listhead>
                     <listheader label="${i18n:_t('Code')}" tooltiptext="${i18n:_t('Code')}" sort="auto(lower(code))" />
                     <listheader label="${i18n:_t('Name')}" tooltiptext="${i18n:_t('Name')}" sort="auto(lower(name))"/>
@@ -69,8 +70,8 @@
                 </listhead>
             </listbox>
             <listbox id="destinationScenarioOrders"
-                model="@{transferOrdersController.destinationScenarioOrders}"
-                itemRenderer="@{transferOrdersController.destinationOrderRenderer}">
+                model="@load(transferOrdersController.destinationScenarioOrdersModel)"
+                itemRenderer="@load(transferOrdersController.destinationOrderRenderer)">
                 <listhead>
                     <listheader label="${i18n:_t('Code')}" tooltiptext="${i18n:_t('Code')}" sort="auto(lower(code))" />
                     <listheader label="${i18n:_t('Name')}" tooltiptext="${i18n:_t('Name')}" sort="auto(lower(name))"/>

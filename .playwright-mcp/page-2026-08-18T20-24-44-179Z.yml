@@ -1,0 +1,132 @@
+- generic [ref=f1019e4]:
+  - generic [ref=f1019e5]:
+    - table [ref=f1019e6]:
+      - rowgroup [ref=f1019e7]:
+        - row [ref=f1019e8]:
+          - cell [ref=f1019e9]:
+            - link [ref=f1019e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f1019e12]:
+            - table [ref=f1019e13]:
+              - rowgroup [ref=f1019e14]:
+                - row [ref=f1019e15]:
+                  - cell [ref=f1019e16]:
+                    - generic [ref=f1019e17]:
+                      - menubar [ref=f1019e18]:
+                        - menuitem "Planning" [ref=f1019e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f1019e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f1019e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f1019e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f1019e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f1019e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f1019e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f1019e33]:
+                        - rowgroup [ref=f1019e34]:
+                          - row [ref=f1019e35]:
+                            - cell [ref=f1019e36]:
+                              - table [ref=f1019e37]:
+                                - rowgroup [ref=f1019e38]:
+                                  - row [ref=f1019e39]:
+                                    - cell [ref=f1019e40]
+                                    - cell [ref=f1019e41]:
+                                      - strong [ref=f1019e42]: START
+                                    - cell [ref=f1019e43]
+                                    - cell [ref=f1019e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f1019e45]:
+                                        - rowgroup [ref=f1019e46]:
+                                          - row [ref=f1019e47]:
+                                            - cell [ref=f1019e48]:
+                                              - table [ref=f1019e49]:
+                                                - rowgroup [ref=f1019e50]:
+                                                  - row [ref=f1019e51]:
+                                                    - cell [ref=f1019e52]:
+                                                      - table [ref=f1019e53]:
+                                                        - rowgroup [ref=f1019e54]:
+                                                          - row [ref=f1019e55]:
+                                                            - cell [ref=f1019e56]:
+                                                              - table [ref=f1019e57]:
+                                                                - rowgroup [ref=f1019e58]:
+                                                                  - row [ref=f1019e59]:
+                                                                    - cell [ref=f1019e60]
+                                                                    - cell [ref=f1019e63]
+                                                                    - cell "Communications" [ref=f1019e64]
+                                                    - cell [ref=f1019e65]
+                                                    - cell [ref=f1019e66]:
+                                                      - table [ref=f1019e67]:
+                                                        - rowgroup [ref=f1019e68]:
+                                                          - row [ref=f1019e69]:
+                                                            - cell [ref=f1019e70]:
+                                                              - table [ref=f1019e71]:
+                                                                - rowgroup [ref=f1019e72]:
+                                                                  - row [ref=f1019e73]:
+                                                                    - cell [ref=f1019e74]
+                                                                    - cell [ref=f1019e77]
+                                                                    - cell "Received From Customers" [ref=f1019e78]
+                            - cell [ref=f1019e79]:
+                              - generic [ref=f1019e80]:
+                                - link "Help" [ref=f1019e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f1019e83]
+                                - img "Info" [ref=f1019e85]
+    - table [ref=f1019e87]:
+      - rowgroup [ref=f1019e88]:
+        - row [ref=f1019e89]:
+          - cell [ref=f1019e90]
+          - 'cell "user: admin" [ref=f1019e91]'
+          - cell [ref=f1019e92]:
+            - link "[Log out]" [ref=f1019e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f1019e94]:
+    - text:    
+    - generic [ref=f1019e95]:
+      - generic [ref=f1019e96]: Communications From Customers
+      - generic [ref=f1019e97]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f1019e98]:
+          - text: "Show:"
+          - combobox [ref=f1019e99]:
+            - option "All" [selected]
+            - option "Not Reviewed"
+          - button "Refresh" [ref=f1019e100] [cursor=pointer]
+        - separator [ref=f1019e101]
+        - grid [ref=f1019e102]:
+          - rowgroup [ref=f1019e112]:
+            - columnheader "Communication Type" [ref=f1019e113]
+            - columnheader "Project Name" [ref=f1019e115]
+            - columnheader "Deadline" [ref=f1019e117]
+            - columnheader "Project Code" [ref=f1019e119]
+            - columnheader "Customer" [ref=f1019e121]
+            - columnheader "Communication Date" [ref=f1019e123]
+            - columnheader "Reviewed" [ref=f1019e125]
+            - columnheader "Operations" [ref=f1019e127]
+          - rowgroup
+          - generic [ref=f1019e138]:    
+  - table [ref=f1019e139]:
+    - rowgroup [ref=f1019e140]:
+      - row [ref=f1019e141]:
+        - cell [ref=f1019e142]:
+          - generic [ref=f1019e144]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f1019e145] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f1019e146]
+  - text:    

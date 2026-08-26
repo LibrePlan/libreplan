@@ -1,0 +1,232 @@
+- generic [ref=f155e4]:
+  - generic:
+    - generic [ref=f155e7]:
+      - table [ref=f155e8]:
+        - rowgroup [ref=f155e9]:
+          - row [ref=f155e10]:
+            - cell [ref=f155e11]:
+              - link [ref=f155e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f155e14]:
+              - table [ref=f155e15]:
+                - rowgroup [ref=f155e16]:
+                  - row [ref=f155e17]:
+                    - cell [ref=f155e18]:
+                      - generic [ref=f155e19]:
+                        - list [ref=f155e21]:
+                          - listitem [ref=f155e22]:
+                            - link "Planning" [ref=f155e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f155e25]:
+                            - link "Resources" [ref=f155e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f155e28]:
+                            - link "Cost" [ref=f155e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f155e31]:
+                            - link "Configuration" [ref=f155e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f155e34]:
+                            - link "Communications" [ref=f155e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f155e37]:
+                            - link "Reports" [ref=f155e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f155e40]:
+                            - link "Personal area" [ref=f155e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f155e43]:
+                          - rowgroup [ref=f155e44]:
+                            - row [ref=f155e45]:
+                              - cell [ref=f155e46]:
+                                - table [ref=f155e47]:
+                                  - rowgroup [ref=f155e48]:
+                                    - row [ref=f155e49]:
+                                      - cell [ref=f155e50]
+                                      - cell [ref=f155e51]:
+                                        - strong [ref=f155e52]: START
+                                      - cell [ref=f155e53]
+                                      - cell [ref=f155e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f155e55]:
+                                          - rowgroup [ref=f155e56]:
+                                            - row [ref=f155e57]:
+                                              - cell [ref=f155e58]:
+                                                - table [ref=f155e59]:
+                                                  - rowgroup [ref=f155e60]:
+                                                    - row [ref=f155e61]:
+                                                      - cell [ref=f155e62]:
+                                                        - table [ref=f155e63]:
+                                                          - rowgroup [ref=f155e64]:
+                                                            - row [ref=f155e65]:
+                                                              - cell [ref=f155e66]:
+                                                                - table [ref=f155e67]:
+                                                                  - rowgroup [ref=f155e68]:
+                                                                    - row [ref=f155e69]:
+                                                                      - cell [ref=f155e70]
+                                                                      - cell [ref=f155e73]
+                                                                      - cell "Configuration" [ref=f155e74]
+                                                      - cell [ref=f155e75]
+                                                      - cell [ref=f155e76]:
+                                                        - table [ref=f155e77]:
+                                                          - rowgroup [ref=f155e78]:
+                                                            - row [ref=f155e79]:
+                                                              - cell [ref=f155e80]:
+                                                                - table [ref=f155e81]:
+                                                                  - rowgroup [ref=f155e82]:
+                                                                    - row [ref=f155e83]:
+                                                                      - cell [ref=f155e84]
+                                                                      - cell [ref=f155e87]
+                                                                      - cell "Job Scheduling" [ref=f155e88]
+                              - cell [ref=f155e89]:
+                                - generic [ref=f155e90]:
+                                  - link "Help" [ref=f155e91] [cursor=pointer]:
+                                    - /url: /help/en/19-scheduler.html
+                                  - img "Axuda" [ref=f155e93]
+                                  - img "Info" [ref=f155e95]
+      - table [ref=f155e97]:
+        - rowgroup [ref=f155e98]:
+          - row [ref=f155e99]:
+            - cell [ref=f155e100]
+            - 'cell "user: admin" [ref=f155e101]'
+            - cell [ref=f155e102]:
+              - link "[Log out]" [ref=f155e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f155e106]:
+    - generic:  
+    - generic [ref=f155e110]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:    
+      - generic [ref=f155e159]:
+        - generic [ref=f155e160]: Create Job scheduling
+        - generic [ref=f155e163]:
+          - table [ref=f155e167]:
+            - rowgroup [ref=f155e171]:
+              - row [ref=f155e172]:
+                - cell "Job group" [ref=f155e173]
+                - cell [ref=f155e175]:
+                  - textbox [ref=f155e177]
+              - row [ref=f155e178]:
+                - cell "Job name" [ref=f155e179]
+                - cell [ref=f155e181]:
+                  - textbox [ref=f155e183]
+              - row [ref=f155e184]:
+                - cell "Cron expression" [ref=f155e185]
+                - cell [ref=f155e187]:
+                  - table [ref=f155e189]:
+                    - rowgroup [ref=f155e190]:
+                      - row [ref=f155e191]:
+                        - cell [ref=f155e192]:
+                          - table [ref=f155e193]:
+                            - rowgroup [ref=f155e194]:
+                              - row [ref=f155e195]:
+                                - cell [ref=f155e196]:
+                                  - textbox [disabled] [ref=f155e197]
+                                - cell [ref=f155e198]
+                                - cell [ref=f155e199]:
+                                  - button "Edit" [ref=f155e200] [cursor=pointer]
+              - row [ref=f155e202]:
+                - cell "Job class name" [ref=f155e203]
+                - cell "" [ref=f155e205]:
+                  - generic [ref=f155e207]:
+                    - textbox [ref=f155e208]
+                    - generic [ref=f155e209] [cursor=pointer]: 
+              - row [ref=f155e211]:
+                - cell "Connector" [ref=f155e212]
+                - cell "" [ref=f155e214]:
+                  - generic [ref=f155e216]:
+                    - textbox [ref=f155e217]
+                    - generic [ref=f155e218] [cursor=pointer]: 
+              - row [ref=f155e220]:
+                - cell "Schedule" [ref=f155e221]
+                - cell [ref=f155e223]:
+                  - checkbox [ref=f155e226] [cursor=pointer]
+            - rowgroup:
+              - row
+          - button "Save" [ref=f155e227] [cursor=pointer]
+          - button "Save and Continue" [ref=f155e228] [cursor=pointer]
+          - button "Cancel" [ref=f155e229] [cursor=pointer]
+          - generic [ref=f155e231]:
+            - generic [ref=f155e232]: Cron expression format
+            - generic [ref=f155e235]:
+              - generic [ref=f155e236]:
+                - table [ref=f155e238]:
+                  - rowgroup [ref=f155e243]:
+                    - row [ref=f155e244]:
+                      - columnheader "Field" [ref=f155e245]
+                      - columnheader "Allowed values" [ref=f155e247]
+                      - columnheader "Allowed Special Characters" [ref=f155e249]
+                      - columnheader
+                - table [ref=f155e253]:
+                  - rowgroup [ref=f155e258]:
+                    - row [ref=f155e259]:
+                      - cell "Seconds" [ref=f155e260]
+                      - cell "0-59" [ref=f155e262]
+                      - cell ", - * /" [ref=f155e264]
+                    - row [ref=f155e266]:
+                      - cell "Minutes" [ref=f155e267]
+                      - cell "0-59" [ref=f155e269]
+                      - cell ", - * /" [ref=f155e271]
+                    - row [ref=f155e273]:
+                      - cell "Hours" [ref=f155e274]
+                      - cell "0-23" [ref=f155e276]
+                      - cell ", - * /" [ref=f155e278]
+                    - row [ref=f155e280]:
+                      - cell "Day of month" [ref=f155e281]
+                      - cell "1-31" [ref=f155e283]
+                      - cell ", - * ? / L W" [ref=f155e285]
+                    - row [ref=f155e287]:
+                      - cell "Month" [ref=f155e288]
+                      - cell "1-12 (or names [JAN-DEC])" [ref=f155e290]
+                      - cell ", - *" [ref=f155e293]
+                    - row [ref=f155e295]:
+                      - cell "Day of week" [ref=f155e296]
+                      - cell "1-7 (1 or 7 is Sunday, or use names [SUN-SAT])" [ref=f155e298]
+                      - 'cell ", - * ? / L #" [ref=f155e301]'
+                    - row [ref=f155e303]:
+                      - cell "Year (optional)" [ref=f155e304]
+                      - cell "1970-2099" [ref=f155e306]
+                      - cell ", - *" [ref=f155e308]
+                  - rowgroup:
+                    - row
+              - generic [ref=f155e310]:
+                - generic [ref=f155e311]: The '?' character is allowed for the day-of-month and day-of-week fields. It is used to specify “no specific value”.
+                - text: For more details on cron expression click
+                - link "here." [ref=f155e312] [cursor=pointer]:
+                  - /url: http://www.manpagez.com/man/5/crontab/
+  - generic:
+    - table [ref=f155e151]:
+      - rowgroup [ref=f155e152]:
+        - row [ref=f155e153]:
+          - cell [ref=f155e154]:
+            - generic [ref=f155e156]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f155e157] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f155e158]
+    - text:  

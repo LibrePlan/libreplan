@@ -1,0 +1,165 @@
+- generic [ref=f813e4]:
+  - generic [ref=f813e5]:
+    - table [ref=f813e6]:
+      - rowgroup [ref=f813e7]:
+        - row [ref=f813e8]:
+          - cell [ref=f813e9]:
+            - link [ref=f813e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f813e12]:
+            - table [ref=f813e13]:
+              - rowgroup [ref=f813e14]:
+                - row [ref=f813e15]:
+                  - cell [ref=f813e16]:
+                    - generic [ref=f813e17]:
+                      - menubar [ref=f813e18]:
+                        - menuitem "Personal area" [ref=f813e19] [cursor=pointer]: 
+                        - text:   
+                      - table [ref=f813e21]:
+                        - rowgroup [ref=f813e22]:
+                          - row [ref=f813e23]:
+                            - cell [ref=f813e24]:
+                              - table [ref=f813e25]:
+                                - rowgroup [ref=f813e26]:
+                                  - row [ref=f813e27]:
+                                    - cell [ref=f813e28]
+                                    - cell [ref=f813e29]:
+                                      - strong [ref=f813e30]: START
+                                    - cell [ref=f813e31]
+                                    - cell [ref=f813e32]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f813e33]:
+                                        - rowgroup [ref=f813e34]:
+                                          - row [ref=f813e35]:
+                                            - cell [ref=f813e36]:
+                                              - table [ref=f813e37]:
+                                                - rowgroup [ref=f813e38]:
+                                                  - row [ref=f813e39]:
+                                                    - cell [ref=f813e40]:
+                                                      - table [ref=f813e41]:
+                                                        - rowgroup [ref=f813e42]:
+                                                          - row [ref=f813e43]:
+                                                            - cell [ref=f813e44]:
+                                                              - table [ref=f813e45]:
+                                                                - rowgroup [ref=f813e46]:
+                                                                  - row [ref=f813e47]:
+                                                                    - cell [ref=f813e48]
+                                                                    - cell [ref=f813e51]
+                                                                    - cell "Personal area" [ref=f813e52]
+                                                    - cell [ref=f813e53]
+                                                    - cell [ref=f813e54]:
+                                                      - table [ref=f813e55]:
+                                                        - rowgroup [ref=f813e56]:
+                                                          - row [ref=f813e57]:
+                                                            - cell [ref=f813e58]:
+                                                              - table [ref=f813e59]:
+                                                                - rowgroup [ref=f813e60]:
+                                                                  - row [ref=f813e61]:
+                                                                    - cell [ref=f813e62]
+                                                                    - cell [ref=f813e65]
+                                                                    - cell "Home" [ref=f813e66]
+                            - cell [ref=f813e67]:
+                              - generic [ref=f813e68]:
+                                - link "Help" [ref=f813e69] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f813e71]
+                                - img "Info" [ref=f813e73]
+    - table [ref=f813e75]:
+      - rowgroup [ref=f813e76]:
+        - row [ref=f813e77]:
+          - cell [ref=f813e78]
+          - 'cell "user: qwe" [ref=f813e79]'
+          - cell [ref=f813e80]:
+            - link "[Log out]" [ref=f813e81] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f813e82]:
+    - text:    
+    - generic [ref=f813e83]:
+      - generic [ref=f813e84]: My dashboard
+      - generic [ref=f813e85]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f813e86]:
+          - generic [ref=f813e87]: My tasks
+          - grid [ref=f813e91]:
+            - rowgroup [ref=f813e102]:
+              - columnheader "Project" [ref=f813e103]
+              - columnheader "Task" [ref=f813e105]
+              - columnheader "Description" [ref=f813e107]
+              - columnheader "Start date" [ref=f813e109]
+              - columnheader "End date" [ref=f813e111]
+              - columnheader "Work budgeted" [ref=f813e113]
+              - columnheader "Work done" [ref=f813e115]
+              - columnheader "Progress" [ref=f813e117]
+              - columnheader "Operations" [ref=f813e119]
+            - rowgroup
+            - generic [ref=f813e131]:    
+        - generic [ref=f813e132]:
+          - generic [ref=f813e133]: Personal timesheets
+          - grid [ref=f813e137]:
+            - rowgroup [ref=f813e144]:
+              - columnheader [ref=f813e145]:
+                - generic [ref=f813e146] [cursor=pointer]:
+                  - generic [ref=f813e147]: 
+                  - text: Date
+              - columnheader "Available hours" [ref=f813e149]
+              - columnheader "Total work" [ref=f813e151]
+              - columnheader "Number of tasks" [ref=f813e153]
+              - columnheader "Operations" [ref=f813e155]
+            - rowgroup [ref=f813e163]:
+              - gridcell "September 2026" [ref=f813e164]
+              - gridcell "154" [ref=f813e166]
+              - gridcell "0" [ref=f813e168]
+              - gridcell "0" [ref=f813e170]
+              - gridcell [ref=f813e172]:
+                - table [ref=f813e174]:
+                  - rowgroup [ref=f813e175]:
+                    - row [ref=f813e176]:
+                      - cell [ref=f813e177]:
+                        - table [ref=f813e178]:
+                          - rowgroup [ref=f813e179]:
+                            - row [ref=f813e180]:
+                              - cell [ref=f813e181]:
+                                - button "Edit" [ref=f813e182] [cursor=pointer]
+              - gridcell "August 2026" [ref=f813e184]
+              - gridcell "98" [ref=f813e186]
+              - gridcell "0" [ref=f813e188]
+              - gridcell "0" [ref=f813e190]
+              - gridcell [ref=f813e192]:
+                - table [ref=f813e194]:
+                  - rowgroup [ref=f813e195]:
+                    - row [ref=f813e196]:
+                      - cell [ref=f813e197]:
+                        - table [ref=f813e198]:
+                          - rowgroup [ref=f813e199]:
+                            - row [ref=f813e200]:
+                              - cell [ref=f813e201]:
+                                - button "Edit" [ref=f813e202] [cursor=pointer]
+            - generic [ref=f813e204]:    
+        - generic [ref=f813e205]:
+          - generic [ref=f813e206]: Expenses
+          - generic [ref=f813e209]:
+            - grid [ref=f813e210]:
+              - rowgroup [ref=f813e218]:
+                - columnheader "Description" [ref=f813e219]
+                - columnheader "Code" [ref=f813e221]
+                - columnheader "Total" [ref=f813e223]
+                - columnheader [ref=f813e225]:
+                  - generic [ref=f813e226] [cursor=pointer]:
+                    - generic [ref=f813e227]: 
+                    - text: First expense
+                - columnheader "Last expense" [ref=f813e229]
+                - columnheader "Operations" [ref=f813e231]
+              - rowgroup
+              - generic [ref=f813e240]:    
+            - button "New expense sheet" [ref=f813e241] [cursor=pointer]

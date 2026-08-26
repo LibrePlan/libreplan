@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,15 +22,14 @@ package org.libreplan.importers;
 
 import java.util.Collections;
 import java.util.List;
-
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import com.fasterxml.jackson.jakarta.rs.json.JacksonXmlBindJsonProvider;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.cxf.jaxrs.client.WebClient;
-import com.fasterxml.jackson.jaxrs.json.JacksonJaxbJsonProvider;
 import org.libreplan.importers.jira.IssueDTO;
 import org.libreplan.importers.jira.SearchResultDTO;
 import org.libreplan.ws.cert.NaiveTrustProvider;
@@ -128,7 +128,7 @@ public class JiraRESTClient {
      */
     private static WebClient createClient(String url) {
 
-        JacksonJaxbJsonProvider jacksonJaxbJsonProvider = new JacksonJaxbJsonProvider();
+        JacksonXmlBindJsonProvider jacksonJaxbJsonProvider = new JacksonXmlBindJsonProvider();
         jacksonJaxbJsonProvider.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
         return WebClient.create(url, Collections.singletonList(jacksonJaxbJsonProvider)).accept(mediaTypes);

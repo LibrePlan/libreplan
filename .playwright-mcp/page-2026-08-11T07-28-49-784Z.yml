@@ -1,0 +1,220 @@
+- generic [ref=f3e4]:
+  - generic:
+    - generic [ref=f3e7]:
+      - table [ref=f3e8]:
+        - rowgroup [ref=f3e9]:
+          - row [ref=f3e10]:
+            - cell [ref=f3e11]:
+              - link [ref=f3e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f3e14]:
+              - table [ref=f3e15]:
+                - rowgroup [ref=f3e16]:
+                  - row [ref=f3e17]:
+                    - cell [ref=f3e18]:
+                      - generic [ref=f3e19]:
+                        - list [ref=f3e21]:
+                          - listitem [ref=f3e22]:
+                            - link "Planning" [ref=f3e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f3e25]:
+                            - link "Resources" [ref=f3e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f3e28]:
+                            - link "Cost" [ref=f3e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f3e31]:
+                            - link "Configuration" [ref=f3e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f3e34]:
+                            - link "Communications" [ref=f3e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f3e37]:
+                            - link "Reports" [ref=f3e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f3e40]:
+                            - link "Personal area" [ref=f3e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f3e43]:
+                          - rowgroup [ref=f3e44]:
+                            - row [ref=f3e45]:
+                              - cell [ref=f3e46]:
+                                - table [ref=f3e47]:
+                                  - rowgroup [ref=f3e48]:
+                                    - row [ref=f3e49]:
+                                      - cell [ref=f3e50]
+                                      - cell [ref=f3e51]:
+                                        - strong [ref=f3e52]: START
+                                      - cell [ref=f3e53]
+                                      - cell [ref=f3e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f3e55]:
+                                          - rowgroup [ref=f3e56]:
+                                            - row [ref=f3e57]:
+                                              - cell [ref=f3e58]:
+                                                - table [ref=f3e59]:
+                                                  - rowgroup [ref=f3e60]:
+                                                    - row [ref=f3e61]:
+                                                      - cell [ref=f3e62]:
+                                                        - table [ref=f3e63]:
+                                                          - rowgroup [ref=f3e64]:
+                                                            - row [ref=f3e65]:
+                                                              - cell [ref=f3e66]:
+                                                                - table [ref=f3e67]:
+                                                                  - rowgroup [ref=f3e68]:
+                                                                    - row [ref=f3e69]:
+                                                                      - cell [ref=f3e70]
+                                                                      - cell [ref=f3e73]
+                                                                      - cell "Resources" [ref=f3e74]
+                                                      - cell [ref=f3e75]
+                                                      - cell [ref=f3e76]:
+                                                        - table [ref=f3e77]:
+                                                          - rowgroup [ref=f3e78]:
+                                                            - row [ref=f3e79]:
+                                                              - cell [ref=f3e80]:
+                                                                - table [ref=f3e81]:
+                                                                  - rowgroup [ref=f3e82]:
+                                                                    - row [ref=f3e83]:
+                                                                      - cell [ref=f3e84]
+                                                                      - cell [ref=f3e87]
+                                                                      - cell "Workers" [ref=f3e88]
+                              - cell [ref=f3e89]:
+                                - generic [ref=f3e90]:
+                                  - link "Help" [ref=f3e91] [cursor=pointer]:
+                                    - /url: /help/en/05-recursos.html#xesti-n-de-traballadores
+                                  - img "Axuda" [ref=f3e93]
+                                  - img "Info" [ref=f3e95]
+      - table [ref=f3e97]:
+        - rowgroup [ref=f3e98]:
+          - row [ref=f3e99]:
+            - cell [ref=f3e100]
+            - 'cell "user: admin" [ref=f3e101]'
+            - cell [ref=f3e102]:
+              - link "[Log out]" [ref=f3e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f3e106]:
+    - generic:  
+    - generic [ref=f3e110]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:                
+      - generic [ref=f3e249]:
+        - generic [ref=f3e250]: Create Worker
+        - generic [ref=f3e253]:
+          - generic [ref=f3e254]:
+            - list [ref=f3e256]:
+              - listitem [ref=f3e257] [cursor=pointer]:
+                - generic [ref=f3e258]: Personal data
+              - listitem [ref=f3e260] [cursor=pointer]:
+                - generic [ref=f3e261]: Assigned criteria
+              - listitem [ref=f3e263] [cursor=pointer]:
+                - generic [ref=f3e264]: Calendar
+              - listitem [ref=f3e266] [cursor=pointer]:
+                - generic [ref=f3e267]: Cost category assignment
+            - generic [ref=f3e269]:
+              - generic [ref=f3e270]:
+                - generic [ref=f3e271]:
+                  - generic [ref=f3e272]: Basic data
+                  - table [ref=f3e279]:
+                    - rowgroup [ref=f3e283]:
+                      - row [ref=f3e284]:
+                        - cell "Code" [ref=f3e285]
+                        - cell [ref=f3e287]:
+                          - table [ref=f3e289]:
+                            - rowgroup [ref=f3e290]:
+                              - row [ref=f3e291]:
+                                - cell [ref=f3e292]:
+                                  - table [ref=f3e293]:
+                                    - rowgroup [ref=f3e294]:
+                                      - row [ref=f3e295]:
+                                        - cell [ref=f3e296]:
+                                          - textbox [disabled] [ref=f3e297]: WORKER0003
+                                        - cell [ref=f3e298]
+                                        - cell [ref=f3e299]:
+                                          - generic [ref=f3e300]:
+                                            - checkbox "Generate code" [checked] [ref=f3e301] [cursor=pointer]: 
+                                            - text: Generate code
+                      - row [ref=f3e302]:
+                        - cell "First name" [ref=f3e303]
+                        - cell [ref=f3e305]:
+                          - textbox [active] [ref=f3e307]
+                      - row [ref=f3e308]:
+                        - cell "Last name" [ref=f3e309]
+                        - cell [ref=f3e311]:
+                          - textbox [ref=f3e313]
+                      - row [ref=f3e314]:
+                        - cell "ID" [ref=f3e315]
+                        - cell [ref=f3e317]:
+                          - textbox [ref=f3e319]
+                      - row [ref=f3e320]:
+                        - cell [ref=f3e321]:
+                          - table [ref=f3e323]:
+                            - rowgroup [ref=f3e324]:
+                              - row [ref=f3e325]:
+                                - cell [ref=f3e326]:
+                                  - table [ref=f3e327]:
+                                    - rowgroup [ref=f3e328]:
+                                      - row [ref=f3e329]:
+                                        - cell "Type" [ref=f3e330]
+                                        - cell [ref=f3e331]
+                                        - cell [ref=f3e332]
+                        - cell [ref=f3e334]:
+                          - combobox [ref=f3e336] [cursor=pointer]:
+                            - option "Queue-based resource"
+                            - option "Normal resource" [selected]
+                    - rowgroup:
+                      - row
+                - generic [ref=f3e337]:
+                  - generic [ref=f3e338]: Bound user
+                  - generic [ref=f3e341]:
+                    - generic [ref=f3e342]:
+                      - generic [ref=f3e343]:
+                        - radio "Not bound" [checked] [ref=f3e344] [cursor=pointer]
+                        - text: Not bound
+                      - generic [ref=f3e345]:
+                        - radio "Existing user" [ref=f3e346] [cursor=pointer]
+                        - text: Existing user
+                      - generic [ref=f3e347]:
+                        - radio "Create new user" [ref=f3e348] [cursor=pointer]
+                        - text: Create new user
+                    - text: 
+              - text:                                                           
+            - text:  
+          - button "Save" [ref=f3e349] [cursor=pointer]
+          - button "Save & Continue" [ref=f3e350] [cursor=pointer]
+          - button "Cancel" [ref=f3e351] [cursor=pointer]
+  - generic:
+    - table [ref=f3e241]:
+      - rowgroup [ref=f3e242]:
+        - row [ref=f3e243]:
+          - cell [ref=f3e244]:
+            - generic [ref=f3e246]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f3e247] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f3e248]
+    - text:  

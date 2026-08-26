@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2012 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -24,8 +25,8 @@
 
     <grid id="expenseSheetsList"
           mold="paging" pageSize="10"
-          model="@{controller.personalExpenseSheets}"
-          rowRenderer="@{controller.expenseSheetsRenderer}"
+          model="@load(controller.personalExpenseSheets)"
+          rowRenderer="@load(controller.expenseSheetsRenderer)"
           sclass="clickable-rows" >
 
         <columns sizable="true">

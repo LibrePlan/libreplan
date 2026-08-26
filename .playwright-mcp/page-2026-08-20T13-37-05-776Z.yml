@@ -1,0 +1,419 @@
+- generic [ref=f135e1]:
+  - generic [ref=f135e4]:
+    - generic:
+      - generic [ref=f135e7]:
+        - table [ref=f135e8]:
+          - rowgroup [ref=f135e9]:
+            - row [ref=f135e10]:
+              - cell [ref=f135e11]:
+                - link [ref=f135e12] [cursor=pointer]:
+                  - /url: /
+              - cell [ref=f135e14]:
+                - table [ref=f135e15]:
+                  - rowgroup [ref=f135e16]:
+                    - row [ref=f135e17]:
+                      - cell [ref=f135e18]:
+                        - generic [ref=f135e19]:
+                          - list [ref=f135e21]:
+                            - listitem [ref=f135e22]:
+                              - link "Planning" [ref=f135e23] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:        
+                            - listitem [ref=f135e25]:
+                              - link "Resources" [ref=f135e26] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:           
+                            - listitem [ref=f135e28]:
+                              - link "Kosten" [ref=f135e29] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:      
+                            - listitem [ref=f135e31]:
+                              - link "Configuratie" [ref=f135e32] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:     
+                            - listitem [ref=f135e34]:
+                              - link "Communicatie" [ref=f135e35] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:     
+                            - listitem [ref=f135e37]:
+                              - link "Rapporten" [ref=f135e38] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:         
+                            - listitem [ref=f135e40]:
+                              - link "Persoonlijk deel" [ref=f135e41] [cursor=pointer]:
+                                - /url: javascript:;
+                                - text: 
+                              - text:  
+                          - table [ref=f135e43]:
+                            - rowgroup [ref=f135e44]:
+                              - row [ref=f135e45]:
+                                - cell [ref=f135e46]:
+                                  - table [ref=f135e47]:
+                                    - rowgroup [ref=f135e48]:
+                                      - row [ref=f135e49]:
+                                        - cell [ref=f135e50]
+                                        - cell [ref=f135e51]:
+                                          - strong [ref=f135e52]: START
+                                        - cell [ref=f135e53]
+                                        - cell [ref=f135e54]:
+                                          - table [ref=f135e55]:
+                                            - rowgroup [ref=f135e56]:
+                                              - row [ref=f135e57]:
+                                                - cell [ref=f135e58]:
+                                                  - table [ref=f135e59]:
+                                                    - rowgroup [ref=f135e60]:
+                                                      - row [ref=f135e61]:
+                                                        - cell [ref=f135e62]
+                                                        - cell [ref=f135e64]
+                                                        - cell "Planning" [ref=f135e65]
+                                                        - cell [ref=f135e66]
+                                                        - cell [ref=f135e67]
+                                                        - cell [ref=f135e69]
+                                                        - cell "Projecten planning" [ref=f135e70]
+                                          - table:
+                                            - rowgroup:
+                                              - row:
+                                                - cell:
+                                                  - table:
+                                                    - rowgroup:
+                                                      - row
+                                - cell [ref=f135e71]:
+                                  - generic [ref=f135e72]:
+                                    - link "Help" [ref=f135e73] [cursor=pointer]:
+                                      - /url: /help/nl/index.html
+                                    - img "Axuda" [ref=f135e75]
+                                    - img "Info" [ref=f135e77]
+        - table [ref=f135e79]:
+          - rowgroup [ref=f135e80]:
+            - row [ref=f135e81]:
+              - cell [ref=f135e82]
+              - 'cell "gebruiker: admin" [ref=f135e83]'
+              - cell [ref=f135e84]:
+                - link "[Afmelden]" [ref=f135e85] [cursor=pointer]:
+                  - /url: /j_spring_security_logout
+      - text:    
+    - generic [ref=f135e88]:
+      - generic:
+        - table [ref=f135e91]:
+          - rowgroup [ref=f135e92]:
+            - row [ref=f135e93]:
+              - cell [ref=f135e94]:
+                - table [ref=f135e95]:
+                  - rowgroup [ref=f135e96]:
+                    - row [ref=f135e97]:
+                      - cell [ref=f135e98]:
+                        - table [ref=f135e99]:
+                          - rowgroup [ref=f135e100]:
+                            - row [ref=f135e101]:
+                              - cell [ref=f135e102]:
+                                - table [ref=f135e103]:
+                                  - rowgroup [ref=f135e104]:
+                                    - row [ref=f135e105]:
+                                      - cell [ref=f135e106]:
+                                        - button "Maak nieuw project" [ref=f135e107] [cursor=pointer]
+                    - row [ref=f135e109]:
+                      - cell [ref=f135e110]
+                    - row [ref=f135e111]:
+                      - cell [ref=f135e112]:
+                        - table [ref=f135e113]:
+                          - rowgroup [ref=f135e114]:
+                            - row [ref=f135e115]:
+                              - cell [ref=f135e116]:
+                                - table [ref=f135e117]:
+                                  - rowgroup [ref=f135e118]:
+                                    - row [ref=f135e119]:
+                                      - cell [ref=f135e120]:
+                                        - button "Projecten planning" [ref=f135e121] [cursor=pointer]
+                                    - row [ref=f135e122]:
+                                      - cell [ref=f135e123]
+                                    - row:
+                                      - cell
+                                    - row [ref=f135e124]:
+                                      - cell [ref=f135e125]
+                                    - row [ref=f135e126]:
+                                      - cell [ref=f135e127]:
+                                        - button "Projectenlijst" [ref=f135e128] [cursor=pointer]
+                                    - row [ref=f135e129]:
+                                      - cell [ref=f135e130]
+                                    - row:
+                                      - cell
+                                    - row [ref=f135e131]:
+                                      - cell [ref=f135e132]
+                                    - row [ref=f135e133]:
+                                      - cell [ref=f135e134]:
+                                        - button "Resource belasting" [ref=f135e135] [cursor=pointer]
+                                    - row [ref=f135e136]:
+                                      - cell [ref=f135e137]
+                                    - row:
+                                      - cell
+                                    - row [ref=f135e138]:
+                                      - cell [ref=f135e139]
+                                    - row [ref=f135e140]:
+                                      - cell [ref=f135e141]:
+                                        - button "Wachtrij-gebaseerde Resource Planning" [ref=f135e142] [cursor=pointer]
+                                    - row [ref=f135e143]:
+                                      - cell [ref=f135e144]
+                                    - row:
+                                      - cell
+                                    - row [ref=f135e145]:
+                                      - cell [ref=f135e146]
+                                    - row [ref=f135e147]:
+                                      - cell [ref=f135e148]:
+                                        - button "Logs" [ref=f135e149] [cursor=pointer]
+                                    - row [ref=f135e150]:
+                                      - cell [ref=f135e151]
+                                    - row:
+                                      - cell
+                                    - row [ref=f135e152]:
+                                      - cell [ref=f135e153]
+                                    - row [ref=f135e154]:
+                                      - cell [ref=f135e155]:
+                                        - button "Pijplijn" [ref=f135e156] [cursor=pointer]
+                                    - row [ref=f135e157]:
+                                      - cell [ref=f135e158]
+                                    - row:
+                                      - cell
+        - text:    
+      - generic [ref=f135e163]:
+        - generic [ref=f135e164]:
+          - generic:
+            - table [ref=f135e167]:
+              - rowgroup [ref=f135e168]:
+                - row [ref=f135e169]:
+                  - cell [ref=f135e170]:
+                    - table [ref=f135e171]:
+                      - rowgroup [ref=f135e172]:
+                        - row "Year  Project met  van  tot  Zonder afgesloten projecten" [ref=f135e173]:
+                          - cell
+                          - cell [ref=f135e174]
+                          - cell:
+                            - table:
+                              - rowgroup:
+                                - row:
+                                  - cell:
+                                    - table:
+                                      - rowgroup:
+                                        - row
+                          - cell [ref=f135e175]
+                          - cell [ref=f135e176]:
+                            - button "Afdrukken" [ref=f135e177] [cursor=pointer]
+                          - cell [ref=f135e179]
+                          - cell
+                          - cell [ref=f135e180]
+                          - cell [ref=f135e181]
+                          - cell [ref=f135e183]
+                          - cell "Year" [ref=f135e184]:
+                            - combobox [ref=f135e185] [cursor=pointer]:
+                              - option "Year" [selected]
+                              - option "Quarter"
+                              - option "Month"
+                              - option "Week"
+                              - option "Day"
+                          - cell [ref=f135e186]
+                          - cell [ref=f135e187]:
+                            - button "Toon/Verberg labels" [ref=f135e188] [cursor=pointer]
+                          - cell [ref=f135e190]
+                          - cell [ref=f135e191]:
+                            - table [ref=f135e192]:
+                              - rowgroup [ref=f135e193]:
+                                - row [ref=f135e194]:
+                                  - cell [ref=f135e195]:
+                                    - table [ref=f135e196]:
+                                      - rowgroup [ref=f135e197]:
+                                        - row "" [ref=f135e198]:
+                                          - cell [ref=f135e199]:
+                                            - button "Toon/Verberg voortgang" [ref=f135e200] [cursor=pointer]
+                                          - cell [ref=f135e202]
+                                          - cell ""
+                          - cell [ref=f135e206]
+                          - cell [ref=f135e207]:
+                            - button "Toon/Verberg gerapporteerde uren" [ref=f135e208] [cursor=pointer]
+                          - cell [ref=f135e210]
+                          - cell
+                          - cell [ref=f135e211]
+                          - cell
+                          - cell [ref=f135e212]
+                          - cell [ref=f135e213]:
+                            - table [ref=f135e214]:
+                              - rowgroup [ref=f135e215]:
+                                - row [ref=f135e216]:
+                                  - cell [ref=f135e217]:
+                                    - table [ref=f135e218]:
+                                      - rowgroup [ref=f135e219]:
+                                        - row [ref=f135e220]:
+                                          - cell [ref=f135e221]:
+                                            - table [ref=f135e222]:
+                                              - rowgroup [ref=f135e223]:
+                                                - row [ref=f135e224]:
+                                                  - cell [ref=f135e225]:
+                                                    - table [ref=f135e226]:
+                                                      - rowgroup [ref=f135e227]:
+                                                        - row [ref=f135e228]:
+                                                          - cell "Project" [ref=f135e229]
+                                                          - cell [ref=f135e230]
+                                                          - cell [ref=f135e231]:
+                                                            - textbox [ref=f135e232]
+                                                          - cell [ref=f135e233]
+                                                          - cell "met" [ref=f135e234]
+                                                          - cell [ref=f135e235]
+                                                          - cell "" [ref=f135e236]:
+                                                            - generic [ref=f135e238]:
+                                                              - textbox [ref=f135e239]
+                                                              - generic [ref=f135e240] [cursor=pointer]: 
+                                                          - cell [ref=f135e242]
+                                                          - cell "van" [ref=f135e243]
+                                                          - cell [ref=f135e244]
+                                                          - cell "" [ref=f135e245]:
+                                                            - generic [ref=f135e246]:
+                                                              - textbox [ref=f135e247]
+                                                              - generic [ref=f135e248] [cursor=pointer]: 
+                                                              - text:    
+                                                          - cell [ref=f135e250]
+                                                          - cell "tot" [ref=f135e251]
+                                                          - cell [ref=f135e252]
+                                                          - cell "" [ref=f135e253]:
+                                                            - generic [ref=f135e254]:
+                                                              - textbox [ref=f135e255]
+                                                              - generic [ref=f135e256] [cursor=pointer]: 
+                                                              - text:    
+                                                          - cell [ref=f135e258]
+                                                          - cell "Zonder afgesloten projecten" [ref=f135e259]
+                                                          - cell [ref=f135e260]
+                                                          - cell [ref=f135e261]:
+                                                            - checkbox [ref=f135e263] [cursor=pointer]
+                                                          - cell [ref=f135e264]
+                                                          - cell [ref=f135e265]:
+                                                            - button "Pas filtering toe op taken die voldoen aan de vereiste criteria" [ref=f135e266] [cursor=pointer]
+                          - cell [ref=f135e268]
+                          - cell:
+                            - table:
+                              - rowgroup:
+                                - row:
+                                  - cell:
+                                    - table
+                          - cell [ref=f135e269]
+                          - cell [ref=f135e270]
+            - text:    
+          - generic [ref=f135e274]:
+            - generic:
+              - generic [ref=f135e282]:
+                - table [ref=f135e284]:
+                  - rowgroup [ref=f135e291]:
+                    - row [ref=f135e292]:
+                      - columnheader "Naam" [ref=f135e293]
+                      - columnheader "Start" [ref=f135e295]
+                      - columnheader "Einde" [ref=f135e297]
+                      - columnheader "T / M" [ref=f135e299]
+                - generic:
+                  - table:
+                    - rowgroup
+                  - button [ref=f135e301] [cursor=pointer]
+              - generic [ref=f135e303] [cursor=pointer]:
+                - generic [ref=f135e304]: 
+                - generic [ref=f135e305]: 
+                - generic [ref=f135e306]: 
+              - text: 
+            - generic [ref=f135e309]:
+              - generic:
+                - table [ref=f135e316]:
+                  - rowgroup [ref=f135e317]:
+                    - row [ref=f135e318]:
+                      - cell [ref=f135e319]:
+                        - table [ref=f135e320]:
+                          - rowgroup [ref=f135e321]:
+                            - row [ref=f135e322]:
+                              - cell [ref=f135e323]:
+                                - table [ref=f135e326]:
+                                  - rowgroup [ref=f135e335]:
+                                    - row [ref=f135e336]:
+                                      - columnheader "2025" [ref=f135e337]
+                                      - columnheader "2026" [ref=f135e339]
+                                      - columnheader "2027" [ref=f135e341]
+                                      - columnheader "2028" [ref=f135e343]
+                                      - columnheader "2029" [ref=f135e345]
+                                      - columnheader "2030" [ref=f135e347]
+                                      - columnheader "2031" [ref=f135e349]
+                                      - columnheader
+                            - row [ref=f135e352]:
+                              - cell [ref=f135e353]
+                            - row [ref=f135e354]:
+                              - cell [ref=f135e355]:
+                                - table [ref=f135e357]:
+                                  - rowgroup [ref=f135e358]:
+                                    - row [ref=f135e359]:
+                                      - cell "H1" [ref=f135e360]
+                                      - cell "H2" [ref=f135e361]
+                                      - cell "H1" [ref=f135e362]
+                                      - cell "H2" [ref=f135e363]
+                                      - cell "H1" [ref=f135e364]
+                                      - cell "H2" [ref=f135e365]
+                                      - cell "H1" [ref=f135e366]
+                                      - cell "H2" [ref=f135e367]
+                                      - cell "H1" [ref=f135e368]
+                                      - cell "H2" [ref=f135e369]
+                                      - cell "H1" [ref=f135e370]
+                                      - cell "H2" [ref=f135e371]
+                                      - cell "H1" [ref=f135e372]
+                                      - cell "H2" [ref=f135e373]
+                - text:    
+              - table [ref=f135e380]:
+                - rowgroup [ref=f135e381]:
+                  - row [ref=f135e382]:
+                    - cell [ref=f135e383]:
+                      - table [ref=f135e384]:
+                        - rowgroup [ref=f135e385]:
+                          - row [ref=f135e386]:
+                            - cell [ref=f135e387]:
+                              - generic [ref=f135e388]:
+                                - generic:
+                                  - table:
+                                    - rowgroup:
+                                      - row
+                                - table [ref=f135e391]:
+                                  - rowgroup [ref=f135e400]:
+                                    - row [ref=f135e401]:
+                                      - cell [ref=f135e402]
+                          - row [ref=f135e403]:
+                            - cell [ref=f135e404]
+                          - row [ref=f135e405]:
+                            - cell [ref=f135e406]:
+                              - table [ref=f135e408]:
+                                - rowgroup [ref=f135e409]:
+                                  - row [ref=f135e410]
+                                  - row [ref=f135e411]:
+                                    - cell [ref=f135e412]
+                                    - cell [ref=f135e413]
+                                    - cell [ref=f135e414]
+                                    - cell [ref=f135e415]
+                                    - cell [ref=f135e417]
+                                    - cell [ref=f135e418]
+                                    - cell [ref=f135e419]
+                                    - cell [ref=f135e420]
+                                    - cell [ref=f135e421]
+                                    - cell [ref=f135e422]
+                                    - cell [ref=f135e423]
+                                    - cell [ref=f135e424]
+                                    - cell [ref=f135e425]
+                                    - cell [ref=f135e426]
+        - generic:
+          - text:      
+          - generic "Graphics are disabled" [ref=f135e427] [cursor=pointer]: 
+    - generic:
+      - table [ref=f135e432]:
+        - rowgroup [ref=f135e433]:
+          - row [ref=f135e434]:
+            - cell [ref=f135e435]:
+              - generic [ref=f135e437]:
+                - text: Het wachtwoord van het beheersaccount is nog steeds het origineel. Dit is niet veilig.
+                - link "[Wijzig het wachtwoord]" [ref=f135e438] [cursor=pointer]:
+                  - /url: /users/users.zul#edit%3D1
+            - cell [ref=f135e439]
+      - text:    
+  - link [active]:
+    - /url: javascript:;

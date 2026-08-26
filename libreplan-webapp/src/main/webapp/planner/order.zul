@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -84,42 +85,30 @@
 
             <vbox>
 
-                <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleMessages}">
+                <groupbox closable="false" style="overflow:auto" visible="@load(advanceController.visibleMessages)">
                     <caption label="${i18n:_t('Check consolidated progresses')}" />
-                    <label value="@{advanceController.infoMessages}" />
+                    <label value="@load(advanceController.infoMessages)" />
                 </groupbox>
 
 
-                <groupbox closable="false" style="overflow:auto" visible="@{advanceController.isVisibleAdvances}">
+                <groupbox closable="false" style="overflow:auto" visible="@load(advanceController.visibleAdvances)">
                     <caption label="${i18n:_t('Check consolidated progresses')}" />
                     <vbox>
-                        <label value="@{advanceController.infoAdvance}"/>
+                        <label value="@load(advanceController.infoAdvance)"/>
                         <grid id="advancesGrid"
-                              model="@{advanceController.advances}"
+                              model="@load(advanceController.advances)"
+                              rowRenderer="@load(advanceController.advancesRenderer)"
                               mold="paging"
                               pageSize="10"
-                              sclass="@{advanceController.readOnlySclass}"
+                              sclass="@load(advanceController.readOnlySclass)"
                               span="true">
                             <columns>
-                                <column label="${i18n:_t('Value')}" align="center" visible="@{advanceController.unitType}"/>
+                                <column label="${i18n:_t('Value')}" align="center" visible="@load(advanceController.unitType)"/>
                                 <column label="${i18n:_t('Percentage')}" align="center"/>
                                 <column label="${i18n:_t('Date')}" align="center"/>
                                 <column label="${i18n:_t('Consolidated')}" align="center"/>
                             </columns>
                             <rows>
-                                <row self="@{each='advanceConsolidationDTO'}" value="@{advanceConsolidationDTO}">
-
-                                    <label value="@{advanceConsolidationDTO.labelUnits}"
-                                           visible="@{advanceController.unitType}"/>
-
-                                    <label value="@{advanceConsolidationDTO.labelPercentage}" />
-
-                                    <label value="@{advanceConsolidationDTO.date,converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-
-                                    <checkbox checked="@{advanceConsolidationDTO.consolidated}"
-                                              onCheck="advanceController.reloadAdvanceGrid();"
-                                              disabled="@{advanceConsolidationDTO.canNotBeConsolidated}"/>
-                                </row>
                             </rows>
                         </grid>
                     </vbox>
@@ -154,9 +143,6 @@
                 <panel title="${i18n:_t('Calendar')}" border="normal" style="overflow:auto" >
                     <panelchildren>
                         <combobox id="calendarCombo" style="margin: 10px;">
-                            <comboitem self="@{each='baseCalendar'}"
-                                       value="@{baseCalendar}"
-                                       label="@{baseCalendar.name}" />
                         </combobox>
                     </panelchildren>
                 </panel>

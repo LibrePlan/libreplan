@@ -217,6 +217,20 @@ public class TwoWaySelector extends HtmlMacroComponent {
     }
 
     /**
+     * The internal listboxes' "model" property is declared as org.zkoss.zul.ListModel -
+     * AnnotateBinder has no automatic Set->ListModel coercion, so the raw
+     * assignedObjects/unassignedObjects Sets (this component's public property API, left
+     * unchanged) can't be bound to it directly. These wrapper getters exist only for that binding.
+     */
+    public List<Object> getAssignedObjectsModel() {
+        return new org.zkoss.zul.ListModelList<>(assignedObjects);
+    }
+
+    public List getUnassignedObjectsModel() {
+        return new org.zkoss.zul.ListModelList<>(unassignedObjects);
+    }
+
+    /**
      * Sets the list of attributes to be shown when an object is renderer.
      *
      * @param columns

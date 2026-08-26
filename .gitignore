@@ -1,9 +1,13 @@
 # ignore build output directory
+/target
 libreplan-webapp/target
 libreplan-business/target
 libreplan-gantt-zk/target
 ganttzk-demo-webapp/target
 ganttzk/target
+
+# never commit this - contains a real password hash, see doc/technical/jdk25-migration/Phase5-found-bugs.md
+old-lpadmin-password.txt
 
 # ignore eclipse configuration files
 .classpath
@@ -33,4 +37,5 @@ doc/src/user/*/html/
 doc/src/user/*/index.rst
 
 #ignore files that need ignoring
-*.ignore
+*.ignorelp-full-build.log
+*.log

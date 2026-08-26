@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -413,6 +414,26 @@ public class TaskElementAdapter {
 
             private final Scenario currentScenario;
 
+            /**
+             * {@code getSafeOrderElement()} chains through {@code TaskSource.schedulingData}
+             * (a lazy {@code many-to-one}). If that proxy was created by an earlier, now-closed
+             * Hibernate session (e.g. this row is being refreshed well after the page's original
+             * composing transaction), touching it throws {@code LazyInitializationException} - and
+             * merely running inside a *new* transaction doesn't fix an *already-instantiated* stale
+             * proxy object. Re-fetching the {@link TaskElement} by id within the current transaction
+             * guarantees a fresh, correctly session-bound entity graph instead.
+             */
+            private OrderElement getSafeOrderElement() {
+                return getSafeOrderElement(taskElement);
+            }
+
+            private OrderElement getSafeOrderElement(TaskElement element) {
+                if ( element == null || element.getId() == null ) {
+                    return null;
+                }
+                return taskDAO.findExistingEntity(element.getId()).getOrderElement();
+            }
+
             private final IUpdatablePosition position = new IUpdatablePosition() {
 
                 @Override
@@ -516,10 +537,12 @@ public class TaskElementAdapter {
             }
 
             private GanttDate toGantt(IntraDayDate date) {
-                BaseCalendar calendar = taskElement.getCalendar();
-                return calendar == null
-                        ? TaskElementAdapter.toGantt(date)
-                        : TaskElementAdapter.toGantt(date, calendar.getCapacityOn(PartialDay.wholeDay(date.getDate())));
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    BaseCalendar calendar = taskElement.getCalendar();
+                    return calendar == null
+                            ? TaskElementAdapter.toGantt(date)
+                            : TaskElementAdapter.toGantt(date, calendar.getCapacityOn(PartialDay.wholeDay(date.getDate())));
+                });
             }
 
             @Override
@@ -565,29 +588,31 @@ public class TaskElementAdapter {
 
             @Override
             public BigDecimal getHoursAdvanceBarPercentage() {
-                OrderElement orderElement = taskElement.getOrderElement();
-                if ( orderElement == null ) {
-                    return BigDecimal.ZERO;
-                }
-
-                boolean cond = orderElement.getSumChargedEffort() != null;
-
-                EffortDuration totalChargedEffort = cond ? orderElement.getSumChargedEffort().getTotalChargedEffort()
-                        : EffortDuration.zero();
-
-                EffortDuration estimatedEffort = taskElement.getSumOfAssignedEffort();
-
-                if( estimatedEffort.isZero() ) {
-                    estimatedEffort = EffortDuration.hours(orderElement.getWorkHours());
-
-                    if( estimatedEffort.isZero() ) {
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    if ( orderElement == null ) {
                         return BigDecimal.ZERO;
                     }
-                }
 
-                return BigDecimal
-                        .valueOf(totalChargedEffort.divivedBy(estimatedEffort).doubleValue())
-                        .setScale(2, RoundingMode.HALF_UP);
+                    boolean cond = orderElement.getSumChargedEffort() != null;
+
+                    EffortDuration totalChargedEffort = cond ? orderElement.getSumChargedEffort().getTotalChargedEffort()
+                            : EffortDuration.zero();
+
+                    EffortDuration estimatedEffort = taskElement.getSumOfAssignedEffort();
+
+                    if( estimatedEffort.isZero() ) {
+                        estimatedEffort = EffortDuration.hours(orderElement.getWorkHours());
+
+                        if( estimatedEffort.isZero() ) {
+                            return BigDecimal.ZERO;
+                        }
+                    }
+
+                    return BigDecimal
+                            .valueOf(totalChargedEffort.divivedBy(estimatedEffort).doubleValue())
+                            .setScale(2, RoundingMode.HALF_UP);
+                });
             }
 
             @Override
@@ -617,33 +642,53 @@ public class TaskElementAdapter {
             }
 
             private BigDecimal getBudget() {
-                return (taskElement == null) || (taskElement.getOrderElement() == null)
-                        ? BigDecimal.ZERO
-                        : taskElement.getOrderElement().getBudget();
+                if ( taskElement == null ) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    return orderElement == null ? BigDecimal.ZERO : orderElement.getBudget();
+                });
             }
 
             private BigDecimal getTotalCalculatedBudget() {
-                return (taskElement == null) || (taskElement.getOrderElement() == null)
-                        ? BigDecimal.ZERO
-                        : transactionService.runOnReadOnlyTransaction(() -> taskElement.getOrderElement().getTotalBudget());
+                if ( taskElement == null ) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    return orderElement == null ? BigDecimal.ZERO : orderElement.getTotalBudget();
+                });
             }
 
             private BigDecimal getMoneyCost() {
-                return (taskElement == null) || (taskElement.getOrderElement() == null)
-                        ? BigDecimal.ZERO
-                        : transactionService.runOnReadOnlyTransaction(() -> moneyCostCalculator.getTotalMoneyCost(taskElement.getOrderElement()));
+                if ( taskElement == null ) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    return orderElement == null ? BigDecimal.ZERO : moneyCostCalculator.getTotalMoneyCost(orderElement);
+                });
             }
 
             private BigDecimal getHoursMoneyCost() {
-                return (taskElement == null) || (taskElement.getOrderElement() == null)
-                        ? BigDecimal.ZERO
-                        : transactionService.runOnReadOnlyTransaction(() -> moneyCostCalculator.getHoursMoneyCost(taskElement.getOrderElement()));
+                if ( taskElement == null ) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    return orderElement == null ? BigDecimal.ZERO : moneyCostCalculator.getHoursMoneyCost(orderElement);
+                });
             }
 
             private BigDecimal getExpensesMoneyCost() {
-                return (taskElement == null) || (taskElement.getOrderElement() == null)
-                        ? BigDecimal.ZERO
-                        : transactionService.runOnReadOnlyTransaction(() -> moneyCostCalculator.getExpensesMoneyCost(taskElement.getOrderElement()));
+                if ( taskElement == null ) {
+                    return BigDecimal.ZERO;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    return orderElement == null ? BigDecimal.ZERO : moneyCostCalculator.getExpensesMoneyCost(orderElement);
+                });
             }
 
             @Override
@@ -652,11 +697,10 @@ public class TaskElementAdapter {
             }
 
             private GanttDate getAdvanceBarEndDate(ProgressType progressType) {
-                BigDecimal advancePercentage = BigDecimal.ZERO;
-
-                if ( taskElement.getOrderElement() != null ) {
-                    advancePercentage = taskElement.getAdvancePercentage(progressType);
-                }
+                BigDecimal advancePercentage = transactionService.runOnReadOnlyTransaction(() ->
+                        getSafeOrderElement() != null
+                                ? taskElement.getAdvancePercentage(progressType)
+                                : BigDecimal.ZERO);
                 return getAdvanceBarEndDate(advancePercentage);
             }
 
@@ -679,36 +723,45 @@ public class TaskElementAdapter {
 
             @Override
             public String getTooltipText() {
-                if ( taskElement.isMilestone() || taskElement.getOrderElement() == null ) {
+                if ( taskElement.isMilestone() ) {
                     return "";
                 }
 
                 return transactionService.runOnReadOnlyTransaction(() -> {
-                    orderElementDAO.reattach(taskElement.getOrderElement());
+                    if ( getSafeOrderElement() == null ) {
+                        return "";
+                    }
+                    orderElementDAO.reattach(getSafeOrderElement());
                     return buildTooltipText();
                 });
             }
 
             @Override
             public String getLabelsText() {
-                if ( taskElement.isMilestone() || taskElement.getOrderElement() == null ) {
+                if ( taskElement.isMilestone() ) {
                     return "";
                 }
 
                 return transactionService.runOnReadOnlyTransaction(() -> {
-                    orderElementDAO.reattach(taskElement.getOrderElement());
+                    if ( getSafeOrderElement() == null ) {
+                        return "";
+                    }
+                    orderElementDAO.reattach(getSafeOrderElement());
                     return buildLabelsText();
                 });
             }
 
             @Override
             public String getResourcesText() {
-                if ( isPreventCalculateResourcesText() || taskElement.getOrderElement() == null ) {
+                if ( isPreventCalculateResourcesText() ) {
                     return "";
                 }
                 try {
                     return transactionService.runOnAnotherReadOnlyTransaction(() -> {
-                        orderElementDAO.reattach(taskElement.getOrderElement());
+                        if ( getSafeOrderElement() == null ) {
+                            return "";
+                        }
+                        orderElementDAO.reattach(getSafeOrderElement());
 
                         if ( taskElement.isSubcontracted() ) {
                             externalCompanyDAO.reattach(taskElement.getSubcontractedCompany());
@@ -738,8 +791,8 @@ public class TaskElementAdapter {
             private String buildLabelsText() {
                 List<String> result = new ArrayList<>();
 
-                if ( taskElement.getOrderElement() != null ) {
-                    Set<Label> labels = getLabelsFromElementAndPredecesors(taskElement.getOrderElement());
+                if ( getSafeOrderElement() != null ) {
+                    Set<Label> labels = getLabelsFromElementAndPredecesors(getSafeOrderElement());
 
                     for (Label label : labels) {
                         String representation = label.getName();
@@ -813,17 +866,17 @@ public class TaskElementAdapter {
 
             @Override
             public BigDecimal getAdvancePercentage() {
-                if ( taskElement != null ) {
-                    BigDecimal advancePercentage;
+                if ( taskElement == null ) {
+                    return new BigDecimal(0);
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
                     if ( isTaskRoot(taskElement) ) {
                         ProgressType progressType = getProgressTypeFromConfiguration();
-                        advancePercentage = taskElement.getAdvancePercentage(progressType);
+                        return taskElement.getAdvancePercentage(progressType);
                     } else {
-                        advancePercentage = taskElement.getAdvancePercentage();
+                        return taskElement.getAdvancePercentage();
                     }
-                    return advancePercentage;
-                }
-                return new BigDecimal(0);
+                });
             }
 
             private String buildTooltipText() {
@@ -854,7 +907,7 @@ public class TaskElementAdapter {
                         .append(getHoursAdvanceBarPercentage().multiply(new BigDecimal(100)))
                         .append("% <br/>");
 
-                if ( taskElement.getOrderElement() instanceof Order ) {
+                if ( getSafeOrderElement() instanceof Order ) {
 
                     result
                             .append(_t("State"))
@@ -895,7 +948,7 @@ public class TaskElementAdapter {
 
             private String getOrderState() {
                 String cssClass;
-                OrderStatusEnum state = taskElement.getOrderElement().getOrder().getState();
+                OrderStatusEnum state = getSafeOrderElement().getOrder().getState();
 
                 if ( Arrays.asList(
                         OrderStatusEnum.ACCEPTED,
@@ -1019,52 +1072,76 @@ public class TaskElementAdapter {
 
             @Override
             public Date getFirstTimesheetDate() {
-                OrderElement orderElement = taskElement.getOrderElement();
-                return orderElement != null ? orderElement.getFirstTimesheetDate() : null;
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    if ( orderElement == null ) {
+                        return null;
+                    }
+                    orderElementDAO.reattach(orderElement);
+                    return orderElement.getFirstTimesheetDate();
+                });
             }
 
             @Override
             public Date getLastTimesheetDate() {
-                OrderElement orderElement = taskElement.getOrderElement();
-                return orderElement != null ? orderElement.getLastTimesheetDate() : null;
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    if ( orderElement == null ) {
+                        return null;
+                    }
+                    orderElementDAO.reattach(orderElement);
+                    return orderElement.getLastTimesheetDate();
+                });
             }
 
             @Override
             public ProjectStatusEnum getProjectHoursStatus() {
+                return transactionService.runOnReadOnlyTransaction(() -> {
 
-                if ( taskElement.isTask() ) {
-                    return getProjectHourStatus(taskElement.getOrderElement());
-                }
-
-                List<TaskElement> taskElements = taskElement.getAllChildren();
-
-                ProjectStatusEnum status = ProjectStatusEnum.AS_PLANNED;
-                ProjectStatusEnum highestStatus = null;
-
-                for (TaskElement taskElement : taskElements) {
-
-                    if ( !taskElement.isTask() ) {
-                        continue;
+                    if ( taskElement.isTask() ) {
+                        OrderElement orderElement = getSafeOrderElement();
+                        if ( orderElement == null ) {
+                            return ProjectStatusEnum.AS_PLANNED;
+                        }
+                        orderElementDAO.reattach(orderElement);
+                        return getProjectHourStatus(orderElement);
                     }
 
-                    status = getProjectHourStatus(taskElement.getOrderElement());
+                    List<TaskElement> taskElements = taskElement.getAllChildren();
 
-                    if ( status == ProjectStatusEnum.MARGIN_EXCEEDED ) {
-                        highestStatus = ProjectStatusEnum.MARGIN_EXCEEDED;
-                        break;
+                    ProjectStatusEnum status = ProjectStatusEnum.AS_PLANNED;
+                    ProjectStatusEnum highestStatus = null;
+
+                    for (TaskElement child : taskElements) {
+
+                        if ( !child.isTask() ) {
+                            continue;
+                        }
+
+                        OrderElement orderElement = getSafeOrderElement(child);
+                        if ( orderElement == null ) {
+                            continue;
+                        }
+                        orderElementDAO.reattach(orderElement);
+                        status = getProjectHourStatus(orderElement);
+
+                        if ( status == ProjectStatusEnum.MARGIN_EXCEEDED ) {
+                            highestStatus = ProjectStatusEnum.MARGIN_EXCEEDED;
+                            break;
+                        }
+
+                        if ( status == ProjectStatusEnum.WITHIN_MARGIN ) {
+                            highestStatus = ProjectStatusEnum.WITHIN_MARGIN;
+                        }
+
                     }
 
-                    if ( status == ProjectStatusEnum.WITHIN_MARGIN ) {
-                        highestStatus = ProjectStatusEnum.WITHIN_MARGIN;
+                    if ( highestStatus != null ) {
+                        status = highestStatus;
                     }
 
-                }
-
-                if ( highestStatus != null ) {
-                    status = highestStatus;
-                }
-
-                return status;
+                    return status;
+                });
             }
 
             /**
@@ -1109,9 +1186,15 @@ public class TaskElementAdapter {
 
             @Override
             public ProjectStatusEnum getProjectBudgetStatus() {
+                return transactionService.runOnReadOnlyTransaction(() -> {
 
                 if ( taskElement.isTask() ) {
-                    return getProjectBudgetStatus(taskElement.getOrderElement());
+                    OrderElement orderElement = getSafeOrderElement();
+                    if ( orderElement == null ) {
+                        return ProjectStatusEnum.AS_PLANNED;
+                    }
+                    orderElementDAO.reattach(orderElement);
+                    return getProjectBudgetStatus(orderElement);
                 }
 
                 List<TaskElement> taskElements = taskElement.getAllChildren();
@@ -1119,13 +1202,18 @@ public class TaskElementAdapter {
                 ProjectStatusEnum status = ProjectStatusEnum.AS_PLANNED;
                 ProjectStatusEnum highestStatus = null;
 
-                for (TaskElement taskElement : taskElements) {
+                for (TaskElement child : taskElements) {
 
-                    if ( !taskElement.isTask() ) {
+                    if ( !child.isTask() ) {
                         continue;
                     }
 
-                    status = getProjectBudgetStatus(taskElement.getOrderElement());
+                    OrderElement orderElement = getSafeOrderElement(child);
+                    if ( orderElement == null ) {
+                        continue;
+                    }
+                    orderElementDAO.reattach(orderElement);
+                    status = getProjectBudgetStatus(orderElement);
 
                     if ( status == ProjectStatusEnum.MARGIN_EXCEEDED ) {
                         highestStatus = ProjectStatusEnum.MARGIN_EXCEEDED;
@@ -1143,6 +1231,7 @@ public class TaskElementAdapter {
                 }
 
                 return status;
+                });
             }
 
             /**
@@ -1191,12 +1280,32 @@ public class TaskElementAdapter {
 
             @Override
             public String getTooltipTextForProjectHoursStatus() {
-                return taskElement.isTask() ? buildHoursTooltipText(taskElement.getOrderElement()) : null;
+                if ( !taskElement.isTask() ) {
+                    return null;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    if ( orderElement == null ) {
+                        return null;
+                    }
+                    orderElementDAO.reattach(orderElement);
+                    return buildHoursTooltipText(orderElement);
+                });
             }
 
             @Override
             public String getTooltipTextForProjectBudgetStatus() {
-                return taskElement.isTask() ? buildBudgetTooltipText(taskElement.getOrderElement()) : null;
+                if ( !taskElement.isTask() ) {
+                    return null;
+                }
+                return transactionService.runOnReadOnlyTransaction(() -> {
+                    OrderElement orderElement = getSafeOrderElement();
+                    if ( orderElement == null ) {
+                        return null;
+                    }
+                    orderElementDAO.reattach(orderElement);
+                    return buildBudgetTooltipText(orderElement);
+                });
             }
 
             /**

@@ -1,0 +1,174 @@
+- generic [ref=f886e4]:
+  - generic [ref=f886e5]:
+    - table [ref=f886e6]:
+      - rowgroup [ref=f886e7]:
+        - row [ref=f886e8]:
+          - cell [ref=f886e9]:
+            - link [ref=f886e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f886e12]:
+            - table [ref=f886e13]:
+              - rowgroup [ref=f886e14]:
+                - row [ref=f886e15]:
+                  - cell [ref=f886e16]:
+                    - generic [ref=f886e17]:
+                      - menubar [ref=f886e18]:
+                        - menuitem "Planning" [ref=f886e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f886e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f886e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f886e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f886e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f886e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f886e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f886e33]:
+                        - rowgroup [ref=f886e34]:
+                          - row [ref=f886e35]:
+                            - cell [ref=f886e36]:
+                              - table [ref=f886e37]:
+                                - rowgroup [ref=f886e38]:
+                                  - row [ref=f886e39]:
+                                    - cell [ref=f886e40]
+                                    - cell [ref=f886e41]:
+                                      - strong [ref=f886e42]: START
+                                    - cell [ref=f886e43]
+                                    - cell [ref=f886e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f886e45]:
+                                        - rowgroup [ref=f886e46]:
+                                          - row [ref=f886e47]:
+                                            - cell [ref=f886e48]:
+                                              - table [ref=f886e49]:
+                                                - rowgroup [ref=f886e50]:
+                                                  - row [ref=f886e51]:
+                                                    - cell [ref=f886e52]:
+                                                      - table [ref=f886e53]:
+                                                        - rowgroup [ref=f886e54]:
+                                                          - row [ref=f886e55]:
+                                                            - cell [ref=f886e56]:
+                                                              - table [ref=f886e57]:
+                                                                - rowgroup [ref=f886e58]:
+                                                                  - row [ref=f886e59]:
+                                                                    - cell [ref=f886e60]
+                                                                    - cell [ref=f886e63]
+                                                                    - cell "Cost" [ref=f886e64]
+                                                    - cell [ref=f886e65]
+                                                    - cell [ref=f886e66]:
+                                                      - table [ref=f886e67]:
+                                                        - rowgroup [ref=f886e68]:
+                                                          - row [ref=f886e69]:
+                                                            - cell [ref=f886e70]:
+                                                              - table [ref=f886e71]:
+                                                                - rowgroup [ref=f886e72]:
+                                                                  - row [ref=f886e73]:
+                                                                    - cell [ref=f886e74]
+                                                                    - cell [ref=f886e77]
+                                                                    - cell "Cost Categories" [ref=f886e78]
+                            - cell [ref=f886e79]:
+                              - generic [ref=f886e80]:
+                                - link "Help" [ref=f886e81] [cursor=pointer]:
+                                  - /url: /help/en/14-custos.html#categor-as-de-custo
+                                - img "Axuda" [ref=f886e83]
+                                - img "Info" [ref=f886e85]
+    - table [ref=f886e87]:
+      - rowgroup [ref=f886e88]:
+        - row [ref=f886e89]:
+          - cell [ref=f886e90]
+          - 'cell "user: admin" [ref=f886e91]'
+          - cell [ref=f886e92]:
+            - link "[Log out]" [ref=f886e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f886e94]:
+    - text:    
+    - generic [ref=f886e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f886e97]:
+        - generic [ref=f886e98]: Cost Categories List
+        - generic [ref=f886e99]:
+          - grid [ref=f886e350]:
+            - rowgroup [ref=f886e355]:
+              - columnheader [ref=f886e356]:
+                - generic [ref=f886e357] [cursor=pointer]:
+                  - generic [ref=f886e358]: 
+                  - text: Category name
+              - columnheader "Enabled" [ref=f886e360]
+              - columnheader "Actions" [ref=f886e362]
+            - rowgroup [ref=f886e368]:
+              - gridcell "RAD" [ref=f886e369]
+              - gridcell [ref=f886e371]:
+                - checkbox [checked] [disabled] [ref=f886e374]
+              - gridcell [ref=f886e375]:
+                - table [ref=f886e377]:
+                  - rowgroup [ref=f886e378]:
+                    - row [ref=f886e379]:
+                      - cell [ref=f886e380]:
+                        - table [ref=f886e381]:
+                          - rowgroup [ref=f886e382]:
+                            - row [ref=f886e383]:
+                              - cell [ref=f886e384]:
+                                - button "Edit" [ref=f886e385] [cursor=pointer]
+                              - cell [ref=f886e387]
+                              - cell [ref=f886e388]:
+                                - button "Remove" [ref=f886e389] [cursor=pointer]
+              - gridcell "QE" [ref=f886e391]
+              - gridcell [ref=f886e393]:
+                - checkbox [checked] [disabled] [ref=f886e396]
+              - gridcell [ref=f886e397]:
+                - table [ref=f886e399]:
+                  - rowgroup [ref=f886e400]:
+                    - row [ref=f886e401]:
+                      - cell [ref=f886e402]:
+                        - table [ref=f886e403]:
+                          - rowgroup [ref=f886e404]:
+                            - row [ref=f886e405]:
+                              - cell [ref=f886e406]:
+                                - button "Edit" [ref=f886e407] [cursor=pointer]
+                              - cell [ref=f886e409]
+                              - cell [ref=f886e410]:
+                                - button "Remove" [ref=f886e411] [cursor=pointer]
+              - gridcell "DD" [ref=f886e413]
+              - gridcell [ref=f886e415]:
+                - checkbox [checked] [disabled] [ref=f886e418]
+              - gridcell [ref=f886e419]:
+                - table [ref=f886e421]:
+                  - rowgroup [ref=f886e422]:
+                    - row [ref=f886e423]:
+                      - cell [ref=f886e424]:
+                        - table [ref=f886e425]:
+                          - rowgroup [ref=f886e426]:
+                            - row [ref=f886e427]:
+                              - cell [ref=f886e428]:
+                                - button "Edit" [ref=f886e429] [cursor=pointer]
+                              - cell [ref=f886e431]
+                              - cell [ref=f886e432]:
+                                - button "Remove" [disabled] [ref=f886e433]
+            - generic [ref=f886e435]:    
+          - button "Create" [ref=f886e186] [cursor=pointer]
+      - text:                      
+  - table [ref=f886e187]:
+    - rowgroup [ref=f886e188]:
+      - row [ref=f886e189]:
+        - cell [ref=f886e190]:
+          - generic [ref=f886e192]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f886e193] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f886e194]
+  - text:    

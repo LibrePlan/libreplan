@@ -46,6 +46,9 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.SimpleListModel;
 
 import com.libreplan.java.zk.components.JasperreportComponent;
 
@@ -205,6 +208,14 @@ public class ProjectStatusReportController extends LibrePlanReportController {
         return projectStatusReportModel.getSelectedLabels();
     }
 
+    public ListModel<Label> getSelectedLabelsModel() {
+        return new SimpleListModel<>(new ArrayList<>(getSelectedLabels()));
+    }
+
+    public ListitemRenderer getLabelsRenderer() {
+        return ReportListitemRenderers.labelRenderer(this::removeLabel);
+    }
+
     public List<Criterion> getAllCriteria() {
         return projectStatusReportModel.getAllCriteria();
     }
@@ -226,6 +237,14 @@ public class ProjectStatusReportController extends LibrePlanReportController {
 
     public Set<Criterion> getSelectedCriteria() {
         return projectStatusReportModel.getSelectedCriteria();
+    }
+
+    public ListModel<Criterion> getSelectedCriteriaModel() {
+        return new SimpleListModel<>(new ArrayList<>(getSelectedCriteria()));
+    }
+
+    public ListitemRenderer getCriteriaRenderer() {
+        return ReportListitemRenderers.criterionRenderer(this::removeCriterion);
     }
 
 }

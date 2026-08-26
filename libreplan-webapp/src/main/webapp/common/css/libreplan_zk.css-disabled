@@ -1,0 +1,2349 @@
+/*
+ * libreplan_zk.css LibrePlan
+ *
+ * This stylesheet contains declarations for ZK overriden components
+ * according to the ZK Style Guides [http://www.zkoss.org/doc/styleguide]
+ * to integrate the custom appearance of the web application.
+ */
+
+/* ----- Predefined Height dependent styles ----- */
+
+.scheduling-graphics {
+    height:200px;
+}
+
+.main-layout {
+    height: 560px;
+}
+
+.taskheaders-border {
+    width: 300px;
+}
+
+.plannerlayout #watermark {
+    height: 99999px !important;
+}
+
+.plannerlayout .taskspanel-gap #timetracker {
+    overflow-y: hidden;
+}
+
+.leftpanelcontainer {
+    overflow-x: scroll;
+}
+
+body {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.headings {
+    height: 90px;
+}
+
+table {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.errorbox {
+    margin: 40px;
+    padding: 40px;
+    border: solid 1px red;
+}
+
+.warningbox {
+    margin: 40px;
+    padding: 40px;
+    border: solid 1px #FDBE13;
+}
+
+/* Buttons styles */
+
+.icono .z-button-cm,
+body .z-window-embedded .icono .z-button-cm,
+body .z-window-modal .icono .z-button-cm,
+body .advanced-allocation-layout .icono .z-button-cm {
+    color: #007bbe;
+    border: 0 solid #007bbe;
+    padding: 0;
+}
+
+
+.z-button {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    font-weight: normal;
+    min-height: 16px;
+}
+
+
+
+/* Perspective and planner buttons */
+.perspectives-column {
+    padding-top:0;
+    overflow-y: auto;
+    border-right:0;
+}
+
+.perspectives-column .global-commands {
+    margin-bottom: 0;
+}
+
+.toolbar-box {
+    border:0;
+}
+
+.toolbar-box .z-button {
+    padding: 1px 2px 2px 2px;
+}
+
+.planner-command .z-button-cm,
+.planner-icon .z-button-cm {
+    padding: 2px;
+}
+
+.toolbar-box .z-button .z-button-cm,
+.advanced-allocation-layout .z-north-body .z-button-cm {
+    height: 24px;
+    padding: 2px;
+}
+
+.sub_menu .z-button-cm {
+    background-color: transparent !important;
+    border: 0;
+    color: #EDF2F7;
+}
+
+.sub_menu_active.z-button {
+    color: #3b89b7;
+    background-color: #FFFFFF;
+    padding:2px;margin:2px;
+}
+
+.sub_menu .z-button-cm:hover {
+    text-decoration: underline;
+}
+
+.sub_menu_active.z-button td,
+.sub_menu.z-button td {
+    background-image: none;
+}
+
+/* Global action button styles
+--------------------------------------------------- */
+.global-action.z-button,
+.save-button.z-button[disabled],
+.create-button.z-button[disabled] {
+    margin-top: 10px;
+    font-weight: bold;
+    background-repeat: no-repeat;
+    background-position: 5%;
+    padding: 4px 25px !important;
+    font-size: 12px;
+    background-color: #E4F3D9;
+    margin-right: 10px;
+}
+
+.global-action.z-button:active,
+.global-action.z-button:hover,
+.global-action.z-button:focus {
+    margin-right: 10px;
+    border-bottom: 0;
+    /* Do not optimize it */
+    background-color: #C3EAAF;
+    background-repeat: no-repeat;
+}
+
+.save-button.z-button {
+    background-image: url(../img/bt_ok.png) !important;
+}
+
+.create-button.z-button {
+    background-image: url(../img/bt_create.png) !important;
+}
+
+.saveandcontinue-button.z-button {
+    background-image: url(../img/bt_ok_continue.png);
+}
+
+.cancel-button.z-button {
+    background-image: url(../img/bt_cancel.png) !important;
+}
+
+.back-button.z-button  {
+    background-image: url(../img/bt_back.png);
+}
+
+/* Embed tabbpanels button destyling */
+.z-tabpanel .global-action.z-button .z-button-cm {
+    background-image: none;
+    padding: 2px 18px;
+    margin-left: 5px;
+}
+
+/* --- END -- Button styles --
+=================================================== */
+
+.vertical_separator {
+    width: 14px;
+    height: 20px;
+    margin-top: 4px;
+    background-image: url("../img/sub_separacion.gif");
+}
+
+.footer {
+    clear: both;
+    margin: 20px;
+    font-size: 12px;
+}
+
+/* ------------- OrderElement tree  -------------  */
+.orderTree input {
+    height: 18px;
+    border-bottom: 0;
+    border-top: 0;
+    border-left: 1px dotted #7EAAC6;
+    padding-left: 2px;
+    border-right: 0;
+}
+
+.orderTree .z-datebox-input {
+    height: 20px;
+}
+
+/* Allows tasknumber span to have fixed width */
+.orderTree .tasknumber {
+    display: inline-block;
+}
+
+.orderTree td {
+    padding: 0 !important;
+}
+
+/* These constants may be reviewed when testing with 3 digit tasknumbers */
+.orderTree .depth_1 input,
+.orderTree .depth_2 input,
+.orderTree .depth_3 input,
+.orderTree .depth_4 input,
+.orderTree .depth_5 input,
+.orderTree .depth_6 input {
+    border-right: 0;
+}
+
+/* Cleaning window borders */
+.z-window-embedded-tr,.z-window-embedded-tl {
+    display: none;
+}
+
+.z-window-embedded-hl,.z-window-embedded-hm {
+    background-image: none;
+}
+
+.z-window-embedded-hr {
+    background: none;
+}
+
+.z-window.z-window-noborder.z-window-embedded {
+    background: none;
+    padding-left: 6px;
+    border-radius: 5px 5px 0 0;
+}
+
+.message_ERROR, .message_INFO {
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px;
+    width: 367px; /* Special for Bogdan */
+}
+
+.message_WARNING {
+    border-radius: 10px;
+    padding: 10px 5px;
+    margin: 5px;
+}
+
+.message_WARNING img, .message_ERROR img {
+    display: none;
+}
+
+.message_ERROR {
+    color: #ee0000;
+    border: solid 1px #ee0000;
+    background-color: #eecccc;
+}
+
+.message_WARNING {
+    color: #CC5013;
+    border: solid 1px #CC5013;
+    background-color: #FDCA87;
+}
+
+.message_INFO {
+    color: #006600;
+    border: solid 1px #006600;
+    background-color: #cceecc;
+}
+
+.message_INFO span {
+    position: relative;
+    left: 10px;
+}
+
+#messages-div {
+    position:fixed;
+    margin-top:-10px;
+}
+
+div.z-errbox {
+    background-color: #EECCCC;
+    color:red;
+    border:solid 1px red;
+    border-radius: 10px;
+}
+
+h4.message_WARNING {
+    border-radius: 10px;
+    padding: 10px 5px;
+    margin: 25px;
+    font-size: 12px;
+    font-weight: normal;
+    width: 400px;
+}
+
+.main-area .z-center-body > .z-div > .z-window-embedded {
+    margin-top: 0;
+    margin-bottom: 0;
+    background: none;
+}
+
+/* Hide inner second level embed window titles */
+.z-window-embedded .z-window-embedded .z-window-embedded .z-window-embedded-hl {
+    display: none;
+}
+
+.subtitulo {
+    color: #007bbe;
+    font-weight: bold;
+}
+
+/* ------ Overridden norrmoz.css.dsp styles ------ */
+.z-label,.z-radio-content,.z-checkbox-content,.z-slider-pp,input.button,input.file,.z-loading,.z-errbox,
+div.z-tree-footer-content, div.z-tree-cell-content, div.z-tree-col-content, .z-listbox,
+div.z-footer-content, div.z-row-content, div.z-group-content, div.z-group-foot-content,
+div.z-column-content, div.z-listfooter-content, div.z-listcell-content, .z-bandbox, .z-bandbox-input {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+.z-textbox-disabled, .z-decimalbox-disabled, .z-intbox-disabled, .z-longbox-disabled, .z-doublebox-disabled,
+.z-textbox-disabled *, .z-decimalbox-disabled *, .z-intbox-disabled *, .z-longbox-disabled *, .z-doublebox-disabled * {
+    color:#333333 !important;
+}
+
+div.z-row-content {
+    padding:0;
+}
+
+.z-word-wrap {
+    word-wrap: normal;
+}
+
+.z-word-wrap .z-auxheader-content {
+    word-wrap: normal;
+}
+
+.z-window-embedded-tl,.z-window-highlighted-tl,.z-window-overlapped-tl,.z-window-popup-tl {
+    background: none;
+}
+
+.z-window-embedded-tl {
+    background-image: none;
+}
+
+.z-window-popup-tl {
+    background-image: none;
+}
+
+.z-window-embedded-tr,.z-window-highlighted-tr,.z-window-overlapped-tr,.z-window-popup-tr
+{
+    background: none;
+}
+
+.z-window-embedded-tr {
+    background-image: none;
+}
+
+.z-window-popup-tr {
+    background-image: none;
+}
+
+.z-window-embedded-hl, .z-window-highlighted-hl,
+.z-window-overlapped-hl, .z-window-popup-hl {
+    background: none;
+}
+
+.z-window-embedded-hl {
+    background-image: none;
+}
+
+.z-window-popup-hl {
+    background-image: none;
+}
+
+.z-window-embedded-hr,.z-window-highlighted-hr,
+.z-window-overlapped-hr,.z-window-popup-hr {
+    background: none;
+}
+
+.z-window-embedded-hr,.z-window-embedded-hr-noborder {
+    background-image: none;
+}
+
+/*
+Only if header is embedded than we should use header with bullet ico.
+Else we will use header with blue image. (.z-window-header)
+*/
+.z-window-embedded .z-window-popup-header,
+.z-window-embedded .z-window-highlighted-header,
+.z-window-embedded .z-window-overlapped-header,
+.z-window-embedded .z-window-header {
+    color: #0081C3;
+    font-family: Georgia, Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 18px;
+    padding-bottom: 10px;
+    font-weight: normal;
+    padding-left: 22px;
+    background: #FFFFFF url(../img/header_bullet.gif) no-repeat 0 8px;
+}
+
+.caption-title .z-caption-content {
+    font-size: 18px;
+}
+
+.z-tabs-scroll .z-tabs-content {
+    background: #FAFDFE none repeat scroll 0 0;
+    border-bottom: 1px solid #7EAAC6;
+    padding-bottom: 0;
+}
+
+.z-textbox,.z-decimalbox,.z-intbox,.z-longbox, .z-combobox-inp,
+.z-doublebox, .z-datebox,  .z-datebox-input, .z-datebox-focus .z-datebox-input {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    padding-left: 2px;
+}
+
+.leftpanelgap .z-textbox, .leftpanelgap .z-decimalbox, .leftpanelgap .z-intbox,
+.leftpanelgap .z-longbox, .leftpanelgap .z-doublebox, .leftpanelgap .z-datebox,
+.leftpanelgap .z-datebox-input, .leftpanelgap .z-datebox-focus .z-datebox-input,
+.leftpanelgap .z-datebox-input {
+    font-size: 11px;
+}
+
+
+tr.z-treerow td.z-treerow-focus {
+    background-image: none;
+}
+
+div.z-footer-content,div.z-row-content,div.z-group-content,div.z-group-foot-content,div.z-column-content,div.z-tree-col-content {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.z-word-wrap div.z-tree-cell-content,.z-word-wrap div.z-tree-footer-content,
+.z-word-wrap div.z-tree-col-content {
+    word-wrap: normal;
+}
+
+.z-tabs .z-tabs-content {
+    background: none;
+    border-bottom: 0;
+    border-bottom: 1px solid #7EAAC6;
+}
+
+.z-tabs-scroll {
+    padding-bottom: 0;
+    background: #F2FBFF none repeat scroll 0 0;
+    border: 0 solid #000000;
+}
+
+.z-tab .z-tab-text {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.z-tab-seld .z-tab-text {  /* color:#0F3B82; */
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.z-tabpanel,.z-tabbox-ver .z-tabpanels {
+    padding: 5px;
+    border-bottom: 1px solid #7EAAC6;
+}
+
+.message_INFO {
+    background-color: #CCEECC;
+    border: 1px solid #006600;
+    color: #006600;
+    margin: 10px;
+    padding: 15px 15px 15px 50px;
+    width: 367px; /* Special for Bogdan */
+}
+
+div.z-grid {
+    border: 1px solid #ABC6DE;
+    overflow: hidden;
+}
+
+#timetrackerheader div.z-grid {
+    border: 0;
+}
+
+#timetrackerheader th,
+#timetracker th {
+    border-top: 0;
+}
+
+#timetrackerheader th {
+    border-top: 0;
+}
+
+#timetrackerheader .second_level_ {
+    -webkit-margin-start: -1px;
+}
+
+#timetrackerheader .second_level_ td {
+    border-bottom: solid 1px #9EB6CE;
+}
+
+.listdetails div {
+    border: 0;
+}
+
+.listdetails div.z-tree-body td.z-treecell {
+    padding: 0;
+}
+
+.listdetails .z-tree-header {
+    position:relative;
+}
+
+.z-listbox .z-textbox,.z-listbox .z-decimalbox,.z-listbox .z-intbox,
+.z-listbox .z-longbox,.z-listbox .z-doublebox {
+    height: auto;
+    border-collapse: collapse;
+}
+
+.orderTree .z-textbox,.orderTree .z-decimalbox,
+.orderTree .z-intbox,.orderTree .z-longbox,
+.orderTree .z-doublebox, .orderTree .z-datebox {
+    height: 21px;
+    width: 100%;
+}
+
+.listdetails .z-textbox, .listdetails .z-decimalbox,
+.listdetails .z-intbox, .listdetails .z-longbox,
+.listdetails .z-doublebox, .listdetails .z-tree .z-datebox-input {
+    height: 15px;
+}
+
+.listdetails .z-tree .z-datebox-input {
+    padding-top: 3px;
+}
+
+.listdetails input {
+    padding-top: 5px;
+}
+
+.z-tree .z-datebox-input {
+    height: 25px;
+}
+.orderTree .operations {
+    width: 50px;
+}
+.orderTree .name {
+    min-width: 120px;
+}
+.orderTree .hours {
+    width: 50px;
+}
+/* After ZK8, this code is not working */
+.orderTree .code {
+    min-width: 110px;
+}
+
+.orderTree .scheduling_state {
+    min-width: 140px;
+}
+.orderTree .estimated_init,
+.orderTree .estimated_end {
+    width: 100px;
+}
+
+.orderTree .tasknumber {
+    display:none;
+}
+
+.orderTree div.z-tree-cell-content {
+    padding: 0;
+}
+
+.orderTree td {
+    border-bottom: 1px dotted #7EAAC6;
+}
+
+.orderTree td td {
+    border-bottom: 0;
+}
+
+.orderTree .icono td {
+    border:none;
+}
+
+.orderelements-tab .z-datebox-focus .z-datebox-input  {
+    border-top: 0;
+    border-bottom: 0;
+}
+
+.orderelements-tab .z-datebox-focus .z-datebox-input,
+.orderelements-tab .z-datebox-input {
+    width: auto;
+}
+
+.orderelements-tab .z-datebox .z-datebox-img {
+    background-color: #DAE7F6;
+}
+
+.listdetails .z-datebox-focus .z-datebox-input {
+    border-top: 0;
+    border-bottom: 0;
+    height: 17px;
+    font-size: 11px !important;
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+}
+
+.taskTreeCols div.z-tree-header, .taskTreeCols div.z-tree-header tr {
+    width: 100% !important;
+    overflow: visible;
+}
+
+.advance-measurement {
+    width: 340px;
+}
+
+.assignedresources .icono .z-button-tr,
+.assignedresources .icono td.z-button-br {
+    display:none;
+}
+
+.assignedresources .z-listbox input {
+    height: 17px !important;
+}
+
+/* Highlight advanced allocation grouping row */
+.resources-load .taskspanel-gap .z-grid-body tr:first-child {
+    background-color: #E8E8E8;
+}
+.resources-load .taskspanel-gap .z-grid-body tr.z-row td {
+    background-color:transparent;
+}
+
+/* ------- Chart legends  ------- */
+.legend {
+    font-family: Tahoma, Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    border: solid 1px #000000;
+    padding: 5px;
+    background-color: #FFFFFF;
+}
+
+.legend-container {
+    width: 226px;
+    height: 190px;
+    background-color: #E8E8E8;
+}
+
+.legend td {
+    vertical-align:bottom;
+}
+
+.legend .title {
+    display:block;
+    font-weight:bold;
+    margin-bottom: 5px;
+}
+
+.legend-row {
+    margin:2px;
+}
+
+.legend-gap {
+    background-color: #E8E8E8;
+    border: 0;
+}
+
+.plannerlayout .z-west-nested {
+    border-left: 0;
+}
+
+.scheduling-graphics,
+.scheduling-graphics .z-tabs-scroll {
+    border: 0;
+}
+
+.legend .capability {
+    border-top:solid 2px #000000;
+    height:7px;
+    width:25px;
+    margin-right:5px;
+}
+
+.legend .overload {
+    background-color: #FF5A11;
+    height:10px;
+    width:25px;
+    margin-right:5px;
+}
+
+.legend .overload-other {
+    background-color: #FFD4C2;
+    height:10px;
+    width:25px;
+    margin-right:5px;
+}
+
+.legend .load {
+    background-color: #98D471;
+    height: 10px;
+    width: 25px;
+    margin-bottom: 2px;
+    margin-right: 5px;
+}
+
+.legend .load-other {
+    background-color: #E0F3D3;
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
+
+.legend .full-load {
+    background-color: #FDBE13;
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
+
+
+.resources-full-load {
+    display: none;
+}
+
+.resourcesloadlayout .resources-full-load {
+    display: block;
+}
+
+.legend .resourceload {
+    height:10px;
+    width:25px;
+    margin-bottom:2px;
+    margin-right:5px;
+}
+
+.resourcesloadlayout .legend-container {
+    width:186px;
+}
+
+
+/* Graphical improvements */
+
+.z-panel-header, .z-panel-head {
+    font-weight: bold;
+    margin: 0 10px;
+}
+
+.z-panel-body {
+    background:none;
+    border: 1px solid #B1CBD5;
+    margin:0 10px 0 10px;
+}
+
+.z-panel-children {
+    border-style: none none none;
+}
+
+div.z-grid-pgi-b,
+div.z-listbox-pgi-b {
+    border-top:none;
+}
+
+.orderTree .tasknumber {
+    /* Pending removal from the code */
+    display:none;
+}
+
+.orderTree .not-scheduled span,
+.orderTree .partially-scheduled span,
+.orderTree .completely-scheduled span {
+    float:left;
+}
+
+.orderTree .not-scheduled button.z-button,
+.orderTree .partially-scheduled button.z-button,
+.orderTree .completely-scheduled button.z-button {
+    margin: -12px -6px -20px 0;
+}
+
+.orderTree .not-scheduled span.scheduling-state,
+.orderTree .partially-scheduled span.scheduling-state,
+.orderTree .completely-scheduled span.scheduling-state {
+    border-radius: 1px 6px 1px 6px;
+    border: 1px solid #888888;
+    color: #888888;
+    font-weight: bold;
+    margin: 4px 3px 2px 0;
+    padding: 1px 5px;
+    height: 14px;
+    font-size: 9px;
+}
+
+.scheduling-state {
+    cursor: move;
+}
+
+.orderTree .not-scheduled,
+.orderTree .partially-scheduled,
+.orderTree .completely-scheduled {
+    border-bottom:dotted #EEEEEE 1px;
+}
+
+.partially-scheduled span.scheduling-state,
+span.partially-scheduled {
+    background-color: #fddf9b;
+}
+
+.completely-scheduled span.scheduling-state,
+span.completely-scheduled {
+    background-color: #bee5a9;
+}
+
+span.z-dottree-tee-open,
+span.z-dottree-tee-close,
+span.z-dottree-line {
+    min-height: 25px;
+}
+
+
+/* --- START -- menus and toolbar --
+=================================================== */
+
+.z-menubar-horizontal, .z-menubar-ver {
+    background: none;
+}
+
+.z-menu-text {
+    font-weight: normal;
+    text-shadow: none;
+    color: #005782;
+    font-size: 11px;
+    line-height: 8px;
+}
+
+.z-menu-icon {
+    display: none !important;
+}
+
+.z-menu-selected > .z-menu-content > .z-menu-text,
+.current-section  > .z-menu-content > .z-menu-text,
+.z-menu-content:hover > .z-menu-text {
+    color: #FFFFFF;
+}
+
+.z-menubar-horizontal {
+    border-top: none;
+    border-bottom: 3px solid #2a83b4;
+    padding: 0;
+}
+
+.z-menubar-horizontal li {
+    background-color: #d4e1ef;
+    border-radius: 10px 10px 0 0;
+    margin: 0 4px 0 4px;
+}
+
+.current-section {
+    background-image: none;
+    background-color: #2a83b4 !important;
+}
+
+.current-section .z-menu-content:focus,
+.current-section .z-menu-content:active {
+    background-color: #2a83b4 !important;
+}
+
+.z-menu-content {
+    padding-right: 10px;
+}
+
+.z-menu-content:focus ,
+.z-menu-content:active {
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+    background-color: #d4e1ef !important;
+    border-radius: 10px 10px 0 0;
+}
+
+.z-menu-content:focus > .z-menu-text,
+.z-menu-content:active > .z-menu-text {
+    color: #fff;
+    text-decoration: underline;
+}
+
+.z-menu-selected > .z-menu-content,
+.z-menu-content:hover {
+    box-shadow: none;
+    border-color: transparent;
+    background-image: none;
+    background-color: #2a83b4;
+    border-radius: 10px 10px 0 0;
+}
+.submenu {
+    display: block;
+}
+
+.current-section .z-menu {
+    background-color: #2a83b4;
+    font-weight: normal;
+}
+
+.z-menu-body-over .z-menu-inner-l,
+.z-menu-body-over .z-menu-inner-m,
+.z-menu-body-over .z-menu-inner-r {
+    background-image:none;
+}
+
+.z-menu-body-seld .z-menu-inner-l,
+.z-menu-body-seld .z-menu-inner-m,
+.z-menu-body-seld .z-menu-inner-r {
+    background-image:none;
+}
+
+.z-menu-body .z-menu-inner-m div {
+    background-image:none;
+}
+
+.user_row .cerrar_sesion {
+    display:inline;
+}
+
+.migas_linea {
+    border: 0;
+    cursor: default;
+}
+
+/* ---- Perspectives ------ */
+.perspective, .perspective-active {
+    width: 84px;
+    /* height: 94px;*/
+    margin: 0 2px;
+}
+
+.perspective tr td, .perspective-active  tr td {
+    font-weight: normal;
+    font-size: 10px;
+}
+
+
+.perspective ,
+.perspective-active {
+    padding-top: 60px;
+    background: no-repeat 18px 10px;
+    /* border-radius: 2px;*/
+}
+
+.perspective {
+    border: 1px solid #FFFFFF;
+    background-color: #FFFFFF;
+    color: #005782;
+    background-repeat: no-repeat;
+}
+
+.perspective-active,
+.perspective-active:hover,
+.perspective-active:active,
+.perspective:hover,
+.perspective:active {
+    border: 1px solid #CCCCCC;
+}
+
+.perspective-active,
+.perspective-active:focus,
+.perspective-active:hover,
+.perspective-active:active {
+    color: #FFFFFF;
+    background-color: #71B0D4;
+}
+
+.perspective-active {
+    /*border-radius: 2px;*/
+    color: #FFFFFF;
+    text-shadow: none;
+    border-color:#006699 #DFF5FE #DFF5FE #006699;
+}
+
+.perspective:hover {
+    background-color: #E6F2F9;
+    text-shadow: none;
+}
+
+.perspectives-label {
+    display: none;
+}
+
+.taskdetailsContainer, .resourceload-details-container {
+    border-left:0;
+    border-top:0;
+}
+
+.resourceload-details-container table {
+    height: 35px;
+}
+
+.z-button.perspective,
+.z-button.perspective-active {
+    padding-top: 60px;
+    white-space:normal;
+}
+
+.perspective.company-scheduling ,
+.perspective-active.company-scheduling {
+    background-image: url(../img/ico_company-scheduling.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.company-load ,
+.perspective-active.company-load  {
+    background-image: url(../img/ico_company-load.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.orders ,
+.perspective-active.orders {
+    background-image: url(../img/ico_orders.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.order-scheduling ,
+.perspective-active.order-scheduling  {
+    background-image: url(../img/ico_order-scheduling.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.order-load ,
+.perspective-active.order-load {
+    background-image: url(../img/ico_order-load.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.limiting-resources,
+.perspective-active.limiting-resources {
+    background-image: url(../img/ico_limiting-resources.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.hidden {
+    display: none;
+}
+.perspective.order-data,
+.perspective-active.order-data {
+    background-image: url(../img/ico_order-data.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.advanced-allocation,
+.perspective-active.advanced-allocation  {
+    background-image: url(../img/ico_advanced-allocation.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.montecarlo-simulation,
+.perspective-active.montecarlo-simulation {
+    background-image: url(../img/ico_montecarlo-simulation.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.global-dashboard,
+.perspective-active.global-dashboard{
+    background-image: url(../img/ico_global-pipeline.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+.perspective.order-dashboard ,
+.perspective-active.order-dashboard {
+    background-image: url(../img/ico_order-dashboard.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.label-highlight:hover {
+    background-color: #aacbff;
+}
+
+.global-dashboard-grid {
+    margin-top: 5px;
+}
+
+.perspective.logs-global ,
+.perspective-active.logs-global {
+    background-image: url(../img/ico_logs-global.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspective.logs-order ,
+.perspective-active.logs-order {
+    background-image: url(../img/ico_logs-order.png);
+    background-repeat: no-repeat;
+    background-position: 18px 10px;
+}
+
+.perspectives-column {
+    display:none;
+}
+
+/* ---- Toolbar ------ */
+
+.toolbar-box .z-button-cm {
+    height: 24px;
+}
+
+.toolbar-box .z-label {
+    color:#0068B1;
+    padding-left:4px;
+}
+
+.toolbar-box button.z-button {
+    margin: 2px 3px 0 0;
+}
+
+.z-button {
+    background-image: none;
+}
+
+.toolbar-box .z-button  {
+    background-color: transparent;
+    border-color:transparent;
+}
+
+.toolbar-box .z-button.z-button-disd .z-button {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.toolbar-box {
+    background:transparent url(../img/toolbar-hm.png) repeat-x scroll 0 0;
+    border-bottom:1px solid #9ECAD8;
+    font-size:11px;
+}
+
+.toolbar-box table.z-button-disd:active  {
+    border-color: transparent;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+
+.toolbar-box .z-button {
+    font-size:11px;
+    color: #0068B1;
+}
+
+/* =================================================== */
+
+.vertical-separator {
+    display:none;
+}
+
+.main-area > .z-center-body:first-child {
+    width: auto !important;
+}
+
+.main-area {
+    overflow: auto;
+}
+
+.orderslayout-area {
+    overflow-y: auto;
+}
+
+.orderslayout .z-north {
+    border-bottom:1px solid #9ECAD8;
+}
+
+.orderslayout-area > .z-center-body {
+    height: auto !important;
+}
+
+.orderelements-tab {
+    overflow-x: auto;
+}
+
+.z-treerow.z-treerow-selected > .z-treecell,
+.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell,
+.z-treerow.z-treerow-selected:hover > .z-treecell,
+.z-listitem.z-listitem-selected > .z-listcell,
+.z-listitem.z-listitem-selected:hover > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell,
+.z-listitem.z-listitem-selected.z-listitem-focus:hover > .z-listcell {
+    /*background: #fdd772; !* Dark orange *!*/
+    background: linear-gradient(to bottom, #fdd772 0, #fdd772 100%);
+    border-left: none;
+}
+
+tr.z-treerow-selected input {
+    /* Soft orange */
+    background: #fdf3da none;
+}
+
+tr.z-treerow-over input {
+    /* Soft blue */
+    background: #eff2f6 none;
+}
+
+tr.z-treerow-over input {
+    /* Soft blue */
+    background: #eff2f6 none;
+}
+
+.timeplot-canvas {
+    position:relative;
+    overflow:hidden;
+}
+
+.resources-load .timetracker-secondlevel {
+    height: 2000px;
+}
+
+.scheduling-graphics .z-tabs {
+    width: 60px !important;
+}
+
+.scheduling-graphics .z-tab .z-tab-text {
+    white-space: normal;
+    text-overflow: clip;
+}
+
+/* Display value tab in normal white space */
+.scheduling-graphics  .z-tabbox-left>.z-tabs .z-tab-selected .z-tab-text {
+    white-space: normal;
+}
+
+.earned-parameter-column {
+    width: 102px;
+}
+
+.z-panel-body {
+    padding: 10px;
+}
+
+.resources-load .z-west-body .z-tree-header ,
+.limiting-resources .z-west-body .z-tree-header {
+    width: 100% !important;
+}
+
+.z-tab-accordion-hm, .z-tab-accordion-hr, .z-tab-accordion-hl {
+    -moz-background-clip: border;
+    -moz-background-inline-policy: continuous;
+    -moz-background-origin: padding;
+    background: transparent url(../img/borderlayout-hm.png) repeat-x scroll 0 0;
+}
+
+.allocation-criterion-selector span.z-dottree-ico,
+.allocation-criterion-selector span.z-dottree-line {
+    min-height:14px;
+}
+
+.allocation-criterion-selector .z-treecell-content {
+    line-height: inherit;
+}
+
+.timeplot-copyright {
+    display: none;
+}
+
+.timeplot-grid-label {
+    font-family: Verdana, Tahoma, Arial, Helvetica, sans-serif;
+    z-index: 2;
+    color: transparent;
+    font-size:9px;
+    font-weight:bold;
+}
+
+.migas_linea span.scheduling-state {
+    border-radius: 6px;
+    border: 1px solid #888888;
+    color: #888888;
+    font-weight: normal;
+    margin: 4px 3px 2px 10px;
+    padding: 1px 5px;
+    cursor: default;
+    text-transform: lowercase;
+    opacity: 0.7;
+    background-color: transparent;
+}
+
+.submenu .z-menupopup-content .z-menuitem-content:hover .z-menuitem-image {
+    background-image: url(../img/ico_submenu.png);
+}
+
+.z-menupopup .z-menu-image, .z-menupopup .z-menuitem-image {
+    min-width: 14px;
+    max-width: 14px;
+    min-height: 16px;
+    margin-right: 11px;
+    margin-left: 3px;
+}
+
+.advanced-allocation-layout .global-action.z-button {
+    margin-top: 1px;
+}
+
+.help-tooltip {
+    cursor: help;
+}
+
+.timeTrackedTableWithLeftPane input[value="0"] {
+    color: #DDDDDD;
+}
+
+/* For horizontal scrolling */
+.timeTrackedTableWithLeftPane .z-grid-body table {
+    position:relative;
+}
+.timeTrackedTableWithLeftPane div.z-grid-body {
+    overflow: visible;
+}
+
+.advanced-allocation-layout #timeTracker .z-vbox {
+    position:relative;
+}
+
+.advanced-allocation-layout #timeTracker {
+    background-color: #CDE6F5;
+}
+
+/* Resource allocation */
+.allocation-not-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-not-satisfied tr.z-grid-odd {
+    background-color: #EECCCC;
+}
+
+.resource-allocation-checkbox input {
+    margin-bottom: -1px;
+}
+
+.allocation-not-satisfied td.z-row-inner {
+    /* Important rule will overlap rule for z-row:hover */
+    background-color: #EECCCC !important;
+}
+
+.assignedresources .allocation-not-satisfied td.z-row-inner {
+    background-color: #EECCCC;
+}
+
+.allocation-satisfied .resource-allocation tr.z-grid-odd td.z-row-inner, .allocation-satisfied tr.z-grid-odd {
+    background-color: transparent;
+}
+
+.allocation-satisfied td.z-row-inner {
+    background-color: transparent;
+}
+
+.assignedresources .allocation-satisfied td.z-row-inner {
+    background-color: transparent;
+}
+
+/* Advanced allocation */
+
+.advanced-allocation-layout #timeTrackedTableWithLeftPane div.z-grid {
+    overflow:auto;
+}
+
+.advanced-allocation-layout .timetrackergap {
+    overflow: visible;
+}
+
+.timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    background-color: #f9f9f9;
+}
+
+
+.clickable-rows tr.z-row:hover .z-row-inner {
+    background-color: #E9F2FB;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.listdetails .clickable-rows:hover {
+    text-decoration: underline;
+}
+
+.clickable-rows tr.z-row:hover .z-row-content {
+    color: #000000;
+}
+
+tr.z-tree-row-seld td.z-row-inner {
+    background-color: #2A83B4
+}
+
+tr.z-tree-row-seld .z-row-content {
+    color: #FFFFFF;
+}
+
+/* color code for order state */
+.order-open-unassigned {
+    color: #AACCEE;
+}
+.order-open-assigned {
+    color: #007BBE;
+}
+.order-closed {
+    color: #000000;
+}
+
+/* ----------- Limiting Resources window ------- */
+.not-workable-hours {
+    position:relative;
+    z-index: -2;
+    top: -1px;
+    height: 12px;
+    float:right;
+    background-color: #CCCCCC;
+}
+
+.readonly .z-grid-body .z-row-inner {
+    background-color: #CCCCCC;
+}
+
+.current-queue-information .z-grid-body {
+    overflow: hidden;
+}
+
+.current-queue-information {
+    margin: 5px;
+}
+
+.z-fieldset legend {
+    color:#0F3B82;
+}
+
+.z-fieldset {
+    border: solid 1px #B1CBD5;
+    margin-right:10px;
+    margin-bottom:5px;
+    margin-top:5px;
+}
+
+.tooltip-actions {
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.projects-list .date,
+.projects-list .operations {
+    width:100px;
+}
+
+.projects-list .customer {
+    max-width:150px;
+}
+
+.z-band-popup td.z-list-cell {
+    border-right: dotted 1px #cccccc;
+}
+
+.edit-task-window .z-tab-accordion {
+    display:none;
+}
+
+.edit-task-window .z-tabpanel-accordion {
+    border:0;
+}
+
+.edit-task-window .message_ERROR,
+.edit-task-window .message_INFO {
+    width:auto;
+}
+
+
+.filtering-area {
+    height: 30px;
+    white-space: nowrap;
+}
+
+.filter-more-options {
+    overflow: visible;
+}
+
+.filter-more-options .z-groupbox-content {
+    width: 612px;
+    left: -492px;
+    position: relative;
+    background-color: #F0FAFF;
+}
+.filter-more-options .z-groupbox-body .z-groupbox-content {
+    border-top: solid 1px #B2CCD9 !important;
+}
+
+.filter-more-options .z-groupbox-header {
+    margin-top: 0;
+    min-height: 24px;
+    height: 24px;
+    border-radius: 4px;
+}
+.filter-more-options .z-groupbox-bl {
+    display: none;
+}
+
+.filter-more-options .z-groupbox-tl  {
+    height: 1px;
+}
+
+.filter-more-options .z-groupbox-hl .z-groupbox-header {
+    padding-bottom: 1px;
+}
+
+.filter-more-options .z-caption .z-caption-content,
+.filter-more-options .z-caption .z-caption-r {
+    font-size:11px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+}
+
+.filter-more-options .z-groupbox-hl {
+    cursor:pointer;
+}
+
+#ganttpanel #timetracker {
+    overflow: hidden;
+}
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column,
+.second_level_ #watermark .bankHoliday {
+    height: 99999px;
+}
+
+.second_level_ #watermark .timetracker_column_even,
+.second_level_ #watermark .timetracker_column {
+    border-right: solid 1px #F2F2F2 !important;
+}
+
+#ganttpanel .second_level_ #watermark .bankHoliday {
+    border-right: solid 1px #F2D8D8 !important;
+}
+
+
+.calendar-exceptions div.z-grid-body {
+    overflow: hidden;
+}
+
+.color-sample {
+    height: 10px;
+    width: 20px;
+    border: solid 1px black;
+}
+
+/* Expand vertical boxes for non-FireFox browsers */
+.z-vbox {
+    width:100%;
+}
+
+.earned-parameter-column .z-label,
+.earned-parameter-column .z-checkbox-content {
+    font-size: 10px;
+}
+.earned-parameter-column {
+    white-space: nowrap;
+}
+
+.progress-types.z-combobox {
+    position: relative;
+    left: -9px;
+}
+
+.progress-types {
+    margin-left:-12px;
+}
+
+.progress-types.z-combobox .z-combobox-inp {
+    margin:0;
+    padding:0;
+    color: transparent;
+    background: transparent;
+    border-width: 0;
+    outline: none;
+    width: 0;
+}
+
+.progress-types.z-combobox input {
+    display: none;
+    font-size: 0;
+}
+
+.show-advances img  {
+    position:relative;
+    left: -6px;
+}
+
+.progress-types.z-combobox .z-combobox-button {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+}
+
+.advanced-allocation-layout .second_level_ td {
+    border-right: solid 1px #ABC6DE;
+    border-bottom: solid 1px #ABC6DE;
+}
+
+.advanced-allocation-layout .second_level_ th {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.advanced-allocation-layout div.z-grid {
+    border-top: 0;
+}
+
+.advanced-allocation-layout .timeTrackedTableWithLeftPane .z-grid-body .z-row-inner {
+    background-color: #F2F2F2;
+    cursor: default;
+}
+
+.advanced-assignment-area td .z-intbox,
+.advanced-assignment-area td .z-textbox {
+    height: 20px;
+    background: #3C90BE;
+    color: white;
+    border-right: solid 1px white;
+}
+
+.advanced-assignment-area td .z-intbox[value="0"],
+.advanced-assignment-area td .z-textbox[value="0"] {
+    background: #ABCDE1;
+    color: #555555;
+}
+
+.advanced-assignment-area td .limiting.z-intbox,
+.advanced-assignment-area td .limiting.z-textbox {
+    height: 20px;
+    background: #61B598; /* LIMITING_ASSIGNED */
+    color: #555555;
+    border-right: solid 1px white;
+    opacity: 1;
+    -moz-opacity: 1;
+}
+
+
+.advanced-assignment-area td .limiting.z-intbox[value="0"],
+.advanced-assignment-area td .limiting.z-textbox[value="0"] {
+    background: #C1D9D1;  /* LIMITING_UNNASSIGNED */
+    color: #555555;
+}
+
+.advanced-assignment-area > .z-center-body {
+    overflow: visible !important;
+}
+
+input.z-spinner-text-disd {
+    color: #000000 !important;
+}
+.z-calendar td.z-calendar-selected,
+.z-calendar .z-calendar-body td.z-calendar-selected {
+    padding: 0;
+}
+
+.z-calendar .z-calendar-outside {
+    color: #CCC;
+}
+
+
+td.z-calendar-selected {
+    font-weight: bold;
+}
+
+.add-resources-or-criteria div {
+    white-space: nowrap;
+}
+
+.z-datebox-pp {
+    width: auto !important;
+}
+
+
+.advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-header,
+.advanced-assignment-area .timeTrackedTableWithLeftPane .z-grid-body,
+.advanced-assignment-area .z-center-body
+{
+    width: auto !important;
+}
+
+/* Icons and toolbar buttons */
+
+.icono .z-button-tl, .icono .z-button-tm, .icono .z-button-tr,
+.icono .z-button-cl, .icono .z-button-cr,
+.icono .z-button-bl, .icono .z-button-bm, .icono .z-button-br {
+    display: none;
+}
+
+.perspectives-column .z-button-tl, .perspectives-column .z-button-tm, .perspectives-column .z-button-tr,
+.perspectives-column .z-button-cl, .perspectives-column .z-button-cr,
+.perspectives-column .z-button-bl, .perspectives-column .z-button-bm, .perspectives-column .z-button-br {
+    display: none;
+}
+
+.toolbar-box .z-button-tl, .toolbar-box .z-button-tm, .toolbar-box .z-button-tr,
+.toolbar-box .z-button-cl, .toolbar-box .z-button-cr,
+.toolbar-box .z-button-bl, .toolbar-box .z-button-bm, .toolbar-box .z-button-br {
+    display: none;
+}
+
+.toolbar-box .z-button tbody,
+.toolbar-box .z-button tbody:hover,
+.toolbar-box .z-button tbody:active {
+    background-color: transparent;
+}
+
+.toolbar-box .z-button-cm {
+    border-left: solid 1px transparent;
+    border-top: solid 1px transparent;
+    border-right: solid 1px transparent;
+}
+
+.toolbar-box .z-button-clk .z-button-cm {
+    background-color: #71B0D4;
+}
+
+.perspectives-column .z-button-cm,
+.toolbar-box .z-button-cm  {
+    border-radius: 2px;
+}
+
+.z-button.icono tbody, .z-button.icono tbody:hover, .z-button.icono tbody:active {
+    background-color: transparent;
+}
+
+.planner-command.z-button .z-button-tl, .planner-command.z-button .z-button-tm, .planner-command.z-button .z-button-tr,
+.planner-command.z-button .z-button-cl, .planner-command.z-button .z-button-cr,
+.planner-command.z-button .z-button-bl, .planner-command.z-button .z-button-bm, .planner-command.z-button .z-button-br {
+    display: none;
+}
+
+.planner-command.z-button tbody, .planner-command.z-button tbody:hover, .planner-command.z-button tbody:active {
+    background-color: transparent;
+}
+
+.global-commands .z-button {
+    padding-bottom:0;
+    padding-top: 1px;
+}
+
+.global-commands {
+    margin-bottom: 10px;
+}
+
+.z-button .z-button-cm {
+    background-image: none;
+}
+
+.z-button tbody {
+    background-color: #E4F3D9; /* green0 (normal background) */
+    color: #58A758; /* green3 (text) */
+}
+
+.z-button tbody:hover {
+    background-color: #C3EAAF; /* green1 (hover background) */
+}
+
+.z-button tbody:active {
+    background-color: #A1D586;
+}
+
+.z-button .z-button-tl, .z-button .z-button-tr,
+.z-button .z-button-bl, .z-button .z-button-br {
+    background-image: url(../img/btn-corner-green.gif);
+}
+.z-button .z-button-tm, .z-button .z-button-bm {
+    background-image: url(../img/btn-x-green.gif);
+}
+
+.z-button .z-button-cl, .z-button .z-button-cr {
+    background-image: url(../img/btn-y-green.gif);
+}
+
+.z-button .z-button-tl, .z-button .z-button-bl,
+.z-button .z-button-tr, .z-button .z-button-tr {
+    background-color: #FFFFFF;
+}
+
+/* Bugfix for default 3D mold */
+.z-button-clk .z-button-tl {
+    background-position:-18px 0;
+}
+
+.z-button-clk .z-button-bl {
+    background-position:-18px -3px;
+}
+
+.z-button-clk .z-button-tr {
+    background-position:-21px 0;
+}
+
+.z-button-clk .z-button-br {
+    background-position:-21px -3px;
+}
+
+.z-button-clk .z-button-cl {
+    background-position:-18px 0;
+}
+
+.z-button-clk .z-button-cr {
+    background-position:-21px 0;
+}
+
+.assigned-hours-input {
+    width: 60px;
+    margin-left: -20px;
+}
+
+.assigned-resources-input  {
+    width: 40px;
+    float: left;
+    margin-left: 15px;
+}
+
+.assigned-resources-label {
+    cursor: default;
+}
+
+.assignedresources .details div.z-column-content {
+    font-weight: normal;
+}
+
+.assignedresources .z-auxheader-content  {
+    font-weight: bold;
+}
+
+.scheduling-graphics .z-south-header {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.timeplot-container {
+    height: 170px !important;
+    margin-left: 8px;
+}
+
+
+.workerwindow .calendar-tabbox .z-tabs {
+    display:none;
+}
+
+.workerwindow .calendar-tabbox .calendar-options-tabbox .z-tabs {
+    display:block;
+}
+
+.workerwindow .calendar-tabbox .z-tabpanel {
+    border: 0;
+}
+
+.workerwindow .calendar-tabbox .calendar-options-tabbox .z-tabpanel {
+    border: solid 1px #7EAAC6;
+}
+
+.calendar-tabbox .z-textbox {
+    height: auto;
+}
+
+.calendar-tabbox .z-calendar {
+    margin: 5px;
+}
+
+.day-details .z-columns {
+    display: none;
+}
+
+.day-details {
+    margin: 5px;
+}
+
+.day-details .z-datebox-disd input {
+    border: 0;
+    background: transparent;
+    color: black !important;
+}
+
+.day-details .z-datebox-disd * {
+    color: black !important;
+}
+
+.day-details .z-datebox-disd {
+    opacity: 1;
+}
+
+.day-details img {
+    display: none;
+}
+
+.materials-accordion .z-tab-accordion-header {
+    display: none;
+}
+
+.materials-accordion.z-tabbox-accordion .z-tabpanel-accordion {
+    border: 0;
+}
+
+.earned-value-chart .legend-container {
+    width: 226px;
+}
+
+select {
+    font-size:12px;
+}
+
+.z-separator-vertical-bar {
+    height: 22px;
+    width: 0;
+    border-right: 1px solid #9ECAD8;
+    border-left: 1px solid #d9f3ff;
+}
+
+.logo-area img {
+    margin-right:10px;
+}
+
+.logo-area {
+    width: 1px;
+}
+
+.z-borderlayout {
+    background-color: transparent;
+}
+
+.template-tree-tabpanel {
+    overflow-x: auto;
+}
+
+select {
+    margin-top: 0;
+    margin-bottom: 0;
+    font-size:11px;
+}
+
+
+
+.scheduling-graphics .z-tabs-space {
+    width: 0;
+    border: 0;
+}
+
+.entity-sequences-grid tr.z-row td.z-row-inner {
+    border-bottom: 0;
+    border-top: 0;
+    padding-bottom: 8px;
+    padding-top: 4px;
+}
+
+.entity-sequences-grid tr.separator td.z-row-inner {
+    border-top: 1px solid #AAAAAA;
+}
+
+.bandbox-workreport-task input {
+    width: 250px;
+}
+
+.communication-not-reviewed div.z-row-content .z-label {
+    font-weight: bold;
+}
+
+.current-delivery-date div.z-row-content .z-label {
+    font-weight: bold;
+}
+
+.remarked {
+    font-weight: bold;
+    color: #0F3B82;
+}
+
+.z-menupopup a:focus {
+    text-decoration: none !important;
+}
+
+.issueLog-priority-color-red {
+    background: #FF4000 !important;
+}
+
+.issueLog-priority-color-yellow {
+    background: #FFA500 !important;
+}
+
+.issueLog-priority-color-green {
+    background: #AAFFAA !important;
+}
+
+.riskLog-score-color-1 {
+    background: #BAF109 !important;
+}
+
+.riskLog-score-color-2 {
+    background: #A3D307 !important;
+}
+
+.riskLog-score-color-3 {
+    background: #FFAF04 !important;
+}
+
+.riskLog-score-color-4 {
+    background: #FF9000 !important;
+}
+
+.riskLog-score-color-6 {
+    background: #FF4B00 !important;
+}
+
+.riskLog-score-color-9 {
+    background: #EA0024 !important;
+}
+
+.icono {
+    margin: -8px;
+    padding-left: 10px;
+    padding-right: 10px;
+    border: 1px solid transparent !important;
+}
+
+.icono:hover {
+    background-image: none !important;
+}
+
+.icono:focus {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+    background: none;
+}
+
+/* Made for create buttons, because default ZK css is not work correctly for create button */
+.add-button {
+    background-color: #E4F3D9;
+    background-image: none !important;
+}
+
+.add-button:hover {
+    background: none;
+    background-color: #C3EAAF;
+}
+
+.add-button:focus {
+    background: none;
+    background-color: #C3EAAF;
+}
+
+.add-button:disabled {
+    background: none;
+    background-color: #C3EAAF !important;
+}
+
+.z-center {
+    border: 1px solid #9ECAD8;
+}
+
+.z-radio{
+    padding: 3px;
+}
+
+.z-label {
+    padding-left: 4px;
+}
+
+/*
+ Made for grid rows.
+ It makes possible to define on hover background of rows.
+ If row is pair then background equals grey.
+ Else if row is odd then background equals white.
+ So, it removes default ZK hover effect for grid.
+*/
+.z-row:hover:nth-child(odd)>.z-row-inner, .z-row:hover>.z-cell {
+    background: none;
+}
+
+.z-row:hover:nth-child(even)>.z-row-inner, .z-row:hover>.z-cell {
+    background:#F0FBFF;
+}
+
+.z-row:hover:nth-child(odd)>.z-row-inner .z-row-content,
+.z-row:hover:nth-child(even)>.z-row-inner .z-row-content {
+    color: #00547a;
+}
+
+.z-row .z-row-inner, .z-row .z-cell {
+    border: none;
+    border-right: 1px solid rgb(204, 204, 204);
+    border-bottom: 1px solid rgb(207, 207, 207);
+}
+
+.z-row-content {
+    margin: 1px;
+}
+
+/*
+  Made for edit email template page text area.
+  If it will break something, add class for text area and remove this restriction.
+*/
+textarea {
+    resize: none;
+}
+
+.z-column {
+    border: none;
+    border-right: 1px solid rgb(207, 207, 207);
+}
+
+/* Synchronization window ( Job Scheduling ) */
+.job-scheduling-manual-header .z-window-header {
+    padding-left: 6px;
+    color: white;
+    border-radius: 5px 5px 0 0;
+}
+
+.z-window-header-move {
+    padding-left: 6px;
+}
+
+.hour-cost-button {
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.hour-cost-grid {
+    margin: 0 10px 10px 10px;
+}
+
+.more-options-label {
+    top: -4px !important;
+    padding-left: 6px !important;
+}
+
+.z-treerow.z-treerow-selected.z-treerow-focus:hover > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected:hover > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell > .z-treecell-content {
+    color: black;
+}
+
+.completely-scheduled.z-treecell {
+    min-width: 140px;
+}
+
+.depth_1.z-treecell {
+    min-width: 1152px;
+}
+
+.orderTree.z-dottree > .z-dottree-body > table > .z-treechildren > .z-treerow > td:nth-child(4) {
+    min-width: 50px;
+}
+
+/* Correct border line for auxheader(grid) in edit task */
+.z-auxhead .z-auxheader {
+    border-right: 1px solid rgb(204, 204, 204);
+    border-left: none;
+}
+
+/* Rewrite width for auto generate table */
+.normalResourceAllocation > div > table {
+    width: 100% !important;
+}
+
+/* Doesn't show tabpanel, because it isn't necessary */
+.tabNormalAllocation > .z-tabpanel > .z-tab {
+    display: none;
+}
+
+.z-datebox-input {
+    color: #000000 !important;
+}
+
+.scheduling-graphics .z-tabpanels .z-tabpanel {
+    padding: 0 !important;
+}
+
+.scheduling-graphics .z-south-header {
+    height: 23px;
+    padding-top: 0;
+}
+
+/* It needs for correctly show tree item in project planning */
+.allocationTreeCol > div > table > tbody > tr > td > .z-treecell-content > span.z-dottree-line {
+    display: inline-block;
+}
+
+.z-button[disabled] {
+    background: none;
+    opacity: 0.3;
+}
+
+.queue-element-information {
+    margin: 5px;
+}
+
+.z-textbox:focus, .z-decimalbox:focus, .z-intbox:focus, .z-longbox:focus, .z-doublebox:focus {
+    border: 1px solid #90BCE6 !important;
+}
+
+.margin-border {
+    margin: 5px;
+}
+
+.orderTree button.icono {
+    padding-right: 0;
+    padding-left: 0;
+    margin-left: 2px;
+}
+
+.timetrackergap .z-column-content {
+    top: -7px;
+}
+
+.timetrackergap .z-grid {
+    height: 16px;
+}
+
+/* For correct display button icon when it clicked and unclicked */
+.planner-command:focus {
+    background-image: none;
+    box-shadow: none;
+}
+
+.planner-command.clicked.z-button,
+.planner-command.clicked.z-button:focus {
+    background-color: #E6F2F9; /* blue (active background)*/
+    border-top: 1px solid #006699;
+    border-left: 1px solid #006699;
+    padding: 2px;
+}
+
+/* It needs for correct work (correct width) collapse component in Project Planning and Project Scheduling */
+.scroll-collapse {
+    width: 99%;
+}
+
+.report-margin {
+    margin: 10px 0 10px 0;
+}
+
+.bandbox-margin {
+    margin-left: 5px;
+}
+
+.grid-margin {
+    margin: 0 0 5px 5px;
+}
+
+.hbox-margin {
+    margin: 5px 0 0 5px;
+}
+
+/* This style for buttons when you want to delete something */
+.z-messagebox-button,
+.z-messagebox-btn {
+    background-color: #E4F3D9;
+    background-image: none !important;
+}
+
+.z-messagebox-button:hover,
+.z-messagebox-btn:hover {
+    background: #C3EAAF none;
+}
+
+.z-messagebox-button:focus,
+.z-messagebox-btn:focus {
+    background: #C3EAAF none;
+}
+
+.z-messagebox-button:disabled,
+.z-messagebox-btn:disabled {
+    background: none;
+    background-color: #C3EAAF !important;
+}
+
+.label-middle td tr td {
+    vertical-align: middle;
+}
+
+.label-middle td tr td > span {
+    font-size: 12px;
+}
+
+.z-tree-line + button {
+    height: 16px;
+}
+
+.decimal-max-value {
+    width: 85px;
+}
+
+.checkbox-margin > input {
+    margin-bottom: -2px;
+}
+
+/* It needs for nice view timetracker in sapphire theme, because native background is looked very awful */
+.z-grid-header.timetracker-secondlevel {
+    background: #ffffff !important;
+}
+
+.z-treerow:hover > .z-treecell,
+.z-listitem:hover > .z-listcell {
+    background: #Dae7f6;
+}
+
+.z-treerow:hover > .z-treecell > .z-treecell-content,
+.z-listitem:hover > .z-listcell > .z-listcell-content,
+.z-treerow.z-treerow-selected > .z-treecell > .z-treecell-content,
+.z-treerow.z-treerow-selected.z-treerow-focus > .z-treecell > .z-treecell-content,
+.z-listitem.z-listitem-selected > .z-listcell > .z-listcell-content,
+.z-listitem.z-listitem-selected.z-listitem-focus > .z-listcell > .z-listcell-content {
+    color: #00547a;
+}
+
+.z-comboitem-selected,
+.z-comboitem-selected:hover {
+    background: #97BAC9;
+}
+
+.z-comboitem-selected .z-comboitem-text {
+    text-shadow: none;
+}
+
+.padding-bottom-queue {
+    padding-bottom: 6px;
+}
+
+.more-options-caption div{
+    position: absolute;
+    top: 28%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.remove-detailrow-background td,tr{
+    background: none !important;
+}
+
+.expenses-sheet-code-wide-table table{
+    width: 60%;
+}

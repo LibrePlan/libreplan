@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2013 St. Antoniusziekenhuis
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -28,15 +29,17 @@
             <row>
                 <label value="${i18n:_t('Issue number')}" />
                 <textbox id="issueNumberTextBox" width="636px"
-                         value="@{issueLogController.issueLog.code}" disabled="true"/>
+                         value="@load(issueLogController.issueLog.code)" disabled="true"/>
             </row>
             <row>
                 <label value="${i18n:_t('Project')}" />
+                <!-- No @save here: bdProjectIssueLog's ON_SELECT/ON_OK listeners registered in
+                     initializeOrderComponent() already save the selection back manually. -->
                 <bandboxSearch id="bdProjectIssueLog" widthBandbox="636px" widthListbox="636px"
                                constraint="no empty:${i18n:_t('cannot be empty')}"
                                finder="OrderBandboxFinder"
-                               model="@{issueLogController.orders}"
-                               selectedElement="@{issueLogController.order}"/>
+                               model="@load(issueLogController.orders)"
+                               selectedElement="@load(issueLogController.order)"/>
             </row>
             <row>
                 <label value="${i18n:_t('Type and status')}" />
@@ -51,9 +54,9 @@
                         <row>
                             <label value="${i18n:_t('Type')}" />
                             <listbox id="listIssueLogType" mold="select" rows="1" width="237px"
-                                     model="@{issueLogController.issueTypeEnum}"
-                                     selectedItem="@{issueLogController.issueLog.type}"
-                                     itemRenderer="@{issueLogController.issueTypeRenderer}"
+                                     model="@load(issueLogController.issueTypeEnum)"
+                                     selectedItem="@load(issueLogController.issueLog.type) @save(issueLogController.issueLog.type)"
+                                     itemRenderer="@load(issueLogController.issueTypeRenderer)"
                                      onSelect="issueLogController.updateStatusList(true)"/>
 
                             <label value="${i18n:_t('Status')}" />
@@ -79,13 +82,15 @@
                             <label value="${i18n:_t('Date raised')}" />
                             <datebox id="dateRaisedBox" width="131px"
                                      constraint="no empty:${i18n:_t('cannot be empty')}"
-                                     value="@{issueLogController.dateRaised}" />
+                                     value="@load(issueLogController.dateRaised) @save(issueLogController.dateRaised)" />
 
                             <label value="${i18n:_t('Created by')}" />
+                            <!-- No @save: initializeUserComponent()'s ON_SELECT/ON_OK listeners
+                                 already save the selection back manually. -->
                             <bandboxSearch id="bdUserIssueLog" widthBandbox="315px" widthListbox="340px"
                                            finder="UserBandboxFinder"
-                                           model="@{issueLogController.users}"
-                                           selectedElement="@{issueLogController.issueLog.createdBy}"/>
+                                           model="@load(issueLogController.users)"
+                                           selectedElement="@load(issueLogController.issueLog.createdBy)"/>
                         </row>
                     </rows>
                 </grid>
@@ -93,7 +98,7 @@
             <row>
                 <label value="${i18n:_t('Description')}" />
                 <textbox id="descriptionNameTextBox" width="636px" rows="4"
-                         value="@{issueLogController.issueLog.description}" maxlength="1024"/>
+                         value="@load(issueLogController.issueLog.description) @save(issueLogController.issueLog.description)" maxlength="1024"/>
             </row>
             <row>
                 <label value="${i18n:_t('Categories')}" />
@@ -108,15 +113,15 @@
                         <row>
                             <label value="${i18n:_t('Priority')}" />
                             <listbox id="listIssueLogPriority" mold="select" rows="1" width="157px"
-                                     model="@{issueLogController.lowMediumHighEnum}"
-                                     selectedItem="@{issueLogController.issueLog.priority}"
-                                     itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />
+                                     model="@load(issueLogController.lowMediumHighEnum)"
+                                     selectedItem="@load(issueLogController.issueLog.priority) @save(issueLogController.issueLog.priority)"
+                                     itemRenderer="@load(issueLogController.lowMediumHighEnumRenderer)" />
 
                             <label value="${i18n:_t('Severity')}"/>
                             <listbox id="listIssueLogSeverity" mold="select" rows="1" width="157px"
-                                     model="@{issueLogController.lowMediumHighEnum}"
-                                     selectedItem="@{issueLogController.issueLog.severity}"
-                                     itemRenderer="@{issueLogController.lowMediumHighEnumRenderer}" />
+                                     model="@load(issueLogController.lowMediumHighEnum)"
+                                     selectedItem="@load(issueLogController.issueLog.severity) @save(issueLogController.issueLog.severity)"
+                                     itemRenderer="@load(issueLogController.lowMediumHighEnumRenderer)" />
                         </row>
                     </rows>
                 </grid>
@@ -124,7 +129,7 @@
             <row>
                 <label value="${i18n:_t('Assigned to')}" />
                 <textbox id="assignedToTextBox" width="636px"
-                         value="@{issueLogController.issueLog.assignedTo}" maxlength="512"/>
+                         value="@load(issueLogController.issueLog.assignedTo) @save(issueLogController.issueLog.assignedTo)" maxlength="512"/>
             </row>
             <row>
                 <label value="${i18n:_t('Timing')}" />
@@ -140,11 +145,11 @@
                             <row>
                                 <label value="${i18n:_t('Deadline')}"/>
                                 <datebox id="deadline" width="153px"
-                                         value="@{issueLogController.deadline}" />
+                                         value="@load(issueLogController.deadline) @save(issueLogController.deadline)" />
 
                                 <label value="${i18n:_t('Date resolved')}" />
                                 <datebox id="dateResolved" width="153px"
-                                         value="@{issueLogController.dateResolved}" />
+                                         value="@load(issueLogController.dateResolved) @save(issueLogController.dateResolved)" />
                             </row>
                         </rows>
                     </grid>
@@ -152,7 +157,7 @@
             </row>
             <row>
                 <label value="${i18n:_t('Notes')}" />
-                <textbox value="@{issueLogController.issueLog.notes}" width="636px" rows="8" multiline="true"
+                <textbox value="@load(issueLogController.issueLog.notes) @save(issueLogController.issueLog.notes)" width="636px" rows="8" multiline="true"
                          maxlength="1024"/>
             </row>
         </rows>

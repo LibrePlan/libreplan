@@ -68,6 +68,16 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
         super.doAfterCompose(comp);
         userRolesCombo = (Combobox) editWindow.getFellowIfAny("userRolesCombo");
         appendAllUserRolesExceptRoleBoundUser(userRolesCombo);
+
+        // BaseCRUDController.doAfterCompose() already calls showListWindow() (which reloads
+        // listWindow's bindings), but that happens before AnnotateBinderInit's own later
+        // page-level pass has created any binder at all, so it's a no-op. Redo it here, now that
+        // the binder exists. Only listWindow is reloaded - editWindow's bindings reference
+        // controller.profile, which is still null at this point (only set up by
+        // initCreate()/initEdit(), called later); showEditWindow() reloads editWindow's own
+        // bindings once that has happened.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(listWindow);
     }
 
     /**
@@ -90,7 +100,30 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     }
 
     public List<Profile> getProfiles() {
-        return profileModel.getProfiles();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(profileModel.getProfiles());
+    }
+
+    /**
+     * The list's rows used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug entirely.
+     */
+    public RowRenderer getProfilesRenderer() {
+        return (row, data, index) -> {
+            final Profile profile = (Profile) data;
+            row.setValue(profile);
+            row.addEventListener(org.zkoss.zk.ui.event.Events.ON_CLICK, event -> goToEditForm(profile));
+
+            row.appendChild(new Label(profile.getProfileName()));
+
+            org.zkoss.zul.Hbox hbox = new org.zkoss.zul.Hbox();
+            hbox.appendChild(Util.createEditButton(event -> goToEditForm(profile)));
+            hbox.appendChild(Util.createRemoveButton(event -> confirmDelete(profile)));
+            row.appendChild(hbox);
+        };
     }
 
     public Profile getProfile() {
@@ -105,7 +138,10 @@ public class ProfileCRUDController extends BaseCRUDController<Profile> {
     }
 
     public List<UserRole> getRoles() {
-        return profileModel.getRoles();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new org.zkoss.zul.ListModelList<>(profileModel.getRoles());
     }
 
     private void addRole(UserRole role) {

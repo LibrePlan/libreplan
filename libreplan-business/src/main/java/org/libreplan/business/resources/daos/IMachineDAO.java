@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -35,15 +36,6 @@ import org.libreplan.business.resources.entities.Machine;
  * @author Fernando Bellas Permuy <fbellas@udc.es>
  */
 public interface IMachineDAO extends IIntegrationEntityDAO<Machine> {
-
-    /**
-     * Returns machines which name/NIF partially matches with name
-     *
-     * @param name
-     *            search machine by name/Code
-     *
-     */
-    List<Machine> findByNameOrCode(String name, boolean limitingResource);
 
     /**
      * Finds a {@link Machine} with the Code param that should be unique.

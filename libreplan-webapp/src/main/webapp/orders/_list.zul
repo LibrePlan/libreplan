@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -20,10 +21,10 @@
 -->
 
 <window id="${arg.top_id}" title="${i18n:_t('Projects list')}">
-    <grid id="listing" model="@{controller.orders}" mold="paging"
+    <grid id="listing" model="@load(controller.orders)" mold="paging"
           emptyMessage="${i18n:_t('No projects')}"
           pageSize="15" span="0" sizedByContent="false"
-          rowRenderer= "@{controller.ordersRowRender}"
+          rowRenderer= "@load(controller.ordersRowRender)"
           onInitRender ="controller.sortOrders();" sclass="clickable-rows projects-list">
         <columns sizable="true">
             <column label="${i18n:_t('Name')}" sort="auto(lower(name))" sclass="name"/>

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>LDAP 設定</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ldap">
+<h1 class="title">LDAP 設定</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-1" id="toc-entry-1">啟用</a></li>
+<li><a class="reference internal" href="#section-2" id="toc-entry-2">設定</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-3">驗證</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-4">授權</a><ul>
+<li><a class="reference internal" href="#section-5" id="toc-entry-5">群組策略</a></li>
+<li><a class="reference internal" href="#section-6" id="toc-entry-6">屬性策略</a></li>
+<li><a class="reference internal" href="#section-7" id="toc-entry-7">角色匹配</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>此畫面允許您與 LDAP 建立連接，以委派驗證和／或授權。</p>
+<p>它分為四個不同的區域，以下分別說明：</p>
+<div class="section" id="section-1">
+<h1><a class="toc-backref" href="#toc-entry-1">啟用</a></h1>
+<p>此區域用於設定決定 <em>LibrePlan</em> 如何使用 LDAP 的屬性。</p>
+<p>若勾選*啟用 LDAP 驗證*欄位，每當使用者嘗試登入應用程式時，<em>LibrePlan</em> 將查詢 LDAP。</p>
+<p>勾選*使用 LDAP 角色*欄位，表示建立 LDAP 角色與 LibrePlan 角色之間的對應關係。因此，使用者在 LibrePlan 中的權限將取決於其在 LDAP 中擁有的角色。</p>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-2">設定</a></h1>
+<p>本節包含存取 LDAP 的參數值。<em>Base</em>、<em>UserDN</em> 和 <em>Password</em> 是用於連接 LDAP 和搜尋使用者的參數。因此，指定的使用者必須具有在 LDAP 中執行此操作的權限。在本節底部，有一個按鈕用於檢查是否可以使用給定參數建立 LDAP 連接。建議在繼續設定之前測試連接。</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">若您的 LDAP 設定為使用匿名驗證，您可以將 <em>UserDN</em> 和 <em>Password</em> 屬性留空。</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>關於 <em>Active Directory (AD)</em> 設定，<em>Base</em> 欄位必須是繫結使用者在 AD 中所在的確切位置。</p>
+<p class="last">範例：<tt class="docutils literal">ou=organizational_unit,dc=example,dc=org</tt></p>
+</div>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-3">驗證</a></h1>
+<p>在此，您可以設定 LDAP 節點中應找到給定使用者名稱的屬性。<em>UserId</em> 屬性必須填入 LDAP 中儲存使用者名稱的屬性名稱。</p>
+<p>勾選*在資料庫中儲存密碼*核取方塊時，表示密碼也儲存在 LibrePlan 資料庫中。如此一來，若 LDAP 離線或無法存取，LDAP 使用者可以對 LibrePlan 資料庫進行驗證。若未勾選，LDAP 使用者只能對 LDAP 進行驗證。</p>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-4">授權</a></h1>
+<p>本節允許您定義將 LDAP 角色與 LibrePlan 角色進行匹配的策略。第一個選擇是根據 LDAP 實作使用的策略。</p>
+<div class="section" id="section-5">
+<h2><a class="toc-backref" href="#toc-entry-5">群組策略</a></h2>
+<p>當使用此策略時，表示 LDAP 具有角色群組策略。這意味著 LDAP 中的使用者是直接位於代表群組的分支下的節點。</p>
+<p>以下範例代表使用群組策略的有效 LDAP 結構。</p>
+<ul>
+<li><p class="first">LDAP 結構:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=groups
+   |- cn=admins
+   |- cn=itpeople
+   |- cn=workers
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p>在此情況下，每個群組都有一個屬性，例如稱為 <tt class="docutils literal">member</tt>，包含屬於該群組的使用者清單：</p>
+<ul class="simple">
+<li><tt class="docutils literal">cn=admins</tt>:<ul>
+<li><tt class="docutils literal">member: uid=admin1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=itpeople</tt>:<ul>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it2,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=workers</tt>:<ul>
+<li><tt class="docutils literal">member: uid=worker1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker2,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker3,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+</ul>
+<p>此情況的設定如下：</p>
+<ul class="simple">
+<li>角色搜尋策略：<tt class="docutils literal">Group strategy</tt></li>
+<li>群組路徑：<tt class="docutils literal">ou=groups</tt></li>
+<li>角色屬性：<tt class="docutils literal">member</tt></li>
+<li>角色搜尋查詢：<tt class="docutils literal"><span class="pre">uid=[USER_ID],ou=people,dc=example,dc=org</span></tt></li>
+</ul>
+<p>例如，若您想要匹配某些角色：</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">cn=admins;cn=itpeople</tt></li>
+<li>Web service reader: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Web service writer: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">cn=admins</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">cn=admins</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">cn=workers</tt></li>
+</ul>
+</div>
+<div class="section" id="section-6">
+<h2><a class="toc-backref" href="#toc-entry-6">屬性策略</a></h2>
+<p>當管理員決定使用此策略時，表示每個使用者是一個 LDAP 節點，且在節點內存在一個代表使用者群組的屬性。在此情況下，設定不需要*群組路徑*參數。</p>
+<p>以下範例代表使用屬性策略的有效 LDAP 結構。</p>
+<ul>
+<li><p class="first">LDAP 結構:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p><strong>使用屬性</strong></p>
+<p>在此情況下，每個使用者都有一個屬性，例如稱為 <tt class="docutils literal">group</tt>，包含其所屬群組的名稱：</p>
+<ul class="simple">
+<li><tt class="docutils literal">uid=admin1</tt>:<ul>
+<li><tt class="docutils literal">group: admins</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it1</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it2</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker1</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker2</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker3</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">此策略有一個限制：每個使用者只能屬於一個群組。</p>
+</div>
+<p>此情況的設定如下：</p>
+<ul class="simple">
+<li>角色搜尋策略：<tt class="docutils literal">Property strategy</tt></li>
+<li>群組路徑：</li>
+<li>角色屬性：<tt class="docutils literal">group</tt></li>
+<li>角色搜尋查詢：<tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>例如，若您想要匹配某些角色：</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">admins;itpeople</tt></li>
+<li>Web service reader: <tt class="docutils literal">itpeople</tt></li>
+<li>Web service writer: <tt class="docutils literal">itpeople</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">admins</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">admins</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">workers</tt></li>
+</ul>
+<p><strong>依使用者識別碼</strong></p>
+<p>您甚至可以使用一種變通方法，直接為使用者指定 LibrePlan 角色，而無需在每個 LDAP 使用者中設定屬性。</p>
+<p>在此情況下，您將透過 <tt class="docutils literal">uid</tt> 指定哪些使用者擁有不同的 LibrePlan 角色。</p>
+<p>此情況的設定如下：</p>
+<ul class="simple">
+<li>角色搜尋策略：<tt class="docutils literal">Property strategy</tt></li>
+<li>群組路徑：</li>
+<li>角色屬性：<tt class="docutils literal">uid</tt></li>
+<li>角色搜尋查詢：<tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>例如，若您想要匹配某些角色：</p>
+<ul class="simple">
+<li>Administration: <tt class="docutils literal">admin1;it1</tt></li>
+<li>Web service reader: <tt class="docutils literal">it1;it2</tt></li>
+<li>Web service writer: <tt class="docutils literal">it1;it2</tt></li>
+<li>All projects read allowed: <tt class="docutils literal">admin1</tt></li>
+<li>All projects edition allowed: <tt class="docutils literal">admin1</tt></li>
+<li>Project creation allowed: <tt class="docutils literal">worker1;worker2;worker3</tt></li>
+</ul>
+</div>
+<div class="section" id="section-7">
+<h2><a class="toc-backref" href="#toc-entry-7">角色匹配</a></h2>
+<p>在本節底部，有一個表格列出所有 LibrePlan 角色，每個角色旁邊都有一個文字欄位。這用於匹配角色。例如，若管理員決定 LibrePlan 的 <em>Administration</em> 角色與 LDAP 的 <em>admin</em> 和 <em>administrators</em> 角色匹配，文字欄位應包含：&quot;<tt class="docutils literal">admin;administrators</tt>&quot;。分隔角色的字元為&quot;<tt class="docutils literal">;</tt>&quot;。</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>若您想指定所有使用者或所有群組擁有某個權限，可以使用星號（<tt class="docutils literal">*</tt>）作為萬用字元來引用它們。例如，若您希望所有人都擁有*允許建立專案*角色，您將如下設定角色匹配：</p>
+<ul class="last simple">
+<li>Project creation allowed: <tt class="docutils literal">*</tt></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

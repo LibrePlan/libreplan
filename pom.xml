@@ -6,7 +6,7 @@
     <groupId>org.libreplan</groupId>
     <artifactId>libreplan</artifactId>
     <packaging>pom</packaging>
-    <version>1.6.1</version>
+    <version>1.7.0</version>
     <name>LibrePlan</name>
 
 
@@ -38,6 +38,20 @@
         <default.deleteAllProjectsButtonDisabled>true</default.deleteAllProjectsButtonDisabled>
 
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <!--
+            JDK 11->25 migration (see JDK25_MIGRATION_PLAN.md). Was capped at 21 during Phase 4
+            because Spring Framework 5.3.x (javax-namespace generation) bundled its own private
+            ASM that couldn't parse Java 25 class files (major version 69) - see
+            jdk25-migration-baseline/CHANGES-and-WHY.md for that original reasoning. Phase 5's
+            Jakarta migration moved to Spring 6.2.19, which ships a modern ASM, so this was
+            re-tested (Phase 6, step 6.3) and bumped for real: full reactor `mvn clean install`
+            compiles clean at release 25, and the full test suite (libreplan-business 1215
+            tests, ganttzk, libreplan-webapp 222 tests) produces results byte-for-byte identical
+            to the release-21 run - same single pre-existing libreplan-business failure, same
+            known libreplan-webapp failures (see Phase5-found-bugs.md), nothing new either way.
+        -->
+        <maven.compiler.release>25</maven.compiler.release>
 
         <jetty-port>8080</jetty-port>
         <jetty-stop-port>9967</jetty-stop-port>
@@ -131,7 +145,7 @@
                 <dataSource.url>jdbc:postgresql://localhost/libreplan${libreplan.mode}</dataSource.url>
                 <testDataSource.url>${dataSource.url}test</testDataSource.url>
                 <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.PostgreSQL82Dialect</hibernate.dialect>
+                <hibernate.dialect>org.hibernate.dialect.PostgreSQLDialect</hibernate.dialect>
                 <databasetable.prefix>public.</databasetable.prefix>
             </properties>
         </profile>
@@ -140,24 +154,33 @@
         <profile>
             <id>mysql</id>
             <properties>
-                <!-- JDBC driver properties -->
-
                 <!--
-                If 6.X driver will not throw exceptions (with Timezone), use this configuration:
-
-                <jdbcDriver.className>com.mysql.cj.jdbc.Driver</jdbcDriver.className>
-                <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}?useSSL=false</dataSource.url>
+                JDBC driver properties. Bumped from mysql:mysql-connector-java:5.1.46 (2018) to
+                the current com.mysql:mysql-connector-j:26.7.0 during Phase 6 of the JDK25/
+                Jakarta migration (see doc/technical/jdk25-migration/phase6/) - the artifact
+                itself was renamed along the way (mysql:mysql-connector-java -> com.mysql:
+                mysql-connector-j). Switched to the driver/URL combination this file's own
+                previous comment already flagged as the correct modern one (com.mysql.cj.jdbc.Driver
+                + useSSL=false), instead of the ancient com.mysql.jdbc.Driver class. Compiles
+                clean; not smoke-tested against a real MySQL instance as part of this change -
+                MySQL is the deprecated/alternate profile (see HACKING.rst), PostgreSQL is what
+                this project actually tests against day to day.
                 -->
-
-                <jdbcDriver.groupId>mysql</jdbcDriver.groupId>
-                <jdbcDriver.artifactId>mysql-connector-java</jdbcDriver.artifactId>
-                <jdbcDriver.version>5.1.46</jdbcDriver.version>
-                <jdbcDriver.className>com.mysql.jdbc.Driver</jdbcDriver.className>
-                <!-- Data source properties -->
-                <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}</dataSource.url>
-                <testDataSource.url>${dataSource.url}test</testDataSource.url>
+                <jdbcDriver.groupId>com.mysql</jdbcDriver.groupId>
+                <jdbcDriver.artifactId>mysql-connector-j</jdbcDriver.artifactId>
+                <jdbcDriver.version>26.7.0</jdbcDriver.version>
+                <jdbcDriver.className>com.mysql.cj.jdbc.Driver</jdbcDriver.className>
+                <!--
+                Data source properties. Note: testDataSource.url can no longer be derived as
+                "${dataSource.url}test" now that dataSource.url carries a "?useSSL=false" query
+                string - appending "test" after the query string would build an invalid URL
+                (...?useSSL=falsetest). Both spelled out explicitly instead, each with the
+                database name (including the "test" suffix) before its own query string.
+                -->
+                <dataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}?useSSL=false</dataSource.url>
+                <testDataSource.url>jdbc:mysql://localhost/libreplan${libreplan.mode}test?useSSL=false</testDataSource.url>
                 <!-- Hibernate properties -->
-                <hibernate.dialect>org.hibernate.dialect.MySQL5InnoDBDialect</hibernate.dialect>
+                <hibernate.dialect>org.hibernate.dialect.MySQLDialect</hibernate.dialect>
                 <databasetable.prefix/>
             </properties>
         </profile>
@@ -215,21 +238,21 @@
 
             <!-- Javax Annotation API (required for Java 9+) -->
             <dependency>
-                <groupId>javax.annotation</groupId>
-                <artifactId>javax.annotation-api</artifactId>
-                <version>1.3.2</version>
+                <groupId>jakarta.annotation</groupId>
+                <artifactId>jakarta.annotation-api</artifactId>
+                <version>2.0.0</version>
             </dependency>
 
             <!-- JAXB API (required for Java 9+) -->
             <dependency>
                 <groupId>jakarta.xml.bind</groupId>
                 <artifactId>jakarta.xml.bind-api</artifactId>
-                <version>2.3.3</version>
+                <version>3.0.1</version>
             </dependency>
             <dependency>
-                <groupId>com.sun.xml.bind</groupId>
-                <artifactId>jaxb-impl</artifactId>
-                <version>2.3.3</version>
+                <groupId>org.glassfish.jaxb</groupId>
+                <artifactId>jaxb-runtime</artifactId>
+                <version>3.0.2</version>
             </dependency>
 
             <!-- GPL JFreechartEngine for ZK -->
@@ -263,40 +286,60 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>5.1.1.Final</version>
+                <version>6.6.55.Final</version>
             </dependency>
 
+            <!--
+                hibernate-ehcache never reached GA for Hibernate 6.x (stuck at 6.0.0.Alpha*
+                forever - Hibernate 6 restructured 2nd-level caching to be JCache-based).
+                Replaced with hibernate-jcache + a JCache-compliant ehcache 3.x provider.
+                JCache (javax.cache, JSR-107) is a separate spec never renamed to jakarta.*,
+                so org.ehcache:ehcache needs no jakarta-specific variant.
+            -->
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-ehcache</artifactId>
-                <version>5.1.0.Final</version>
+                <artifactId>hibernate-jcache</artifactId>
+                <version>6.6.55.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.ehcache</groupId>
+                <artifactId>ehcache</artifactId>
+                <version>3.12.0</version>
             </dependency>
 
             <!-- Hibernate Validator -->
             <dependency>
-                <groupId>org.hibernate</groupId>
+                <groupId>org.hibernate.validator</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.3.6.Final</version>
+                <version>8.0.5.Final</version>
             </dependency>
 
             <!-- Javax EL (needed for javax validation) -->
             <dependency>
-                <groupId>javax.el</groupId>
-                <artifactId>javax.el-api</artifactId>
-                <version>3.0.0</version>
+                <groupId>jakarta.el</groupId>
+                <artifactId>jakarta.el-api</artifactId>
+                <version>4.0.0</version>
             </dependency>
 
-            <!-- Usertype.Core ( Significant for Hibernate ) -->
+            <!--
+                Jakarta EE APIs added by the OpenRewrite javax->jakarta migration recipe.
+                Centralized here rather than inline-versioned per-module, matching this
+                project's existing convention for every other dependency version.
+            -->
             <dependency>
-              <groupId>org.jadira.usertype</groupId>
-              <artifactId>usertype.core</artifactId>
-              <version>5.0.0.GA</version>
-                  <exclusions>
-                    <exclusion>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-entitymanager</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>jakarta.persistence</groupId>
+                <artifactId>jakarta.persistence-api</artifactId>
+                <version>3.1.0</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.transaction</groupId>
+                <artifactId>jakarta.transaction-api</artifactId>
+                <version>2.0.1</version>
+            </dependency>
+            <dependency>
+                <groupId>jakarta.validation</groupId>
+                <artifactId>jakarta.validation-api</artifactId>
+                <version>3.0.2</version>
             </dependency>
 
             <!-- JDBC driver -->
@@ -325,14 +368,14 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>4.3.9.RELEASE</version>
+                <version>6.2.19</version>
             </dependency>
 
             <!-- Spring Web -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>4.3.9.RELEASE</version>
+                <version>6.2.19</version>
             </dependency>
 
             <!--
@@ -343,46 +386,52 @@
             <!-- AspectJ Weaver -->
             <dependency>
                 <groupId>org.aspectj</groupId>
+                <!--
+                    1.8.9's jar has a zip64 extra field JDK 25's stricter zip reader
+                    rejects outright ("Invalid CEN header (invalid zip64 extra data field
+                    size)") even though older JDKs and independent zip tools read it fine -
+                    see jdk25-migration-baseline/CHANGES-and-WHY.md. Bumped past that.
+                -->
                 <artifactId>aspectjweaver</artifactId>
-                <version>1.8.9</version>
+                <version>1.9.25</version>
             </dependency>
 
             <!-- Spring context support -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>4.3.9.RELEASE</version>
+                <version>6.2.19</version>
             </dependency>
 
             <!--  Spring security -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-web</artifactId>
-                <version>4.2.3.RELEASE</version>
+                <version>6.5.11</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
-                <version>4.2.3.RELEASE</version>
+                <version>6.5.11</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-acl</artifactId>
-                <version>4.2.3.RELEASE</version>
+                <version>6.5.11</version>
             </dependency>
 
             <!-- Spring Dependency LDAP -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-ldap</artifactId>
-                <version>4.2.3.RELEASE</version>
+                <version>6.5.11</version>
             </dependency>
 
             <!-- Spring test -->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>4.3.9.RELEASE</version>
+                <version>6.2.19</version>
                 <scope>test</scope>
             </dependency>
 
@@ -402,26 +451,45 @@
                 <scope>test</scope>
             </dependency>
 
-            <!-- Easy mock -->
+            <!--
+            Easy mock. easymockclassextension used to be a separate artifact for mocking
+            concrete classes (via a bundled CGLIB); that capability was merged into the core
+            easymock artifact back in 3.2, and nothing in this codebase imports the old
+            org.easymock.classextension package, so it was dropped entirely as part of the
+            JDK 25 migration rather than just bumped - see
+            jdk25-migration-baseline/CHANGES-and-WHY.md.
+            -->
             <dependency>
                 <groupId>org.easymock</groupId>
                 <artifactId>easymock</artifactId>
-                <version>3.4</version>
+                <version>5.6.0</version>
                 <scope>test</scope>
             </dependency>
 
+            <!--
+                Hibernate 5.6.15 declares net.bytebuddy:byte-buddy:1.12.18 as a compile-scope
+                dependency, which wins Maven's "nearest declaration" mediation over the newer
+                1.17.5 EasyMock itself prefers (test-scope, further down the tree) - confirmed
+                with `dependency:tree -Dverbose`. 1.12.18 predates full JDK 21 support: under
+                JDK 21, EasyMock's ByteBuddy-based class mocking fails with
+                "IllegalArgumentException: ...$$$EasyMock$1 must be defined in the same
+                package as org.easymock.internal.ClassProxyFactory" (a ByteBuddy
+                Lookup-based class-injection issue, reproduced and root-caused directly - see
+                jdk25-migration-baseline/CHANGES-and-WHY.md). Forcing a current version
+                reactor-wide fixes it for every module, not just wherever EasyMock's own
+                declaration happens to win the conflict.
+            -->
             <dependency>
-                <groupId>org.easymock</groupId>
-                <artifactId>easymockclassextension</artifactId>
-                <version>3.2</version>
-                <scope>test</scope>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>1.18.11</version>
             </dependency>
 
             <!-- Commons Collections -->
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
-                <version>4.1</version>
+                <version>4.6.0</version>
             </dependency>
 
             <!-- Commons Lang -->
@@ -429,13 +497,6 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>3.4</version>
-            </dependency>
-
-            <!-- Commons Lang (legacy) -->
-            <dependency>
-                <groupId>commons-lang</groupId>
-                <artifactId>commons-lang</artifactId>
-                <version>2.6</version>
             </dependency>
 
             <!-- Commons Math-->
@@ -469,9 +530,9 @@
 
             <!-- Apache Commons Fileupload (required by ZK) -->
             <dependency>
-                <groupId>commons-fileupload</groupId>
-                <artifactId>commons-fileupload</artifactId>
-                <version>1.6.0</version>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-fileupload2-jakarta-servlet5</artifactId>
+                <version>2.0.0-M4</version>
                 <scope>runtime</scope>
             </dependency>
 
@@ -479,31 +540,31 @@
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zul</artifactId>
-                <version>8.6.0.1</version>
+                <version>10.3.0.1-jakarta</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkplus</artifactId>
-                <version>8.6.0.1</version>
+                <version>10.3.0.1-jakarta</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zkbind</artifactId>
-                <version>8.6.0.1</version>
+                <version>10.3.0.1-jakarta</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zkoss.common</groupId>
                 <artifactId>zcommon</artifactId>
-                <version>8.6.0.1</version>
+                <version>10.3.0.1-jakarta</version>
             </dependency>
 
             <dependency>
                 <groupId>org.zkoss.zk</groupId>
                 <artifactId>zk</artifactId>
-                <version>8.6.0.1</version>
+                <version>10.3.0.1-jakarta</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.jruby</groupId>
@@ -518,14 +579,47 @@
             <dependency>
                 <groupId>org.zkoss.common</groupId>
                 <artifactId>zweb</artifactId>
-                <version>8.6.0.1</version>
+                <version>10.3.0.1-jakarta</version>
+            </dependency>
+
+            <!--
+                ZK 8.6.0.1's own zel (expression-language) module declares javassist
+                3.18.2-GA as a direct dependency - a 2014-era version, from before JDK 9
+                module encapsulation existed. This dependencyManagement entry forces every
+                transitive pull of javassist reactor-wide to a modern version instead, since
+                ZK itself won't be bumped as part of this JDK 25 migration (see
+                jdk25-migration-baseline/CHANGES-and-WHY.md). javassist's core bytecode API
+                is stable across this range, so this is expected to be a safe override.
+            -->
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>3.32.0-GA</version>
+            </dependency>
+
+            <!--
+                jqplot4java 1.3.3 (used for the Dashboard's pie/task-status charts) declares
+                com.thoughtworks.xstream:xstream:1.4.7 as a direct dependency - a 2015-era
+                version, from before JDK 9 module encapsulation existed. XStream's
+                setupConverters() reflectively grabs java.util.TreeMap's private final
+                "comparator" field to build its default TreeMap converter, which fails under
+                JDK 9+ with "InaccessibleObjectException: module java.base does not \"opens
+                java.util\" to unnamed module" - reproduced live via the Dashboard tab
+                (ExceptionInInitializerError wrapping the InaccessibleObjectException).
+                Forcing a current XStream version reactor-wide fixes it: 1.4.10+ added a
+                JDK9+-safe reflection provider that no longer needs this to be opened.
+            -->
+            <dependency>
+                <groupId>com.thoughtworks.xstream</groupId>
+                <artifactId>xstream</artifactId>
+                <version>1.4.21</version>
             </dependency>
 
             <!-- JGraphT -->
             <dependency>
                 <groupId>org.jgrapht</groupId>
                 <artifactId>jgrapht-core</artifactId>
-                <version>0.9.2</version>
+                <version>1.5.3</version>
             </dependency>
 
             <!-- Jfreechart  -->
@@ -563,18 +657,22 @@
 
             <!-- Servlet -->
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>javax.servlet-api</artifactId>
-                <version>3.1.0</version>
+                <groupId>jakarta.servlet</groupId>
+                <artifactId>jakarta.servlet-api</artifactId>
+                <version>5.0.0</version>
                 <type>jar</type>
                 <scope>provided</scope>
             </dependency>
 
-            <!-- JAX-RS API -->
+            <!--
+                JAX-RS API. 3.0.0 predates jakarta.ws.rs.core.EntityPart (added in 3.1); CXF
+                4.1.8 needs it, so bean creation for the REST servlet fails with
+                NoClassDefFoundError at webapp startup with 3.0.0 on the classpath.
+            -->
             <dependency>
-                <groupId>javax.ws.rs</groupId>
-                <artifactId>javax.ws.rs-api</artifactId>
-                <version>2.0.1</version>
+                <groupId>jakarta.ws.rs</groupId>
+                <artifactId>jakarta.ws.rs-api</artifactId>
+                <version>3.1.0</version>
             </dependency>
 
             <!--
@@ -590,7 +688,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-transports-http</artifactId>
-                <version>3.1.7</version>
+                <version>4.1.8</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
@@ -618,7 +716,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-frontend-jaxrs</artifactId>
-                <version>3.1.7</version>
+                <version>4.1.8</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.springframework</groupId>
@@ -642,7 +740,7 @@
             <dependency>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-rt-rs-client</artifactId>
-                <version>3.1.7</version>
+                <version>4.1.8</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.codehaus.woodstox</groupId>
@@ -651,39 +749,36 @@
                 </exclusions>
             </dependency>
 
-            <!-- Jackson provider -->
+            <!--
+                Jackson provider. The OpenRewrite recipe picked 2.13.5 by default; bumped to
+                2.22.1 to match what CXF 4.1.8 itself expects (cxf.jackson.version) - CXF 4.2.0+
+                jumped to Jackson 3.x (new tools.jackson groupId), deliberately not targeted
+                here, same reasoning as staying on Spring 6.x for now (see Phase-5 plan doc).
+            -->
             <dependency>
-                <groupId>com.fasterxml.jackson.jaxrs</groupId>
-                <artifactId>jackson-jaxrs-json-provider</artifactId>
-                <version>2.17.2</version>
+                <groupId>com.fasterxml.jackson.jakarta.rs</groupId>
+                <artifactId>jackson-jakarta-rs-json-provider</artifactId>
+                <version>2.22.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
-                <artifactId>jackson-module-jaxb-annotations</artifactId>
-                <version>2.17.2</version>
+                <artifactId>jackson-module-jakarta-xmlbind-annotations</artifactId>
+                <version>2.22.1</version>
             </dependency>
 
-            <!-- ZK Timeplot -->
+            <!--
+                Chart.js (replaces the old ZK Timeplot/timeplotz/timelinez widget - that vendored
+                ~2010-era Simile Widgets JS had a genuine bug in its bundled error handler and,
+                once that was patched, turned out to loop against ZK's AU cycle indefinitely.
+                Delivered as a webjar so it resolves through the normal Maven dependency flow;
+                Jetty serves META-INF/resources/** automatically per the Servlet 3.0+ spec, so no
+                extra servlet wiring is needed - see common/layout/template.zul for the <script>
+                include and common/js/libreplan-chart.js for the small wrapper that drives it.
+            -->
             <dependency>
-                <groupId>dev.libreplan.zkoss</groupId>
-                <artifactId>timeplotz</artifactId>
-                <version>1.1_50b</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.zkoss.zkforge</groupId>
-                <artifactId>timelinez</artifactId>
-                <version>2.3.1_50</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.zkoss.common</groupId>
-                        <artifactId>zcommon</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.zkoss.common</groupId>
-                        <artifactId>zweb</artifactId>
-                    </exclusion>
-                </exclusions>
+                <groupId>org.webjars.npm</groupId>
+                <artifactId>chart.js</artifactId>
+                <version>4.4.0</version>
             </dependency>
 
             <!-- LiquiBase -->
@@ -710,7 +805,40 @@
             <dependency>
                 <groupId>net.sf.mpxj</groupId>
                 <artifactId>mpxj</artifactId>
+                <!--
+                    Deliberately still 9.0.0, not bumped: every later mpxj release changes real API
+                    surface this project actually uses (13.0.0, the last on the old net.sf.mpxj
+                    package name, already replaced java.util.Date with java.time.LocalDate/
+                    LocalDateTime across ProjectCalendar/ProjectCalendarWeek/Task, and dropped/
+                    renamed several methods MPXJProjectFileConverter.java calls; 14.0.0+ additionally
+                    renames the whole net.sf.mpxj package to org.mpxj). That's a real, behavior-
+                    sensitive rewrite of this project's own calendar/date-conversion logic, not a
+                    version-number bump - out of scope here, see javax.xml.bind-api below for the
+                    actual fix to the JDK-11-removed-JAXB crash. Revisit as its own scoped piece of
+                    work (Phase 6, item 6.1.2 follow-up).
+                -->
                 <version>9.0.0</version>
+            </dependency>
+
+            <!--
+                mpxj:9.0.0 (above) reflectively references javax.xml.bind.JAXBException
+                (net.sf.mpxj.reader.ProjectReaderUtility.getProjectReader), which no longer ships
+                with the JDK since Java 11 and isn't provided anywhere else on this project's
+                classpath (everything else moved to jakarta.xml.bind for the Jakarta migration).
+                This is purely a compatibility shim for mpxj's benefit, scoped to libreplan-webapp
+                only (see its pom.xml) - nothing in org.libreplan.* imports javax.xml.bind.
+            -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>2.3.1</version>
+            </dependency>
+            <!-- jaxb-api alone isn't enough - JAXBContext.newInstance() needs a real implementation
+                 on the classpath too, which nothing else here provides any more. -->
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>2.3.3</version>
             </dependency>
 
             <!-- ZK fileupload -->
@@ -724,7 +852,7 @@
             <dependency>
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz</artifactId>
-                <version>2.3.2</version>
+                <version>2.5.2</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.slf4j</groupId>
@@ -739,9 +867,19 @@
 
             <!-- Java mail -->
             <dependency>
-                <groupId>com.sun.mail</groupId>
-                <artifactId>javax.mail</artifactId>
-                <version>1.5.5</version>
+                <groupId>jakarta.mail</groupId>
+                <artifactId>jakarta.mail-api</artifactId>
+                <version>2.1.3</version>
+            </dependency>
+            <!--
+                jakarta.mail-api is API-only; the old com.sun.mail:javax.mail artifact it
+                replaced bundled both API and implementation together. Angus Mail is the
+                Eclipse-hosted successor implementation for the Jakarta Mail generation.
+            -->
+            <dependency>
+                <groupId>org.eclipse.angus</groupId>
+                <artifactId>angus-mail</artifactId>
+                <version>2.0.5</version>
             </dependency>
 
         </dependencies>
@@ -852,11 +990,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.15.0</version>
                 <configuration>
                     <verbose>true</verbose>
-                    <source>1.8</source>
-                    <target>1.8</target>
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
@@ -875,7 +1011,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.6</version>
+                <version>3.5.1</version>
                 <configuration>
                     <!--
                         Safety net for LibrePlan #2067: keep the obsolete
@@ -899,7 +1035,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
+                <version>3.5.6</version>
                 <configuration>
                     <runOrder>alphabetical</runOrder>
                 </configuration>
@@ -910,7 +1046,29 @@
             <plugin>
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>9.4.56.v20240826</version>
+                <!--
+                    9.4.x is javax.servlet-based and predates Jakarta EE entirely - it cannot serve
+                    this app's jakarta.servlet 5.0 (Jakarta EE 9) classes. 11.0.x is the matching
+                    Jakarta EE 9 generation.
+
+                    Bumped 11.0.24 -> 11.0.26 (Phase 6 follow-up, JDK25/Jakarta migration): once
+                    maven.compiler.release went to 25, jetty:run's own annotation scanner
+                    (jetty-annotations, used to discover Servlet 3.0+ annotations at startup)
+                    started failing with "Unsupported class file major version 69" on every one of
+                    this project's own compiled classes, taking the whole webapp down (503). Root
+                    cause: jetty-annotations bundles org.ow2.asm:asm, and 11.0.24 pins ASM 9.7,
+                    which doesn't understand Java 25 class files at all. Verified directly
+                    (not just inferred from changelogs): fed the exact same compiled .class file to
+                    ASM 9.7 (throws IllegalArgumentException: Unsupported class file major version
+                    69) and ASM 9.8 (parses it fine) via a standalone test. 11.0.26 is the first
+                    11.0.x release that bundles ASM 9.8 instead of 9.7 - confirmed by diffing the
+                    asm.version property between the two releases' jetty-project poms on Maven
+                    Central. This has no bearing on maven.compiler.release itself - that's a
+                    javac/JVM bytecode-target setting; this is purely about a build-time tool
+                    (Jetty's own embedded annotation scanner) needing to be new enough to read the
+                    bytecode this project now produces.
+                -->
+                <version>11.0.26</version>
                 <configuration>
                     <systemProperties>
                         <systemProperty>
@@ -918,18 +1076,23 @@
                             <value>true</value>
                         </systemProperty>
                     </systemProperties>
-                    <jettyXml>target/jetty/jetty-env.xml</jettyXml>
+                    <!--
+                        jetty-env.xml's root is <Configure class="org.eclipse.jetty.webapp.WebAppContext">
+                        - a webapp-context-scoped file, so it belongs in contextXml (applied to this
+                        specific webapp). jettyXml/jettyXmls are for server-level files applied before
+                        any webapp exists; passing a WebAppContext file there meant the JNDI datasource
+                        resource never ended up bound into this webapp's java:comp/env, so Spring's
+                        dataSource bean failed with NameNotFoundException: jdbc is not bound.
+                    -->
+                    <contextXml>target/jetty/jetty-env.xml</contextXml>
                     <reload>manual</reload>
                     <stopPort>${jetty-stop-port}</stopPort>
                     <stopKey>stop</stopKey>
-                    <!-- Log to the console -->
-                    <requestLog implementation="org.eclipse.jetty.server.NCSARequestLog">
-                        <!--
-                            This do anything for Jetty,
-                            but is a workaround for a Maven bug that prevents the requestLog from being set.
-                        -->
-                        <append>true</append>
-                    </requestLog>
+                    <!--
+                        No requestLog config here (there used to be one, pinned to the now-removed
+                        org.eclipse.jetty.server.NCSARequestLog): the comment on it already said it
+                        was inert, just a workaround for an old Maven bug, not functional logging.
+                    -->
                     <httpConnector>
                         <port>${jetty-port}</port>
                     </httpConnector>

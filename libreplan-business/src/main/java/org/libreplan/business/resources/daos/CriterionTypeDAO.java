@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,11 +25,12 @@ package org.libreplan.business.resources.daos;
 import java.util.Collection;
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.Validate;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.CriterionType;
@@ -50,10 +52,11 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     @Override
     public CriterionType findByName(String name) {
-        return (CriterionType) getSession()
-                .createCriteria(CriterionType.class)
-                .add(Restrictions.eq("name", name).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CriterionType> cq = cb.createQuery(CriterionType.class);
+        Root<CriterionType> root = cq.from(CriterionType.class);
+        cq.where(cb.equal(cb.lower(root.get("name")), name.toLowerCase()));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override
@@ -133,14 +136,14 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
         return uniqueByInternalName(criterionType);
     }
 
-    private Criteria byInternalName(String predefinedTypeInternalName) {
-        Criteria result = getSession().createCriteria(CriterionType.class);
-        result.add(Restrictions.eq("predefinedTypeInternalName", predefinedTypeInternalName).ignoreCase());
-        return result;
-    }
-
     private CriterionType uniqueByInternalName(CriterionType criterionType) {
-        return (CriterionType) byInternalName(criterionType.getPredefinedTypeInternalName()).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CriterionType> cq = cb.createQuery(CriterionType.class);
+        Root<CriterionType> root = cq.from(CriterionType.class);
+        cq.where(cb.equal(
+                cb.lower(root.get("predefinedTypeInternalName")),
+                criterionType.getPredefinedTypeInternalName().toLowerCase()));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override
@@ -166,19 +169,21 @@ public class CriterionTypeDAO extends IntegrationEntityDAO<CriterionType>
 
     @Override
     public List<CriterionType> getSortedCriterionTypes() {
-        return getSession()
-                .createCriteria(CriterionType.class)
-                .addOrder(Order.asc("name"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CriterionType> cq = cb.createQuery(CriterionType.class);
+        Root<CriterionType> root = cq.from(CriterionType.class);
+        cq.orderBy(cb.asc(root.get("name")));
+        return getSession().createQuery(cq).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<CriterionType> getCriterionTypesByResources(Collection<ResourceEnum> resources) {
-        return getSession()
-                .createCriteria(CriterionType.class)
-                .add(Restrictions.in("resource", resources))
-                .addOrder(Order.asc("name")).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<CriterionType> cq = cb.createQuery(CriterionType.class);
+        Root<CriterionType> root = cq.from(CriterionType.class);
+        cq.where(root.get("resource").in(resources));
+        cq.orderBy(cb.asc(root.get("name")));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

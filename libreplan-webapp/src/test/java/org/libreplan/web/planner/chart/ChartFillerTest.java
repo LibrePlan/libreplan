@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -70,11 +71,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.util.Interval;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zul.Div;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 /**
  * Tests for {@link ChartFiller}.
@@ -94,7 +95,7 @@ public class ChartFillerTest {
     private ChartFiller chartFiller = new ChartFiller() {
 
         @Override
-        public void fillChart(Timeplot chart, Interval interval, Integer size) {
+        public void fillChart(Div chart, Interval interval, Integer size) {
         }
 
     };

@@ -1,0 +1,10 @@
+[   64316ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://lpnext.dsg.lan:8080/common/layout/login.zul:0
+[   65981ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-a84c390c4a78a3d2.js:13
+[   66093ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-a84c390c4a78a3d2.js:13
+[   68404ms] [LOG] LegendResize @ http://lpnext.dsg.lan:8080/zkau/web/_zv1.6.1/js/ganttz.wpd:665
+[  248338ms] [LOG] LegendResize @ http://lpnext.dsg.lan:8080/zkau/web/_zv1.6.1/js/ganttz.wpd:665
+[  257814ms] [ERROR] Failed to load resource: the server responded with a status of 404 () @ http://lpnext.dsg.lan:8080/planner/__history__.html?0:0
+[  257829ms] [LOG] LegendResize @ http://lpnext.dsg.lan:8080/zkau/web/_zv1.6.1/js/ganttz.wpd:665
+[  257897ms] TypeError: Cannot read properties of null (reading 'length')
+    at Timeplot._Impl.repaint (http://lpnext.dsg.lan:8080/zkau/web/_zv2018112010/js/timeplotz.wpd:3:4685)
+    at http://lpnext.dsg.lan:8080/zkau/web/_zv2018112010/js/timeplotz.wpd:10:4710

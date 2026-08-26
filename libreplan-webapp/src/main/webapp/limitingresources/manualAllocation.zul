@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -38,8 +39,8 @@
                 </columns>
                 <rows>
                     <row>
-                        <label value="@{manualAllocationController.resourceOrCriteria}" />
-                        <label value="@{manualAllocationController.hours}" />
+                        <label value="@load(manualAllocationController.resourceOrCriteria)" />
+                        <label value="@load(manualAllocationController.hours)" />
                     </row>
                 </rows>
             </grid>
@@ -63,17 +64,17 @@
                     <rows>
                         <row>
                             <label value="Current queue" />
-                            <label value="@{manualAllocationController.currentQueue}" />
+                            <label value="@load(manualAllocationController.currentQueue)" />
                         </row>
 
                         <row>
                             <label value="Start date" />
-                            <label value="@{manualAllocationController.currentStart}" />
+                            <label value="@load(manualAllocationController.currentStart)" />
                         </row>
 
                         <row>
                             <label value="End date" />
-                            <label value="@{manualAllocationController.currentEnd}" />
+                            <label value="@load(manualAllocationController.currentEnd)" />
                         </row>
                     </rows>
                 </grid>
@@ -120,7 +121,7 @@
         <panel title="${i18n:_t('Select gap')}" border="normal" sclass="queue-element-information">
             <panelchildren>
                 <listbox id="listCandidateGaps" sclass="queue-element-information"
-                         itemRenderer="@{manualAllocationController.candidateGapRenderer}"
+                         itemRenderer="@load(manualAllocationController.candidateGapRenderer)"
                          multiple="false"
                          onSelect="manualAllocationController.setStartAllocationDate(event)">
                     <listhead>

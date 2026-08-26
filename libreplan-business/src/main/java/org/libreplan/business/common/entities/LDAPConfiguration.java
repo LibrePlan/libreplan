@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 Comtecsf
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -145,6 +146,13 @@ public class LDAPConfiguration extends BaseEntity {
         return ldapSavePasswordsDB;
     }
 
+    // The EL Introspector only recognizes an "isX" getter when it returns primitive boolean - this
+    // one returns boxed Boolean, so "ldapSavePasswordsDB" is only resolvable as a bind property via
+    // this getX-named companion (matches getLdapAuthEnabled()/getLdapSaveRolesDB() just above).
+    public Boolean getLdapSavePasswordsDB() {
+        return isLdapSavePasswordsDB();
+    }
+
     public void setLdapSavePasswordsDB(Boolean ldapSavePasswordsDB) {
         this.ldapSavePasswordsDB = ldapSavePasswordsDB;
     }
@@ -163,10 +171,6 @@ public class LDAPConfiguration extends BaseEntity {
 
     public void setLdapSaveRolesDB(Boolean ldapSaveRolesDB) {
         this.ldapSaveRolesDB = ldapSaveRolesDB;
-    }
-
-    public Boolean getLdapSavePasswordsDB() {
-        return ldapSavePasswordsDB;
     }
 
     public String getLdapGroupPath() {

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2015 LibrePlan
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,10 @@
 
 package org.libreplan.business.common.daos;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.entities.Limits;
 import org.springframework.stereotype.Repository;
 
@@ -42,11 +46,12 @@ public class LimitsDAO extends GenericDAOHibernate<Limits, Long> implements ILim
 
     @Override
     public Limits getLimitsByType(String type) {
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Limits> cq = cb.createQuery(Limits.class);
+        Root<Limits> root = cq.from(Limits.class);
+        cq.where(cb.equal(root.get("type"), type));
 
-        return (Limits) getSession()
-                .createCriteria(Limits.class)
-                .add(Restrictions.eq("type", type))
-                .uniqueResult();
+        return getSession().createQuery(cq).uniqueResult();
     }
 
 }

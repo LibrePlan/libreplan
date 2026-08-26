@@ -1,0 +1,4 @@
+[   63980ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://lpnext.dsg.lan:8080/common/layout/login.zul:0
+[   65627ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-e4ece7b34f8127fc.js:13
+[   65740ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-e4ece7b34f8127fc.js:13
+[   67933ms] [LOG] LegendResize @ http://lpnext.dsg.lan:8080/zkau/web/_zv1.6.1/js/ganttz.wpd:665

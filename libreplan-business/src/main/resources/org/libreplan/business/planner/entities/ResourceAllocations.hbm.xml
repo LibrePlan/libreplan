@@ -99,14 +99,14 @@
         <many-to-one name="scenario" />
 
         <component name="intraDayStart" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="start_date" />
+            <property name="date" column="start_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="duration_start_in_first_day"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="intraDayEnd" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="end_date" />
+            <property name="date" column="end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="duration_in_last_day"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
@@ -138,14 +138,14 @@
         <many-to-one name="scenario" />
 
         <component name="intraDayStart" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="start_date" />
+            <property name="date" column="start_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="duration_start_in_first_day"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="intraDayEnd" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="end_date" />
+            <property name="date" column="end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="duration_in_last_day"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
@@ -206,12 +206,12 @@
         <property name="creationTimestamp" column="creation_timestamp" />
 
         <component name="startQueuePosition" class="org.libreplan.business.planner.limiting.entities.QueuePosition">
-            <property name="date" column="start_date"/>
+            <property name="date" column="start_date" type="org.libreplan.business.workingday.hibernate.LocalDateType"/>
             <property name="hour" column="start_hour" />
         </component>
 
         <component name="endQueuePosition" class="org.libreplan.business.planner.limiting.entities.QueuePosition">
-            <property name="date" column="end_date"/>
+            <property name="date" column="end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType"/>
             <property name="hour" column="end_hour" />
         </component>
 
@@ -278,7 +278,7 @@
 
         <property name="consolidated" access="field"/>
 
-        <property name="day"/>
+        <property name="day" type="org.libreplan.business.workingday.hibernate.LocalDateType"/>
 
         <!--
         Not indexed.

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,10 +34,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Objects;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.email.daos.IEmailNotificationDAO;
@@ -91,22 +94,24 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Override
     public List<OrderElement> findWithoutParent() {
-        return getSession()
-                .createCriteria(OrderElement.class)
-                .add(Restrictions.isNull("parent"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(OrderElement.class);
+        Root<OrderElement> root = cq.from(OrderElement.class);
+        cq.where(cb.isNull(root.get("parent")));
+        return getSession().createQuery(cq).getResultList();
     }
 
     public List<OrderElement> findByCodeAndParent(OrderElement parent, String code) {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("infoComponent.code", code));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(OrderElement.class);
+        Root<OrderElement> root = cq.from(OrderElement.class);
 
         if ( parent != null ) {
-            c.add(Restrictions.eq("parent", parent));
+            cq.where(cb.equal(root.get("infoComponent").get("code"), code), cb.equal(root.get("parent"), parent));
         } else {
-            c.add(Restrictions.isNull("parent"));
+            cq.where(cb.equal(root.get("infoComponent").get("code"), code), cb.isNull(root.get("parent")));
         }
-        return c.list();
+        return getSession().createQuery(cq).getResultList();
     }
 
     public OrderElement findUniqueByCodeAndParent(OrderElement parent, String code) throws InstanceNotFoundException {
@@ -200,13 +205,13 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Override
     public List<OrderElement> findAll() {
-        return getSession()
-                .createCriteria(getEntityClass())
-                .addOrder(org.hibernate.criterion.Order.asc("infoComponent.code"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(getEntityClass());
+        Root<OrderElement> root = cq.from(getEntityClass());
+        cq.orderBy(cb.asc(root.get("infoComponent").get("code")));
+        return getSession().createQuery(cq).getResultList();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @Transactional(readOnly = true)
     public OrderElement findByCode(String code) throws InstanceNotFoundException {
@@ -215,10 +220,11 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
             throw new InstanceNotFoundException(null, getEntityClass().getName());
         }
 
-        OrderElement entity = (OrderElement) getSession()
-                .createCriteria(getEntityClass())
-                .add(Restrictions.eq("infoComponent.code", code.trim()).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(getEntityClass());
+        Root<OrderElement> root = cq.from(getEntityClass());
+        cq.where(cb.equal(cb.lower(root.get("infoComponent").get("code")), code.trim().toLowerCase()));
+        OrderElement entity = getSession().createQuery(cq).uniqueResult();
 
         if ( entity == null ) {
             throw new InstanceNotFoundException(code, getEntityClass().getName());
@@ -229,18 +235,21 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
     }
 
     public List<OrderElement> findByTemplate(OrderElementTemplate template) {
-        return getSession()
-                .createCriteria(OrderElement.class)
-                .add(Restrictions.eq("template", template))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(OrderElement.class);
+        Root<OrderElement> root = cq.from(OrderElement.class);
+        cq.where(cb.equal(root.get("template"), template));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public OrderElement findUniqueByCode(String code) throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(OrderElement.class);
-        c.add(Restrictions.eq("infoComponent.code", code));
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(OrderElement.class);
+        Root<OrderElement> root = cq.from(OrderElement.class);
+        cq.where(cb.equal(root.get("infoComponent").get("code"), code));
 
-        OrderElement orderElement = (OrderElement) c.uniqueResult();
+        OrderElement orderElement = getSession().createQuery(cq).uniqueResult();
         if ( orderElement == null ) {
             throw new InstanceNotFoundException(code, OrderElement.class.getName());
         } else {
@@ -262,14 +271,14 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
 
     @Override
     public List<OrderElement> findOrderElementsWithExternalCode() {
-        return getSession()
-                .createCriteria(OrderElement.class)
-                .add(Restrictions.isNotNull("externalCode"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(OrderElement.class);
+        Root<OrderElement> root = cq.from(OrderElement.class);
+        cq.where(cb.isNotNull(root.get("externalCode")));
+        return getSession().createQuery(cq).getResultList();
     }
 
 
-    @SuppressWarnings("unchecked")
     @Override
     public OrderElement findByExternalCode(String code) throws InstanceNotFoundException {
 
@@ -277,10 +286,11 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
             throw new InstanceNotFoundException(null, getEntityClass().getName());
         }
 
-        OrderElement entity = (OrderElement) getSession()
-                .createCriteria(OrderElement.class)
-                .add(Restrictions.eq("externalCode", code.trim()).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderElement> cq = cb.createQuery(OrderElement.class);
+        Root<OrderElement> root = cq.from(OrderElement.class);
+        cq.where(cb.equal(cb.lower(root.get("externalCode")), code.trim().toLowerCase()));
+        OrderElement entity = getSession().createQuery(cq).uniqueResult();
 
         if ( entity == null ) {
             throw new InstanceNotFoundException(code, getEntityClass().getName());
@@ -402,13 +412,17 @@ public class OrderElementDAO extends IntegrationEntityDAO<OrderElement> implemen
         if ( orderElement.isNewObject() ) {
             return false;
         }
-        boolean usedInWorkReports = !getSession()
-                .createCriteria(WorkReport.class)
-                .add(Restrictions.eq("orderElement", orderElement)).list().isEmpty();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
 
-        boolean usedInWorkReportLines = !getSession()
-                .createCriteria(WorkReportLine.class)
-                .add(Restrictions.eq("orderElement", orderElement)).list().isEmpty();
+        CriteriaQuery<WorkReport> workReportCq = cb.createQuery(WorkReport.class);
+        Root<WorkReport> workReportRoot = workReportCq.from(WorkReport.class);
+        workReportCq.where(cb.equal(workReportRoot.get("orderElement"), orderElement));
+        boolean usedInWorkReports = !getSession().createQuery(workReportCq).getResultList().isEmpty();
+
+        CriteriaQuery<WorkReportLine> workReportLineCq = cb.createQuery(WorkReportLine.class);
+        Root<WorkReportLine> workReportLineRoot = workReportLineCq.from(WorkReportLine.class);
+        workReportLineCq.where(cb.equal(workReportLineRoot.get("orderElement"), orderElement));
+        boolean usedInWorkReportLines = !getSession().createQuery(workReportLineCq).getResultList().isEmpty();
 
         return usedInWorkReports || usedInWorkReportLines;
     }

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2015 LibrePlan
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,10 @@
 
 package org.libreplan.business.email.daos;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.email.entities.EmailNotification;
 import org.libreplan.business.email.entities.EmailTemplateEnum;
@@ -48,26 +52,29 @@ public class EmailNotificationDAO
 
     @Override
     public List<EmailNotification> getAllByType(EmailTemplateEnum enumeration) {
-        return getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailNotification> cq = cb.createQuery(EmailNotification.class);
+        Root<EmailNotification> root = cq.from(EmailNotification.class);
+        cq.where(cb.equal(root.get("type"), enumeration));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public List<EmailNotification> getAllByProject(TaskElement taskElement) {
-       return getSession()
-               .createCriteria(EmailNotification.class)
-               .add(Restrictions.eq("project", taskElement))
-               .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailNotification> cq = cb.createQuery(EmailNotification.class);
+        Root<EmailNotification> root = cq.from(EmailNotification.class);
+        cq.where(cb.equal(root.get("project"), taskElement));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public List<EmailNotification> getAllByTask(TaskElement taskElement) {
-        return getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("task", taskElement))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailNotification> cq = cb.createQuery(EmailNotification.class);
+        Root<EmailNotification> root = cq.from(EmailNotification.class);
+        cq.where(cb.equal(root.get("task"), taskElement));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -83,19 +90,21 @@ public class EmailNotificationDAO
 
     @Override
     public boolean deleteAllByType(EmailTemplateEnum enumeration) {
-        List<EmailNotification> notifications = getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailNotification> cq = cb.createQuery(EmailNotification.class);
+        Root<EmailNotification> root = cq.from(EmailNotification.class);
+        cq.where(cb.equal(root.get("type"), enumeration));
+        List<EmailNotification> notifications = getSession().createQuery(cq).getResultList();
 
         for (Object item : notifications){
             getSession().delete(item);
         }
 
-        return getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("type", enumeration.ordinal()))
-                .list()
+        CriteriaQuery<EmailNotification> cq2 = cb.createQuery(EmailNotification.class);
+        Root<EmailNotification> root2 = cq2.from(EmailNotification.class);
+        cq2.where(cb.equal(root2.get("type"), enumeration));
+        return getSession().createQuery(cq2)
+                .getResultList()
                 .isEmpty();
     }
 
@@ -103,10 +112,11 @@ public class EmailNotificationDAO
     public boolean deleteById(EmailNotification notification) {
         getSession().delete(notification);
 
-        return getSession()
-                .createCriteria(EmailNotification.class)
-                .add(Restrictions.eq("id", notification.getId()))
-                .uniqueResult() == null;
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<EmailNotification> cq = cb.createQuery(EmailNotification.class);
+        Root<EmailNotification> root = cq.from(EmailNotification.class);
+        cq.where(cb.equal(root.get("id"), notification.getId()));
+        return getSession().createQuery(cq).uniqueResult() == null;
     }
 
     @Override

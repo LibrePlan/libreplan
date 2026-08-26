@@ -1,0 +1,39 @@
+- generic [active] [ref=f19e1]:
+  - 'heading "Directory: /resources/search/" [level=1] [ref=f19e2]'
+  - table [ref=f19e3]:
+    - rowgroup [ref=f19e4]:
+      - row [ref=f19e5]:
+        - columnheader [ref=f19e6]:
+          - link "Name ⇧" [ref=f19e7] [cursor=pointer]:
+            - /url: "?C=N&O=D"
+        - columnheader [ref=f19e8]:
+          - link "Last Modified" [ref=f19e9] [cursor=pointer]:
+            - /url: "?C=M&O=A"
+        - columnheader [ref=f19e10]:
+          - link "Size" [ref=f19e11] [cursor=pointer]:
+            - /url: "?C=S&O=A"
+    - rowgroup [ref=f19e12]:
+      - row [ref=f19e13]:
+        - cell [ref=f19e14]:
+          - link "Parent Directory" [ref=f19e15] [cursor=pointer]:
+            - /url: /resources/search/../
+        - cell "-" [ref=f19e16]
+        - cell "-" [ref=f19e17]
+      - row [ref=f19e18]:
+        - cell [ref=f19e19]:
+          - link "_resourceFilter.zul" [ref=f19e20] [cursor=pointer]:
+            - /url: /resources/search/_resourceFilter.zul
+        - cell "Aug 18, 2026, 9:50:37 PM" [ref=f19e21]
+        - cell "2,463 bytes" [ref=f19e22]
+      - row [ref=f19e23]:
+        - cell [ref=f19e24]:
+          - link "allocation_selector_combo.zul" [ref=f19e25] [cursor=pointer]:
+            - /url: /resources/search/allocation_selector_combo.zul
+        - cell "Aug 15, 2026, 6:21:40 PM" [ref=f19e26]
+        - cell "1,386 bytes" [ref=f19e27]
+      - row [ref=f19e28]:
+        - cell [ref=f19e29]:
+          - link "allocation_selector.zul" [ref=f19e30] [cursor=pointer]:
+            - /url: /resources/search/allocation_selector.zul
+        - cell "Aug 18, 2026, 9:51:19 PM" [ref=f19e31]
+        - cell "6,685 bytes" [ref=f19e32]

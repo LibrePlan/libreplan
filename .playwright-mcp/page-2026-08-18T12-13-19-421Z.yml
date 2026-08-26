@@ -1,0 +1,94 @@
+- generic [ref=f696e4]:
+  - generic [ref=f696e5]:
+    - table [ref=f696e6]:
+      - rowgroup [ref=f696e7]:
+        - row [ref=f696e8]:
+          - cell [ref=f696e9]:
+            - link [ref=f696e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f696e12]:
+            - table [ref=f696e13]:
+              - rowgroup [ref=f696e14]:
+                - row [ref=f696e15]:
+                  - cell [ref=f696e16]:
+                    - generic [ref=f696e17]:
+                      - menubar [ref=f696e18]:
+                        - menuitem "Personal area" [ref=f696e19] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f696e21]:
+                        - rowgroup [ref=f696e22]:
+                          - row [ref=f696e23]:
+                            - cell [ref=f696e24]:
+                              - table [ref=f696e25]:
+                                - rowgroup [ref=f696e26]:
+                                  - row [ref=f696e27]:
+                                    - cell [ref=f696e28]
+                                    - cell [ref=f696e29]:
+                                      - strong [ref=f696e30]: START
+                                    - cell [ref=f696e31]
+                                    - cell:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f696e32]:
+                              - generic [ref=f696e33]:
+                                - link "Help" [ref=f696e34] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f696e36]
+                                - img "Info" [ref=f696e38]
+    - table [ref=f696e40]:
+      - rowgroup [ref=f696e41]:
+        - row [ref=f696e42]:
+          - cell [ref=f696e43]
+          - cell "user:" [ref=f696e44]
+          - cell [ref=f696e45]:
+            - link "[Log out]" [ref=f696e46] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f696e47]:
+    - text:    
+    - table [ref=f696e50]:
+      - rowgroup [ref=f696e51]:
+        - row [ref=f696e52]:
+          - cell [ref=f696e53]:
+            - table [ref=f696e54]:
+              - rowgroup [ref=f696e55]:
+                - row [ref=f696e56]:
+                  - cell "The page that you are requesting does not exist." [ref=f696e57]
+                - row [ref=f696e58]:
+                  - cell [ref=f696e59]
+                - row [ref=f696e60]:
+                  - cell [ref=f696e61]:
+                    - table [ref=f696e62]:
+                      - rowgroup [ref=f696e63]:
+                        - row [ref=f696e64]:
+                          - cell [ref=f696e65]:
+                            - table [ref=f696e66]:
+                              - rowgroup [ref=f696e67]:
+                                - row [ref=f696e68]:
+                                  - cell "If you entered the URL directly in the navigation bar of the browser, please review it or click in the following link in order to go to initial page:" [ref=f696e69]
+                                  - cell [ref=f696e70]
+                                  - cell [ref=f696e71]:
+                                    - link "Go to init" [ref=f696e72] [cursor=pointer]:
+                                      - /url: /
+                - row [ref=f696e73]:
+                  - cell [ref=f696e74]
+                - row [ref=f696e75]:
+                  - cell "If you reached this page from another page of LibrePlan please notify us in order to fix it as soon as possible." [ref=f696e76]
+                - row [ref=f696e77]:
+                  - cell [ref=f696e78]
+                - row [ref=f696e79]:
+                  - cell "Sorry for the inconvenience." [ref=f696e80]
+                - row [ref=f696e81]:
+                  - cell [ref=f696e82]

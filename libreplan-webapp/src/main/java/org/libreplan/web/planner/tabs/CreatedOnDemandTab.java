@@ -24,6 +24,7 @@ import org.apache.commons.lang3.Validate;
 import org.zkoss.ganttz.extensions.ITab;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Desktop;
+import org.zkoss.zk.ui.sys.Attributes;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -78,6 +79,17 @@ public class CreatedOnDemandTab implements ITab {
         beforeShowAction();
         if (component == null) {
             component = componentCreator.create(parent);
+
+            // Native (<n:...>) content anywhere under this tab (e.g. ganttzk's TimeTracker
+            // header, chart legend swatches) renders as a deferred "#stub" placeholder needing a
+            // separate client-side mount round trip whenever it's (re)sent via a partial AU
+            // update - which is exactly what happens every time this tab is hidden (detach())
+            // and reshown (setParent() below) after the first time. That mount round trip doesn't
+            // survive the cycle, leaving the reshown tab blank with a client-side "Unknown stub"
+            // error. Attributes.STUB_NATIVE disables the deferred stub for this component and,
+            // per ZK's rendering walk, cascades to every native element nested under it, so it's
+            // set once here rather than chasing down each individual native element.
+            component.setAttribute(Attributes.STUB_NATIVE, Boolean.FALSE);
         }
         component.setParent(parent);
         afterShowAction();

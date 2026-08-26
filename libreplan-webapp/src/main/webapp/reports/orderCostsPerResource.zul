@@ -2,6 +2,7 @@
     This file is part of LibrePlan
 
     Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
+    Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
     Desenvolvemento Tecnolóxico de Galicia
 
     This program is free software: you can redistribute it and/or modify
@@ -19,7 +20,7 @@
 -->
 
 <?page id="reports" title="${i18n:_t('LibrePlan: Project Costs')}" ?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
 
 <?link rel="shortcut icon" href="/common/img/favicon.ico" type="image/x-icon"?>
@@ -57,13 +58,13 @@
                                     <row>
                                         <label value="${i18n:_t('Work done from starting date')}" />
                                         <datebox id="startingDate" width="200px"
-                                                 constraint = "@{controller.checkConstraintStartingDate}"/>
+                                                 constraint = "@load(controller.checkConstraintStartingDate)"/>
                                     </row>
 
                                     <row>
                                         <label value="${i18n:_t('Work done until ending date')}" />
                                         <datebox id="endingDate" width="200px"
-                                                 constraint = "@{controller.checkConstraintEndingDate}"/>
+                                                 constraint = "@load(controller.checkConstraintEndingDate)"/>
                                     </row>
                                 </rows>
                             </grid>
@@ -80,7 +81,7 @@
                                 <hbox>
                                     <bandboxSearch id="bdOrders"
                                                    finder="OrderBandboxFinder"
-                                                   model="@{controller.allOrders}"
+                                                   model="@load(controller.allOrders)"
                                                    widthListbox="480px"
                                                    widthBandbox="450px" sclass="bandbox-margin"/>
 
@@ -94,7 +95,8 @@
                             <listbox id="lbOrders"
                                      width="700px"
                                      multiple="true"
-                                     model="@{controller.selectedOrders}"
+                                     model="@load(controller.selectedOrders)"
+                                     itemRenderer="@load(controller.ordersRenderer)"
                                      sclass="margin-border">
                                 <listhead>
                                     <listheader label="${i18n:_t('Name')}" align="center" sort="auto(name)" />
@@ -103,19 +105,6 @@
                                     <listheader label="${i18n:_t('Operations')}" sort="auto(initDate)" align="center"
                                                 width="100px"/>
                                 </listhead>
-
-                                <listitem self="@{each='order'}" value="@{order}">
-                                    <listcell label="@{order.name}" />
-                                    <listcell label="@{order.code}" />
-                                    <listcell label="@{order.initDate, converter='org.libreplan.web.common.typeconverters.DateConverter'}" />
-                                    <listcell>
-                                        <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                                hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_t('Delete')}"
-                                                onClick="controller.onRemoveOrder(self.parent.parent.value);">
-                                        </button>
-                                    </listcell>
-                                </listitem>
                             </listbox>
                         </panelchildren>
                     </panel>
@@ -129,7 +118,7 @@
                                 <separator spacing="5px"/>
                                 <hbox>
                                     <bandboxSearch id="bdLabels" finder="LabelBandboxFinder"
-                                                   model="@{controller.allLabels}"
+                                                   model="@load(controller.allLabels)"
                                                    widthListbox="380px"
                                                    widthBandbox="350px"
                                                    sclass="bandbox-margin"/>
@@ -142,25 +131,14 @@
                             <listbox id="lbLabels"
                                      width="700px"
                                      multiple="true"
-                                     model="@{controller.selectedLabels}"
+                                     model="@load(controller.selectedLabels)"
+                                     itemRenderer="@load(controller.labelsRenderer)"
                                      sclass="margin-border">
                                 <listhead>
                                     <listheader label="${i18n:_t('Type')}" align="center" />
                                     <listheader label="${i18n:_t('Name')}" align="center" />
                                     <listheader label="${i18n:_t('Operations')}" align="center" width="100px"/>
                                 </listhead>
-
-                                <listitem self="@{each='label'}" value="@{label}">
-                                    <listcell label="@{label.type.name}" />
-                                    <listcell label="@{label.name}" />
-                                    <listcell>
-                                        <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                                hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_t('Delete')}"
-                                                onClick="controller.onRemoveLabel(self.parent.parent.value);">
-                                        </button>
-                                    </listcell>
-                                </listitem>
                             </listbox>
                         </panelchildren>
                     </panel>
@@ -172,7 +150,7 @@
                                 <separator spacing="5px"/>
                                 <hbox>
                                     <bandboxSearch id="bdCriterions" finder="CriterionBandboxFinder"
-                                                   model="@{controller.allCriterions}"
+                                                   model="@load(controller.allCriterions)"
                                                    widthListbox="380px"
                                                    widthBandbox="350px"
                                                    sclass="bandbox-margin"/>
@@ -185,25 +163,14 @@
                             <listbox id="lbCriterions"
                                      width="700px"
                                      multiple="true"
-                                     model="@{controller.selectedCriterions}"
+                                     model="@load(controller.selectedCriterions)"
+                                     itemRenderer="@load(controller.criterionsRenderer)"
                                      sclass="margin-border">
                                 <listhead>
                                     <listheader label="${i18n:_t('Type')}" align="center" />
                                     <listheader label="${i18n:_t('Name')}" align="center" />
                                     <listheader label="${i18n:_t('Operations')}" align="center" width="100px"/>
                                 </listhead>
-
-                                <listitem self="@{each='criterion'}" value="@{criterion}">
-                                    <listcell label="@{criterion.type.name}" />
-                                    <listcell label="@{criterion.name}" />
-                                    <listcell>
-                                        <button sclass="icono" image="/common/img/ico_borrar1.png"
-                                                hoverImage="/common/img/ico_borrar.png"
-                                                tooltiptext="${i18n:_t('Delete')}"
-                                                onClick="controller.onRemoveCriterion(self.parent.parent.value);">
-                                        </button>
-                                    </listcell>
-                                </listitem>
                             </listbox>
                         </panelchildren>
                     </panel>

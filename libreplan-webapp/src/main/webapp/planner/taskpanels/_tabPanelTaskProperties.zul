@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -31,25 +32,25 @@
         <rows>
             <row>
                 <label value="${i18n:_t('Name')}" />
-                <textbox id="name" value="@{propertiesController.ganttTaskDTO.name}" width="400px" />
+                <textbox id="name" value="@load(propertiesController.taskName)@save(propertiesController.taskName)" width="400px" />
             </row>
             <row>
                 <label value="${i18n:_t('Start')}" />
                 <datebox id="startDateBox" disabled="true"
-                         value = "@{propertiesController.ganttTaskDTO.beginDate}" />
+                         value = "@load(propertiesController.taskBeginDate)" />
             </row>
             <row>
                 <label value="${i18n:_t('End')}" />
                 <datebox id="endDateBox" disabled="true"
-                         value = "@{propertiesController.ganttTaskDTO.endDate}" />
+                         value = "@load(propertiesController.taskEndDate)" />
             </row>
             <row>
                 <label value="${i18n:_t('Deadline')}"/>
-                <datebox id="deadLineDateBox" value = "@{propertiesController.ganttTaskDTO.deadlineDate}"/>
+                <datebox id="deadLineDateBox" value = "@load(propertiesController.taskDeadlineDate)@save(propertiesController.taskDeadlineDate)"/>
             </row>
             <row>
                 <label value="${i18n:_t('Notes')}" />
-                <textbox id="notes" value="@{propertiesController.ganttTaskDTO.notes}" width="400px" rows="3"/>
+                <textbox id="notes" value="@load(propertiesController.taskNotes)@save(propertiesController.taskNotes)" width="400px" rows="3"/>
             </row>
             <row>
                 <label value="${i18n:_t('Hours')}" />
@@ -62,7 +63,7 @@
             <row>
                 <label value="${i18n:_t('Budget')}" />
                 <decimalbox id="budget" disabled="true"
-                            format="@{propertiesController.moneyFormat}" />
+                            format="@load(propertiesController.moneyFormat)" />
             </row>
             <row id="startConstraint">
                 <label value="${i18n:_t('Constraint')}" />
@@ -71,12 +72,12 @@
                     <datebox id="startConstraintDate" constraint ="no empty"/>
                 </hbox>
             </row>
-            <row id="resourceAllocationType" visible="@{editController.isTask}">
+            <row id="resourceAllocationType" visible="@load(editController.task)">
                 <label value="${i18n:_t('Resource allocation type')}" />
                 <listbox id="lbResourceAllocationType"
                          mold="select"
-                         model="@{propertiesController.resourceAllocationTypeOptionList}"
-                         selectedItem="@{propertiesController.resourceAllocationType}"/>
+                         model="@load(propertiesController.resourceAllocationTypeOptionList)"
+                         selectedItem="@load(propertiesController.resourceAllocationType)@save(propertiesController.resourceAllocationType)"/>
             </row>
         </rows>
     </grid>

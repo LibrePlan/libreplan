@@ -1,0 +1,88 @@
+- generic [ref=f768e4]:
+  - generic [ref=f768e5]:
+    - table [ref=f768e6]:
+      - rowgroup [ref=f768e7]:
+        - row [ref=f768e8]:
+          - cell [ref=f768e9]:
+            - link [ref=f768e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f768e12]:
+            - table [ref=f768e13]:
+              - rowgroup [ref=f768e14]:
+                - row [ref=f768e15]:
+                  - cell [ref=f768e16]:
+                    - generic [ref=f768e17]:
+                      - menubar [ref=f768e18]:
+                        - menuitem "Personal area" [ref=f768e19] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f768e21]:
+                        - rowgroup [ref=f768e22]:
+                          - row [ref=f768e23]:
+                            - cell [ref=f768e24]:
+                              - table [ref=f768e25]:
+                                - rowgroup [ref=f768e26]:
+                                  - row [ref=f768e27]:
+                                    - cell [ref=f768e28]
+                                    - cell [ref=f768e29]:
+                                      - strong [ref=f768e30]: START
+                                    - cell [ref=f768e31]
+                                    - cell:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f768e32]:
+                              - generic [ref=f768e33]:
+                                - link "Help" [ref=f768e34] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f768e36]
+                                - img "Info" [ref=f768e38]
+    - table [ref=f768e40]:
+      - rowgroup [ref=f768e41]:
+        - row [ref=f768e42]:
+          - cell [ref=f768e43]
+          - cell "user:" [ref=f768e44]
+          - cell [ref=f768e45]:
+            - link "[Log out]" [ref=f768e46] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f768e47]:
+    - text:    
+    - table [ref=f768e50]:
+      - rowgroup [ref=f768e51]:
+        - row [ref=f768e52]:
+          - cell [ref=f768e53]:
+            - table [ref=f768e54]:
+              - rowgroup [ref=f768e55]:
+                - row [ref=f768e56]:
+                  - cell "You do not have permissions to access to this page." [ref=f768e57]
+                - row [ref=f768e58]:
+                  - cell [ref=f768e59]
+                - row [ref=f768e60]:
+                  - cell "Please try to contact with any administrator in order to review your permissions in LibrePlan." [ref=f768e61]
+                - row [ref=f768e62]:
+                  - cell [ref=f768e63]
+                - row [ref=f768e64]:
+                  - cell [ref=f768e65]:
+                    - table [ref=f768e66]:
+                      - rowgroup [ref=f768e67]:
+                        - row [ref=f768e68]:
+                          - cell [ref=f768e69]:
+                            - table [ref=f768e70]:
+                              - rowgroup [ref=f768e71]:
+                                - row [ref=f768e72]:
+                                  - cell "Click the following link to return to home page:" [ref=f768e73]
+                                  - cell [ref=f768e74]
+                                  - cell [ref=f768e75]:
+                                    - link "Go to init" [ref=f768e76] [cursor=pointer]:
+                                      - /url: /

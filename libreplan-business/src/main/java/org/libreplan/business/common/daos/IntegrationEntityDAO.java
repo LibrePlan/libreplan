@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,9 +24,11 @@ package org.libreplan.business.common.daos;
 
 import java.util.List;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IntegrationEntity;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.springframework.transaction.annotation.Propagation;
@@ -57,7 +60,6 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
         return existsByCode(code);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     @Transactional(readOnly = true)
     public E findByCode(String code) throws InstanceNotFoundException {
@@ -66,10 +68,11 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
             throw new InstanceNotFoundException(null, getEntityClass().getName());
         }
 
-        E entity = (E) getSession()
-                .createCriteria(getEntityClass())
-                .add(Restrictions.eq("code", code.trim()).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<E> cq = cb.createQuery(getEntityClass());
+        Root<E> root = cq.from(getEntityClass());
+        cq.where(cb.equal(cb.lower(root.get("code")), code.trim().toLowerCase()));
+        E entity = getSession().createQuery(cq).uniqueResult();
 
         if (entity == null) {
             throw new InstanceNotFoundException(code, getEntityClass().getName());
@@ -94,10 +97,13 @@ public class IntegrationEntityDAO<E extends IntegrationEntity>
         }
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public List<E> findAll() {
-        return getSession().createCriteria(getEntityClass()).addOrder(Order.asc("code")).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<E> cq = cb.createQuery(getEntityClass());
+        Root<E> root = cq.from(getEntityClass());
+        cq.orderBy(cb.asc(root.get("code")));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

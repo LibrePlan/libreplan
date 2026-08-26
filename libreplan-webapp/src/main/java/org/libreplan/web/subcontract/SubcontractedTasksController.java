@@ -6,6 +6,7 @@
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * Copyright (C) 2011-2012 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,9 +28,9 @@ import static org.libreplan.web.I18nHelper._t;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.orders.entities.Order;
@@ -56,6 +57,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.ext.Sortable;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -94,10 +97,13 @@ public class SubcontractedTasksController extends GenericForwardComposer {
         window = (Window) comp;
         window.setAttribute("controller", this, true);
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
-    public List<SubcontractedTaskData> getSubcontractedTasks() {
-        return subcontractedTasksModel.getSubcontractedTasks();
+    public ListModel<SubcontractedTaskData> getSubcontractedTasks() {
+        return new ListModelList<>(subcontractedTasksModel.getSubcontractedTasks());
     }
 
     public SubcontractedTasksRenderer getSubcontractedTasksRenderer() {

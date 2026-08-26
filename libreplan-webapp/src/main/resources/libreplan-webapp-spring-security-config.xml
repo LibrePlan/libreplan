@@ -4,9 +4,9 @@
     xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:p="http://www.springframework.org/schema/p"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
-    http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+    http://www.springframework.org/schema/beans/spring-beans.xsd
                         http://www.springframework.org/schema/security
-                        http://www.springframework.org/schema/security/spring-security-4.2.xsd">
+                        http://www.springframework.org/schema/security/spring-security.xsd">
 
     <!--
     NOTE: see
@@ -14,6 +14,23 @@
     http://static.springsource.org/spring-security/site/docs/2.0.x/apidocs/org/springframework/security/vote/AuthenticatedVoter.html
 
     for an explanation of the meaning of IS_AUTHENTICATED_ANONYMOUSLY and IS_AUTHENTICATED_FULLY. -->
+
+    <!--
+    ZK's own AU (Ajax Update) request URLs use ";" to encode metadata inline in the path
+    (e.g. desktop/component ids). Spring Security's default StrictHttpFirewall rejects any
+    URL containing ";" with a RequestRejectedException, which broke every ZK AU request once
+    Spring Security was upgraded as part of the JDK 25 migration - see
+    jdk25-migration-baseline/CHANGES-and-WHY.md. Using a StrictHttpFirewall with only
+    allowSemicolon relaxed (rather than switching to the permissive DefaultHttpFirewall)
+    keeps every other StrictHttpFirewall protection - URL-encoded slash/backslash, null
+    bytes, etc. - in place; only the one check ZK's own URL scheme needs is loosened.
+    -->
+    <beans:bean id="allowSemicolonHttpFirewall"
+        class="org.springframework.security.web.firewall.StrictHttpFirewall">
+        <beans:property name="allowSemicolon" value="true" />
+    </beans:bean>
+
+    <http-firewall ref="allowSemicolonHttpFirewall" />
 
     <http auto-config="false" realm="LibrePlan Web Application" >
 
@@ -156,15 +173,14 @@
 
     </http>
 
-    <!-- Beans used by Spring Security (current configuration assumes users are registered in the database). -->
+    <!--
+    Beans used by Spring Security (current configuration assumes users are registered in the database).
+    BCrypt as of the JDK 25 migration; see jdk25-migration-baseline/CHANGES-and-WHY.md for why
+    (Spring Security 5 removed the previously used ShaPasswordEncoder/ReflectionSaltSource outright).
+    DBPasswordEncoderService still verifies pre-migration SHA-512 hashes for backward compatibility.
+    -->
     <beans:bean id="passwordEncoder"
-        class="org.springframework.security.authentication.encoding.ShaPasswordEncoder">
-        <beans:constructor-arg value="512" />
-    </beans:bean>
-
-    <beans:bean id="saltSource"
-        class="org.springframework.security.authentication.dao.ReflectionSaltSource"
-        p:userPropertyToUse="username" />
+        class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" />
 
     <!--
     Beans used by the LibrePlan Web application when users are registered in the database.
@@ -172,7 +188,7 @@
     -->
     <beans:bean id="dbPasswordEncoderService"
         class="org.libreplan.web.users.services.DBPasswordEncoderService"
-        p:passwordEncoder-ref="passwordEncoder" p:saltSource-ref="saltSource" />
+        p:passwordEncoder-ref="passwordEncoder" />
 
     <beans:bean id="usersBootstrapInDB"
         class="org.libreplan.web.users.bootstrap.UsersBootstrapInDB"

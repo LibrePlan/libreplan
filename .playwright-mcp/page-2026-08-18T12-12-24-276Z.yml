@@ -1,0 +1,245 @@
+- generic [ref=f690e4]:
+  - generic [ref=f690e5]:
+    - table [ref=f690e6]:
+      - rowgroup [ref=f690e7]:
+        - row [ref=f690e8]:
+          - cell [ref=f690e9]:
+            - link [ref=f690e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f690e12]:
+            - table [ref=f690e13]:
+              - rowgroup [ref=f690e14]:
+                - row [ref=f690e15]:
+                  - cell [ref=f690e16]:
+                    - generic [ref=f690e17]:
+                      - menubar [ref=f690e18]:
+                        - menuitem "Planning" [ref=f690e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f690e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f690e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f690e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f690e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f690e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f690e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f690e33]:
+                        - rowgroup [ref=f690e34]:
+                          - row [ref=f690e35]:
+                            - cell [ref=f690e36]:
+                              - table [ref=f690e37]:
+                                - rowgroup [ref=f690e38]:
+                                  - row [ref=f690e39]:
+                                    - cell [ref=f690e40]
+                                    - cell [ref=f690e41]:
+                                      - strong [ref=f690e42]: START
+                                    - cell [ref=f690e43]
+                                    - cell [ref=f690e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f690e45]:
+                                        - rowgroup [ref=f690e46]:
+                                          - row [ref=f690e47]:
+                                            - cell [ref=f690e48]:
+                                              - table [ref=f690e49]:
+                                                - rowgroup [ref=f690e50]:
+                                                  - row [ref=f690e51]:
+                                                    - cell [ref=f690e52]:
+                                                      - table [ref=f690e53]:
+                                                        - rowgroup [ref=f690e54]:
+                                                          - row [ref=f690e55]:
+                                                            - cell [ref=f690e56]:
+                                                              - table [ref=f690e57]:
+                                                                - rowgroup [ref=f690e58]:
+                                                                  - row [ref=f690e59]:
+                                                                    - cell [ref=f690e60]
+                                                                    - cell [ref=f690e63]
+                                                                    - cell "Cost" [ref=f690e64]
+                                                    - cell [ref=f690e65]
+                                                    - cell [ref=f690e66]:
+                                                      - table [ref=f690e67]:
+                                                        - rowgroup [ref=f690e68]:
+                                                          - row [ref=f690e69]:
+                                                            - cell [ref=f690e70]:
+                                                              - table [ref=f690e71]:
+                                                                - rowgroup [ref=f690e72]:
+                                                                  - row [ref=f690e73]:
+                                                                    - cell [ref=f690e74]
+                                                                    - cell [ref=f690e77]
+                                                                    - cell "Timesheets Templates" [ref=f690e78]
+                            - cell [ref=f690e79]:
+                              - generic [ref=f690e80]:
+                                - link "Help" [ref=f690e81] [cursor=pointer]:
+                                  - /url: /help/en/09-partes.html#id2
+                                - img "Axuda" [ref=f690e83]
+                                - img "Info" [ref=f690e85]
+    - table [ref=f690e87]:
+      - rowgroup [ref=f690e88]:
+        - row [ref=f690e89]:
+          - cell [ref=f690e90]
+          - 'cell "user: admin" [ref=f690e91]'
+          - cell [ref=f690e92]:
+            - link "[Log out]" [ref=f690e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f690e94]:
+    - text:    
+    - generic [ref=f690e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:     
+      - generic [ref=f690e167]:
+        - generic [ref=f690e168]: "Edit Timesheets Template: Default"
+        - generic [ref=f690e171]:
+          - generic [ref=f690e172]:
+            - tablist [ref=f690e173]:
+              - listitem [ref=f690e174] [cursor=pointer]:
+                - generic [ref=f690e175]: Report structure
+              - listitem [ref=f690e177] [cursor=pointer]:
+                - generic [ref=f690e178]: Managing fields and labels
+            - text:  
+            - generic [ref=f690e180]:
+              - tabpanel [ref=f690e181]:
+                - table [ref=f690e182]:
+                  - rowgroup [ref=f690e183]:
+                    - row [ref=f690e184]:
+                      - cell [ref=f690e185]:
+                        - table [ref=f690e186]:
+                          - rowgroup [ref=f690e187]:
+                            - row [ref=f690e188]:
+                              - cell [ref=f690e189]:
+                                - grid [ref=f690e190]:
+                                  - rowgroup [ref=f690e194]:
+                                    - gridcell "Name" [ref=f690e195]
+                                    - gridcell [ref=f690e197]:
+                                      - table [ref=f690e199]:
+                                        - rowgroup [ref=f690e200]:
+                                          - row [ref=f690e201]:
+                                            - cell [ref=f690e202]:
+                                              - table [ref=f690e203]:
+                                                - rowgroup [ref=f690e204]:
+                                                  - row [ref=f690e205]:
+                                                    - cell "Default" [ref=f690e206]
+                                    - gridcell "Code" [ref=f690e207]
+                                    - gridcell [ref=f690e209]:
+                                      - table [ref=f690e211]:
+                                        - rowgroup [ref=f690e212]:
+                                          - row [ref=f690e213]:
+                                            - cell [ref=f690e214]:
+                                              - table [ref=f690e215]:
+                                                - rowgroup [ref=f690e216]:
+                                                  - row [ref=f690e217]:
+                                                    - cell "WORKREPORTTYPE0001" [ref=f690e218]
+                                    - gridcell "Date" [ref=f690e219]
+                                    - gridcell [ref=f690e221]:
+                                      - table [ref=f690e223]:
+                                        - rowgroup [ref=f690e224]:
+                                          - row [ref=f690e225]:
+                                            - cell [ref=f690e226]:
+                                              - table [ref=f690e227]:
+                                                - rowgroup [ref=f690e228]:
+                                                  - row [ref=f690e229]:
+                                                    - cell "line" [ref=f690e230]
+                                    - gridcell "Resource" [ref=f690e231]
+                                    - gridcell [ref=f690e233]:
+                                      - table [ref=f690e235]:
+                                        - rowgroup [ref=f690e236]:
+                                          - row [ref=f690e237]:
+                                            - cell [ref=f690e238]:
+                                              - table [ref=f690e239]:
+                                                - rowgroup [ref=f690e240]:
+                                                  - row [ref=f690e241]:
+                                                    - cell "line" [ref=f690e242]
+                                    - gridcell "Task" [ref=f690e243]
+                                    - gridcell [ref=f690e245]:
+                                      - table [ref=f690e247]:
+                                        - rowgroup [ref=f690e248]:
+                                          - row [ref=f690e249]:
+                                            - cell [ref=f690e250]:
+                                              - table [ref=f690e251]:
+                                                - rowgroup [ref=f690e252]:
+                                                  - row [ref=f690e253]:
+                                                    - cell "line" [ref=f690e254]
+                                    - gridcell "Hours Management" [ref=f690e255]
+                                    - gridcell [ref=f690e257]:
+                                      - table [ref=f690e259]:
+                                        - rowgroup [ref=f690e260]:
+                                          - row [ref=f690e261]:
+                                            - cell [ref=f690e262]:
+                                              - table [ref=f690e263]:
+                                                - rowgroup [ref=f690e264]:
+                                                  - row [ref=f690e265]:
+                                                    - cell "Number of assigned hours" [ref=f690e266]
+                            - row [ref=f690e267]:
+                              - cell [ref=f690e268]
+                            - row [ref=f690e269]:
+                              - cell [ref=f690e270]:
+                                - separator [ref=f690e271]
+                            - row [ref=f690e272]:
+                              - cell [ref=f690e273]
+                            - row [ref=f690e274]:
+                              - cell "Complementary text fields" [ref=f690e275]:
+                                - generic [ref=f690e276]:
+                                  - generic [ref=f690e277]: Complementary text fields
+                                  - grid [ref=f690e281]:
+                                    - rowgroup [ref=f690e286]:
+                                      - columnheader [ref=f690e287]:
+                                        - generic [ref=f690e288] [cursor=pointer]:
+                                          - generic [ref=f690e289]: 
+                                          - text: Name
+                                      - columnheader "Length" [ref=f690e291]
+                                      - columnheader "Position" [ref=f690e293]
+                                      - columnheader "Operations"
+                                    - rowgroup
+                                    - generic [ref=f690e300]:    
+                            - row [ref=f690e301]:
+                              - cell [ref=f690e302]
+                            - row [ref=f690e303]:
+                              - cell [ref=f690e304]:
+                                - separator [ref=f690e305]
+                            - row [ref=f690e306]:
+                              - cell [ref=f690e307]
+                            - row [ref=f690e308]:
+                              - cell "Label Type fields" [ref=f690e309]:
+                                - generic [ref=f690e310]:
+                                  - generic [ref=f690e311]: Label Type fields
+                                  - grid [ref=f690e315]:
+                                    - rowgroup [ref=f690e320]:
+                                      - columnheader [ref=f690e321]:
+                                        - generic [ref=f690e322] [cursor=pointer]:
+                                          - generic [ref=f690e323]: 
+                                          - text: Name
+                                      - columnheader "Position" [ref=f690e325]
+                                      - columnheader "Default Label" [ref=f690e327]
+                                      - columnheader "Operations"
+                                    - rowgroup
+                                    - generic [ref=f690e334]:    
+                            - row [ref=f690e335]:
+                              - cell [ref=f690e336]
+                            - row [ref=f690e337]:
+                              - cell [ref=f690e338]:
+                                - separator [ref=f690e339]
+              - text:        
+          - button "Close" [ref=f690e340] [cursor=pointer]
+  - table [ref=f690e159]:
+    - rowgroup [ref=f690e160]:
+      - row [ref=f690e161]:
+        - cell [ref=f690e162]:
+          - generic [ref=f690e164]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f690e165] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f690e166]
+  - text:    

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,11 +33,8 @@ import java.util.SortedMap;
 import org.joda.time.LocalDate;
 import org.libreplan.business.planner.entities.IEarnedValueCalculator;
 import org.libreplan.web.I18nHelper;
-import org.zkforge.timeplot.Plotinfo;
-import org.zkforge.timeplot.Timeplot;
-import org.zkforge.timeplot.geometry.TimeGeometry;
-import org.zkforge.timeplot.geometry.ValueGeometry;
 import org.zkoss.ganttz.util.Interval;
+import org.zkoss.zul.Div;
 
 import static org.libreplan.web.I18nHelper._t;
 
@@ -66,9 +64,9 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
         this.earnedValueCalculator = earnedValueCalculator;
     }
 
-    protected Plotinfo createPlotInfo(SortedMap<LocalDate, BigDecimal> map,
+    protected ChartSeries createPlotInfo(SortedMap<LocalDate, BigDecimal> map,
             Interval interval, String lineColor) {
-        Plotinfo plotInfo = createPlotinfo(map, interval, true);
+        ChartSeries plotInfo = createPlotinfo(map);
         plotInfo.setLineColor(lineColor);
         return plotInfo;
     }
@@ -190,35 +188,17 @@ public abstract class EarnedValueChartFiller extends ChartFiller {
     }
 
     @Override
-    public void fillChart(Timeplot chart, Interval interval, Integer size) {
-        chart.getChildren().clear();
-        chart.invalidate();
-        resetMinimumAndMaximumValueForChart();
-
+    public void fillChart(Div chart, Interval interval, Integer size) {
         calculateValues(interval);
 
-        List<Plotinfo> plotinfos = new ArrayList<Plotinfo>();
+        List<ChartSeries> series = new ArrayList<ChartSeries>();
         for (EarnedValueType indicator : getSelectedIndicators()) {
-            Plotinfo plotinfo = createPlotInfo(indicators.get(indicator),
+            ChartSeries plotinfo = createPlotInfo(indicators.get(indicator),
                     interval, indicator.getColor());
-            plotinfos.add(plotinfo);
+            series.add(plotinfo);
         }
 
-        if ( plotinfos.isEmpty() ) {
-            // If user doesn't select any indicator, it is needed to create
-            // a default Plotinfo in order to avoid errors on Timemplot
-            plotinfos.add(new Plotinfo());
-        }
-
-        ValueGeometry valueGeometry = getValueGeometry();
-        TimeGeometry timeGeometry = getTimeGeometry(interval);
-
-        for (Plotinfo plotinfo : plotinfos) {
-            appendPlotinfo(chart, plotinfo, valueGeometry, timeGeometry);
-        }
-
-        chart.setWidth(size + "px");
-        chart.setHeight("150px");
+        renderChart(chart, series, interval, size);
     }
 
     public Interval getIndicatorsDefinitionInterval() {

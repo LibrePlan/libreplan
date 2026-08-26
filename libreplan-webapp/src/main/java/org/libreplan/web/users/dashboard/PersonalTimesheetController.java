@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.LocalDate;
@@ -130,6 +131,8 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     private Div personalTimesheetPopupEffort;
 
     private Div personalTimesheetPopupFinished;
+
+    private Component comp;
 
     private RowRenderer rowRenderer = new RowRenderer() {
 
@@ -547,6 +550,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
     public void doAfterCompose(Component comp) throws Exception {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
+        this.comp = comp;
 
         setBreadcrumbs(comp);
         messagesForUser = new MessagesForUser(messagesContainer);
@@ -556,6 +560,17 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         injectObjects();
 
         URLHandlerRegistry.getRedirectorFor(IPersonalTimesheetController.class).register(this, page);
+
+        // The register() call above synchronously invokes goToCreateOrEditForm(...) (via
+        // EntryPointsHandler, the normal way this page is reached) which populates the model and
+        // calls initTimesheet(...). That whole call happens inside
+        // Util.executeIgnoringCreationOfBindings(...), so a Util.createBindingsFor(comp) call
+        // placed inside initTimesheet() itself would silently no-op (the guard makes it return
+        // immediately) and the page would stay permanently unbound. It has to happen here, after
+        // register() returns and the ignore-bindings guard has been lifted, once the model is
+        // already fully populated.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     /**
@@ -709,7 +724,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         return personalTimesheetModel.getWorker().getShortDescription();
     }
 
-    public List<PersonalTimesheetRow> getRows() {
+    public org.zkoss.zul.ListModel getRows() {
         List<PersonalTimesheetRow> result = PersonalTimesheetRow.wrap(personalTimesheetModel.getOrderElements());
         if ( personalTimesheetModel.hasOtherReports() ) {
             result.add(PersonalTimesheetRow.createOtherRow());
@@ -719,7 +734,7 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         result.add(PersonalTimesheetRow.createCapacityRow());
         result.add(PersonalTimesheetRow.createExtraRow());
 
-        return result;
+        return new org.zkoss.zul.ListModelList<>(result);
     }
 
     public RowRenderer getRowRenderer() {
@@ -747,7 +762,10 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         }
 
         messagesForUser.showMessage(Level.INFO, _t("Personal timesheet saved"));
-        Util.reloadBindings(timesheet);
+
+        // Reload the whole page, not just the timesheet grid: the period/date/resource labels
+        // also change when moving to the next period.
+        Util.reloadBindings(comp);
     }
 
     public void cancel() {
@@ -920,6 +938,12 @@ public class PersonalTimesheetController extends GenericForwardComposer implemen
         return personalTimesheetModel.hasOtherReports();
     }
 
+    // BeanELResolver only recognizes the "is"/"get" accessor prefixes for EL bean properties,
+    // not "has" - referenced as controller.hasOtherReports in personalTimesheet.zul.
+    public boolean isHasOtherReports() {
+        return hasOtherReports();
+    }
+
     public void closePersonalTimesheetPopup() {
         personalTimesheetPopup.close();
     }
@@ -951,7 +975,7 @@ class PersonalTimesheetRow {
 
     public static PersonalTimesheetRow createOrderElementRow(OrderElement orderElemement) {
         PersonalTimesheetRow row = new PersonalTimesheetRow(PersonalTimesheetRowType.ORDER_ELEMENT);
-        Assert.notNull(orderElemement);
+        Assert.notNull(orderElemement, "orderElemement must not be null");
         row.orderElemement = orderElemement;
 
         return row;

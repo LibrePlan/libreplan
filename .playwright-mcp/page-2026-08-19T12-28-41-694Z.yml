@@ -1,0 +1,305 @@
+- generic [ref=f238e4]:
+  - generic [ref=f238e5]:
+    - table [ref=f238e6]:
+      - rowgroup [ref=f238e7]:
+        - row [ref=f238e8]:
+          - cell [ref=f238e9]:
+            - link [ref=f238e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f238e12]:
+            - table [ref=f238e13]:
+              - rowgroup [ref=f238e14]:
+                - row [ref=f238e15]:
+                  - cell [ref=f238e16]:
+                    - generic [ref=f238e17]:
+                      - menubar [ref=f238e18]:
+                        - menuitem "Planning" [ref=f238e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f238e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f238e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f238e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f238e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f238e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f238e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f238e33]:
+                        - rowgroup [ref=f238e34]:
+                          - row [ref=f238e35]:
+                            - cell [ref=f238e36]:
+                              - table [ref=f238e37]:
+                                - rowgroup [ref=f238e38]:
+                                  - row [ref=f238e39]:
+                                    - cell [ref=f238e40]
+                                    - cell [ref=f238e41]:
+                                      - strong [ref=f238e42]: START
+                                    - cell [ref=f238e43]
+                                    - cell [ref=f238e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f238e45]:
+                                        - rowgroup [ref=f238e46]:
+                                          - row [ref=f238e47]:
+                                            - cell [ref=f238e48]:
+                                              - table [ref=f238e49]:
+                                                - rowgroup [ref=f238e50]:
+                                                  - row [ref=f238e51]:
+                                                    - cell [ref=f238e52]:
+                                                      - table [ref=f238e53]:
+                                                        - rowgroup [ref=f238e54]:
+                                                          - row [ref=f238e55]:
+                                                            - cell [ref=f238e56]:
+                                                              - table [ref=f238e57]:
+                                                                - rowgroup [ref=f238e58]:
+                                                                  - row [ref=f238e59]:
+                                                                    - cell [ref=f238e60]
+                                                                    - cell [ref=f238e63]
+                                                                    - cell "Configuration" [ref=f238e64]
+                                                    - cell [ref=f238e65]
+                                                    - cell [ref=f238e66]:
+                                                      - table [ref=f238e67]:
+                                                        - rowgroup [ref=f238e68]:
+                                                          - row [ref=f238e69]:
+                                                            - cell [ref=f238e70]:
+                                                              - table [ref=f238e71]:
+                                                                - rowgroup [ref=f238e72]:
+                                                                  - row [ref=f238e73]:
+                                                                    - cell [ref=f238e74]
+                                                                    - cell [ref=f238e77]
+                                                                    - cell "Main Settings" [ref=f238e78]
+                            - cell [ref=f238e79]:
+                              - generic [ref=f238e80]:
+                                - link "Help" [ref=f238e81] [cursor=pointer]:
+                                  - /url: /help/en/16-ldap-authentication.html
+                                - img "Axuda" [ref=f238e83]
+                                - img "Info" [ref=f238e85]
+    - table [ref=f238e87]:
+      - rowgroup [ref=f238e88]:
+        - row [ref=f238e89]:
+          - cell [ref=f238e90]
+          - 'cell "user: admin" [ref=f238e91]'
+          - cell [ref=f238e92]:
+            - link "[Log out]" [ref=f238e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f238e94]:
+    - text:    
+    - generic [ref=f238e95]:
+      - generic [ref=f238e96]: Main Settings
+      - generic [ref=f238e97]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f238e98]:
+          - tablist [ref=f238e99]:
+            - listitem [ref=f238e100] [cursor=pointer]:
+              - generic [ref=f238e101]: Main preferences
+            - listitem [ref=f238e103] [cursor=pointer]:
+              - generic [ref=f238e104]: Entity sequences
+            - listitem [ref=f238e106] [cursor=pointer]:
+              - generic [ref=f238e107]: LDAP configuration
+            - listitem [ref=f238e109] [cursor=pointer]:
+              - generic [ref=f238e110]: Connectors
+          - text:  
+          - generic [ref=f238e112]:
+            - tabpanel [ref=f238e113]:
+              - grid [ref=f238e114]:
+                - rowgroup [ref=f238e118]:
+                  - gridcell "Company code" [ref=f238e119]
+                  - gridcell [ref=f238e121]:
+                    - textbox [ref=f238e123]
+                  - gridcell "Default calendar" [ref=f238e124]
+                  - gridcell [ref=f238e126]:
+                    - combobox [ref=f238e129]:
+                      - textbox [ref=f238e130]
+                      - button [ref=f238e131] [cursor=pointer]:
+                        - generic [ref=f238e132]: 
+                  - gridcell "Hours type for personal timesheets" [ref=f238e133]
+                  - gridcell [ref=f238e135]:
+                    - combobox [ref=f238e138]:
+                      - textbox [ref=f238e139]
+                      - button [ref=f238e140] [cursor=pointer]:
+                        - generic [ref=f238e141]: 
+                  - gridcell "Personal timesheets peridocity" [ref=f238e142]
+                  - gridcell [ref=f238e144]:
+                    - combobox [ref=f238e146]
+                  - gridcell "Show progress" [ref=f238e147]
+                  - gridcell [ref=f238e149]:
+                    - combobox [ref=f238e151]
+                  - gridcell "Company logo URL" [ref=f238e152]
+                  - gridcell [ref=f238e154]:
+                    - table [ref=f238e156]:
+                      - rowgroup [ref=f238e157]:
+                        - row [ref=f238e158]:
+                          - cell [ref=f238e159]:
+                            - table [ref=f238e160]:
+                              - rowgroup [ref=f238e161]:
+                                - row [ref=f238e162]:
+                                  - cell [ref=f238e163]:
+                                    - textbox [ref=f238e164]
+                                  - cell [ref=f238e165]
+                                  - cell [ref=f238e166]:
+                                    - button "Upload" [ref=f238e167] [cursor=pointer]
+                                    - generic [ref=f238e169]:
+                                      - button "Choose File"
+                                  - cell [ref=f238e170]
+                                  - cell [ref=f238e171]
+                                  - cell [ref=f238e173]
+                                  - cell [ref=f238e174]:
+                                    - button "Delete image" [ref=f238e175] [cursor=pointer]
+                  - gridcell "Currency" [ref=f238e176]
+                  - gridcell [ref=f238e178]:
+                    - combobox [ref=f238e180]
+                  - gridcell "Autocomplete login form" [ref=f238e181]
+                  - gridcell [ref=f238e183]:
+                    - generic "Enable/Disable autocomplete property in login form, if the admin password is still the default one" [ref=f238e185]:
+                      - checkbox "Enable/Disable" [ref=f238e186]
+                      - text: Enable/Disable
+                  - gridcell "Check for updates" [ref=f238e187]
+                  - gridcell [ref=f238e189]:
+                    - table [ref=f238e191]:
+                      - rowgroup [ref=f238e192]:
+                        - row [ref=f238e193]:
+                          - cell [ref=f238e194]:
+                            - table [ref=f238e195]:
+                              - rowgroup [ref=f238e196]:
+                                - row [ref=f238e197]:
+                                  - cell [ref=f238e198]:
+                                    - generic "Enable/Disable warning about new LibrePlan versions available" [ref=f238e199]:
+                                      - checkbox "Show a notification when new LibrePlan versions are released" [ref=f238e200]
+                                      - text: Show a notification when new LibrePlan versions are released
+                                - row [ref=f238e201]:
+                                  - cell [ref=f238e202]
+                                - row [ref=f238e203]:
+                                  - cell [ref=f238e204]:
+                                    - generic "Check this option if you would like to send feedback to LibrePlan developers about program usage" [ref=f238e205]:
+                                      - checkbox "Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f238e206]
+                                      - text: Allow collection of anonymous statistics to help us improve LibrePlan
+                  - gridcell "Generate code for" [ref=f238e207]
+                  - gridcell [ref=f238e209]:
+                    - grid [ref=f238e211]:
+                      - rowgroup [ref=f238e215]:
+                        - gridcell [ref=f238e216]:
+                          - generic [ref=f238e218]:
+                            - checkbox "Criteria" [ref=f238e219]
+                            - text: Criteria
+                        - gridcell [ref=f238e220]:
+                          - generic [ref=f238e222]:
+                            - checkbox "Labels" [ref=f238e223]
+                            - text: Labels
+                        - gridcell [ref=f238e224]:
+                          - generic [ref=f238e226]:
+                            - checkbox "Timesheets" [ref=f238e227]
+                            - text: Timesheets
+                        - gridcell [ref=f238e228]:
+                          - generic [ref=f238e230]:
+                            - checkbox "Resources" [ref=f238e231]
+                            - text: Resources
+                        - gridcell [ref=f238e232]:
+                          - generic [ref=f238e234]:
+                            - checkbox "Hours Types" [ref=f238e235]
+                            - text: Hours Types
+                        - gridcell [ref=f238e236]:
+                          - generic [ref=f238e238]:
+                            - checkbox "Material categories" [ref=f238e239]
+                            - text: Material categories
+                        - gridcell [ref=f238e240]:
+                          - generic [ref=f238e242]:
+                            - checkbox "Material Units" [ref=f238e243]
+                            - text: Material Units
+                        - gridcell [ref=f238e244]:
+                          - generic [ref=f238e246]:
+                            - checkbox "Calendar" [ref=f238e247]
+                            - text: Calendar
+                        - gridcell [ref=f238e248]:
+                          - generic [ref=f238e250]:
+                            - checkbox "Timesheet templates" [ref=f238e251]
+                            - text: Timesheet templates
+                        - gridcell [ref=f238e252]:
+                          - generic [ref=f238e254]:
+                            - checkbox "Calendar exception days" [ref=f238e255]
+                            - text: Calendar exception days
+                        - gridcell [ref=f238e256]:
+                          - generic [ref=f238e258]:
+                            - checkbox "Cost category" [ref=f238e259]
+                            - text: Cost category
+                        - gridcell [ref=f238e260]:
+                          - generic [ref=f238e262]:
+                            - checkbox "Expense sheets" [ref=f238e263]
+                            - text: Expense sheets
+                  - gridcell "Perspectives" [ref=f238e264]
+                  - gridcell [ref=f238e266]:
+                    - generic [ref=f238e268]:
+                      - checkbox "MonteCarlo method" [ref=f238e269]
+                      - text: MonteCarlo method
+                  - gridcell "Automatic budget" [ref=f238e270]
+                  - gridcell [ref=f238e272]:
+                    - table [ref=f238e274]:
+                      - rowgroup [ref=f238e275]:
+                        - row [ref=f238e276]:
+                          - cell [ref=f238e277]:
+                            - table [ref=f238e278]:
+                              - rowgroup [ref=f238e279]:
+                                - row [ref=f238e280]:
+                                  - cell "Hours type" [ref=f238e281]
+                                  - cell [ref=f238e282]
+                                  - cell [ref=f238e283]:
+                                    - combobox [ref=f238e285]:
+                                      - textbox [ref=f238e286]
+                                      - button [ref=f238e287] [cursor=pointer]:
+                                        - generic [ref=f238e288]: 
+                                  - cell [ref=f238e289]
+                                  - cell [ref=f238e290]:
+                                    - generic [ref=f238e291]:
+                                      - checkbox "calculate based on task criteria and cost categories" [ref=f238e292]
+                                      - text: calculate based on task criteria and cost categories
+                  - gridcell "Seconds planning warning" [ref=f238e293]
+                  - gridcell [ref=f238e295]:
+                    - table [ref=f238e297]:
+                      - rowgroup [ref=f238e298]:
+                        - row [ref=f238e299]:
+                          - cell [ref=f238e300]:
+                            - table [ref=f238e301]:
+                              - rowgroup [ref=f238e302]:
+                                - row [ref=f238e303]:
+                                  - cell [ref=f238e304]:
+                                    - textbox [ref=f238e305]
+                                  - cell [ref=f238e306]
+                                  - cell "Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f238e307]
+                  - gridcell "Local document repository location" [ref=f238e308]
+                  - gridcell [ref=f238e310]:
+                    - 'textbox "Example: /example/repository/path/" [ref=f238e312]'
+            - text:      
+        - table [ref=f238e313]:
+          - rowgroup [ref=f238e314]:
+            - row [ref=f238e315]:
+              - cell [ref=f238e316]:
+                - table [ref=f238e317]:
+                  - rowgroup [ref=f238e318]:
+                    - row [ref=f238e319]:
+                      - cell [ref=f238e320]:
+                        - button "Save" [ref=f238e321] [cursor=pointer]
+                      - cell [ref=f238e322]
+                      - cell [ref=f238e323]:
+                        - button "Cancel" [ref=f238e324] [cursor=pointer]
+  - table [ref=f238e325]:
+    - rowgroup [ref=f238e326]:
+      - row [ref=f238e327]:
+        - cell [ref=f238e328]:
+          - generic [ref=f238e330]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f238e331] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f238e332]
+  - text:    

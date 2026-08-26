@@ -1,0 +1,255 @@
+- generic [ref=f669e4]:
+  - generic [ref=f669e5]:
+    - table [ref=f669e6]:
+      - rowgroup [ref=f669e7]:
+        - row [ref=f669e8]:
+          - cell [ref=f669e9]:
+            - link [ref=f669e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f669e12]:
+            - table [ref=f669e13]:
+              - rowgroup [ref=f669e14]:
+                - row [ref=f669e15]:
+                  - cell [ref=f669e16]:
+                    - generic [ref=f669e17]:
+                      - menubar [ref=f669e18]:
+                        - menuitem "Planning" [ref=f669e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f669e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f669e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f669e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f669e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f669e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f669e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f669e33]:
+                        - rowgroup [ref=f669e34]:
+                          - row [ref=f669e35]:
+                            - cell [ref=f669e36]:
+                              - table [ref=f669e37]:
+                                - rowgroup [ref=f669e38]:
+                                  - row [ref=f669e39]:
+                                    - cell [ref=f669e40]
+                                    - cell [ref=f669e41]:
+                                      - strong [ref=f669e42]: START
+                                    - cell [ref=f669e43]
+                                    - cell [ref=f669e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f669e45]:
+                                        - rowgroup [ref=f669e46]:
+                                          - row [ref=f669e47]:
+                                            - cell [ref=f669e48]:
+                                              - table [ref=f669e49]:
+                                                - rowgroup [ref=f669e50]:
+                                                  - row [ref=f669e51]:
+                                                    - cell [ref=f669e52]:
+                                                      - table [ref=f669e53]:
+                                                        - rowgroup [ref=f669e54]:
+                                                          - row [ref=f669e55]:
+                                                            - cell [ref=f669e56]:
+                                                              - table [ref=f669e57]:
+                                                                - rowgroup [ref=f669e58]:
+                                                                  - row [ref=f669e59]:
+                                                                    - cell [ref=f669e60]
+                                                                    - cell [ref=f669e63]
+                                                                    - cell "Resources" [ref=f669e64]
+                                                    - cell [ref=f669e65]
+                                                    - cell [ref=f669e66]:
+                                                      - table [ref=f669e67]:
+                                                        - rowgroup [ref=f669e68]:
+                                                          - row [ref=f669e69]:
+                                                            - cell [ref=f669e70]:
+                                                              - table [ref=f669e71]:
+                                                                - rowgroup [ref=f669e72]:
+                                                                  - row [ref=f669e73]:
+                                                                    - cell [ref=f669e74]
+                                                                    - cell [ref=f669e77]
+                                                                    - cell "Calendar Exception Days" [ref=f669e78]
+                            - cell [ref=f669e79]:
+                              - generic [ref=f669e80]:
+                                - link "Help" [ref=f669e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f669e83]
+                                - img "Info" [ref=f669e85]
+    - table [ref=f669e87]:
+      - rowgroup [ref=f669e88]:
+        - row [ref=f669e89]:
+          - cell [ref=f669e90]
+          - 'cell "user: admin" [ref=f669e91]'
+          - cell [ref=f669e92]:
+            - link "[Log out]" [ref=f669e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f669e94]:
+    - text:    
+    - generic [ref=f669e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f669e97]:
+        - generic [ref=f669e98]: Calendar Exception Days List
+        - generic [ref=f669e99]:
+          - grid [ref=f669e100]:
+            - rowgroup [ref=f669e108]:
+              - columnheader [ref=f669e109]:
+                - generic [ref=f669e110] [cursor=pointer]:
+                  - generic [ref=f669e111]: 
+                  - text: Name
+              - columnheader "Color" [ref=f669e113]
+              - columnheader "Overallocated" [ref=f669e115]
+              - columnheader "Standard Effort" [ref=f669e117]
+              - columnheader "Overtime Effort" [ref=f669e119]
+              - columnheader "Operations" [ref=f669e121]
+            - rowgroup [ref=f669e130]:
+              - gridcell "BANK_HOLIDAY" [ref=f669e131]
+              - gridcell "red (default)" [ref=f669e133]
+              - gridcell "No" [ref=f669e135]
+              - gridcell "0:0" [ref=f669e137]
+              - gridcell "0:0" [ref=f669e139]
+              - gridcell [ref=f669e141]:
+                - table [ref=f669e143]:
+                  - rowgroup [ref=f669e144]:
+                    - row [ref=f669e145]:
+                      - cell [ref=f669e146]:
+                        - table [ref=f669e147]:
+                          - rowgroup [ref=f669e148]:
+                            - row [ref=f669e149]:
+                              - cell [ref=f669e150]:
+                                - button "Edit" [ref=f669e151] [cursor=pointer]
+                              - cell [ref=f669e153]
+                              - cell [ref=f669e154]:
+                                - button "Remove" [ref=f669e155] [cursor=pointer]
+              - gridcell "HALF_DAY_HOLIDAY" [ref=f669e157]
+              - gridcell "orange" [ref=f669e159]
+              - gridcell "Yes" [ref=f669e161]
+              - gridcell "4:0" [ref=f669e163]
+              - gridcell "unlimited" [ref=f669e165]
+              - gridcell [ref=f669e167]:
+                - table [ref=f669e169]:
+                  - rowgroup [ref=f669e170]:
+                    - row [ref=f669e171]:
+                      - cell [ref=f669e172]:
+                        - table [ref=f669e173]:
+                          - rowgroup [ref=f669e174]:
+                            - row [ref=f669e175]:
+                              - cell [ref=f669e176]:
+                                - button "Edit" [ref=f669e177] [cursor=pointer]
+                              - cell [ref=f669e179]
+                              - cell [ref=f669e180]:
+                                - button "Remove" [ref=f669e181] [cursor=pointer]
+              - gridcell "LEAVE" [ref=f669e183]
+              - gridcell "magenta" [ref=f669e185]
+              - gridcell "No" [ref=f669e187]
+              - gridcell "0:0" [ref=f669e189]
+              - gridcell "0:0" [ref=f669e191]
+              - gridcell [ref=f669e193]:
+                - table [ref=f669e195]:
+                  - rowgroup [ref=f669e196]:
+                    - row [ref=f669e197]:
+                      - cell [ref=f669e198]:
+                        - table [ref=f669e199]:
+                          - rowgroup [ref=f669e200]:
+                            - row [ref=f669e201]:
+                              - cell [ref=f669e202]:
+                                - button "Edit" [ref=f669e203] [cursor=pointer]
+                              - cell [ref=f669e205]
+                              - cell [ref=f669e206]:
+                                - button "Remove" [ref=f669e207] [cursor=pointer]
+              - gridcell "NOT_WORKING_DAY" [ref=f669e209]
+              - gridcell "green" [ref=f669e211]
+              - gridcell "No" [ref=f669e213]
+              - gridcell "0:0" [ref=f669e215]
+              - gridcell "0:0" [ref=f669e217]
+              - gridcell [ref=f669e219]:
+                - table [ref=f669e221]:
+                  - rowgroup [ref=f669e222]:
+                    - row [ref=f669e223]:
+                      - cell [ref=f669e224]:
+                        - table [ref=f669e225]:
+                          - rowgroup [ref=f669e226]:
+                            - row [ref=f669e227]:
+                              - cell [ref=f669e228]:
+                                - button "Edit" [disabled] [ref=f669e229]
+                              - cell [ref=f669e231]
+                              - cell [ref=f669e232]:
+                                - button "Remove" [disabled] [ref=f669e233]
+              - gridcell "RESOURCE_HOLIDAY" [ref=f669e235]
+              - gridcell "yellow" [ref=f669e237]
+              - gridcell "No" [ref=f669e239]
+              - gridcell "0:0" [ref=f669e241]
+              - gridcell "0:0" [ref=f669e243]
+              - gridcell [ref=f669e245]:
+                - table [ref=f669e247]:
+                  - rowgroup [ref=f669e248]:
+                    - row [ref=f669e249]:
+                      - cell [ref=f669e250]:
+                        - table [ref=f669e251]:
+                          - rowgroup [ref=f669e252]:
+                            - row [ref=f669e253]:
+                              - cell [ref=f669e254]:
+                                - button "Edit" [ref=f669e255] [cursor=pointer]
+                              - cell [ref=f669e257]
+                              - cell [ref=f669e258]:
+                                - button "Remove" [ref=f669e259] [cursor=pointer]
+              - gridcell "STRIKE" [ref=f669e261]
+              - gridcell "purple" [ref=f669e263]
+              - gridcell "No" [ref=f669e265]
+              - gridcell "0:0" [ref=f669e267]
+              - gridcell "0:0" [ref=f669e269]
+              - gridcell [ref=f669e271]:
+                - table [ref=f669e273]:
+                  - rowgroup [ref=f669e274]:
+                    - row [ref=f669e275]:
+                      - cell [ref=f669e276]:
+                        - table [ref=f669e277]:
+                          - rowgroup [ref=f669e278]:
+                            - row [ref=f669e279]:
+                              - cell [ref=f669e280]:
+                                - button "Edit" [ref=f669e281] [cursor=pointer]
+                              - cell [ref=f669e283]
+                              - cell [ref=f669e284]:
+                                - button "Remove" [ref=f669e285] [cursor=pointer]
+              - gridcell "WORKING_DAY" [ref=f669e287]
+              - gridcell "blue" [ref=f669e289]
+              - gridcell "Yes" [ref=f669e291]
+              - gridcell "8:0" [ref=f669e293]
+              - gridcell "unlimited" [ref=f669e295]
+              - gridcell [ref=f669e297]:
+                - table [ref=f669e299]:
+                  - rowgroup [ref=f669e300]:
+                    - row [ref=f669e301]:
+                      - cell [ref=f669e302]:
+                        - table [ref=f669e303]:
+                          - rowgroup [ref=f669e304]:
+                            - row [ref=f669e305]:
+                              - cell [ref=f669e306]:
+                                - button "Edit" [disabled] [ref=f669e307]
+                              - cell [ref=f669e309]
+                              - cell [ref=f669e310]:
+                                - button "Remove" [disabled] [ref=f669e311]
+            - generic [ref=f669e313]:    
+          - button "Create" [ref=f669e314] [cursor=pointer]
+      - text:          
+  - table [ref=f669e315]:
+    - rowgroup [ref=f669e316]:
+      - row [ref=f669e317]:
+        - cell [ref=f669e318]:
+          - generic [ref=f669e320]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f669e321] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f669e322]
+  - text:    

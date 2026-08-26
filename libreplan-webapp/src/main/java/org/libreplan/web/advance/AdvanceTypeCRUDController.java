@@ -34,6 +34,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
@@ -58,8 +59,27 @@ public class AdvanceTypeCRUDController extends BaseCRUDController<AdvanceType> {
         }
     }
 
+    @Override
+    public void doAfterCompose(Component comp) throws Exception {
+        super.doAfterCompose(comp);
+
+        // BaseCRUDController.doAfterCompose() already calls showListWindow() (which reloads
+        // listWindow's bindings), but that happens before AnnotateBinderInit's own later
+        // page-level pass has created any binder at all, so it's a no-op. Redo it here, now that
+        // the binder exists. Only listWindow is reloaded - editWindow's bindings reference
+        // controller.advanceType, which is still null at this point (only set up by
+        // initCreate()/initEdit(), called later); showEditWindow() reloads editWindow's own
+        // bindings once that has happened. createBindingsFor still covers the whole tree since it
+        // only registers bindings, it doesn't evaluate them.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(listWindow);
+    }
+
     public List<AdvanceType> getAdvanceTypes() {
-        return advanceTypeModel.getAdvanceTypes();
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new ListModelList<>(advanceTypeModel.getAdvanceTypes());
     }
 
     public AdvanceType getAdvanceType() {

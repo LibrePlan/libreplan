@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -36,7 +37,7 @@
             <vbox>
 
                 <groupbox closable="false">
-                    <caption label="@{stretchesFunctionController.title}" />
+                    <caption label="@load(stretchesFunctionController.title)" />
 
                     <button label="${i18n:_t('Add stretch')}"
                             onClick="stretchesFunctionController.addStretch()"
@@ -44,9 +45,9 @@
                             sclass="add-button" />
 
                     <listbox id="stretchesList"
-                             model="@{stretchesFunctionController.stretches}"
-                             itemRenderer="@{stretchesFunctionController.stretchesRenderer}"
-                             style="margin-bottom: 5px" fixedLayout="true"
+                             model="@load(stretchesFunctionController.stretches)"
+                             itemRenderer="@load(stretchesFunctionController.stretchesRenderer)"
+                             style="margin-bottom: 5px"
                              rows="15"
                              width="500px" >
                         <listhead>
@@ -61,8 +62,8 @@
             </vbox>
 
             <vbox id="charts">
-                <div visible="@{stretchesFunctionController.chartsDisabled}" height="60px" style="padding:15px;">
-                    <label visible="@{stretchesFunctionController.chartsDisabled}"
+                <div visible="@load(stretchesFunctionController.chartsDisabled)" height="60px" style="padding:15px;">
+                    <label visible="@load(stretchesFunctionController.chartsDisabled)"
                            class="message_WARNING">${i18n:_t('Cannot calculate charts for current data')}</label>
                 </div>
 
@@ -76,7 +77,7 @@
                 <chart id="dedicationChart" title="${i18n:_t('Dedication chart')}"
                        titleFont="${tfont}"
                        type="time_series" threeD="false"
-                       model="@{stretchesFunctionController.getDedicationChartData}"
+                       model="@load(stretchesFunctionController.dedicationChartData)"
                        yAxis= "${i18n:_t('Hours')}" paneColor="#FFFFFF"
                        xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
                        yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"
@@ -85,7 +86,7 @@
                        title="${i18n:_t('Accumulated hours chart')}"
                        titleFont="${tfont}"
                        type="time_series" threeD="false"
-                       model="@{stretchesFunctionController.getAccumulatedHoursChartData}"
+                       model="@load(stretchesFunctionController.accumulatedHoursChartData)"
                        yAxis= "${i18n:_t('Hours')}" paneColor="#FFFFFF"
                        xAxisFont="${lbfont}" xAxisTickFont="${lbfont}"
                        yAxisFont="${lbfont}" yAxisTickFont="${lbfont}"

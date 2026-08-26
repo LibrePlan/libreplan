@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2012 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.hibernate.Hibernate;
 import org.hibernate.SessionFactory;
-import org.hibernate.criterion.Restrictions;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
@@ -239,10 +243,11 @@ public class SumExpensesDAO extends GenericDAOHibernate<SumExpenses, Long> imple
 
     @Override
     public SumExpenses findByOrderElement(OrderElement orderElement) {
-        return (SumExpenses) getSession()
-                .createCriteria(getEntityClass())
-                .add(Restrictions.eq("orderElement", orderElement))
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<SumExpenses> cq = cb.createQuery(getEntityClass());
+        Root<SumExpenses> root = cq.from(getEntityClass());
+        cq.where(cb.equal(root.get("orderElement"), orderElement));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override

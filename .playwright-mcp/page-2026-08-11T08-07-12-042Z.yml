@@ -1,0 +1,222 @@
+- generic [ref=f48e4]:
+  - generic:
+    - generic [ref=f48e7]:
+      - table [ref=f48e8]:
+        - rowgroup [ref=f48e9]:
+          - row [ref=f48e10]:
+            - cell [ref=f48e11]:
+              - link [ref=f48e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f48e14]:
+              - table [ref=f48e15]:
+                - rowgroup [ref=f48e16]:
+                  - row [ref=f48e17]:
+                    - cell [ref=f48e18]:
+                      - generic [ref=f48e19]:
+                        - list [ref=f48e21]:
+                          - listitem [ref=f48e22]:
+                            - link "Planning" [ref=f48e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f48e25]:
+                            - link "Resources" [ref=f48e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f48e28]:
+                            - link "Cost" [ref=f48e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f48e31]:
+                            - link "Configuration" [ref=f48e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f48e34]:
+                            - link "Communications" [ref=f48e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f48e37]:
+                            - link "Reports" [ref=f48e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f48e40]:
+                            - link "Personal area" [ref=f48e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f48e43]:
+                          - rowgroup [ref=f48e44]:
+                            - row [ref=f48e45]:
+                              - cell [ref=f48e46]:
+                                - table [ref=f48e47]:
+                                  - rowgroup [ref=f48e48]:
+                                    - row [ref=f48e49]:
+                                      - cell [ref=f48e50]
+                                      - cell [ref=f48e51]:
+                                        - strong [ref=f48e52]: START
+                                      - cell [ref=f48e53]
+                                      - cell [ref=f48e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f48e55]:
+                                          - rowgroup [ref=f48e56]:
+                                            - row [ref=f48e57]:
+                                              - cell [ref=f48e58]:
+                                                - table [ref=f48e59]:
+                                                  - rowgroup [ref=f48e60]:
+                                                    - row [ref=f48e61]:
+                                                      - cell [ref=f48e62]:
+                                                        - table [ref=f48e63]:
+                                                          - rowgroup [ref=f48e64]:
+                                                            - row [ref=f48e65]:
+                                                              - cell [ref=f48e66]:
+                                                                - table [ref=f48e67]:
+                                                                  - rowgroup [ref=f48e68]:
+                                                                    - row [ref=f48e69]:
+                                                                      - cell [ref=f48e70]
+                                                                      - cell [ref=f48e73]
+                                                                      - cell "Resources" [ref=f48e74]
+                                                      - cell [ref=f48e75]
+                                                      - cell [ref=f48e76]:
+                                                        - table [ref=f48e77]:
+                                                          - rowgroup [ref=f48e78]:
+                                                            - row [ref=f48e79]:
+                                                              - cell [ref=f48e80]:
+                                                                - table [ref=f48e81]:
+                                                                  - rowgroup [ref=f48e82]:
+                                                                    - row [ref=f48e83]:
+                                                                      - cell [ref=f48e84]
+                                                                      - cell [ref=f48e87]
+                                                                      - cell "Workers" [ref=f48e88]
+                              - cell [ref=f48e89]:
+                                - generic [ref=f48e90]:
+                                  - link "Help" [ref=f48e91] [cursor=pointer]:
+                                    - /url: /help/en/05-recursos.html#xesti-n-de-traballadores
+                                  - img "Axuda" [ref=f48e93]
+                                  - img "Info" [ref=f48e95]
+      - table [ref=f48e97]:
+        - rowgroup [ref=f48e98]:
+          - row [ref=f48e99]:
+            - cell [ref=f48e100]
+            - 'cell "user: admin" [ref=f48e101]'
+            - cell [ref=f48e102]:
+              - link "[Log out]" [ref=f48e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f48e106]:
+    - generic:  
+    - generic [ref=f48e110]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f48e111]:
+        - generic [ref=f48e112]: Workers List
+        - generic [ref=f48e113]:
+          - table [ref=f48e116]:
+            - rowgroup [ref=f48e117]:
+              - row [ref=f48e118]:
+                - cell [ref=f48e119]:
+                  - table [ref=f48e120]:
+                    - rowgroup [ref=f48e121]:
+                      - row [ref=f48e122]:
+                        - cell "Filter by" [ref=f48e123]
+                        - cell [ref=f48e124]
+                        - cell "" [ref=f48e125]:
+                          - generic [ref=f48e127]:
+                            - textbox [ref=f48e128]
+                            - generic [ref=f48e129] [cursor=pointer]: 
+                        - cell [ref=f48e131]
+                        - cell "Personal details" [ref=f48e132]
+                        - cell [ref=f48e133]
+                        - cell [ref=f48e134]:
+                          - textbox [ref=f48e135]
+                        - cell [ref=f48e136]
+                        - cell "More options" [ref=f48e137]:
+                          - generic [ref=f48e138]:
+                            - generic [ref=f48e139]: More options
+                            - text:          
+                        - cell [ref=f48e142]
+                        - cell [ref=f48e143]:
+                          - button "Filter" [ref=f48e144] [cursor=pointer]
+          - generic [ref=f48e146]:
+            - table [ref=f48e148]:
+              - rowgroup [ref=f48e156]:
+                - row [ref=f48e157]:
+                  - columnheader " Surname" [ref=f48e158]:
+                    - generic [ref=f48e159] [cursor=pointer]:
+                      - generic [ref=f48e160]: 
+                      - text: Surname
+                  - columnheader "First name" [ref=f48e162]
+                  - columnheader "ID" [ref=f48e164]
+                  - columnheader "Code" [ref=f48e166]
+                  - columnheader "Queue-based" [ref=f48e168]
+                  - columnheader "Operations" [ref=f48e170]
+                  - columnheader
+            - table [ref=f48e174]:
+              - rowgroup [ref=f48e182]:
+                - row [ref=f48e183]:
+                  - cell "Baten" [ref=f48e184]
+                  - cell "Jeroen" [ref=f48e186]
+                  - cell "0001" [ref=f48e188]
+                  - cell "WORKER0002" [ref=f48e190]
+                  - cell "no" [ref=f48e192]
+                  - cell [ref=f48e194]:
+                    - table [ref=f48e196]:
+                      - rowgroup [ref=f48e197]:
+                        - row [ref=f48e198]:
+                          - cell [ref=f48e199]:
+                            - table [ref=f48e200]:
+                              - rowgroup [ref=f48e201]:
+                                - row [ref=f48e202]:
+                                  - cell [ref=f48e203]:
+                                    - button "Edit" [ref=f48e204] [cursor=pointer]
+                                  - cell [ref=f48e206]
+                                  - cell [ref=f48e207]:
+                                    - button "Remove" [ref=f48e208] [cursor=pointer]
+                - row [ref=f48e210]:
+                  - cell "bond" [ref=f48e211]
+                  - cell "james" [ref=f48e213]
+                  - cell "007" [ref=f48e215]
+                  - cell "WORKER0001" [ref=f48e217]
+                  - cell "no" [ref=f48e219]
+                  - cell [ref=f48e221]:
+                    - table [ref=f48e223]:
+                      - rowgroup [ref=f48e224]:
+                        - row [ref=f48e225]:
+                          - cell [ref=f48e226]:
+                            - table [ref=f48e227]:
+                              - rowgroup [ref=f48e228]:
+                                - row [ref=f48e229]:
+                                  - cell [ref=f48e230]:
+                                    - button "Edit" [ref=f48e231] [cursor=pointer]
+                                  - cell [ref=f48e233]
+                                  - cell [ref=f48e234]:
+                                    - button "Remove" [ref=f48e235] [cursor=pointer]
+              - rowgroup:
+                - row
+            - generic [ref=f48e237]:    
+          - button "Create" [ref=f48e238] [cursor=pointer]
+      - text:                                                         
+  - generic:
+    - table [ref=f48e241]:
+      - rowgroup [ref=f48e242]:
+        - row [ref=f48e243]:
+          - cell [ref=f48e244]:
+            - generic [ref=f48e246]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f48e247] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f48e248]
+    - text:  

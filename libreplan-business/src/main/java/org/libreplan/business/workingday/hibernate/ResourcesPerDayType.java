@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -28,9 +29,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.libreplan.business.workingday.ResourcesPerDay;
 
@@ -38,34 +37,30 @@ import org.libreplan.business.workingday.ResourcesPerDay;
  * Persists a {@link ResourcesPerDay} through hibernate
  * @author Óscar González Fernández <ogonzalez@igalia.com>
  */
-public class ResourcesPerDayType implements UserType {
-
-    private static final int[] SQL_TYPES = { Types.NUMERIC };
+public class ResourcesPerDayType implements UserType<ResourcesPerDay> {
 
     @Override
-    public int[] sqlTypes() {
-        return SQL_TYPES;
+    public int getSqlType() {
+        return Types.NUMERIC;
     }
 
     @Override
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    public ResourcesPerDay assemble(Serializable cached, Object owner) {
         return ResourcesPerDay.amount((BigDecimal) cached);
     }
 
     @Override
-    public Serializable disassemble(Object value) throws HibernateException {
-        ResourcesPerDay resourcesPerDay = (ResourcesPerDay) value;
-        return resourcesPerDay.getAmount();
+    public Serializable disassemble(ResourcesPerDay value) {
+        return value.getAmount();
     }
 
     @Override
-    public Object deepCopy(Object value) throws HibernateException {
+    public ResourcesPerDay deepCopy(ResourcesPerDay value) {
         return value;
     }
 
     @Override
-    public boolean equals(Object x, Object y) throws HibernateException {
+    public boolean equals(ResourcesPerDay x, ResourcesPerDay y) {
         if (x == y) {
             return true;
         }
@@ -76,7 +71,7 @@ public class ResourcesPerDayType implements UserType {
     }
 
     @Override
-    public int hashCode(Object x) throws HibernateException {
+    public int hashCode(ResourcesPerDay x) {
         return x.hashCode();
     }
 
@@ -86,11 +81,9 @@ public class ResourcesPerDayType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names,
-            SessionImplementor session, Object owner)
-            throws HibernateException, SQLException {
-        BigDecimal bigDecimal = (BigDecimal) StandardBasicTypes.BIG_DECIMAL
-                .nullSafeGet(rs, names[0], session);
+    public ResourcesPerDay nullSafeGet(ResultSet rs, int position,
+            SharedSessionContractImplementor session, Object owner) throws SQLException {
+        BigDecimal bigDecimal = rs.getBigDecimal(position);
         if (bigDecimal == null) {
             return null;
         }
@@ -98,19 +91,17 @@ public class ResourcesPerDayType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index,
-            SessionImplementor session) throws HibernateException, SQLException {
-        BigDecimal amount = null;
-        if (value != null) {
-            amount = ((ResourcesPerDay) value).getAmount();
+    public void nullSafeSet(PreparedStatement st, ResourcesPerDay value, int index,
+            SharedSessionContractImplementor session) throws SQLException {
+        if (value == null) {
+            st.setNull(index, Types.NUMERIC);
+        } else {
+            st.setBigDecimal(index, value.getAmount());
         }
-        StandardBasicTypes.BIG_DECIMAL.nullSafeSet(st, amount, index, session);
-
     }
 
     @Override
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    public ResourcesPerDay replace(ResourcesPerDay original, ResourcesPerDay target, Object owner) {
         return original;
     }
 

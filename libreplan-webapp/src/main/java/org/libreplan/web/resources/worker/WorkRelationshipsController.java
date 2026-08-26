@@ -33,7 +33,11 @@ import org.libreplan.web.common.Util;
 import org.libreplan.web.resources.worker.IWorkerModel.AddingSatisfactionResult;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
+import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 import java.util.List;
 import java.util.HashMap;
@@ -103,6 +107,35 @@ public class WorkRelationshipsController extends GenericForwardComposer {
     public void deleteCriterionSatisfaction(CriterionSatisfaction satisfaction) throws InstanceNotFoundException {
         workerModel.removeSatisfaction(satisfaction);
         this.workerCRUDController.goToEditForm();
+    }
+
+    /**
+     * The row's "Edit" button used to call controller.goToEditWorkRelationshipForm(...), which
+     * doesn't exist anywhere in this codebase (nor does _editWorkRelationship.zul get loaded from
+     * anywhere) - that edit flow was already dead/unfinished before this binding was fixed, so the
+     * button is dropped here rather than pointing at a guaranteed "no such method" crash. Delete
+     * is fully functional and kept.
+     */
+    public RowRenderer getCriterionSatisfactionsRenderer() {
+        return (Row row, Object data, int index) -> {
+            final CriterionSatisfaction satisfaction = (CriterionSatisfaction) data;
+            row.setValue(satisfaction);
+
+            row.appendChild(new Label(Util.formatDate(satisfaction.getStartDate())));
+            row.appendChild(new Label(
+                    satisfaction.getEndDate() != null ? Util.formatDate(satisfaction.getEndDate()) : ""));
+            row.appendChild(new Label(satisfaction.getCriterion().getName()));
+
+            Hbox operations = new Hbox();
+            operations.appendChild(Util.createRemoveButton(event -> {
+                try {
+                    deleteCriterionSatisfaction(satisfaction);
+                } catch (InstanceNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            }));
+            row.appendChild(operations);
+        };
     }
 
     public void prepareForCreate() {

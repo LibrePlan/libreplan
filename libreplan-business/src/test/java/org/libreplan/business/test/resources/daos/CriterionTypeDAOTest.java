@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -40,6 +41,7 @@ import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
 import org.libreplan.business.resources.entities.CriterionType;
+import org.libreplan.business.resources.entities.PredefinedCriterionTypes;
 import org.libreplan.business.resources.entities.ResourceEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -252,6 +254,44 @@ public class CriterionTypeDAOTest {
 
     private String getUniqueName() {
         return UUID.randomUUID().toString();
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). getSortedCriterionTypes/existsPredefinedType/findPredefined
+     * had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void getSortedCriterionTypesOrdersByNameAscending() {
+        CriterionType first = createValidCriterionType("aaa-" + UUID.randomUUID(), "");
+        CriterionType second = createValidCriterionType("zzz-" + UUID.randomUUID(), "");
+        criterionTypeDAO.save(second);
+        criterionTypeDAO.save(first);
+
+        List<CriterionType> sorted = criterionTypeDAO.getSortedCriterionTypes();
+        int firstIndex = sorted.indexOf(first);
+        int secondIndex = sorted.indexOf(second);
+        assertTrue(firstIndex >= 0);
+        assertTrue(secondIndex >= 0);
+        assertTrue(firstIndex < secondIndex);
+    }
+
+    @Test
+    @Transactional
+    public void existsPredefinedTypeAndFindPredefinedMatchByInternalNameAfterSaving() {
+        // predefinedTypeInternalName can only be set via CriterionType.fromPredefined(), which
+        // ties name == internal name to a fixed PredefinedCriterionTypes enum constant, so the
+        // "name matches" and "internal name matches" Criteria paths can't be exercised in
+        // isolation from each other here - both are hit together, which still characterizes the
+        // Criteria-based uniqueByInternalName() query.
+        CriterionType predefined = CriterionType.fromPredefined(PredefinedCriterionTypes.SKILL);
+        criterionTypeDAO.save(predefined);
+
+        CriterionType lookup = CriterionType.fromPredefined(PredefinedCriterionTypes.SKILL);
+        assertTrue(criterionTypeDAO.existsPredefinedType(lookup));
+        assertEquals(predefined.getId(), criterionTypeDAO.findPredefined(lookup).getId());
     }
 
 }

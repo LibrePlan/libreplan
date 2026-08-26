@@ -36,6 +36,7 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -192,8 +193,16 @@ public class WorkingArrangementsPerOrderController extends LibrePlanReportContro
         return workingArrangementsPerOrderModel.getSelectedLabels();
     }
 
+    public ListitemRenderer getLabelsRenderer() {
+        return ReportListitemRenderers.labelRenderer(this::onRemoveLabel);
+    }
+
     public List<Criterion> getSelectedCriterions() {
         return workingArrangementsPerOrderModel.getSelectedCriterions();
+    }
+
+    public ListitemRenderer getCriterionsRenderer() {
+        return ReportListitemRenderers.criterionRenderer(this::onRemoveCriterion);
     }
 
     public List<Criterion> getAllCriterions() {

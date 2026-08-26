@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +25,10 @@ package org.libreplan.business.users.daos;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.Worker;
@@ -57,10 +59,11 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
     @Transactional(readOnly = true)
     public User findByLoginName(String loginName) throws InstanceNotFoundException {
 
-        User user = (User) getSession()
-                .createCriteria(User.class)
-                .add(Restrictions.eq("loginName", loginName).ignoreCase())
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+        cq.where(cb.equal(cb.lower(root.get("loginName")), loginName.toLowerCase()));
+        User user = getSession().createQuery(cq).uniqueResult();
 
         if ( user == null ) {
             throw new InstanceNotFoundException(loginName, User.class.getName());
@@ -73,11 +76,13 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
     @Override
     public User findByLoginNameNotDisabled(String loginName) throws InstanceNotFoundException {
 
-        User user = (User) getSession()
-                .createCriteria(User.class)
-                .add(Restrictions.eq("loginName", loginName).ignoreCase())
-                .add(Restrictions.eq("disabled", false))
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+        cq.where(
+                cb.equal(cb.lower(root.get("loginName")), loginName.toLowerCase()),
+                cb.equal(root.get("disabled"), false));
+        User user = getSession().createQuery(cq).uniqueResult();
 
         if (user == null) {
             throw new InstanceNotFoundException(loginName, User.class.getName());
@@ -112,25 +117,33 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
 
     @Override
     public List<User> listNotDisabled() {
-        return getSession()
-                .createCriteria(User.class)
-                .add(Restrictions.eq("disabled", false))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+        cq.where(cb.equal(root.get("disabled"), false));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public List<User> findByLastConnectedScenario(Scenario scenario) {
-        return getSession()
-                .createCriteria(User.class)
-                .add(Restrictions.eq("lastConnectedScenario", scenario))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+        cq.where(cb.equal(root.get("lastConnectedScenario"), scenario));
+        return getSession().createQuery(cq).getResultList();
     }
 
     private List<OrderAuthorization> getOrderAuthorizationsByUser(User user) {
-        return getSession()
-                .createCriteria(UserOrderAuthorization.class)
-                .add(Restrictions.eq("user", user))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        // Query typed as the supertype OrderAuthorization (the method's declared return type),
+        // selecting from its subtype UserOrderAuthorization - mirrors the original Criteria
+        // query, which also implicitly returned UserOrderAuthorization rows as a
+        // List<OrderAuthorization>.
+        CriteriaQuery<OrderAuthorization> cq = cb.createQuery(OrderAuthorization.class);
+        Root<UserOrderAuthorization> root = cq.from(UserOrderAuthorization.class);
+        cq.where(cb.equal(root.get("user"), user));
+        cq.select(root);
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -150,10 +163,11 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
     }
 
     private List<User> getUsersOrderByLoginName() {
-        return getSession()
-                .createCriteria(User.class)
-                .addOrder(Order.asc("loginName"))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<User> cq = cb.createQuery(User.class);
+        Root<User> root = cq.from(User.class);
+        cq.orderBy(cb.asc(root.get("loginName")));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -185,6 +199,10 @@ public class UserDAO extends GenericDAOHibernate<User, Long> implements IUserDAO
     @Override
     @Transactional(readOnly = true)
     public Number getRowCount() {
-        return (Number) getSession().createCriteria(User.class).setProjection(Projections.rowCount()).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+        Root<User> root = cq.from(User.class);
+        cq.select(cb.count(root));
+        return getSession().createQuery(cq).uniqueResult();
     }
 }

@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -22,7 +23,8 @@
 <window id="${arg.top_id}"
     apply="${controller.workRelationshipsController}">
     <grid id="history"
-        model="@{controller.workRelationship.criterionSatisfactions}"
+        model="@load(controller.criterionSatisfactions)"
+        rowRenderer="@load(controller.criterionSatisfactionsRenderer)"
         mold="paging" pageSize="10">
         <columns>
             <column label="${i18n:_t('Starting date')}" width="150px"/>
@@ -30,25 +32,6 @@
             <column label="${i18n:_t('Relationship')}"/>
             <column label="${i18n:_t('Operations')}"/>
         </columns>
-        <rows>
-            <row self="@{each='criterionSatisfaction'}"
-                value="@{criterionSatisfaction}">
-                <label id="date_start"
-                    value="@{criterionSatisfaction.startDate}" width="150px" />
-                <label id="date_end"
-                    value="@{criterionSatisfaction.endDate}" width="150px" />
-                <label value="@{criterionSatisfaction.criterion.name}" />
-                <hbox>
-                    <button label="${i18n:_t('Edit')}"
-                        onClick="controller.goToEditWorkRelationshipForm(
-                        self.getParent().getParent().value);">
-                    </button>
-                    <button label="${i18n:_t('Delete')}"
-                        onClick="controller.workRelationship.deleteCriterionSatisfaction(self.getParent().getParent().value);">
-                    </button>
-                </hbox>
-            </row>
-        </rows>
       </grid>
     <button label="${i18n:_t('New entry')}"
         onClick="controller.goToAddWorkRelationshipForm()">

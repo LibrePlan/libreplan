@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -29,8 +30,9 @@
             <vbox id="messagesContainerHistoricAssignment" />
             <panel title="${i18n:_t('Assignment log')}" border="normal">
                 <panelchildren>
-                    <grid height="200px" fixedLayout="true" sclass="margin-border"
-                          model="@{historicalAssignment.orderElementsWithThisAssignedTemplate}">
+                    <grid height="200px" sclass="margin-border"
+                          model="@load(historicalAssignment.orderElementsWithThisAssignedTemplate)"
+                          rowRenderer="@load(historicalAssignment.orderElementsWithThisAssignedTemplateRenderer)">
                         <columns>
                             <column label="${i18n:_t('Project code')}" sort="orderCode" sortDirection="descending"/>
                             <column label="${i18n:_t('Project Name')}" width="250px" sort="auto(name)" sortDirection="descending"/>
@@ -41,16 +43,6 @@
                             <column label="${i18n:_t('Operations')}" align="center" width="100px" />
                         </columns>
                         <rows>
-                            <row self="@{each='orderElementDTO'}" value="@{orderElementDTO}">
-                                <label value="@{orderElementDTO.orderCode}"/>
-                                <label value="@{orderElementDTO.name}"/>
-                                <label value="@{orderElementDTO.orderElementCode}"/>
-                                <label value="@{orderElementDTO.orderElementName}"/>
-                                <label value="@{orderElementDTO.estimatedHours}"/>
-                                <label value="@{orderElementDTO.workedHours}"/>
-                                <button label="${i18n:_t('View')}"
-                                        onClick="historicalAssignment.view(self.parent.value);"/>
-                            </row>
                         </rows>
                     </grid>
                 </panelchildren>

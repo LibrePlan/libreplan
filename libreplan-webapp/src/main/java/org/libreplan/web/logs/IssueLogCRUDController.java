@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -82,6 +83,16 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         initializeUserComponent();
         bdProjectIssueLog.setDisabled(!LogsController.getProjectNameVisibility());
         bdUserIssueLog.setDisabled(true);
+
+        // AnnotateBinderInit's own page-level pass (<?init class="AnnotateBinderInit"?>) only
+        // calls Util.createBindingsFor - it never loads the bindings it registers, so without an
+        // explicit initial load here listIssueLog stays empty until some other action happens to
+        // trigger a reload. Only listWindow is reloaded - editWindow's bindings reference
+        // controller.issueLog, which is still null the first time this runs (only set up by
+        // initCreate()/initEdit(), called later); showEditWindow() reloads editWindow's own
+        // bindings once that has happened.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(listWindow);
     }
 
     /**
@@ -89,7 +100,12 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
      */
     private void initializeOrderComponent() {
         bdProjectIssueLog = (BandboxSearch) editWindow.getFellow("bdProjectIssueLog");
-        Util.createBindingsFor(bdProjectIssueLog);
+        // No separate Util.createBindingsFor(bdProjectIssueLog) call here - that would give this
+        // component its own binder, rooted separately from the rest of the page. The comp-wide
+        // Util.createBindingsFor(comp) call at the end of doAfterCompose() already covers it as
+        // part of the single, whole-page binder that showEditWindow() actually reloads; a second,
+        // narrower binder registered here first would never receive that reload and would show
+        // this bandbox permanently empty (confirmed live - this was the actual bug).
 
         bdProjectIssueLog.setListboxEventListener(Events.ON_SELECT,
                 event -> {
@@ -110,7 +126,7 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
      */
     private void initializeUserComponent() {
         bdUserIssueLog = (BandboxSearch) editWindow.getFellow("bdUserIssueLog");
-        Util.createBindingsFor(bdUserIssueLog);
+        // See the comment in initializeOrderComponent() - no separate createBindingsFor call here.
 
         bdUserIssueLog.setListboxEventListener(Events.ON_SELECT, event -> {
             final Object object = bdUserIssueLog.getSelectedElement();
@@ -140,6 +156,18 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
         String displayName = lowMediumHighEnum.getDisplayName();
         item.setLabel(displayName);
     };
+
+    // Plain public static fields, as declared above, are never recognized as EL bean properties -
+    // java.beans.Introspector (which BeanELResolver relies on) only considers getter/setter method
+    // pairs, so "controller.issueTypeRenderer"/"controller.lowMediumHighEnumRenderer" could never
+    // resolve, independent of the @{...} binder issue. These getters are purely for that binding.
+    public ListitemRenderer getIssueTypeRenderer() {
+        return issueTypeRenderer;
+    }
+
+    public ListitemRenderer getLowMediumHighEnumRenderer() {
+        return lowMediumHighEnumRenderer;
+    }
 
     /**
      * Renders issue logs.
@@ -240,15 +268,17 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
     /**
      * Returns {@link LowMediumHighEnum} values.
      */
-    public LowMediumHighEnum[] getLowMediumHighEnum() {
-        return LowMediumHighEnum.values();
+    public org.zkoss.zul.ListModel getLowMediumHighEnum() {
+        // The listbox's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder
+        // has no automatic array->ListModel coercion, so wrap it explicitly.
+        return new org.zkoss.zul.ListModelArray<>(LowMediumHighEnum.values());
     }
 
     /**
      * Returns {@link IssueTypeEnum} values.
      */
-    public IssueTypeEnum[] getIssueTypeEnum() {
-        return IssueTypeEnum.values();
+    public org.zkoss.zul.ListModel getIssueTypeEnum() {
+        return new org.zkoss.zul.ListModelArray<>(IssueTypeEnum.values());
     }
 
     /**
@@ -390,18 +420,21 @@ public class IssueLogCRUDController extends BaseCRUDController<IssueLog> {
      * Returns a list of {@link IssueLog} objects.
      */
     public List<IssueLog> getIssueLogs() {
+        List<IssueLog> result;
         if (LogsController.getProjectNameVisibility())
-            return issueLogModel.getIssueLogs();
+            result = issueLogModel.getIssueLogs();
         else {
-            List<IssueLog> issueLogs = new ArrayList<>();
+            result = new ArrayList<>();
             Order order = LogsController.getOrder();
             for (IssueLog issueLog : issueLogModel.getIssueLogs()) {
                 if (issueLog.getOrder().equals(order))
-                    issueLogs.add(issueLog);
+                    result.add(issueLog);
             }
-
-            return issueLogs;
         }
+        // The grid's "model" property is declared as org.zkoss.zul.ListModel - AnnotateBinder has
+        // no automatic List->ListModel coercion, so returning a plain List here throws a
+        // ClassCastException when the binder tries to load it.
+        return new ListModelList<>(result);
     }
 
     public Order getOrder() {

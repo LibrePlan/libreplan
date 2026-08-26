@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,59 +28,55 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Objects;
 
-import org.hibernate.HibernateException;
-import org.hibernate.engine.spi.SessionImplementor;
-import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.engine.spi.SharedSessionContractImplementor;
 import org.hibernate.usertype.UserType;
 import org.libreplan.business.workingday.EffortDuration;
 import org.libreplan.business.workingday.EffortDuration.Granularity;
 
-public class EffortDurationType implements UserType {
-
-    private static final int[] SQL_TYPES = { Types.INTEGER };
+public class EffortDurationType implements UserType<EffortDuration> {
 
     @Override
-    public int[] sqlTypes() {
-        return SQL_TYPES;
+    public int getSqlType() {
+        return Types.INTEGER;
     }
 
     @Override
-    public Class<?> returnedClass() {
+    public Class<EffortDuration> returnedClass() {
         return EffortDuration.class;
     }
 
     @Override
-    public boolean equals(Object x, Object y) throws HibernateException {
+    public boolean equals(EffortDuration x, EffortDuration y) {
         return Objects.equals(x, y);
     }
 
     @Override
-    public int hashCode(Object x) throws HibernateException {
+    public int hashCode(EffortDuration x) {
         return x.hashCode();
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names,
-            SessionImplementor session, Object owner)
-            throws HibernateException, SQLException {
-        Integer seconds = StandardBasicTypes.INTEGER.nullSafeGet(rs, names[0],
-                session);
-        if (seconds == null) {
+    public EffortDuration nullSafeGet(ResultSet rs, int position,
+            SharedSessionContractImplementor session, Object owner) throws SQLException {
+        int seconds = rs.getInt(position);
+        if (rs.wasNull()) {
             return null;
         }
         return EffortDuration.elapsing(seconds, Granularity.SECONDS);
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement st, Object value, int index,
-            SessionImplementor session) throws HibernateException, SQLException {
-        EffortDuration duration = (EffortDuration) value;
-        Integer seconds = duration != null ? duration.getSeconds() : null;
-        StandardBasicTypes.INTEGER.nullSafeSet(st, seconds, index, session);
+    public void nullSafeSet(PreparedStatement st, EffortDuration value, int index,
+            SharedSessionContractImplementor session) throws SQLException {
+        if (value == null) {
+            st.setNull(index, Types.INTEGER);
+        } else {
+            st.setInt(index, value.getSeconds());
+        }
     }
 
     @Override
-    public Object deepCopy(Object value) throws HibernateException {
+    public EffortDuration deepCopy(EffortDuration value) {
         return value;
     }
 
@@ -89,20 +86,17 @@ public class EffortDurationType implements UserType {
     }
 
     @Override
-    public Serializable disassemble(Object value) throws HibernateException {
-        EffortDuration duration = (EffortDuration) value;
-        return duration.getSeconds();
+    public Serializable disassemble(EffortDuration value) {
+        return value.getSeconds();
     }
 
     @Override
-    public Object assemble(Serializable cached, Object owner)
-            throws HibernateException {
+    public EffortDuration assemble(Serializable cached, Object owner) {
         return EffortDuration.seconds((Integer) cached);
     }
 
     @Override
-    public Object replace(Object original, Object target, Object owner)
-            throws HibernateException {
+    public EffortDuration replace(EffortDuration original, EffortDuration target, Object owner) {
         return original;
     }
 

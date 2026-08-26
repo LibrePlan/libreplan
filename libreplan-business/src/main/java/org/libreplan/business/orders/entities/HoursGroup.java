@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,8 +32,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 
 import org.apache.commons.lang3.Validate;
 import org.libreplan.business.common.IntegrationEntity;
@@ -74,7 +75,11 @@ public class HoursGroup extends IntegrationEntity implements Cloneable, ICriteri
     private HoursGroup(OrderLine parentOrderLine) {
         this.parentOrderLine = parentOrderLine;
         String code = parentOrderLine.getCode();
-        this.setCode(code != null ? code : "");
+        // A blank placeholder (parentOrderLine has no code yet, e.g. a brand new task added
+        // via the WBS quick-add) would collide with any other not-yet-coded HoursGroup under
+        // hours_group's UNIQUE constraint on code the moment more than one gets flushed - see
+        // the UUID fallback HoursGroup.copyFrom() already uses for the same reason.
+        this.setCode(code != null ? code : UUID.randomUUID().toString());
         this.setOrderLineTemplate(null);
     }
 

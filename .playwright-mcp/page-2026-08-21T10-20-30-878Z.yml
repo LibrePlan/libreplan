@@ -1,0 +1,82 @@
+- generic [ref=f150e3]:
+  - table:
+    - rowgroup:
+      - row:
+        - cell
+  - table [ref=f150e4]:
+    - rowgroup [ref=f150e5]:
+      - row [ref=f150e6]:
+        - cell [ref=f150e7]:
+          - img "LibrePlan" [ref=f150e8]
+  - table [ref=f150e9]:
+    - rowgroup [ref=f150e10]:
+      - row [ref=f150e11]:
+        - cell [ref=f150e12]
+        - cell "Access to the system" [ref=f150e13]
+        - cell [ref=f150e14]:
+          - generic "Help on authentication (opens a new window)" [ref=f150e15]:
+            - link "Help" [ref=f150e16] [cursor=pointer]:
+              - /url: /help/en/index.html
+  - table [ref=f150e18]:
+    - rowgroup [ref=f150e19]:
+      - row [ref=f150e20]:
+        - cell [ref=f150e21]
+        - cell [ref=f150e22]:
+          - table [ref=f150e23]:
+            - rowgroup [ref=f150e24]:
+              - row:
+                - cell
+              - row [ref=f150e25]:
+                - cell "User" [ref=f150e26]
+              - row [ref=f150e27]:
+                - cell [ref=f150e28]:
+                  - textbox [active] [ref=f150e30]: admin
+              - row [ref=f150e31]:
+                - cell "Password" [ref=f150e32]
+              - row [ref=f150e33]:
+                - cell [ref=f150e34]:
+                  - textbox [ref=f150e36]: admin
+              - row:
+                - cell
+              - row [ref=f150e37]:
+                - cell [ref=f150e38]:
+                  - button "Log in" [ref=f150e40] [cursor=pointer]
+        - cell [ref=f150e41]
+  - table [ref=f150e42]:
+    - rowgroup [ref=f150e43]:
+      - row [ref=f150e44]:
+        - cell [ref=f150e45]
+      - row [ref=f150e46]:
+        - cell "Supported Chrome, Firefox, Safari and Epiphany browsers v1.7.0" [ref=f150e47]:
+          - text: Supported Chrome, Firefox, Safari and Epiphany browsers
+          - generic [ref=f150e48]: v1.7.0
+      - row [ref=f150e49]:
+        - cell [ref=f150e50]:
+          - link [ref=f150e52] [cursor=pointer]:
+            - /url: http://www.libreplan-enterprise.com
+      - row [ref=f150e54]:
+        - cell [ref=f150e55]:
+          - generic [ref=f150e56]:
+            - paragraph [ref=f150e57]:
+              - strong [ref=f150e58]: Did you know LibrePlan is funded only by donations, from people like you?
+            - paragraph [ref=f150e59]:
+              - text: We don’t show advertisements or sell your data.
+              - strong [ref=f150e60]: Ever!
+              - text: But
+              - strong [ref=f150e61]: without you, LibrePlan can’t exist.
+            - paragraph [ref=f150e62]: Giving a gift today means LibrePlan continues to remain available and in active development tomorrow!
+            - paragraph [ref=f150e63]:
+              - iframe [ref=f150e66]:
+                - generic [ref=f152e1]:
+                  - generic:
+                    - generic:
+                      - link:
+                        - /url: https://opencollective.com/libreplan/donate
+                        - generic [ref=f152e2] [cursor=pointer]
+                      - region "Notifications (F8)":
+                        - list
+                  - alert [ref=f152e3]
+  - table:
+    - rowgroup:
+      - row:
+        - cell

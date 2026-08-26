@@ -1,0 +1,329 @@
+- generic [ref=f144e4]:
+  - generic:
+    - generic [ref=f144e7]:
+      - table [ref=f144e8]:
+        - rowgroup [ref=f144e9]:
+          - row [ref=f144e10]:
+            - cell [ref=f144e11]:
+              - link [ref=f144e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f144e14]:
+              - table [ref=f144e15]:
+                - rowgroup [ref=f144e16]:
+                  - row [ref=f144e17]:
+                    - cell [ref=f144e18]:
+                      - generic [ref=f144e19]:
+                        - list [ref=f144e21]:
+                          - listitem [ref=f144e22]:
+                            - link "Planning" [ref=f144e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f144e25]:
+                            - link "Resources" [ref=f144e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f144e28]:
+                            - link "Cost" [ref=f144e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f144e31]:
+                            - link "Configuration" [ref=f144e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f144e34]:
+                            - link "Communications" [ref=f144e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f144e37]:
+                            - link "Reports" [ref=f144e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f144e40]:
+                            - link "Personal area" [ref=f144e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f144e43]:
+                          - rowgroup [ref=f144e44]:
+                            - row [ref=f144e45]:
+                              - cell [ref=f144e46]:
+                                - table [ref=f144e47]:
+                                  - rowgroup [ref=f144e48]:
+                                    - row [ref=f144e49]:
+                                      - cell [ref=f144e50]
+                                      - cell [ref=f144e51]:
+                                        - strong [ref=f144e52]: START
+                                      - cell [ref=f144e53]
+                                      - cell [ref=f144e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f144e55]:
+                                          - rowgroup [ref=f144e56]:
+                                            - row [ref=f144e57]:
+                                              - cell [ref=f144e58]:
+                                                - table [ref=f144e59]:
+                                                  - rowgroup [ref=f144e60]:
+                                                    - row [ref=f144e61]:
+                                                      - cell [ref=f144e62]:
+                                                        - table [ref=f144e63]:
+                                                          - rowgroup [ref=f144e64]:
+                                                            - row [ref=f144e65]:
+                                                              - cell [ref=f144e66]:
+                                                                - table [ref=f144e67]:
+                                                                  - rowgroup [ref=f144e68]:
+                                                                    - row [ref=f144e69]:
+                                                                      - cell [ref=f144e70]
+                                                                      - cell [ref=f144e73]
+                                                                      - cell "Configuration" [ref=f144e74]
+                                                      - cell [ref=f144e75]
+                                                      - cell [ref=f144e76]:
+                                                        - table [ref=f144e77]:
+                                                          - rowgroup [ref=f144e78]:
+                                                            - row [ref=f144e79]:
+                                                              - cell [ref=f144e80]:
+                                                                - table [ref=f144e81]:
+                                                                  - rowgroup [ref=f144e82]:
+                                                                    - row [ref=f144e83]:
+                                                                      - cell [ref=f144e84]
+                                                                      - cell [ref=f144e87]
+                                                                      - cell "User Accounts" [ref=f144e88]
+                              - cell [ref=f144e89]:
+                                - generic [ref=f144e90]:
+                                  - link "Help" [ref=f144e91] [cursor=pointer]:
+                                    - /url: /help/en/13-usuarios.html#administraci-n-de-usuarios
+                                  - img "Axuda" [ref=f144e93]
+                                  - img "Info" [ref=f144e95]
+      - table [ref=f144e97]:
+        - rowgroup [ref=f144e98]:
+          - row [ref=f144e99]:
+            - cell [ref=f144e100]
+            - 'cell "user: admin" [ref=f144e101]'
+            - cell [ref=f144e102]:
+              - link "[Log out]" [ref=f144e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f144e106]:
+    - generic:  
+    - generic [ref=f144e110]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f144e111]:
+        - generic [ref=f144e112]: Users List
+        - generic [ref=f144e113]:
+          - generic [ref=f144e114]:
+            - table [ref=f144e116]:
+              - rowgroup [ref=f144e124]:
+                - row [ref=f144e125]:
+                  - columnheader " Username" [ref=f144e126]:
+                    - generic [ref=f144e127] [cursor=pointer]:
+                      - generic [ref=f144e128]: 
+                      - text: Username
+                  - columnheader "Disabled" [ref=f144e130]
+                  - columnheader "Superuser" [ref=f144e132]
+                  - columnheader "Authentication type" [ref=f144e134]
+                  - columnheader "Bound resource" [ref=f144e136]
+                  - columnheader "Actions" [ref=f144e138]
+                  - columnheader
+            - table [ref=f144e142]:
+              - rowgroup [ref=f144e150]:
+                - row [ref=f144e151]:
+                  - cell "admin" [ref=f144e152]
+                  - cell "No" [ref=f144e154]
+                  - cell "Yes" [ref=f144e156]
+                  - cell "Database" [ref=f144e158]
+                  - cell [ref=f144e160]
+                  - cell [ref=f144e163]:
+                    - table [ref=f144e165]:
+                      - rowgroup [ref=f144e166]:
+                        - row [ref=f144e167]:
+                          - cell [ref=f144e168]:
+                            - table [ref=f144e169]:
+                              - rowgroup [ref=f144e170]:
+                                - row [ref=f144e171]:
+                                  - cell [ref=f144e172]:
+                                    - button "Edit" [ref=f144e173] [cursor=pointer]
+                                  - cell [ref=f144e175]
+                                  - cell [ref=f144e176]:
+                                    - button "Default user \"admin\" cannot be removed as it is mandatory" [disabled] [ref=f144e177]
+                - row [ref=f144e179]:
+                  - cell "hresources" [ref=f144e180]
+                  - cell "No" [ref=f144e182]
+                  - cell "No" [ref=f144e184]
+                  - cell "Database" [ref=f144e186]
+                  - cell [ref=f144e188]
+                  - cell [ref=f144e191]:
+                    - table [ref=f144e193]:
+                      - rowgroup [ref=f144e194]:
+                        - row [ref=f144e195]:
+                          - cell [ref=f144e196]:
+                            - table [ref=f144e197]:
+                              - rowgroup [ref=f144e198]:
+                                - row [ref=f144e199]:
+                                  - cell [ref=f144e200]:
+                                    - button "Edit" [ref=f144e201] [cursor=pointer]
+                                  - cell [ref=f144e203]
+                                  - cell [ref=f144e204]:
+                                    - button "Remove" [ref=f144e205] [cursor=pointer]
+                - row [ref=f144e207]:
+                  - cell "jeroen" [ref=f144e208]
+                  - cell "No" [ref=f144e210]
+                  - cell "No" [ref=f144e212]
+                  - cell "Database" [ref=f144e214]
+                  - cell "Baten,Jeroen (0001)" [ref=f144e216]
+                  - cell [ref=f144e218]:
+                    - table [ref=f144e220]:
+                      - rowgroup [ref=f144e221]:
+                        - row [ref=f144e222]:
+                          - cell [ref=f144e223]:
+                            - table [ref=f144e224]:
+                              - rowgroup [ref=f144e225]:
+                                - row [ref=f144e226]:
+                                  - cell [ref=f144e227]:
+                                    - button "Edit" [ref=f144e228] [cursor=pointer]
+                                  - cell [ref=f144e230]
+                                  - cell [ref=f144e231]:
+                                    - button "Remove" [ref=f144e232] [cursor=pointer]
+                - row [ref=f144e234]:
+                  - cell "manager" [ref=f144e235]
+                  - cell "No" [ref=f144e237]
+                  - cell "No" [ref=f144e239]
+                  - cell "Database" [ref=f144e241]
+                  - cell [ref=f144e243]
+                  - cell [ref=f144e246]:
+                    - table [ref=f144e248]:
+                      - rowgroup [ref=f144e249]:
+                        - row [ref=f144e250]:
+                          - cell [ref=f144e251]:
+                            - table [ref=f144e252]:
+                              - rowgroup [ref=f144e253]:
+                                - row [ref=f144e254]:
+                                  - cell [ref=f144e255]:
+                                    - button "Edit" [ref=f144e256] [cursor=pointer]
+                                  - cell [ref=f144e258]
+                                  - cell [ref=f144e259]:
+                                    - button "Remove" [ref=f144e260] [cursor=pointer]
+                - row [ref=f144e262]:
+                  - cell "outsourcing" [ref=f144e263]
+                  - cell "No" [ref=f144e265]
+                  - cell "No" [ref=f144e267]
+                  - cell "Database" [ref=f144e269]
+                  - cell [ref=f144e271]
+                  - cell [ref=f144e274]:
+                    - table [ref=f144e276]:
+                      - rowgroup [ref=f144e277]:
+                        - row [ref=f144e278]:
+                          - cell [ref=f144e279]:
+                            - table [ref=f144e280]:
+                              - rowgroup [ref=f144e281]:
+                                - row [ref=f144e282]:
+                                  - cell [ref=f144e283]:
+                                    - button "Edit" [ref=f144e284] [cursor=pointer]
+                                  - cell [ref=f144e286]
+                                  - cell [ref=f144e287]:
+                                    - button "Remove" [ref=f144e288] [cursor=pointer]
+                - row [ref=f144e290]:
+                  - cell "reports" [ref=f144e291]
+                  - cell "No" [ref=f144e293]
+                  - cell "No" [ref=f144e295]
+                  - cell "Database" [ref=f144e297]
+                  - cell [ref=f144e299]
+                  - cell [ref=f144e302]:
+                    - table [ref=f144e304]:
+                      - rowgroup [ref=f144e305]:
+                        - row [ref=f144e306]:
+                          - cell [ref=f144e307]:
+                            - table [ref=f144e308]:
+                              - rowgroup [ref=f144e309]:
+                                - row [ref=f144e310]:
+                                  - cell [ref=f144e311]:
+                                    - button "Edit" [ref=f144e312] [cursor=pointer]
+                                  - cell [ref=f144e314]
+                                  - cell [ref=f144e315]:
+                                    - button "Remove" [ref=f144e316] [cursor=pointer]
+                - row [ref=f144e318]:
+                  - cell "wsreader" [ref=f144e319]
+                  - cell "No" [ref=f144e321]
+                  - cell "No" [ref=f144e323]
+                  - cell "Database" [ref=f144e325]
+                  - cell [ref=f144e327]
+                  - cell [ref=f144e330]:
+                    - table [ref=f144e332]:
+                      - rowgroup [ref=f144e333]:
+                        - row [ref=f144e334]:
+                          - cell [ref=f144e335]:
+                            - table [ref=f144e336]:
+                              - rowgroup [ref=f144e337]:
+                                - row [ref=f144e338]:
+                                  - cell [ref=f144e339]:
+                                    - button "Edit" [ref=f144e340] [cursor=pointer]
+                                  - cell [ref=f144e342]
+                                  - cell [ref=f144e343]:
+                                    - button "Remove" [ref=f144e344] [cursor=pointer]
+                - row [ref=f144e346]:
+                  - cell "wssubcontracting" [ref=f144e347]
+                  - cell "No" [ref=f144e349]
+                  - cell "No" [ref=f144e351]
+                  - cell "Database" [ref=f144e353]
+                  - cell [ref=f144e355]
+                  - cell [ref=f144e358]:
+                    - table [ref=f144e360]:
+                      - rowgroup [ref=f144e361]:
+                        - row [ref=f144e362]:
+                          - cell [ref=f144e363]:
+                            - table [ref=f144e364]:
+                              - rowgroup [ref=f144e365]:
+                                - row [ref=f144e366]:
+                                  - cell [ref=f144e367]:
+                                    - button "Edit" [ref=f144e368] [cursor=pointer]
+                                  - cell [ref=f144e370]
+                                  - cell [ref=f144e371]:
+                                    - button "Remove" [ref=f144e372] [cursor=pointer]
+                - row [ref=f144e374]:
+                  - cell "wswriter" [ref=f144e375]
+                  - cell "No" [ref=f144e377]
+                  - cell "No" [ref=f144e379]
+                  - cell "Database" [ref=f144e381]
+                  - cell [ref=f144e383]
+                  - cell [ref=f144e386]:
+                    - table [ref=f144e388]:
+                      - rowgroup [ref=f144e389]:
+                        - row [ref=f144e390]:
+                          - cell [ref=f144e391]:
+                            - table [ref=f144e392]:
+                              - rowgroup [ref=f144e393]:
+                                - row [ref=f144e394]:
+                                  - cell [ref=f144e395]:
+                                    - button "Edit" [ref=f144e396] [cursor=pointer]
+                                  - cell [ref=f144e398]
+                                  - cell [ref=f144e399]:
+                                    - button "Remove" [ref=f144e400] [cursor=pointer]
+              - rowgroup:
+                - row
+            - generic [ref=f144e402]:    
+          - button "Create" [ref=f144e403] [cursor=pointer]
+      - text:     
+  - generic:
+    - table [ref=f144e406]:
+      - rowgroup [ref=f144e407]:
+        - row [ref=f144e408]:
+          - cell [ref=f144e409]:
+            - generic [ref=f144e411]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f144e412] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f144e413]
+    - text:  

@@ -1,0 +1,108 @@
+- generic [ref=f1013e4]:
+  - generic [ref=f1013e5]:
+    - table [ref=f1013e6]:
+      - rowgroup [ref=f1013e7]:
+        - row [ref=f1013e8]:
+          - cell [ref=f1013e9]:
+            - link [ref=f1013e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f1013e12]:
+            - table [ref=f1013e13]:
+              - rowgroup [ref=f1013e14]:
+                - row [ref=f1013e15]:
+                  - cell [ref=f1013e16]:
+                    - generic [ref=f1013e17]:
+                      - menubar [ref=f1013e18]:
+                        - menuitem "Planning" [ref=f1013e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f1013e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f1013e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f1013e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f1013e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f1013e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f1013e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f1013e33]:
+                        - rowgroup [ref=f1013e34]:
+                          - row [ref=f1013e35]:
+                            - cell [ref=f1013e36]:
+                              - table [ref=f1013e37]:
+                                - rowgroup [ref=f1013e38]:
+                                  - row [ref=f1013e39]:
+                                    - cell [ref=f1013e40]
+                                    - cell [ref=f1013e41]:
+                                      - strong [ref=f1013e42]: START
+                                    - cell [ref=f1013e43]
+                                    - cell [ref=f1013e44]:
+                                      - table [ref=f1013e45]:
+                                        - rowgroup [ref=f1013e46]:
+                                          - row [ref=f1013e47]:
+                                            - cell [ref=f1013e48]:
+                                              - table [ref=f1013e49]:
+                                                - rowgroup [ref=f1013e50]:
+                                                  - row [ref=f1013e51]:
+                                                    - cell [ref=f1013e52]
+                                                    - cell [ref=f1013e54]
+                                                    - cell "Planning" [ref=f1013e55]
+                                                    - cell [ref=f1013e56]
+                                                    - cell [ref=f1013e57]
+                                                    - cell [ref=f1013e59]
+                                                    - cell "Templates" [ref=f1013e60]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f1013e61]:
+                              - generic [ref=f1013e62]:
+                                - link "Help" [ref=f1013e63] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f1013e65]
+                                - img "Info" [ref=f1013e67]
+    - table [ref=f1013e69]:
+      - rowgroup [ref=f1013e70]:
+        - row [ref=f1013e71]:
+          - cell [ref=f1013e72]
+          - 'cell "user: admin" [ref=f1013e73]'
+          - cell [ref=f1013e74]:
+            - link "[Log out]" [ref=f1013e75] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f1013e76]:
+    - text:    
+    - generic [ref=f1013e77]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f1013e78]:
+        - generic [ref=f1013e79]: Templates List
+        - grid [ref=f1013e81]:
+          - rowgroup [ref=f1013e89]:
+            - columnheader "Type" [ref=f1013e90]
+            - columnheader "Name" [ref=f1013e92]
+            - columnheader "Delay from beginning (days)" [ref=f1013e94]
+            - columnheader "Days from Beginning to Deadline" [ref=f1013e96]
+            - columnheader "Description" [ref=f1013e98]
+            - columnheader "Operations" [ref=f1013e100]
+          - rowgroup
+          - generic [ref=f1013e109]:    
+      - text:                                                                   
+  - table [ref=f1013e110]:
+    - rowgroup [ref=f1013e111]:
+      - row [ref=f1013e112]:
+        - cell [ref=f1013e113]:
+          - generic [ref=f1013e115]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f1013e116] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f1013e117]
+  - text:    

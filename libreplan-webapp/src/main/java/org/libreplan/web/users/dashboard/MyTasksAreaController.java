@@ -36,7 +36,6 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
 import java.text.MessageFormat;
-import java.util.List;
 
 import static org.libreplan.web.I18nHelper._t;
 
@@ -146,6 +145,10 @@ public class MyTasksAreaController extends GenericForwardComposer {
         super.doAfterCompose(comp);
         comp.setAttribute("controller", this);
         injectObjects();
+
+        // AnnotateBinderInit's page-level pass only registers bindings, never loads them.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private void injectObjects() {
@@ -160,8 +163,8 @@ public class MyTasksAreaController extends GenericForwardComposer {
         }
     }
 
-    public List<Task> getTasks() {
-        return myTasksAreaModel.getTasks();
+    public org.zkoss.zul.ListModel getTasks() {
+        return new org.zkoss.zul.ListModelList<>(myTasksAreaModel.getTasks());
     }
 
     public RowRenderer getTasksRenderer() {

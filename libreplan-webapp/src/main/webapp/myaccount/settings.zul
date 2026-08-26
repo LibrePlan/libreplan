@@ -3,6 +3,7 @@
 
   Copyright (C) 2011 ComtecSF, S.L.
   Copyright (C) 2013 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -20,7 +21,7 @@
  -->
 
 <?page title="${i18n:_t('LibrePlan: Settings')}"?>
-<?init class="org.zkoss.zkplus.databind.AnnotateDataBinderInit" ?>
+<?init class="org.libreplan.web.common.AnnotateBinderInit" ?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <?page  id="List"?>
 <?init class="org.zkoss.zk.ui.util.Composition" arg0="/common/layout/template.zul"?>
@@ -46,7 +47,7 @@
 
                         <caption label="${i18n:_t('Personal Data')}" />
 
-                        <grid fixedLayout="true" id="personalData">
+                        <grid id="personalData">
                             <columns>
                                 <column width="200px" />
                                 <column />
@@ -55,25 +56,25 @@
                                 <row>
                                     <label value="${i18n:_t('Username')}" />
                                     <textbox id="loginName"
-                                             value="@{settingsController.loginName}"
+                                             value="@load(settingsController.loginName)"
                                              disabled="true"
                                              width="300px" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_t('First name')}" />
                                     <textbox id="firstName"
-                                             value="@{settingsController.firstName}" width="300px"
-                                             disabled="@{settingsController.bound}" />
+                                             value="@load(settingsController.firstName) @save(settingsController.firstName)" width="300px"
+                                             disabled="@load(settingsController.bound)" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_t('Last name')}" />
                                     <textbox id="lastName"
-                                             value="@{settingsController.lastName}" width="300px"
-                                             disabled="@{settingsController.bound}" />
+                                             value="@load(settingsController.lastName) @save(settingsController.lastName)" width="300px"
+                                             disabled="@load(settingsController.bound)" />
                                 </row>
                                 <row>
                                     <label value="${i18n:_t('E-mail')}" />
-                                    <textbox id="email" value="@{settingsController.email}" width="300px"/>
+                                    <textbox id="email" value="@load(settingsController.email) @save(settingsController.email)" width="300px"/>
                                 </row>
                             </rows>
                         </grid>
@@ -83,7 +84,7 @@
 
                         <caption label="${i18n:_t('Application settings')}" />
 
-                        <grid fixedLayout="true" id="configurationVariables">
+                        <grid id="configurationVariables">
                             <columns>
                                 <column width="200px" />
                                 <column />
@@ -93,9 +94,9 @@
                                     <label value="${i18n:_t('Select language')}" />
 
                                     <listbox id="applicationLanguage"
-                                             model="@{settingsController.languages}"
-                                             itemRenderer="@{settingsController.languagesRenderer}"
-                                             selectedItem="@{settingsController.selectedLanguage}"
+                                             model="@load(settingsController.languages)"
+                                             itemRenderer="@load(settingsController.languagesRenderer)"
+                                             selectedItem="@load(settingsController.selectedLanguage) @save(settingsController.selectedLanguage)"
                                              mold="select" />
                                 </row>
                                 <row>
@@ -110,13 +111,13 @@
                                             <row>
                                                 <checkbox id="expandCompanyPlanningViewCharts"
                                                           label="${i18n:_t('Company view')}"
-                                                          checked="@{settingsController.expandCompanyPlanningViewCharts}"/>
+                                                          checked="@load(settingsController.expandCompanyPlanningViewCharts) @save(settingsController.expandCompanyPlanningViewCharts)"/>
                                                 <checkbox id="expandOrderPlanningViewCharts"
                                                           label="${i18n:_t('Project view')}"
-                                                          checked="@{settingsController.expandOrderPlanningViewCharts}"/>
+                                                          checked="@load(settingsController.expandOrderPlanningViewCharts) @save(settingsController.expandOrderPlanningViewCharts)"/>
                                                 <checkbox id="expandResourceLoadViewCharts"
                                                           label="${i18n:_t('Resource load view')}"
-                                                          checked="@{settingsController.expandResourceLoadViewCharts}"/>
+                                                          checked="@load(settingsController.expandResourceLoadViewCharts) @save(settingsController.expandResourceLoadViewCharts)"/>
                                             </row>
                                         </rows>
                                     </grid>
@@ -133,19 +134,19 @@
                                             <row>
                                                 <checkbox id="showResourcesOn"
                                                           label="${i18n:_t('Show resources')}"
-                                                          checked="@{settingsController.showResourcesOn}"/>
+                                                          checked="@load(settingsController.showResourcesOn) @save(settingsController.showResourcesOn)"/>
                                                 <checkbox id="showAdvancesOn"
                                                           label="${i18n:_t('Show progress')}"
-                                                          checked="@{settingsController.showAdvancesOn}"/>
+                                                          checked="@load(settingsController.showAdvancesOn) @save(settingsController.showAdvancesOn)"/>
                                                 <checkbox id="showReportedHoursOn"
                                                           label="${i18n:_t('Show reported hours')}"
-                                                          checked="@{settingsController.showReportedHoursOn}"/>
+                                                          checked="@load(settingsController.showReportedHoursOn) @save(settingsController.showReportedHoursOn)"/>
                                                 <checkbox id="showLabelsOn"
                                                           label="${i18n:_t('Show labels')}"
-                                                          checked="@{settingsController.showLabelsOn}"/>
+                                                          checked="@load(settingsController.showLabelsOn) @save(settingsController.showLabelsOn)"/>
                                                 <checkbox id="showMoneyCostBarOn"
                                                           label="${i18n:_t('Show money cost bar')}"
-                                                          checked="@{settingsController.showMoneyCostBarOn}"/>
+                                                          checked="@load(settingsController.showMoneyCostBarOn) @save(settingsController.showMoneyCostBarOn)"/>
                                             </row>
                                         </rows>
                                     </grid>
@@ -154,27 +155,31 @@
                                     <label value="${i18n:_t('Projects view filtering')}" />
                                     <hbox>
                                         <label value="${i18n:_t('Label filter')}" />
+                                        <!-- No @save on selectedElement: doAfterCompose()'s
+                                             ON_SELECT listener already saves the selection back
+                                             manually (setProjectsFilterLabel is private, so the
+                                             binder couldn't call it as a save-target anyway). -->
                                         <bandboxSearch id="projectsFilterLabelBandboxSearch"
                                                        finder="LabelBandboxFinder"
-                                                       model="@{settingsController.allLabels}"
-                                                       selectedElement="@{settingsController.projectsFilterLabel}"
+                                                       model="@load(settingsController.allLabels)"
+                                                       selectedElement="@load(settingsController.projectsFilterLabel)"
                                                        widthListbox="450px"
                                                        widthBandbox="200px"/>
 
                                         <label value="${i18n:_t('Projects since')}" />
                                         <intbox id="projectsFilterPeriodSince"
-                                                value="@{settingsController.projectsFilterPeriodSince}"
+                                                value="@load(settingsController.projectsFilterPeriodSince) @save(settingsController.projectsFilterPeriodSince)"
                                                 width="50px"
-                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
+                                                constraint="@load(settingsController.checkMonthsMaxValue())"/>
 
                                         <label value="${i18n:_t('months to')}" />
                                         <intbox id="projectsFilterPeriodTo"
-                                                value="@{settingsController.projectsFilterPeriodTo}"
+                                                value="@load(settingsController.projectsFilterPeriodTo) @save(settingsController.projectsFilterPeriodTo)"
                                                 width="50px"
-                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
+                                                constraint="@load(settingsController.checkMonthsMaxValue())"/>
                                         <checkbox id="projectsFilterFinishedOn"
                                                           label="${i18n:_t('Exclude finished projects')}"
-                                                          checked="@{settingsController.projectsFilterFinishedOn}"/>
+                                                          checked="@load(settingsController.projectsFilterFinishedOn) @save(settingsController.projectsFilterFinishedOn)"/>
                                     </hbox>
                                 </row>
 
@@ -182,25 +187,29 @@
                                     <label value="${i18n:_t('Resources load filtering')}" />
                                     <hbox>
                                         <label value="${i18n:_t('Criterion filter')}" />
+                                        <!-- No @save on selectedElement: doAfterCompose()'s
+                                             ON_SELECT listener already saves the selection back
+                                             manually (setResourcesLoadFilterCriterion is private,
+                                             so the binder couldn't call it as a save-target anyway). -->
                                         <bandboxSearch
                                                 id="resourcesLoadFilterCriterionBandboxSearch"
                                                 finder="CriterionBandboxFinder"
-                                                model="@{settingsController.allCriteria}"
-                                                selectedElement="@{settingsController.resourcesLoadFilterCriterion}"
+                                                model="@load(settingsController.allCriteria)"
+                                                selectedElement="@load(settingsController.resourcesLoadFilterCriterion)"
                                                 widthListbox="450px"
                                                 widthBandbox="200px"/>
 
                                         <label value="${i18n:_t('Resources load since')}" />
                                         <intbox id="resourcesLoadFilterPeriodSince"
-                                                value="@{settingsController.resourcesLoadFilterPeriodSince}"
+                                                value="@load(settingsController.resourcesLoadFilterPeriodSince) @save(settingsController.resourcesLoadFilterPeriodSince)"
                                                 width="50px"
-                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
+                                                constraint="@load(settingsController.checkMonthsMaxValue())"/>
 
                                         <label value="${i18n:_t('months to')}" />
                                         <intbox id="resourcesLoadFilterPeriodTo"
-                                                value="@{settingsController.resourcesLoadFilterPeriodTo}"
+                                                value="@load(settingsController.resourcesLoadFilterPeriodTo) @save(settingsController.resourcesLoadFilterPeriodTo)"
                                                 width="50px"
-                                                constraint="@{settingsController.checkMonthsMaxValue}"/>
+                                                constraint="@load(settingsController.checkMonthsMaxValue())"/>
                                     </hbox>
                                 </row>
                             </rows>

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -103,7 +104,7 @@ import org.zkoss.zul.Vbox;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.Listbox;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -218,6 +219,8 @@ public class OrderCRUDController extends GenericForwardComposer {
     private Grid gridAskedEndDates;
 
     private EndDatesRenderer endDatesRenderer = new EndDatesRenderer();
+
+    private DeliverDatesRenderer deliverDatesRenderer = new DeliverDatesRenderer();
 
     private Textbox filterProjectName;
 
@@ -394,9 +397,6 @@ public class OrderCRUDController extends GenericForwardComposer {
 
         editOrderElementWindow =
                 (Window) Executions.createComponents("/orders/_editOrderElement.zul", parent, editOrderElementArgs);
-
-        Util.createBindingsFor(editOrderElementWindow);
-        Util.reloadBindings(editOrderElementWindow);
     }
 
     private void addEditWindowIfNecessary() {
@@ -576,6 +576,11 @@ public class OrderCRUDController extends GenericForwardComposer {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
+            // Only now does editOrderElementWindow have a "controller" attribute (set by
+            // doAfterCompose above), which Util.createBindingsFor requires to create a binder.
+            Util.createBindingsFor(editOrderElementWindow);
+            Util.reloadBindings(editOrderElementWindow);
 
             // Prepare tree, attach edit window to tree
             orderElementTreeController =
@@ -980,6 +985,13 @@ public class OrderCRUDController extends GenericForwardComposer {
     public void goToList() {
         loadComponents();
         showWindow(listWindow);
+        // listing's model="@load(controller.orders)"/rowRenderer="@load(controller.ordersRowRender)"
+        // bindings (_list.zul) get evaluated once, eagerly, well before this method ever runs, the
+        // same way directLabels/gridMaterials/listingRequirements did earlier in this investigation
+        // (see AssignedLabelsController's refreshDirectLabels() comment) - so
+        // Util.reloadBindings(...) above never pushes a further update to this component. Bypass the
+        // binder directly instead, exactly like onApplyFilter()'s showAllOrders() already does.
+        showAllOrders();
     }
 
     private void loadComponents() {
@@ -1402,7 +1414,7 @@ public class OrderCRUDController extends GenericForwardComposer {
      * Operations to filter the orders by multiple filters.
      */
 
-    public Constraint checkConstraintFinishDate() {
+    public Constraint getCheckConstraintFinishDate() {
         return (comp, value) -> {
             Date finishDate = (Date) value;
 
@@ -1414,7 +1426,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         };
     }
 
-    public Constraint checkConstraintStartDate() {
+    public Constraint getCheckConstraintStartDate() {
         return (comp, value) -> {
             Date startDate = (Date) value;
 
@@ -1499,11 +1511,13 @@ public class OrderCRUDController extends GenericForwardComposer {
 
     private void filterByPredicate(OrderPredicate predicate) {
         List<Order> filterOrders = orderModel.getFilterOrders(predicate);
+        listing.setRowRenderer(getOrdersRowRender());
         listing.setModel(new SimpleListModel<>(filterOrders.toArray()));
         listing.invalidate();
     }
 
     private void showAllOrders() {
+        listing.setRowRenderer(getOrdersRowRender());
         listing.setModel(new SimpleListModel<>(getOrders().toArray()));
         listing.invalidate();
     }
@@ -1605,7 +1619,22 @@ public class OrderCRUDController extends GenericForwardComposer {
         return getOrder() != null ? getOrder().getDeliveringDates() : new TreeSet<>(new DeliverDateComparator());
     }
 
-    public Constraint checkValidProjectName() {
+    public DeliverDatesRenderer getDeliverDatesRenderer() {
+        return this.deliverDatesRenderer;
+    }
+
+    private class DeliverDatesRenderer implements RowRenderer {
+        @Override
+        public void render(Row row, Object o, int i) throws Exception {
+            DeadlineCommunication deliverDate = (DeadlineCommunication) o;
+            row.setValue(deliverDate);
+
+            row.appendChild(new Label(Util.formatDate(deliverDate.getDeliverDate())));
+            row.appendChild(new Label(Util.formatDateTime(deliverDate.getSaveDate())));
+        }
+    }
+
+    public Constraint getCheckValidProjectName() {
         return (comp, value) -> {
 
             if ( StringUtils.isBlank((String) value) ) {
@@ -1621,7 +1650,7 @@ public class OrderCRUDController extends GenericForwardComposer {
         };
     }
 
-    public Constraint checkValidProjectCode() {
+    public Constraint getCheckValidProjectCode() {
         return (comp, value) -> {
 
             if ( StringUtils.isBlank((String) value) ) {

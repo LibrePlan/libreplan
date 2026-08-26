@@ -1,0 +1,46 @@
+ How easy is it to switch to the default theme if I want to choose option 2?
+
+  Searched for 2 patterns, ran 1 shell command
+
+Mechanically trivial, but there's a hidden cost. Two mechanical changes:
+
+1. zk.xml:49 — change <value>sapphire</value> to <value>breeze</value> (or just delete the library-property block, since breeze is ZK's built-in default).
+2. Delete WEB-INF/lib/sapphire.jar (no longer referenced by anything once the property changes).
+
+I checked for other places tied to "sapphire" specifically — there's only one, a CSS override at libreplan_zk.css:2304-2306 that forces a white background on the timetracker grid header "because native background is looked very awful" in sapphire. That's harmless either way (won't break breeze).
+
+The real cost isn't the config change — it's that libreplan_zk.css is 2300+ lines of custom overrides layered on top of whichever base theme is active. Those overrides (colors, borders, spacing, box-shadows) were very likely eyeballed and tuned against sapphire's look. Breeze has a different default palette/chrome, so switching themes is effectively a full re-skin: every screen needs a visual pass to catch clashes — colors that no longer match, spacing assumptions that broke, etc. There's no way to know the scope without actually running the app in each theme and comparing screens.
+
+So: config change is a 5-minute edit; the "is it actually done" bar depends on how much visual regression you're willing to accept across the whole app.
+
+✻ Brewed for 29s
+
+※ recap: We're fixing sapphire theme errors in the war file; you asked how hard switching to the default breeze theme would be, and I confirmed it's an easy config change but risks a full visual re-skin. Next: decide whether to patch sapphire.jar or switch to breeze. (disable recaps in /config)
+
+Does ZK offer more themes that are being maintained?
+
+  Ran 1 shell command
+
+● Web Search("ZK framework CE themes list Breeze 2026 open source")
+Did 1 search in 7s
+
+● Web Search("ZK framework Sapphire theme PE EE deprecated")
+Did 1 search in 7s
+
+● Web Search("mvnrepository org.zkoss.theme sapphire versions")
+Did 1 search in 6s
+
+Short answer: for the free/CE path, not really — Breeze is the only actively-maintained, open-source theme bundled with ZK. Everything else has been consolidated into a paid product.
+
+What I found:
+
+- Breeze — the built-in CE default, LGPL-licensed, actively maintained, ships with ZK core.
+- Sapphire, Silvertail, Atlantic — used to be available as separate lightweight theme jars (there's actually a real org.zkoss.theme:sapphire Maven artifact, last released Feb 2024, up to ZK ~9.6). But as of ZK 10.0.0, all three are deprecated in favor of the commercial ZK Theme Pack (26 themes, requires a PE/EE license, distributed via ZK's premium downloads or EE Maven repo) — Breeze itself is also deprecated in ZK 10 with a recommendation to move to a Theme Pack theme.
+
+Practical implication for LibrePlan: your vendored sapphire.jar is a hand-me-down from 2017 (ZK ~8.0 era) that's already missing newer widget CSS. There is an officially published org.zkoss.theme:sapphire artifact that's newer and would likely include checkbox.css.dsp/rating.css.dsp — pulling that as a real Maven dependency (if it's accessible without an EE license — worth checking, since ZK's own repo may gate it) would be a cleaner fix than hand-patching the old jar. But since Sapphire itself is now deprecated upstream, that's a dead end long-term: the sustainable free option is Breeze.
+
+Sources:
+- ZK Official Themes: https://docs.zkoss.org/zk_dev_ref/theming_and_styling/zk_official_themes
+- ZK Theme Pack / Premium Downloads
+- org.zkoss.theme:sapphire — Maven Repository: https://mvnrepository.com/artifact/org.zkoss.theme/sapphire
+- zkoss/zkthemes on GitHub https://github.com/zkoss/zkthemes

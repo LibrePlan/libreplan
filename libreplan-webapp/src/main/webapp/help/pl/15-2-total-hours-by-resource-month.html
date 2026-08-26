@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Raport łącznych godzin przepracowanych przez zasób w miesiącu</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="raport-lacznych-godzin-przepracowanych-przez-zasob-w-miesiacu">
+<h1 class="title">Raport łącznych godzin przepracowanych przez zasób w miesiącu</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#cel" id="toc-entry-1">Cel</a></li>
+<li><a class="reference internal" href="#parametry-wejsciowe-i-filtry" id="toc-entry-2">Parametry wejściowe i filtry</a></li>
+<li><a class="reference internal" href="#wyniki" id="toc-entry-3">Wyniki</a><ul>
+<li><a class="reference internal" href="#naglowek" id="toc-entry-4">Nagłówek</a></li>
+<li><a class="reference internal" href="#stopka" id="toc-entry-5">Stopka</a></li>
+<li><a class="reference internal" href="#tresc" id="toc-entry-6">Treść</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="cel">
+<h1><a class="toc-backref" href="#toc-entry-1">Cel</a></h1>
+<p>Ten raport podaje łączną liczbę godzin przepracowanych przez każdy zasób w danym miesiącu. Informacje te mogą być przydatne do ustalenia nadgodzin pracownika lub, w zależności od organizacji, liczby godzin, za które każdy zasób powinien otrzymać wynagrodzenie.</p>
+<p>Aplikacja śledzi raporty pracy zarówno dla pracowników, jak i maszyn. W przypadku maszyn raport sumuje liczbę godzin ich pracy w danym miesiącu.</p>
+</div>
+<div class="section" id="parametry-wejsciowe-i-filtry">
+<h1><a class="toc-backref" href="#toc-entry-2">Parametry wejściowe i filtry</a></h1>
+<p>Aby wygenerować ten raport, użytkownicy muszą podać rok i miesiąc, dla których chcą pobrać łączną liczbę godzin przepracowanych przez każdy zasób.</p>
+</div>
+<div class="section" id="wyniki">
+<h1><a class="toc-backref" href="#toc-entry-3">Wyniki</a></h1>
+<p>Format wyników jest następujący:</p>
+<div class="section" id="naglowek">
+<h2><a class="toc-backref" href="#toc-entry-4">Nagłówek</a></h2>
+<p>Nagłówek raportu wyświetla:</p>
+<blockquote>
+<ul class="simple">
+<li><em>Rok</em>, którego dotyczą dane w raporcie.</li>
+<li><em>Miesiąc</em>, którego dotyczą dane w raporcie.</li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="stopka">
+<h2><a class="toc-backref" href="#toc-entry-5">Stopka</a></h2>
+<p>Stopka wyświetla datę wygenerowania raportu.</p>
+</div>
+<div class="section" id="tresc">
+<h2><a class="toc-backref" href="#toc-entry-6">Treść</a></h2>
+<p>Sekcja danych raportu składa się z pojedynczej tabeli z dwiema kolumnami:</p>
+<blockquote>
+<ul class="simple">
+<li>Jedna kolumna oznaczona <strong>Nazwa</strong> dla nazwy zasobu.</li>
+<li>Jedna kolumna oznaczona <strong>Godziny</strong> z łączną liczbą godzin przepracowanych przez zasób w danym wierszu.</li>
+</ul>
+</blockquote>
+<p>Istnieje ostatni wiersz, który agreguje łączną liczbę godzin przepracowanych przez wszystkie zasoby w określonym <em>miesiącu</em> i <em>roku</em>.</p>
+</div>
+</div>
+</div>
+</body>
+</html>

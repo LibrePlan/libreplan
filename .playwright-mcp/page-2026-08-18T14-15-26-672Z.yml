@@ -1,0 +1,292 @@
+- generic [ref=f901e4]:
+  - generic [ref=f901e5]:
+    - table [ref=f901e6]:
+      - rowgroup [ref=f901e7]:
+        - row [ref=f901e8]:
+          - cell [ref=f901e9]:
+            - link [ref=f901e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f901e12]:
+            - table [ref=f901e13]:
+              - rowgroup [ref=f901e14]:
+                - row [ref=f901e15]:
+                  - cell [ref=f901e16]:
+                    - generic [ref=f901e17]:
+                      - menubar [ref=f901e18]:
+                        - menuitem "Planning" [ref=f901e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f901e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f901e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f901e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f901e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f901e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f901e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f901e33]:
+                        - rowgroup [ref=f901e34]:
+                          - row [ref=f901e35]:
+                            - cell [ref=f901e36]:
+                              - table [ref=f901e37]:
+                                - rowgroup [ref=f901e38]:
+                                  - row [ref=f901e39]:
+                                    - cell [ref=f901e40]
+                                    - cell [ref=f901e41]:
+                                      - strong [ref=f901e42]: START
+                                    - cell [ref=f901e43]
+                                    - cell [ref=f901e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f901e45]:
+                                        - rowgroup [ref=f901e46]:
+                                          - row [ref=f901e47]:
+                                            - cell [ref=f901e48]:
+                                              - table [ref=f901e49]:
+                                                - rowgroup [ref=f901e50]:
+                                                  - row [ref=f901e51]:
+                                                    - cell [ref=f901e52]:
+                                                      - table [ref=f901e53]:
+                                                        - rowgroup [ref=f901e54]:
+                                                          - row [ref=f901e55]:
+                                                            - cell [ref=f901e56]:
+                                                              - table [ref=f901e57]:
+                                                                - rowgroup [ref=f901e58]:
+                                                                  - row [ref=f901e59]:
+                                                                    - cell [ref=f901e60]
+                                                                    - cell [ref=f901e63]
+                                                                    - cell "Resources" [ref=f901e64]
+                                                    - cell [ref=f901e65]
+                                                    - cell [ref=f901e66]:
+                                                      - table [ref=f901e67]:
+                                                        - rowgroup [ref=f901e68]:
+                                                          - row [ref=f901e69]:
+                                                            - cell [ref=f901e70]:
+                                                              - table [ref=f901e71]:
+                                                                - rowgroup [ref=f901e72]:
+                                                                  - row [ref=f901e73]:
+                                                                    - cell [ref=f901e74]
+                                                                    - cell [ref=f901e77]
+                                                                    - cell "Criteria" [ref=f901e78]
+                            - cell [ref=f901e79]:
+                              - generic [ref=f901e80]:
+                                - link "Help" [ref=f901e81] [cursor=pointer]:
+                                  - /url: /help/en/02-criterios.html#id1
+                                - img "Axuda" [ref=f901e83]
+                                - img "Info" [ref=f901e85]
+    - table [ref=f901e87]:
+      - rowgroup [ref=f901e88]:
+        - row [ref=f901e89]:
+          - cell [ref=f901e90]
+          - 'cell "user: admin" [ref=f901e91]'
+          - cell [ref=f901e92]:
+            - link "[Log out]" [ref=f901e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f901e94]:
+    - text:    
+    - generic [ref=f901e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text: 
+      - generic [ref=f901e240]:
+        - generic [ref=f901e241]: "Edit Criterion Type: CATEGORY"
+        - generic [ref=f901e244]:
+          - generic [ref=f901e245]:
+            - tablist [ref=f901e246]:
+              - listitem [ref=f901e247] [cursor=pointer]:
+                - generic [ref=f901e248]: Edit
+            - text:  
+            - tabpanel [ref=f901e251]:
+              - grid [ref=f901e252]:
+                - rowgroup [ref=f901e256]:
+                  - gridcell "Name" [ref=f901e257]
+                  - gridcell [ref=f901e259]:
+                    - textbox [ref=f901e261]: CATEGORY
+                  - gridcell "Type" [ref=f901e262]
+                  - gridcell [ref=f901e264]:
+                    - combobox [ref=f901e266]:
+                      - textbox [ref=f901e267]: WORKER
+                      - button [ref=f901e268] [cursor=pointer]:
+                        - generic [ref=f901e269]: 
+                  - gridcell "Multiple values per resource" [ref=f901e270]
+                  - gridcell [ref=f901e272]:
+                    - checkbox [checked] [ref=f901e275]
+                  - gridcell "Hierarchy" [ref=f901e276]
+                  - gridcell [ref=f901e278]:
+                    - checkbox [checked] [ref=f901e281]
+                  - gridcell "Enabled" [ref=f901e282]
+                  - gridcell [ref=f901e284]:
+                    - checkbox [checked] [ref=f901e287]
+                  - gridcell "Description" [ref=f901e288]
+                  - gridcell [ref=f901e290]:
+                    - textbox [ref=f901e292]: Professional category
+                  - gridcell "Code" [ref=f901e293]
+                  - gridcell [ref=f901e295]:
+                    - table [ref=f901e297]:
+                      - rowgroup [ref=f901e298]:
+                        - row [ref=f901e299]:
+                          - cell [ref=f901e300]:
+                            - table [ref=f901e301]:
+                              - rowgroup [ref=f901e302]:
+                                - row [ref=f901e303]:
+                                  - cell [ref=f901e304]:
+                                    - textbox [disabled] [ref=f901e305]: CRITERION0001
+                                  - cell [ref=f901e306]
+                                  - cell [ref=f901e307]:
+                                    - generic [ref=f901e308]:
+                                      - checkbox "Generate code" [checked] [ref=f901e309]
+                                      - text: Generate code
+              - separator [ref=f901e310]
+              - generic [ref=f901e311]:
+                - generic [ref=f901e312]: Criteria list
+                - generic [ref=f901e315]:
+                  - table [ref=f901e316]:
+                    - rowgroup [ref=f901e317]:
+                      - row [ref=f901e318]:
+                        - cell [ref=f901e319]:
+                          - table [ref=f901e320]:
+                            - rowgroup [ref=f901e321]:
+                              - row [ref=f901e322]:
+                                - cell [ref=f901e323]:
+                                  - table [ref=f901e324]:
+                                    - rowgroup [ref=f901e325]:
+                                      - row [ref=f901e326]:
+                                        - cell [ref=f901e327]:
+                                          - table [ref=f901e328]:
+                                            - rowgroup [ref=f901e329]:
+                                              - row [ref=f901e330]:
+                                                - cell [ref=f901e331]:
+                                                  - table [ref=f901e332]:
+                                                    - rowgroup [ref=f901e333]:
+                                                      - row [ref=f901e334]:
+                                                        - cell [ref=f901e335]:
+                                                          - table [ref=f901e336]:
+                                                            - rowgroup [ref=f901e337]:
+                                                              - row [ref=f901e338]:
+                                                                - cell "New criterion" [ref=f901e339]
+                                                                - cell [ref=f901e340]
+                                                                - cell [ref=f901e341]:
+                                                                  - textbox [ref=f901e342]
+                                                                - cell [ref=f901e343]
+                                                                - cell [ref=f901e344]:
+                                                                  - button "Add" [ref=f901e345] [cursor=pointer]
+                              - row [ref=f901e346]:
+                                - cell [ref=f901e347]
+                              - row [ref=f901e348]:
+                                - cell [ref=f901e349]:
+                                  - table [ref=f901e350]:
+                                    - rowgroup [ref=f901e351]:
+                                      - row [ref=f901e352]:
+                                        - cell [ref=f901e353]:
+                                          - table [ref=f901e354]:
+                                            - rowgroup [ref=f901e355]:
+                                              - row [ref=f901e356]:
+                                                - cell "Name Cost category Code Active Operations Junior worker CRITERION0001-0003 Manager CRITERION0001-0001 Senior worker CRITERION0001-0002" [ref=f901e357]:
+                                                  - generic [ref=f901e358]:
+                                                    - table [ref=f901e360]:
+                                                      - rowgroup [ref=f901e367]:
+                                                        - row [ref=f901e368]:
+                                                          - columnheader "Name" [ref=f901e369]
+                                                          - columnheader "Cost category" [ref=f901e371]
+                                                          - columnheader "Code" [ref=f901e373]
+                                                          - columnheader "Active" [ref=f901e375]
+                                                          - columnheader "Operations" [ref=f901e377]
+                                                          - columnheader
+                                                    - table [ref=f901e380]:
+                                                      - rowgroup [ref=f901e387]:
+                                                        - row [ref=f901e388]:
+                                                          - cell [ref=f901e389] [cursor=pointer]:
+                                                            - textbox [ref=f901e392]: Junior worker
+                                                          - cell [ref=f901e393] [cursor=pointer]:
+                                                            - combobox [ref=f901e395]:
+                                                              - textbox [ref=f901e396]: DD
+                                                              - button [ref=f901e397]:
+                                                                - generic [ref=f901e398]: 
+                                                          - cell [ref=f901e399] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f901e401]: CRITERION0001-0003
+                                                          - cell [ref=f901e402] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f901e405]
+                                                          - cell [ref=f901e406] [cursor=pointer]:
+                                                            - generic [ref=f901e407]:
+                                                              - button [ref=f901e408]
+                                                              - button [ref=f901e410]
+                                                              - button "Indent" [ref=f901e412]
+                                                              - button "Unindent" [ref=f901e414]
+                                                              - button "19 references" [ref=f901e416]
+                                                        - row [ref=f901e418]:
+                                                          - cell [ref=f901e419] [cursor=pointer]:
+                                                            - textbox [ref=f901e422]: Manager
+                                                          - cell [ref=f901e423] [cursor=pointer]:
+                                                            - combobox [ref=f901e425]:
+                                                              - textbox [ref=f901e426]
+                                                              - button [ref=f901e427]:
+                                                                - generic [ref=f901e428]: 
+                                                          - cell [ref=f901e429] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f901e431]: CRITERION0001-0001
+                                                          - cell [ref=f901e432] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f901e435]
+                                                          - cell [ref=f901e436] [cursor=pointer]:
+                                                            - generic [ref=f901e437]:
+                                                              - button [ref=f901e438]
+                                                              - button [ref=f901e440]
+                                                              - button "Indent" [ref=f901e442]
+                                                              - button "Unindent" [ref=f901e444]
+                                                              - button "2 references" [ref=f901e446]
+                                                        - row [ref=f901e448]:
+                                                          - cell [ref=f901e449] [cursor=pointer]:
+                                                            - textbox [ref=f901e452]: Senior worker
+                                                          - cell [ref=f901e453] [cursor=pointer]:
+                                                            - combobox [ref=f901e455]:
+                                                              - textbox [ref=f901e456]
+                                                              - button [ref=f901e457]:
+                                                                - generic [ref=f901e458]: 
+                                                          - cell [ref=f901e459] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f901e461]: CRITERION0001-0002
+                                                          - cell [ref=f901e462] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f901e465]
+                                                          - cell [ref=f901e466] [cursor=pointer]:
+                                                            - generic [ref=f901e467]:
+                                                              - button [ref=f901e468]
+                                                              - button [ref=f901e470]
+                                                              - button "Indent" [ref=f901e472]
+                                                              - button "Unindent" [ref=f901e474]
+                                                              - button "11 references" [ref=f901e476]
+                                                    - generic [ref=f901e478]:    
+                  - separator [ref=f901e479]
+          - table [ref=f901e480]:
+            - rowgroup [ref=f901e481]:
+              - row [ref=f901e482]:
+                - cell [ref=f901e483]:
+                  - table [ref=f901e484]:
+                    - rowgroup [ref=f901e485]:
+                      - row [ref=f901e486]:
+                        - cell [ref=f901e487]:
+                          - button "Save" [ref=f901e488] [cursor=pointer]
+                        - cell [ref=f901e489]
+                        - cell [ref=f901e490]:
+                          - button "Save & Continue" [ref=f901e491] [cursor=pointer]
+                        - cell [ref=f901e492]
+                        - cell [ref=f901e493]:
+                          - button "Cancel" [ref=f901e494] [cursor=pointer]
+  - table [ref=f901e232]:
+    - rowgroup [ref=f901e233]:
+      - row [ref=f901e234]:
+        - cell [ref=f901e235]:
+          - generic [ref=f901e237]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f901e238] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f901e239]
+  - text:    

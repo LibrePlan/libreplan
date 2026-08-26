@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -24,19 +25,19 @@
 
 <vbox id="resourceCalendarContainer" width="100%">
 
-<div visible="@{controller.isCalendarNull}">
+<div visible="@load(controller.calendarNull)">
 
 <hbox>
     <label value="${i18n:_t('Select parent calendar')}" />
     <combobox id="createDerivedCalendar"
-        model="@{controller.baseCalendars}"
-        itemRenderer="@{controller.baseCalendarsComboitemRenderer}" />
+        model="@load(controller.baseCalendars)"
+        itemRenderer="@load(controller.baseCalendarsComboitemRenderer)" />
 </hbox>
 
 </div>
 
 <!-- Control buttons calendar -->
-<div visible="@{controller.isCalendarNotNull}">
+<div visible="@load(controller.calendarNotNull)">
     <calendarEdition top_id="editCalendarWindow" title="${i18n:_t('Edit Calendar')}"
         save_button_label="${i18n:_t('Save changes')}"
         save_button_visible="false"

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +23,10 @@
  *
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
-@javax.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
-        @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = DateTime.class, value = org.libreplan.importers.tim.TimDateTimeAdapter.class),
-        @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = LocalDate.class, value = org.libreplan.importers.tim.TimLocalDateAdapter.class),
-        @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = Date.class, value = org.libreplan.importers.tim.TimTimeAdapter.class)
+@jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapters({
+        @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = DateTime.class, value = org.libreplan.importers.tim.TimDateTimeAdapter.class),
+        @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = LocalDate.class, value = org.libreplan.importers.tim.TimLocalDateAdapter.class),
+        @jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter(type = Date.class, value = org.libreplan.importers.tim.TimTimeAdapter.class)
 })
 package org.libreplan.importers.tim;
 

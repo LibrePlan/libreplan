@@ -1,0 +1,78 @@
+[     342ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://127.0.0.1:8080/common/layout/login.zul:0
+[    1199ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[    1663ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[    9664ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8080/favicon.ico:0
+[   11294ms] [LOG] LegendResize @ http://127.0.0.1:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[ 1433217ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8080/zkau/web/c6953168/zul/img/grid/row-expand.png:0
+[ 1438794ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://127.0.0.1:8080/zkau/web/c6953168/zul/img/grid/detail-bg.png:0
+[ 1466038ms] TypeError: global_progress.render is not a function
+    at <anonymous>:1:17
+    at DOMEval (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:119633)
+    at jQuery.globalEval (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:121777)
+    at Object.script (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:25626)
+    at window.zk.au_.doProcess (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:8896)
+    at window.zk.au_.doCmdsNow (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:10827)
+    at Object._doCmds (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:15545)
+    at Object.afterResponse (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:22103)
+    at Object._onResponseReady (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:19997)
+    at http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:10302
+[ 1466057ms] TypeError: Failed to mount: Cannot read properties of undefined (reading 'BarRenderer')
+    at $subclass$.content [as _content] (eval at e.evalJSON (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:220570), <anonymous>:90:31)
+    at http://127.0.0.1:8080/zkau/web/_zv2026013017/js/zul.utl.wpd:2:3977
+    at window.zk.mount_.doAfterMount (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1085226)
+    at window.zk.mount_.mtAU0 (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1085052)
+    at window.zk.mount_.mtAU (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1084977)
+    at zkx (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1087258)
+    at zkx_ (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1087778)
+    at Object.addChd (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:32713)
+    at window.zk.au_.doProcess (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:8896)
+    at window.zk.au_.doCmdsNow (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:10827)
+[ 1480472ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://127.0.0.1:8080/common/layout/login.zul:0
+[ 1481343ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[ 1481434ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[ 1482985ms] [LOG] LegendResize @ http://127.0.0.1:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[ 1487792ms] [LOG] LegendResize @ http://127.0.0.1:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[ 1490119ms] TypeError: global_progress.render is not a function
+    at <anonymous>:1:17
+    at DOMEval (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:119633)
+    at jQuery.globalEval (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:121777)
+    at Object.script (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:25626)
+    at window.zk.au_.doProcess (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:8896)
+    at window.zk.au_.doCmdsNow (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:10827)
+    at Object._doCmds (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:15545)
+    at Object.afterResponse (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:22103)
+    at Object._onResponseReady (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:19997)
+    at http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:10302
+[ 1490122ms] TypeError: Failed to mount: Cannot read properties of undefined (reading 'BarRenderer')
+    at $subclass$.content [as _content] (eval at e.evalJSON (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:220570), <anonymous>:90:31)
+    at http://127.0.0.1:8080/zkau/web/_zv2026013017/js/zul.utl.wpd:2:3977
+    at window.zk.mount_.doAfterMount (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1085226)
+    at window.zk.mount_.mtAU0 (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1085052)
+    at window.zk.mount_.mtAU (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1084977)
+    at zkx (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1087258)
+    at zkx_ (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1087778)
+    at Object.addChd (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:32713)
+    at window.zk.au_.doProcess (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:8896)
+    at window.zk.au_.doCmdsNow (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:10827)
+[ 1925321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1925821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1926321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1926821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1927321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1927698ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1927821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1928323ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1928821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1929321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1929821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1930321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1930821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1931321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1931821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1932321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1932821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1933321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1933821ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1934321ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1934823ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0
+[ 1935322ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_REFUSED @ http://127.0.0.1:8080/zkau:0

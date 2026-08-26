@@ -1,0 +1,379 @@
+- generic [ref=f155e4]:
+  - generic [ref=f155e5]:
+    - table [ref=f155e6]:
+      - rowgroup [ref=f155e7]:
+        - row [ref=f155e1812]:
+          - cell [ref=f155e9]:
+            - link [ref=f155e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f155e1813]:
+            - table [ref=f155e13]:
+              - rowgroup [ref=f155e14]:
+                - row [ref=f155e1814]:
+                  - cell [ref=f155e1815]:
+                    - generic [ref=f155e17]:
+                      - menubar [ref=f155e18]:
+                        - menuitem "Planning" [ref=f155e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f155e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f155e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f155e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f155e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f155e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f155e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f155e33]:
+                        - rowgroup [ref=f155e34]:
+                          - row [ref=f155e1816]:
+                            - cell [ref=f155e1817]:
+                              - table [ref=f155e37]:
+                                - rowgroup [ref=f155e38]:
+                                  - row [ref=f155e1818]:
+                                    - cell [ref=f155e40]
+                                    - cell [ref=f155e41]:
+                                      - strong [ref=f155e42]: START
+                                    - cell [ref=f155e43]
+                                    - cell [ref=f155e1819]:
+                                      - table [ref=f155e45]:
+                                        - rowgroup [ref=f155e46]:
+                                          - row [ref=f155e1820]:
+                                            - cell [ref=f155e1821]:
+                                              - table [ref=f155e49]:
+                                                - rowgroup [ref=f155e50]:
+                                                  - row [ref=f155e1822]:
+                                                    - cell [ref=f155e1823]
+                                                    - cell [ref=f155e1825]
+                                                    - cell "Planning" [ref=f155e1826]
+                                                    - cell [ref=f155e1827]
+                                                    - cell [ref=f155e1828]
+                                                    - cell [ref=f155e1830]
+                                                    - cell "Project Details" [ref=f155e1831]
+                                                    - cell [ref=f155e1832]
+                                                    - cell [ref=f155e1833]
+                                                    - cell [ref=f155e1835]
+                                                    - cell "LabelTestProject" [ref=f155e1836]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f155e61]:
+                              - generic [ref=f155e62]:
+                                - link "Help" [ref=f155e63] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f155e65]
+                                - img "Info" [ref=f155e67]
+    - table [ref=f155e69]:
+      - rowgroup [ref=f155e70]:
+        - row [ref=f155e71]:
+          - cell [ref=f155e72]
+          - 'cell "user: admin" [ref=f155e73]'
+          - cell [ref=f155e74]:
+            - link "[Log out]" [ref=f155e75] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:  
+  - generic [ref=f155e76]:
+    - table [ref=f155e77]:
+      - rowgroup [ref=f155e78]:
+        - row [ref=f155e1837]:
+          - cell [ref=f155e1838]:
+            - table [ref=f155e81]:
+              - rowgroup [ref=f155e82]:
+                - row [ref=f155e83]:
+                  - cell [ref=f155e84]:
+                    - table [ref=f155e85]:
+                      - rowgroup [ref=f155e86]:
+                        - row [ref=f155e87]:
+                          - cell [ref=f155e88]:
+                            - table [ref=f155e89]:
+                              - rowgroup [ref=f155e90]:
+                                - row [ref=f155e91]:
+                                  - cell [ref=f155e1839]:
+                                    - button "Save Project" [ref=f155e1840] [cursor=pointer]
+                                  - cell [ref=f155e1842]
+                                  - cell [ref=f155e1843]:
+                                    - button "Cancel editing" [ref=f155e1844] [cursor=pointer]
+                - row [ref=f155e95]:
+                  - cell [ref=f155e96]
+                - row [ref=f155e1846]:
+                  - cell [ref=f155e1847]:
+                    - table [ref=f155e99]:
+                      - rowgroup [ref=f155e100]:
+                        - row [ref=f155e1848]:
+                          - cell [ref=f155e1849]:
+                            - table [ref=f155e103]:
+                              - rowgroup [ref=f155e104]:
+                                - row [ref=f155e1850]:
+                                  - cell [ref=f155e1851]:
+                                    - button "Project Scheduling" [ref=f155e1852] [cursor=pointer]
+                                - row [ref=f155e108]:
+                                  - cell [ref=f155e109]
+                                - row:
+                                  - cell
+                                - row [ref=f155e110]:
+                                  - cell [ref=f155e111]
+                                - row [ref=f155e1853]:
+                                  - cell [ref=f155e1854]:
+                                    - button "Project Details" [ref=f155e1855] [cursor=pointer]
+                                - row [ref=f155e115]:
+                                  - cell [ref=f155e116]
+                                - row:
+                                  - cell
+                                - row [ref=f155e117]:
+                                  - cell [ref=f155e118]
+                                - row [ref=f155e119]:
+                                  - cell [ref=f155e120]:
+                                    - button "Resources Load" [ref=f155e121] [cursor=pointer]
+                                - row [ref=f155e122]:
+                                  - cell [ref=f155e123]
+                                - row:
+                                  - cell
+                                - row [ref=f155e124]:
+                                  - cell [ref=f155e125]
+                                - row:
+                                  - cell
+                                - row [ref=f155e129]:
+                                  - cell [ref=f155e130]
+                                - row:
+                                  - cell
+                                - row [ref=f155e131]:
+                                  - cell [ref=f155e132]
+                                - row [ref=f155e1856]:
+                                  - cell [ref=f155e1857]:
+                                    - button "Advanced Allocation" [ref=f155e1858] [cursor=pointer]
+                                - row [ref=f155e1859]:
+                                  - cell [ref=f155e1860]
+                                - row:
+                                  - cell
+                                - row [ref=f155e1861]:
+                                  - cell [ref=f155e1862]
+                                - row [ref=f155e133]:
+                                  - cell [ref=f155e134]:
+                                    - button "Logs" [ref=f155e135] [cursor=pointer]
+                                - row [ref=f155e136]:
+                                  - cell [ref=f155e137]
+                                - row:
+                                  - cell
+                                - row [ref=f155e138]:
+                                  - cell [ref=f155e139]
+                                - row [ref=f155e1863]:
+                                  - cell [ref=f155e1864]:
+                                    - button "MonteCarlo Method" [ref=f155e1865] [cursor=pointer]
+                                - row [ref=f155e1866]:
+                                  - cell [ref=f155e1867]
+                                - row:
+                                  - cell
+                                - row [ref=f155e1868]:
+                                  - cell [ref=f155e1869]
+                                - row [ref=f155e1870]:
+                                  - cell [ref=f155e1871]:
+                                    - button "Dashboard" [ref=f155e1872] [cursor=pointer]
+                                - row [ref=f155e143]:
+                                  - cell [ref=f155e144]
+                                - row:
+                                  - cell
+    - text:  
+    - generic [ref=f155e1874]:
+      - table [ref=f155e1875]:
+        - rowgroup [ref=f155e1876]:
+          - row [ref=f155e1877]:
+            - cell [ref=f155e1878]:
+              - table [ref=f155e1879]:
+                - rowgroup [ref=f155e1880]:
+                  - row [ref=f155e1881]:
+                    - text:           
+                    - cell [ref=f155e1882]:
+                      - table [ref=f155e1883]:
+                        - rowgroup [ref=f155e1884]:
+                          - row [ref=f155e1885]:
+                            - cell [ref=f155e1886]:
+                              - table [ref=f155e1887]:
+                                - rowgroup [ref=f155e1888]:
+                                  - row [ref=f155e1889]:
+                                    - cell [ref=f155e1890]:
+                                      - table [ref=f155e1891]:
+                                        - rowgroup [ref=f155e1892]:
+                                          - row [ref=f155e1893]:
+                                            - cell [ref=f155e1894]:
+                                              - table [ref=f155e1895]:
+                                                - rowgroup [ref=f155e1896]:
+                                                  - row [ref=f155e1897]:
+                                                    - cell "Task" [ref=f155e1898]
+                                                    - cell [ref=f155e1899]
+                                                    - cell [ref=f155e1900]:
+                                                      - textbox [ref=f155e1901]
+                                                    - cell [ref=f155e1902]
+                                                    - cell "with" [ref=f155e1903]
+                                                    - cell [ref=f155e1904]
+                                                    - cell [ref=f155e1905]:
+                                                      - combobox [ref=f155e1907]:
+                                                        - textbox [ref=f155e1908]
+                                                        - button [ref=f155e1909] [cursor=pointer]:
+                                                          - generic [ref=f155e1910]: 
+                                                    - cell [ref=f155e1911]
+                                                    - cell [ref=f155e1912]:
+                                                      - button "options" [ref=f155e1913] [cursor=pointer]
+                                                    - cell [ref=f155e1915]
+                                                    - cell [ref=f155e1916]:
+                                                      - button "Filter" [ref=f155e1917] [cursor=pointer]
+                                                    - text:          
+                    - cell [ref=f155e1919]
+                    - cell [ref=f155e1920]:
+                      - button "Expand/Collapse all" [ref=f155e1921] [cursor=pointer]
+      - text:  
+      - generic [ref=f155e1923]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - text:    
+        - generic [ref=f155e1926]:
+          - tablist [ref=f155e1927]:
+            - listitem [ref=f155e1928] [cursor=pointer]:
+              - generic [ref=f155e1929]: WBS (tasks)
+            - listitem [ref=f155e1931] [cursor=pointer]:
+              - generic [ref=f155e1932]: General data
+            - listitem [ref=f155e1934] [cursor=pointer]:
+              - generic [ref=f155e1935]: Cost
+            - listitem [ref=f155e1937] [cursor=pointer]:
+              - generic [ref=f155e1938]: Progress
+            - listitem [ref=f155e1940] [cursor=pointer]:
+              - generic [ref=f155e1941]: Labels
+            - listitem [ref=f155e1943] [cursor=pointer]:
+              - generic [ref=f155e1944]: Criterion Requirement
+            - listitem [ref=f155e1946] [cursor=pointer]:
+              - generic [ref=f155e1947]: Materials
+            - listitem [ref=f155e1949] [cursor=pointer]:
+              - generic [ref=f155e1950]: Task quality forms
+            - listitem [ref=f155e1952] [cursor=pointer]:
+              - generic [ref=f155e1953]: Files
+            - listitem [ref=f155e1955] [cursor=pointer]:
+              - generic [ref=f155e1956]: Authorizations
+          - text:  
+          - generic [ref=f155e1958]:
+            - text:                    
+            - tabpanel [ref=f155e1959]:
+              - table [ref=f155e1961]:
+                - rowgroup [ref=f155e1962]:
+                  - row [ref=f155e1963]:
+                    - cell [ref=f155e1964]:
+                      - table [ref=f155e1965]:
+                        - rowgroup [ref=f155e1966]:
+                          - row [ref=f155e1967]:
+                            - cell [ref=f155e1968]:
+                              - table [ref=f155e1969]:
+                                - rowgroup [ref=f155e1970]:
+                                  - row [ref=f155e1971]:
+                                    - cell [ref=f155e1972]:
+                                      - table [ref=f155e1973]:
+                                        - rowgroup [ref=f155e1974]:
+                                          - row [ref=f155e1975]:
+                                            - cell [ref=f155e1976]:
+                                              - generic [ref=f155e1977]:
+                                                - generic [ref=f155e1978]: Inherited labels
+                                                - grid [ref=f155e1982]:
+                                                  - rowgroup [ref=f155e1986]:
+                                                    - columnheader "Label type" [ref=f155e1987]
+                                                    - columnheader "Value" [ref=f155e1989]
+                                                  - rowgroup
+                          - row [ref=f155e1994]:
+                            - cell [ref=f155e1995]
+                          - row [ref=f155e1996]:
+                            - cell [ref=f155e1997]:
+                              - table [ref=f155e1998]:
+                                - rowgroup [ref=f155e1999]:
+                                  - row [ref=f155e2000]:
+                                    - cell [ref=f155e2001]:
+                                      - table [ref=f155e2002]:
+                                        - rowgroup [ref=f155e2003]:
+                                          - row [ref=f155e2004]:
+                                            - cell [ref=f155e2005]:
+                                              - generic [ref=f155e2006]:
+                                                - generic [ref=f155e2007]: Direct labels
+                                                - generic [ref=f155e2010]:
+                                                  - grid [ref=f155e2011]:
+                                                    - rowgroup [ref=f155e2016]:
+                                                      - columnheader [ref=f155e2017]:
+                                                        - generic [ref=f155e2018] [cursor=pointer]:
+                                                          - generic [ref=f155e2019]: 
+                                                          - text: Label type
+                                                      - columnheader "Value" [ref=f155e2021]
+                                                      - columnheader "Operations" [ref=f155e2023]
+                                                    - rowgroup [ref=f155e2029]:
+                                                      - gridcell "Priority" [ref=f155e2030]
+                                                      - gridcell "High urgency" [ref=f155e2032]
+                                                      - gridcell [ref=f155e2034]:
+                                                        - button "Remove" [ref=f155e2036] [cursor=pointer]
+                                                  - table [ref=f155e2038]:
+                                                    - rowgroup [ref=f155e2039]:
+                                                      - row [ref=f155e2040]:
+                                                        - cell [ref=f155e2041]:
+                                                          - table [ref=f155e2042]:
+                                                            - rowgroup [ref=f155e2043]:
+                                                              - row [ref=f155e2044]:
+                                                                - cell "Assign Label" [ref=f155e2045]
+                                                              - row [ref=f155e2046]:
+                                                                - cell [ref=f155e2047]
+                                                              - row [ref=f155e2048]:
+                                                                - cell [ref=f155e2049]:
+                                                                  - table [ref=f155e2050]:
+                                                                    - rowgroup [ref=f155e2051]:
+                                                                      - row [ref=f155e2052]:
+                                                                        - cell [ref=f155e2053]:
+                                                                          - table [ref=f155e2054]:
+                                                                            - rowgroup [ref=f155e2055]:
+                                                                              - row [ref=f155e2056]:
+                                                                                - cell [ref=f155e2057]:
+                                                                                  - combobox [ref=f155e2059]:
+                                                                                    - textbox [ref=f155e2060]
+                                                                                    - button [ref=f155e2061] [cursor=pointer]:
+                                                                                      - generic [ref=f155e2062]: 
+                                                                                - cell [ref=f155e2063]
+                                                                                - cell [ref=f155e2064]:
+                                                                                  - button "Assign" [ref=f155e2065] [cursor=pointer]
+                                                  - table [ref=f155e2066]:
+                                                    - rowgroup [ref=f155e2067]:
+                                                      - row [ref=f155e2068]:
+                                                        - cell [ref=f155e2069]:
+                                                          - table [ref=f155e2070]:
+                                                            - rowgroup [ref=f155e2071]:
+                                                              - row [ref=f155e2072]:
+                                                                - cell "Create and assign label" [ref=f155e2073]
+                                                  - table [ref=f155e2074]:
+                                                    - rowgroup [ref=f155e2075]:
+                                                      - row [ref=f155e2076]:
+                                                        - cell [ref=f155e2077]:
+                                                          - table [ref=f155e2078]:
+                                                            - rowgroup [ref=f155e2079]:
+                                                              - row [ref=f155e2080]:
+                                                                - cell [ref=f155e2081]:
+                                                                  - combobox [ref=f155e2082]:
+                                                                    - textbox [ref=f155e2083]
+                                                                    - button [ref=f155e2084] [cursor=pointer]:
+                                                                      - generic [ref=f155e2085]: 
+                                                                - cell [ref=f155e2086]
+                                                                - cell [ref=f155e2087]:
+                                                                  - textbox [ref=f155e2088]
+                                                                - cell [ref=f155e2089]
+                                                                - cell [ref=f155e2090]:
+                                                                  - button "Create & Assign" [ref=f155e2091] [cursor=pointer]
+            - text:              
+        - text:                                            
+  - table [ref=f155e852]:
+    - rowgroup [ref=f155e853]:
+      - row [ref=f155e854]:
+        - cell [ref=f155e855]:
+          - generic [ref=f155e857]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f155e858] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f155e859]
+  - text:  

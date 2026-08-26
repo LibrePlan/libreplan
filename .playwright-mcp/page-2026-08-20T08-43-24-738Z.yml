@@ -1,0 +1,75 @@
+- generic [active] [ref=f23e1]:
+  - 'heading "Directory: /resources/worker/" [level=1] [ref=f23e2]'
+  - table [ref=f23e3]:
+    - rowgroup [ref=f23e4]:
+      - row [ref=f23e5]:
+        - columnheader [ref=f23e6]:
+          - link "Name ⇧" [ref=f23e7] [cursor=pointer]:
+            - /url: "?C=N&O=D"
+        - columnheader [ref=f23e8]:
+          - link "Last Modified" [ref=f23e9] [cursor=pointer]:
+            - /url: "?C=M&O=A"
+        - columnheader [ref=f23e10]:
+          - link "Size" [ref=f23e11] [cursor=pointer]:
+            - /url: "?C=S&O=A"
+    - rowgroup [ref=f23e12]:
+      - row [ref=f23e13]:
+        - cell [ref=f23e14]:
+          - link "Parent Directory" [ref=f23e15] [cursor=pointer]:
+            - /url: /resources/worker/../
+        - cell "-" [ref=f23e16]
+        - cell "-" [ref=f23e17]
+      - row [ref=f23e18]:
+        - cell [ref=f23e19]:
+          - link "_calendar.zul" [ref=f23e20] [cursor=pointer]:
+            - /url: /resources/worker/_calendar.zul
+        - cell "Aug 18, 2026, 4:34:23 PM" [ref=f23e21]
+        - cell "2,171 bytes" [ref=f23e22]
+      - row [ref=f23e23]:
+        - cell [ref=f23e24]:
+          - link "_edition.zul" [ref=f23e25] [cursor=pointer]:
+            - /url: /resources/worker/_edition.zul
+        - cell "Aug 18, 2026, 4:21:20 PM" [ref=f23e26]
+        - cell "12,014 bytes" [ref=f23e27]
+      - row [ref=f23e28]:
+        - cell [ref=f23e29]:
+          - link "_editWorkRelationship.zul" [ref=f23e30] [cursor=pointer]:
+            - /url: /resources/worker/_editWorkRelationship.zul
+        - cell "Aug 15, 2026, 6:21:40 PM" [ref=f23e31]
+        - cell "2,287 bytes" [ref=f23e32]
+      - row [ref=f23e33]:
+        - cell [ref=f23e34]:
+          - link "_list.zul" [ref=f23e35] [cursor=pointer]:
+            - /url: /resources/worker/_list.zul
+        - cell "Aug 18, 2026, 4:31:34 PM" [ref=f23e36]
+        - cell "2,363 bytes" [ref=f23e37]
+      - row [ref=f23e38]:
+        - cell [ref=f23e39]:
+          - link "_listVirtualWorkers.zul" [ref=f23e40] [cursor=pointer]:
+            - /url: /resources/worker/_listVirtualWorkers.zul
+        - cell "Aug 18, 2026, 4:38:53 PM" [ref=f23e41]
+        - cell "2,372 bytes" [ref=f23e42]
+      - row [ref=f23e43]:
+        - cell [ref=f23e44]:
+          - link "_localizations.zul" [ref=f23e45] [cursor=pointer]:
+            - /url: /resources/worker/_localizations.zul
+        - cell "Aug 19, 2026, 10:44:59 AM" [ref=f23e46]
+        - cell "3,126 bytes" [ref=f23e47]
+      - row [ref=f23e48]:
+        - cell [ref=f23e49]:
+          - link "_workRelationships.zul" [ref=f23e50] [cursor=pointer]:
+            - /url: /resources/worker/_workRelationships.zul
+        - cell "Aug 19, 2026, 10:47:27 AM" [ref=f23e51]
+        - cell "1,645 bytes" [ref=f23e52]
+      - row [ref=f23e53]:
+        - cell [ref=f23e54]:
+          - link "virtualWorkers.zul" [ref=f23e55] [cursor=pointer]:
+            - /url: /resources/worker/virtualWorkers.zul
+        - cell "Aug 15, 2026, 6:21:40 PM" [ref=f23e56]
+        - cell "1,989 bytes" [ref=f23e57]
+      - row [ref=f23e58]:
+        - cell [ref=f23e59]:
+          - link "worker.zul" [ref=f23e60] [cursor=pointer]:
+            - /url: /resources/worker/worker.zul
+        - cell "Aug 15, 2026, 6:21:40 PM" [ref=f23e61]
+        - cell "1,979 bytes" [ref=f23e62]

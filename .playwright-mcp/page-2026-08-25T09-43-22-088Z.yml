@@ -1,0 +1,622 @@
+- generic [ref=f3e1]:
+  - generic [ref=f3e3]:
+    - generic [ref=f3e4]:
+      - generic:
+        - generic [ref=f3e7]:
+          - table [ref=f3e8]:
+            - rowgroup [ref=f3e9]:
+              - row [ref=f3e10]:
+                - cell [ref=f3e11]:
+                  - link [ref=f3e12] [cursor=pointer]:
+                    - /url: /
+                - cell [ref=f3e14]:
+                  - table [ref=f3e15]:
+                    - rowgroup [ref=f3e16]:
+                      - row [ref=f3e17]:
+                        - cell [ref=f3e18]:
+                          - generic [ref=f3e19]:
+                            - list [ref=f3e21]:
+                              - listitem [ref=f3e22]:
+                                - link "Planning" [ref=f3e23] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:        
+                              - listitem [ref=f3e25]:
+                                - link "Resources" [ref=f3e26] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:           
+                              - listitem [ref=f3e28]:
+                                - link "Cost" [ref=f3e29] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:      
+                              - listitem [ref=f3e31]:
+                                - link "Configuration" [ref=f3e32] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:     
+                              - listitem [ref=f3e34]:
+                                - link "Communications" [ref=f3e35] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:     
+                              - listitem [ref=f3e37]:
+                                - link "Reports" [ref=f3e38] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:         
+                              - listitem [ref=f3e40]:
+                                - link "Personal area" [ref=f3e41] [cursor=pointer]:
+                                  - /url: javascript:;
+                                  - text: 
+                                - text:  
+                            - table [ref=f3e43]:
+                              - rowgroup [ref=f3e44]:
+                                - row [ref=f3e45]:
+                                  - cell [ref=f3e46]:
+                                    - table [ref=f3e47]:
+                                      - rowgroup [ref=f3e48]:
+                                        - row [ref=f3e49]:
+                                          - cell [ref=f3e50]
+                                          - cell [ref=f3e51]:
+                                            - strong [ref=f3e52]: START
+                                          - cell [ref=f3e53]
+                                          - cell [ref=f3e54]:
+                                            - table [ref=f3e55]:
+                                              - rowgroup [ref=f3e56]:
+                                                - row [ref=f3e57]:
+                                                  - cell [ref=f3e58]:
+                                                    - table [ref=f3e59]:
+                                                      - rowgroup [ref=f3e60]:
+                                                        - row [ref=f3e61]:
+                                                          - cell [ref=f3e62]
+                                                          - cell [ref=f3e64]
+                                                          - cell "Planning" [ref=f3e65]
+                                                          - cell [ref=f3e66]
+                                                          - cell [ref=f3e67]
+                                                          - cell [ref=f3e69]
+                                                          - cell "Projects Planning" [ref=f3e70]
+                                            - table:
+                                              - rowgroup:
+                                                - row:
+                                                  - cell:
+                                                    - table:
+                                                      - rowgroup:
+                                                        - row
+                                  - cell [ref=f3e71]:
+                                    - generic [ref=f3e72]:
+                                      - link "Help" [ref=f3e73] [cursor=pointer]:
+                                        - /url: /help/en/index.html
+                                      - img "Axuda" [ref=f3e75]
+                                      - img "Info" [ref=f3e77]
+          - table [ref=f3e79]:
+            - rowgroup [ref=f3e80]:
+              - row [ref=f3e81]:
+                - cell [ref=f3e82]
+                - 'cell "user: admin" [ref=f3e83]'
+                - cell [ref=f3e84]:
+                  - link "[Log out]" [ref=f3e85] [cursor=pointer]:
+                    - /url: /j_spring_security_logout
+        - text:    
+      - generic [ref=f3e88]:
+        - generic:
+          - table [ref=f3e91]:
+            - rowgroup [ref=f3e92]:
+              - row [ref=f3e93]:
+                - cell [ref=f3e94]:
+                  - table [ref=f3e95]:
+                    - rowgroup [ref=f3e96]:
+                      - row [ref=f3e97]:
+                        - cell [ref=f3e98]:
+                          - table [ref=f3e99]:
+                            - rowgroup [ref=f3e100]:
+                              - row [ref=f3e101]:
+                                - cell [ref=f3e102]:
+                                  - table [ref=f3e103]:
+                                    - rowgroup [ref=f3e104]:
+                                      - row [ref=f3e105]:
+                                        - cell [ref=f3e106]:
+                                          - button "Create New Project" [ref=f3e107] [cursor=pointer]
+                      - row [ref=f3e109]:
+                        - cell [ref=f3e110]
+                      - row [ref=f3e111]:
+                        - cell [ref=f3e112]:
+                          - table [ref=f3e113]:
+                            - rowgroup [ref=f3e114]:
+                              - row [ref=f3e115]:
+                                - cell [ref=f3e116]:
+                                  - table [ref=f3e117]:
+                                    - rowgroup [ref=f3e118]:
+                                      - row [ref=f3e119]:
+                                        - cell [ref=f3e120]:
+                                          - button "Projects Planning" [ref=f3e121] [cursor=pointer]
+                                      - row [ref=f3e122]:
+                                        - cell [ref=f3e123]
+                                      - row:
+                                        - cell
+                                      - row [ref=f3e124]:
+                                        - cell [ref=f3e125]
+                                      - row [ref=f3e126]:
+                                        - cell [ref=f3e127]:
+                                          - button "Projects List" [ref=f3e128] [cursor=pointer]
+                                      - row [ref=f3e129]:
+                                        - cell [ref=f3e130]
+                                      - row:
+                                        - cell
+                                      - row [ref=f3e131]:
+                                        - cell [ref=f3e132]
+                                      - row [ref=f3e133]:
+                                        - cell [ref=f3e134]:
+                                          - button "Resources Load" [ref=f3e135] [cursor=pointer]
+                                      - row [ref=f3e136]:
+                                        - cell [ref=f3e137]
+                                      - row:
+                                        - cell
+                                      - row [ref=f3e138]:
+                                        - cell [ref=f3e139]
+                                      - row [ref=f3e140]:
+                                        - cell [ref=f3e141]:
+                                          - button "Queue-based Resources Planning" [ref=f3e142] [cursor=pointer]
+                                      - row [ref=f3e143]:
+                                        - cell [ref=f3e144]
+                                      - row:
+                                        - cell
+                                      - row [ref=f3e145]:
+                                        - cell [ref=f3e146]
+                                      - row [ref=f3e147]:
+                                        - cell [ref=f3e148]:
+                                          - button "Logs" [ref=f3e149] [cursor=pointer]
+                                      - row [ref=f3e150]:
+                                        - cell [ref=f3e151]
+                                      - row:
+                                        - cell
+                                      - row [ref=f3e152]:
+                                        - cell [ref=f3e153]
+                                      - row [ref=f3e154]:
+                                        - cell [ref=f3e155]:
+                                          - button "Pipeline" [ref=f3e156] [cursor=pointer]
+                                      - row [ref=f3e157]:
+                                        - cell [ref=f3e158]
+                                      - row:
+                                        - cell
+          - text:    
+        - generic [ref=f3e163]:
+          - generic [ref=f3e164]:
+            - generic:
+              - table [ref=f3e167]:
+                - rowgroup [ref=f3e168]:
+                  - row [ref=f3e169]:
+                    - cell [ref=f3e170]:
+                      - table [ref=f3e171]:
+                        - rowgroup [ref=f3e172]:
+                          - row "Month  Project with  from Jan 1, 26  to Jun 26, 27  Exclude finished projects" [ref=f3e173]:
+                            - cell
+                            - cell
+                            - cell:
+                              - table:
+                                - rowgroup:
+                                  - row:
+                                    - cell:
+                                      - table:
+                                        - rowgroup:
+                                          - row
+                            - cell
+                            - cell [ref=f3e174]:
+                              - button "Print" [ref=f3e175] [cursor=pointer]
+                            - cell
+                            - cell
+                            - cell
+                            - cell [ref=f3e177]
+                            - cell
+                            - cell "Month" [ref=f3e179]:
+                              - combobox [ref=f3e180] [cursor=pointer]:
+                                - option "Year"
+                                - option "Quarter"
+                                - option "Month" [selected]
+                                - option "Week"
+                                - option "Day"
+                            - cell
+                            - cell [ref=f3e181]:
+                              - button "Show/Hide labels" [ref=f3e182] [cursor=pointer]
+                            - cell
+                            - cell [ref=f3e184]:
+                              - table [ref=f3e185]:
+                                - rowgroup [ref=f3e186]:
+                                  - row [ref=f3e187]:
+                                    - cell [ref=f3e188]:
+                                      - table [ref=f3e189]:
+                                        - rowgroup [ref=f3e190]:
+                                          - row "" [ref=f3e191]:
+                                            - cell [ref=f3e192]:
+                                              - button "Hide progress" [ref=f3e193] [cursor=pointer]
+                                            - cell
+                                            - cell ""
+                            - cell
+                            - cell [ref=f3e198]:
+                              - button "Hide reported hours" [ref=f3e199] [cursor=pointer]
+                            - cell
+                            - cell
+                            - cell
+                            - cell
+                            - cell
+                            - cell [ref=f3e201]:
+                              - table [ref=f3e202]:
+                                - rowgroup [ref=f3e203]:
+                                  - row [ref=f3e204]:
+                                    - cell [ref=f3e205]:
+                                      - table [ref=f3e206]:
+                                        - rowgroup [ref=f3e207]:
+                                          - row [ref=f3e208]:
+                                            - cell [ref=f3e209]:
+                                              - table [ref=f3e210]:
+                                                - rowgroup [ref=f3e211]:
+                                                  - row [ref=f3e212]:
+                                                    - cell [ref=f3e213]:
+                                                      - table [ref=f3e214]:
+                                                        - rowgroup [ref=f3e215]:
+                                                          - row [ref=f3e216]:
+                                                            - cell "Project" [ref=f3e217]
+                                                            - cell
+                                                            - cell [ref=f3e218]:
+                                                              - textbox [ref=f3e219]
+                                                            - cell
+                                                            - cell "with" [ref=f3e220]
+                                                            - cell
+                                                            - cell "" [ref=f3e221]:
+                                                              - generic [ref=f3e223]:
+                                                                - textbox [ref=f3e224]
+                                                                - generic [ref=f3e225] [cursor=pointer]: 
+                                                            - cell
+                                                            - cell "from" [ref=f3e227]
+                                                            - cell
+                                                            - cell "Jan 1, 26 " [ref=f3e228]:
+                                                              - generic [ref=f3e229]:
+                                                                - textbox [ref=f3e230]: Jan 1, 26
+                                                                - generic [ref=f3e231] [cursor=pointer]: 
+                                                                - text:    
+                                                            - cell
+                                                            - cell "to" [ref=f3e233]
+                                                            - cell
+                                                            - cell "Jun 26, 27 " [ref=f3e234]:
+                                                              - generic [ref=f3e235]:
+                                                                - textbox [ref=f3e236]: Jun 26, 27
+                                                                - generic [ref=f3e237] [cursor=pointer]: 
+                                                                - text:    
+                                                            - cell
+                                                            - cell "Exclude finished projects" [ref=f3e239]
+                                                            - cell
+                                                            - cell [ref=f3e240]:
+                                                              - checkbox [ref=f3e242] [cursor=pointer]
+                                                            - cell
+                                                            - cell [ref=f3e243]:
+                                                              - button "Apply filtering to tasks satisfying required criteria" [ref=f3e244] [cursor=pointer]
+                            - cell
+                            - cell:
+                              - table:
+                                - rowgroup:
+                                  - row:
+                                    - cell:
+                                      - table
+                            - cell
+                            - cell
+              - text:    
+            - generic [ref=f3e248]:
+              - generic:
+                - generic [ref=f3e256]:
+                  - table [ref=f3e258]:
+                    - rowgroup [ref=f3e264]:
+                      - row [ref=f3e265]:
+                        - columnheader "Name" [ref=f3e266]
+                        - columnheader "Start" [ref=f3e268]
+                        - columnheader "End" [ref=f3e270]
+                        - columnheader "T / M" [ref=f3e272]
+                  - generic [ref=f3e274]:
+                    - table [ref=f3e275]:
+                      - rowgroup [ref=f3e281]:
+                        - row [ref=f3e282]:
+                          - 'cell "THE_Testproject #2" [ref=f3e283] [cursor=pointer]'
+                          - cell "1/1/26" [ref=f3e285] [cursor=pointer]
+                          - cell "1/6/26" [ref=f3e287] [cursor=pointer]
+                          - cell / [ref=f3e289] [cursor=pointer]
+                        - row [ref=f3e297]:
+                          - cell "Test project Libre Palan" [ref=f3e298] [cursor=pointer]
+                          - cell "5/18/26" [ref=f3e300] [cursor=pointer]
+                          - cell "5/19/26" [ref=f3e302] [cursor=pointer]
+                          - cell / [ref=f3e304] [cursor=pointer]
+                        - row [ref=f3e312]:
+                          - cell "miniGrav prototype" [ref=f3e313] [cursor=pointer]
+                          - cell "5/18/26" [ref=f3e315] [cursor=pointer]
+                          - cell "7/14/26" [ref=f3e317] [cursor=pointer]
+                          - cell / [ref=f3e319] [cursor=pointer]
+                        - row [ref=f3e327]:
+                          - cell "new test project" [ref=f3e328] [cursor=pointer]
+                          - cell "5/19/26" [ref=f3e330] [cursor=pointer]
+                          - cell "5/19/26" [ref=f3e332] [cursor=pointer]
+                          - cell / [ref=f3e334] [cursor=pointer]
+                        - row [ref=f3e342]:
+                          - cell "GAS stations" [ref=f3e343] [cursor=pointer]
+                          - cell "5/24/26" [ref=f3e345] [cursor=pointer]
+                          - cell "8/24/26" [ref=f3e347] [cursor=pointer]
+                          - cell / [ref=f3e349] [cursor=pointer]
+                        - row [ref=f3e357]:
+                          - cell "OpenWeb" [ref=f3e358] [cursor=pointer]
+                          - cell "5/26/26" [ref=f3e360] [cursor=pointer]
+                          - cell "6/26/27" [ref=f3e362] [cursor=pointer]
+                          - cell / [ref=f3e364] [cursor=pointer]
+                        - row [ref=f3e372]:
+                          - cell "Projet UT" [ref=f3e373] [cursor=pointer]
+                          - cell "5/27/26" [ref=f3e375] [cursor=pointer]
+                          - cell "5/27/26" [ref=f3e377] [cursor=pointer]
+                          - cell / [ref=f3e379] [cursor=pointer]
+                        - row [ref=f3e387]:
+                          - cell "rebuild motor" [ref=f3e388] [cursor=pointer]
+                          - cell "6/4/26" [ref=f3e390] [cursor=pointer]
+                          - cell "6/11/26" [ref=f3e392] [cursor=pointer]
+                          - cell / [ref=f3e394] [cursor=pointer]
+                        - row [ref=f3e402]:
+                          - cell "test1" [ref=f3e403] [cursor=pointer]
+                          - cell "6/8/26" [ref=f3e405] [cursor=pointer]
+                          - cell "6/10/26" [ref=f3e407] [cursor=pointer]
+                          - cell / [ref=f3e409] [cursor=pointer]
+                        - row [ref=f3e417]:
+                          - 'cell "THE_Testproject #1" [ref=f3e418] [cursor=pointer]'
+                          - cell "6/9/26" [ref=f3e420] [cursor=pointer]
+                          - cell "6/16/26" [ref=f3e422] [cursor=pointer]
+                          - cell / [ref=f3e424] [cursor=pointer]
+                        - row [ref=f3e432]:
+                          - cell "stadium" [ref=f3e433] [cursor=pointer]
+                          - cell "6/19/26" [ref=f3e435] [cursor=pointer]
+                          - cell "10/19/26" [ref=f3e437] [cursor=pointer]
+                          - cell / [ref=f3e439] [cursor=pointer]
+                        - row [ref=f3e447]:
+                          - cell "Konstrukca" [ref=f3e448] [cursor=pointer]
+                          - cell "8/12/26" [ref=f3e450] [cursor=pointer]
+                          - cell "8/18/26" [ref=f3e452] [cursor=pointer]
+                          - cell / [ref=f3e454] [cursor=pointer]
+                    - button [ref=f3e462] [cursor=pointer]
+                - generic [ref=f3e464] [cursor=pointer]:
+                  - generic [ref=f3e465]: 
+                  - generic [ref=f3e466]: 
+                  - generic [ref=f3e467]: 
+                - text: 
+              - generic [ref=f3e470]:
+                - generic:
+                  - table [ref=f3e477]:
+                    - rowgroup [ref=f3e478]:
+                      - row [ref=f3e479]:
+                        - cell [ref=f3e480]:
+                          - table [ref=f3e481]:
+                            - rowgroup [ref=f3e482]:
+                              - row [ref=f3e483]:
+                                - cell [ref=f3e484]:
+                                  - table [ref=f3e487]:
+                                    - rowgroup [ref=f3e495]:
+                                      - row [ref=f3e496]:
+                                        - columnheader "2025,H2" [ref=f3e497]
+                                        - columnheader "2026,H1" [ref=f3e499]
+                                        - columnheader "2026,H2" [ref=f3e501]
+                                        - columnheader "2027,H1" [ref=f3e503]
+                                        - columnheader "2027,H2" [ref=f3e505]
+                                        - columnheader "2028,H1" [ref=f3e507]
+                                        - columnheader
+                              - row [ref=f3e510]:
+                                - cell [ref=f3e511]
+                              - row [ref=f3e512]:
+                                - cell [ref=f3e513]:
+                                  - table [ref=f3e515]:
+                                    - rowgroup [ref=f3e516]:
+                                      - row [ref=f3e517]:
+                                        - cell "Jul" [ref=f3e518]
+                                        - cell "Aug" [ref=f3e519]
+                                        - cell "Sep" [ref=f3e520]
+                                        - cell "Oct" [ref=f3e521]
+                                        - cell "Nov" [ref=f3e522]
+                                        - cell "Dec" [ref=f3e523]
+                                        - cell "Jan" [ref=f3e524]
+                                        - cell "Feb" [ref=f3e525]
+                                        - cell "Mar" [ref=f3e526]
+                                        - cell "Apr" [ref=f3e527]
+                                        - cell "May" [ref=f3e528]
+                                        - cell "Jun" [ref=f3e529]
+                                        - cell "Jul" [ref=f3e530]
+                                        - cell "Aug" [ref=f3e531]
+                                        - cell "Sep" [ref=f3e532]
+                                        - cell "Oct" [ref=f3e533]
+                                        - cell "Nov" [ref=f3e534]
+                                        - cell "Dec" [ref=f3e535]
+                                        - cell "Jan" [ref=f3e536]
+                                        - cell "Feb" [ref=f3e537]
+                                        - cell "Mar" [ref=f3e538]
+                                        - cell "Apr" [ref=f3e539]
+                                        - cell "May" [ref=f3e540]
+                                        - cell "Jun" [ref=f3e541]
+                                        - cell "Jul" [ref=f3e542]
+                                        - cell "Aug" [ref=f3e543]
+                                        - cell "Sep" [ref=f3e544]
+                                        - cell "Oct" [ref=f3e545]
+                                        - cell "Nov" [ref=f3e546]
+                                        - cell "Dec" [ref=f3e547]
+                                        - cell "Jan" [ref=f3e548]
+                                        - cell "Feb" [ref=f3e549]
+                                        - cell "Mar" [ref=f3e550]
+                                        - cell "Apr" [ref=f3e551]
+                                        - cell "May" [ref=f3e552]
+                                        - cell "Jun" [ref=f3e553]
+                  - text:    
+                - generic [ref=f3e558]:
+                  - table [ref=f3e560]:
+                    - rowgroup [ref=f3e561]:
+                      - row [ref=f3e562]:
+                        - cell [ref=f3e563]:
+                          - table [ref=f3e564]:
+                            - rowgroup [ref=f3e565]:
+                              - row [ref=f3e566]:
+                                - cell [ref=f3e567]:
+                                  - generic [ref=f3e568]:
+                                    - generic:
+                                      - table:
+                                        - rowgroup:
+                                          - row
+                                    - table [ref=f3e571]:
+                                      - rowgroup [ref=f3e579]:
+                                        - row [ref=f3e580]:
+                                          - cell [ref=f3e581]
+                              - row [ref=f3e582]:
+                                - cell [ref=f3e583]
+                              - row [ref=f3e584]:
+                                - cell [ref=f3e585]:
+                                  - table [ref=f3e587]:
+                                    - rowgroup [ref=f3e588]:
+                                      - row [ref=f3e589]
+                                      - row [ref=f3e590]:
+                                        - cell [ref=f3e591]
+                                        - cell [ref=f3e592]
+                                        - cell [ref=f3e593]
+                                        - cell [ref=f3e594]
+                                        - cell [ref=f3e595]
+                                        - cell [ref=f3e596]
+                                        - cell [ref=f3e597]
+                                        - cell [ref=f3e598]
+                                        - cell [ref=f3e599]
+                                        - cell [ref=f3e600]
+                                        - cell [ref=f3e601]
+                                        - cell [ref=f3e602]
+                                        - cell [ref=f3e603]
+                                        - cell [ref=f3e604]
+                                        - cell [ref=f3e606]
+                                        - cell [ref=f3e607]
+                                        - cell [ref=f3e608]
+                                        - cell [ref=f3e609]
+                                        - cell [ref=f3e610]
+                                        - cell [ref=f3e611]
+                                        - cell [ref=f3e612]
+                                        - cell [ref=f3e613]
+                                        - cell [ref=f3e614]
+                                        - cell [ref=f3e615]
+                                        - cell [ref=f3e616]
+                                        - cell [ref=f3e617]
+                                        - cell [ref=f3e618]
+                                        - cell [ref=f3e619]
+                                        - cell [ref=f3e620]
+                                        - cell [ref=f3e621]
+                                        - cell [ref=f3e622]
+                                        - cell [ref=f3e623]
+                                        - cell [ref=f3e624]
+                                        - cell [ref=f3e625]
+                                        - cell [ref=f3e626]
+                                        - cell [ref=f3e627]
+                  - generic [ref=f3e629]:
+                    - generic [ref=f3e631] [cursor=pointer]
+                    - generic [ref=f3e635] [cursor=pointer]
+                    - generic [ref=f3e641] [cursor=pointer]
+                    - generic [ref=f3e648] [cursor=pointer]
+                    - generic [ref=f3e652] [cursor=pointer]
+                    - generic [ref=f3e656] [cursor=pointer]
+                    - generic [ref=f3e660] [cursor=pointer]
+                    - generic [ref=f3e664] [cursor=pointer]
+                    - generic [ref=f3e668] [cursor=pointer]
+                    - generic [ref=f3e672] [cursor=pointer]
+                    - generic [ref=f3e679] [cursor=pointer]
+                    - generic [ref=f3e683] [cursor=pointer]
+          - generic:
+            - generic [ref=f3e686]:
+              - generic [ref=f3e687]:
+                - generic [ref=f3e688] [cursor=pointer]: 
+                - text: Graphics
+              - generic [ref=f3e691]:
+                - list [ref=f3e693]:
+                  - listitem [ref=f3e694] [cursor=pointer]:
+                    - generic [ref=f3e695]: Load
+                  - listitem [ref=f3e697] [cursor=pointer]:
+                    - generic [ref=f3e698]: Earned value
+                - table [ref=f3e702]:
+                  - rowgroup [ref=f3e703]:
+                    - row [ref=f3e704]:
+                      - cell [ref=f3e705]:
+                        - table [ref=f3e706]:
+                          - rowgroup [ref=f3e707]:
+                            - row [ref=f3e708]:
+                              - cell [ref=f3e709]:
+                                - table [ref=f3e710]:
+                                  - rowgroup [ref=f3e711]:
+                                    - row [ref=f3e712]:
+                                      - cell [ref=f3e713]:
+                                        - table [ref=f3e714]:
+                                          - rowgroup [ref=f3e715]:
+                                            - row [ref=f3e716]:
+                                              - cell [ref=f3e717]:
+                                                - table [ref=f3e718]:
+                                                  - rowgroup [ref=f3e719]:
+                                                    - row [ref=f3e720]:
+                                                      - cell [ref=f3e721]:
+                                                        - table [ref=f3e722]:
+                                                          - rowgroup [ref=f3e723]:
+                                                            - row [ref=f3e724]:
+                                                              - cell [ref=f3e725]:
+                                                                - table [ref=f3e726]:
+                                                                  - rowgroup [ref=f3e727]:
+                                                                    - row [ref=f3e728]:
+                                                                      - cell [ref=f3e729]:
+                                                                        - table [ref=f3e730]:
+                                                                          - rowgroup [ref=f3e731]:
+                                                                            - row [ref=f3e732]:
+                                                                              - cell [ref=f3e733]
+                                                                              - cell [ref=f3e735]
+                                                                              - cell "Overload" [ref=f3e736]
+                                                            - row [ref=f3e737]:
+                                                              - cell [ref=f3e738]
+                                                            - row:
+                                                              - cell
+                                                            - row [ref=f3e739]:
+                                                              - cell [ref=f3e740]
+                                                            - row [ref=f3e741]:
+                                                              - cell [ref=f3e742]:
+                                                                - table [ref=f3e743]:
+                                                                  - rowgroup [ref=f3e744]:
+                                                                    - row [ref=f3e745]:
+                                                                      - cell [ref=f3e746]:
+                                                                        - table [ref=f3e747]:
+                                                                          - rowgroup [ref=f3e748]:
+                                                                            - row [ref=f3e749]:
+                                                                              - cell [ref=f3e750]
+                                                                              - cell [ref=f3e752]
+                                                                              - cell "Total capability" [ref=f3e753]
+                                                            - row [ref=f3e754]:
+                                                              - cell [ref=f3e755]
+                                                            - row [ref=f3e756]:
+                                                              - cell [ref=f3e757]:
+                                                                - table [ref=f3e758]:
+                                                                  - rowgroup [ref=f3e759]:
+                                                                    - row [ref=f3e760]:
+                                                                      - cell [ref=f3e761]:
+                                                                        - table [ref=f3e762]:
+                                                                          - rowgroup [ref=f3e763]:
+                                                                            - row [ref=f3e764]:
+                                                                              - cell [ref=f3e765]
+                                                                              - cell [ref=f3e767]
+                                                                              - cell "Assigned load" [ref=f3e768]
+                              - cell
+                              - cell "2025 2026 2027 30 60" [ref=f3e769]:
+                                - generic [ref=f3e771]:
+                                  - generic:
+                                    - generic [ref=f3e772]: "2025"
+                                    - generic [ref=f3e773]: "2026"
+                                    - generic [ref=f3e774]: "2027"
+                                    - generic [ref=f3e775]: "30"
+                                    - generic [ref=f3e776]: "60"
+                - text:  
+            - text:    
+    - generic:
+      - table [ref=f3e780]:
+        - rowgroup [ref=f3e781]:
+          - row [ref=f3e782]:
+            - cell [ref=f3e783]:
+              - generic [ref=f3e785]:
+                - text: The admin's account password remains the default one. This is insecure.
+                - link "[Change the password]" [ref=f3e786] [cursor=pointer]:
+                  - /url: /users/users.zul#edit%3D1
+            - cell [ref=f3e787]
+      - text:    
+  - link [active]:
+    - /url: javascript:;

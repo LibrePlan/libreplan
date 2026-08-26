@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -53,13 +54,13 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.*;
 import org.zkoss.zul.impl.InputElement;
 
-import javax.mail.AuthenticationFailedException;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
+import jakarta.mail.AuthenticationFailedException;
+import jakarta.mail.MessagingException;
+import jakarta.mail.Session;
+import jakarta.mail.Transport;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
 import java.io.*;
 import java.util.*;
 
@@ -83,6 +84,10 @@ public class ConfigurationController extends GenericForwardComposer {
     private Window configurationWindow;
 
     private BandboxSearch defaultCalendarBandboxSearch;
+
+    private BandboxSearch personalTimesheetsTypeOfWorkHoursBandboxSearch;
+
+    private BandboxSearch budgetDefaultTypeOfWorkHoursBandboxSearch;
 
     private Listbox lbTypeProgress;
 
@@ -137,6 +142,12 @@ public class ConfigurationController extends GenericForwardComposer {
         injectsObjects();
 
         comp.setAttribute("configurationController", this, true);
+        // Util.createBindingsFor (called both eagerly below and later by AnnotateBinderInit) looks
+        // up the controller object under the hardcoded name "controller", not whatever name the
+        // ZUL's @load/@save expressions happen to use - without this, no Binder is ever created
+        // for this page at all (createBindingsFor just returns early, silently, no exception) and
+        // every @load/@save binding on the page is a permanent no-op.
+        comp.setAttribute("controller", this, true);
         configurationModel.init();
 
         defaultCalendarBandboxSearch.setListboxEventListener(Events.ON_SELECT, event -> {
@@ -144,10 +155,32 @@ public class ConfigurationController extends GenericForwardComposer {
             setDefaultCalendar(selectedItem.getValue());
         });
 
+        // Same reason as defaultCalendarBandboxSearch above: BandboxSearch's own self-posted
+        // Binder.SAVE_EVENT isn't recognized by this app's AnnotateBinder, so selectedElement=
+        // can only be @load-bound in the ZUL - the actual save has to happen through a manual
+        // listener like this one, calling the setter (and therefore configurationModel) directly.
+        personalTimesheetsTypeOfWorkHoursBandboxSearch.setListboxEventListener(Events.ON_SELECT, event -> {
+            Listitem selectedItem = (Listitem) ((SelectEvent) event).getSelectedItems().iterator().next();
+            setPersonalTimesheetsTypeOfWorkHours(selectedItem.getValue());
+        });
+
+        budgetDefaultTypeOfWorkHoursBandboxSearch.setListboxEventListener(Events.ON_SELECT, event -> {
+            Listitem selectedItem = (Listitem) ((SelectEvent) event).getSelectedItems().iterator().next();
+            setBudgetDefaultTypeOfWorkHours(selectedItem.getValue());
+        });
+
         initializeProgressTypeList();
         messages = new MessagesForUser(messagesContainer);
         reloadEntitySequences();
         loadRoleStrategyRows();
+
+        // AnnotateBinderInit's page-level pass only registers @load bindings, it never loads them
+        // (see the identical comment in BaseCalendarCRUDController.doAfterCompose /
+        // ScenarioCRUDController.doAfterCompose) - without this, every @load-bound field on this
+        // page (currency, progress type, connectors, roles, etc.) stays empty until save()/cancel()
+        // happens to call reloadWindow()/reloadConnectors() for unrelated reasons.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private void injectsObjects() {
@@ -773,6 +806,13 @@ public class ConfigurationController extends GenericForwardComposer {
         return configurationModel.isAutocompleteLogin();
     }
 
+    // The EL Introspector only recognizes an "isX" getter when it returns primitive boolean - this
+    // one returns boxed Boolean, so "autocompleteLogin" is only resolvable as a bind property via
+    // this getX-named companion.
+    public Boolean getAutocompleteLogin() {
+        return isAutocompleteLogin();
+    }
+
     /**
      * Used in configuration.zul
      * Should be public!
@@ -804,6 +844,12 @@ public class ConfigurationController extends GenericForwardComposer {
      */
     public Boolean isMonteCarloMethodTabVisible() {
         return configurationModel.isMonteCarloMethodTabVisible();
+    }
+
+    // Same reason as getAutocompleteLogin() above: an "isX" getter returning boxed Boolean isn't
+    // recognized by the EL Introspector as the property "x" - only this getX-named companion is.
+    public Boolean getMonteCarloMethodTabVisible() {
+        return isMonteCarloMethodTabVisible();
     }
 
     /**
@@ -1066,6 +1112,18 @@ public class ConfigurationController extends GenericForwardComposer {
         return EntityNameEnum.values();
     }
 
+    public ListModel<EntityNameEnum> getEntityNamesModel() {
+        return new ListModelList<>(Arrays.asList(getEntityNames()));
+    }
+
+    public ComboitemRenderer getEntityNamesRenderer() {
+        return (Comboitem item, Object data, int index) -> {
+            EntityNameEnum entityName = (EntityNameEnum) data;
+            item.setValue(entityName);
+            item.setLabel(entityName.getDescription());
+        };
+    }
+
     /**
      * Tab LDAP properties.
      */
@@ -1114,6 +1172,10 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public UserRole[] getRoles() {
         return UserRole.values();
+    }
+
+    public ListModel<UserRole> getRolesModel() {
+        return new SimpleListModel<>(getRoles());
     }
 
     /**
@@ -1170,6 +1232,10 @@ public class ConfigurationController extends GenericForwardComposer {
      */
     public Set<String> getCurrencies() {
         return configurationModel.getCurrencies();
+    }
+
+    public ListModel<String> getCurrenciesModel() {
+        return new SimpleListModel<>(new ArrayList<>(getCurrencies()));
     }
 
     /**
@@ -1286,7 +1352,7 @@ public class ConfigurationController extends GenericForwardComposer {
         configurationModel.setPersonalTimesheetsPeriodicity(personalTimesheetsPeriodicity);
     }
 
-    private boolean isPersonalTimesheetsPeriodicityDisabled() {
+    public boolean isPersonalTimesheetsPeriodicityDisabled() {
         return configurationModel.isAnyPersonalTimesheetAlreadySaved();
     }
 
@@ -1334,6 +1400,18 @@ public class ConfigurationController extends GenericForwardComposer {
 
     public List<Connector> getConnectors() {
         return configurationModel.getConnectors();
+    }
+
+    public ListModel<Connector> getConnectorsModel() {
+        return new ListModelList<>(getConnectors());
+    }
+
+    public ComboitemRenderer getConnectorsRenderer() {
+        return (Comboitem item, Object data, int index) -> {
+            Connector connector = (Connector) data;
+            item.setValue(connector);
+            item.setLabel(connector.getName());
+        };
     }
 
     public Connector getSelectedConnector() {

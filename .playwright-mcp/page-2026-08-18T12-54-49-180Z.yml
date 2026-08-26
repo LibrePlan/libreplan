@@ -1,0 +1,195 @@
+- generic [ref=f790e4]:
+  - generic [ref=f790e5]:
+    - table [ref=f790e6]:
+      - rowgroup [ref=f790e7]:
+        - row [ref=f790e8]:
+          - cell [ref=f790e9]:
+            - link [ref=f790e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f790e12]:
+            - table [ref=f790e13]:
+              - rowgroup [ref=f790e14]:
+                - row [ref=f790e15]:
+                  - cell [ref=f790e16]:
+                    - generic [ref=f790e17]:
+                      - menubar [ref=f790e18]:
+                        - menuitem "Personal area" [ref=f790e19] [cursor=pointer]: 
+                        - text:   
+                      - table [ref=f790e21]:
+                        - rowgroup [ref=f790e22]:
+                          - row [ref=f790e23]:
+                            - cell [ref=f790e24]:
+                              - table [ref=f790e25]:
+                                - rowgroup [ref=f790e26]:
+                                  - row [ref=f790e27]:
+                                    - cell [ref=f790e28]
+                                    - cell [ref=f790e29]:
+                                      - strong [ref=f790e30]: START
+                                    - cell [ref=f790e31]
+                                    - cell [ref=f790e32]:
+                                      - table [ref=f790e33]:
+                                        - rowgroup [ref=f790e34]:
+                                          - row [ref=f790e35]:
+                                            - cell [ref=f790e36]:
+                                              - table [ref=f790e37]:
+                                                - rowgroup [ref=f790e38]:
+                                                  - row [ref=f790e39]:
+                                                    - cell [ref=f790e40]
+                                                    - cell [ref=f790e42]
+                                                    - cell "My account" [ref=f790e43]
+                                                    - cell [ref=f790e44]
+                                                    - cell [ref=f790e45]
+                                                    - cell [ref=f790e47]
+                                                    - cell "My dashboard" [ref=f790e48]
+                                                    - cell [ref=f790e49]
+                                                    - cell [ref=f790e50]
+                                                    - cell [ref=f790e52]
+                                                    - cell "Personal timesheet" [ref=f790e53]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f790e54]:
+                              - generic [ref=f790e55]:
+                                - link "Help" [ref=f790e56] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f790e58]
+                                - img "Info" [ref=f790e60]
+    - table [ref=f790e62]:
+      - rowgroup [ref=f790e63]:
+        - row [ref=f790e64]:
+          - cell [ref=f790e65]
+          - 'cell "user: qwe" [ref=f790e66]'
+          - cell [ref=f790e67]:
+            - link "[Log out]" [ref=f790e68] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f790e69]:
+    - text:    
+    - generic [ref=f790e70]:
+      - generic [ref=f790e71]: Personal timesheet
+      - generic [ref=f790e72]:
+        - generic [ref=f790e73]: "Warning: Not editing from home page of bound users"
+        - table [ref=f790e74]:
+          - rowgroup [ref=f790e75]:
+            - row [ref=f790e76]:
+              - cell [ref=f790e77]:
+                - table [ref=f790e78]:
+                  - rowgroup [ref=f790e79]:
+                    - row [ref=f790e80]:
+                      - cell "Timesheet data" [ref=f790e81]:
+                        - generic [ref=f790e82]:
+                          - generic [ref=f790e83]: Timesheet data
+                          - grid [ref=f790e87]:
+                            - rowgroup [ref=f790e91]:
+                              - gridcell "Date" [ref=f790e92]
+                              - gridcell [ref=f790e94]:
+                                - table [ref=f790e96]:
+                                  - rowgroup [ref=f790e97]:
+                                    - row [ref=f790e98]:
+                                      - cell [ref=f790e99]:
+                                        - table [ref=f790e100]:
+                                          - rowgroup [ref=f790e101]:
+                                            - row [ref=f790e102]:
+                                              - cell [ref=f790e103]:
+                                                - button "Previous" [ref=f790e105] [cursor=pointer]
+                                              - cell [ref=f790e107]
+                                              - cell [ref=f790e108]
+                                              - cell [ref=f790e110]
+                                              - cell [ref=f790e111]:
+                                                - button "Next" [ref=f790e113] [cursor=pointer]
+                              - gridcell "Resource" [ref=f790e115]
+                              - gridcell [ref=f790e117]
+                      - cell [ref=f790e120]
+                      - cell "Timesheet summary" [ref=f790e121]:
+                        - generic [ref=f790e122]:
+                          - generic [ref=f790e123]: Timesheet summary
+                          - grid [ref=f790e127]:
+                            - rowgroup [ref=f790e131]:
+                              - gridcell "Total personal timesheet" [ref=f790e132]
+                              - gridcell [ref=f790e134]
+                              - gridcell "Total other" [ref=f790e137]
+                              - gridcell [ref=f790e139]
+                              - gridcell "Total" [ref=f790e142]
+                              - gridcell [ref=f790e144]
+                              - gridcell "Total capacity" [ref=f790e147]
+                              - gridcell [ref=f790e149]
+                              - gridcell "Total extra per day" [ref=f790e152]
+                              - gridcell [ref=f790e154]
+                              - gridcell "Total extra" [ref=f790e157]
+                              - gridcell [ref=f790e159]
+        - table [ref=f790e162]:
+          - rowgroup [ref=f790e163]:
+            - row [ref=f790e164]:
+              - cell [ref=f790e165]:
+                - table [ref=f790e166]:
+                  - rowgroup [ref=f790e167]:
+                    - row [ref=f790e168]:
+                      - cell "Time tracking Add task" [ref=f790e169]:
+                        - generic [ref=f790e170]:
+                          - generic [ref=f790e171]: Time tracking
+                          - generic [ref=f790e174]:
+                            - table [ref=f790e175]:
+                              - rowgroup [ref=f790e176]:
+                                - row [ref=f790e177]:
+                                  - cell [ref=f790e178]:
+                                    - table [ref=f790e179]:
+                                      - rowgroup [ref=f790e180]:
+                                        - row [ref=f790e181]:
+                                          - cell [ref=f790e182]:
+                                            - combobox [ref=f790e184]:
+                                              - textbox [ref=f790e185]
+                                              - button [ref=f790e186] [cursor=pointer]:
+                                                - generic [ref=f790e187]: 
+                                          - cell [ref=f790e188]
+                                          - cell [ref=f790e189]:
+                                            - button "Add task" [ref=f790e190] [cursor=pointer]
+                            - table [ref=f790e191]:
+                              - rowgroup [ref=f790e192]:
+                                - row [ref=f790e193]:
+                                  - cell [ref=f790e194]:
+                                    - table [ref=f790e195]:
+                                      - rowgroup [ref=f790e196]:
+                                        - row [ref=f790e197]:
+                                          - cell [ref=f790e198]:
+                                            - grid [ref=f790e199]:
+                                              - rowgroup [ref=f790e234]:
+                                                - columnheader "Project" [ref=f790e235]
+                                                - columnheader "Task" [ref=f790e237]
+                                                - columnheader "1" [ref=f790e239]
+                                                - columnheader "2" [ref=f790e241]
+                                                - columnheader "3" [ref=f790e243]
+                                                - columnheader "4" [ref=f790e245]
+                                                - columnheader "5" [ref=f790e247]
+                                                - columnheader "6" [ref=f790e249]
+                                                - columnheader "7" [ref=f790e251]
+                                                - columnheader "8" [ref=f790e253]
+                                                - columnheader "9" [ref=f790e255]
+                                                - columnheader "10" [ref=f790e257]
+                                                - columnheader "11" [ref=f790e259]
+                                                - columnheader "12" [ref=f790e261]
+                                                - columnheader "13" [ref=f790e263]
+                                                - columnheader "14" [ref=f790e265]
+                                                - columnheader "15" [ref=f790e267]
+                                                - columnheader "16" [ref=f790e269]
+                                                - columnheader "17" [ref=f790e271]
+                                                - columnheader "18" [ref=f790e273]
+                                                - columnheader "19" [ref=f790e275]
+                                                - columnheader "20" [ref=f790e277]
+                                                - columnheader "21" [ref=f790e279]
+                                                - columnheader "22" [ref=f790e281]
+                                                - columnheader "23" [ref=f790e283]
+                                                - columnheader "24" [ref=f790e285]
+                                                - columnheader "25" [ref=f790e287]
+                                                - columnheader "26" [ref=f790e289]
+                                                - columnheader "27" [ref=f790e291]
+                                                - columnheader "28" [ref=f790e293]
+                                                - columnheader "29" [ref=f790e295]
+                                                - columnheader "30" [ref=f790e297]
+                                                - columnheader "Total" [ref=f790e299]
+        - button "Save" [ref=f790e341] [cursor=pointer]
+        - button "Save & Continue" [ref=f790e342] [cursor=pointer]
+        - button "Cancel" [ref=f790e343] [cursor=pointer]

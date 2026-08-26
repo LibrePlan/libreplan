@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,11 +33,18 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
+import org.libreplan.business.common.exceptions.ValidationException;
+import org.libreplan.business.costcategories.daos.ICostCategoryDAO;
 import org.libreplan.business.costcategories.daos.ITypeOfWorkHoursDAO;
+import org.libreplan.business.costcategories.entities.CostCategory;
+import org.libreplan.business.costcategories.entities.HourCost;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;
+import org.libreplan.business.workreports.daos.IWorkReportLineDAO;
+import org.libreplan.business.workreports.entities.WorkReportLine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -51,10 +59,17 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Jacobo Aragunde Perez <jaragunde@igalia.com>
  *
  */
-public class TypeOfWorkHoursDAOTest {
+public class TypeOfWorkHoursDAOTest extends
+        org.libreplan.business.test.workreports.daos.AbstractWorkReportTest {
 
     @Autowired
     ITypeOfWorkHoursDAO typeOfWorkHoursDAO;
+
+    @Autowired
+    ICostCategoryDAO costCategoryDAO;
+
+    @Autowired
+    IWorkReportLineDAO workReportLineDAO;
 
     @Test
     @Transactional
@@ -121,5 +136,148 @@ public class TypeOfWorkHoursDAOTest {
 
         //this call should throw the exception
         typeOfWorkHoursDAO.findUniqueByCode(typeOfWorkHours.getCode());
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). findUniqueByCode(TypeOfWorkHours)/findActive/existsByCode/
+     * findUniqueByName/hoursTypeByNameAsc/existsByName/checkHasHourCost/checkHasWorkReportLine
+     * had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void testFindUniqueByCodeEntityOverloadReturnsMatch() throws InstanceNotFoundException {
+        TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+
+        assertEquals(typeOfWorkHours.getId(), typeOfWorkHoursDAO.findUniqueByCode(typeOfWorkHours).getId());
+    }
+
+    @Test
+    @Transactional
+    public void testFindActiveOnlyReturnsEnabledOnes() {
+        TypeOfWorkHours active = createValidTypeOfWorkHours();
+        active.setEnabled(true);
+        typeOfWorkHoursDAO.save(active);
+
+        TypeOfWorkHours inactive = createValidTypeOfWorkHours();
+        inactive.setEnabled(false);
+        typeOfWorkHoursDAO.save(inactive);
+
+        boolean activeFound = false;
+        for (TypeOfWorkHours t : typeOfWorkHoursDAO.findActive()) {
+            assertTrue(t.getEnabled());
+            if (t.getId().equals(active.getId())) {
+                activeFound = true;
+            }
+            assertFalse(t.getId().equals(inactive.getId()));
+        }
+        assertTrue(activeFound);
+    }
+
+    @Test
+    @Transactional
+    public void testExistsByCodeTrueWhenPresent() {
+        TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+        assertTrue(typeOfWorkHoursDAO.existsByCode(typeOfWorkHours));
+    }
+
+    @Test
+    @Transactional
+    public void testExistsByCodeFalseWhenAbsent() {
+        TypeOfWorkHours notSaved = TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        assertFalse(typeOfWorkHoursDAO.existsByCode(notSaved));
+    }
+
+    @Test
+    @Transactional
+    public void testFindUniqueByNameIsCaseInsensitiveAndTrims() throws InstanceNotFoundException {
+        String mixedCaseName = "MiXeD-" + UUID.randomUUID();
+        TypeOfWorkHours typeOfWorkHours =
+                TypeOfWorkHours.create(UUID.randomUUID().toString(), mixedCaseName);
+        typeOfWorkHours.setDefaultPrice(BigDecimal.TEN);
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+
+        assertEquals(typeOfWorkHours.getId(), typeOfWorkHoursDAO.findUniqueByName(mixedCaseName).getId());
+        assertEquals(typeOfWorkHours.getId(),
+                typeOfWorkHoursDAO.findUniqueByName(mixedCaseName.toLowerCase()).getId());
+        assertEquals(typeOfWorkHours.getId(),
+                typeOfWorkHoursDAO.findUniqueByName("  " + mixedCaseName + "  ").getId());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void testFindUniqueByNameThrowsWhenNotFound() throws InstanceNotFoundException {
+        typeOfWorkHoursDAO.findUniqueByName("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test
+    @Transactional
+    public void testHoursTypeByNameAscOrdersByName() {
+        String prefix = UUID.randomUUID().toString();
+
+        TypeOfWorkHours first = TypeOfWorkHours.create(UUID.randomUUID().toString(), prefix + "-1-aaa");
+        first.setDefaultPrice(BigDecimal.TEN);
+        typeOfWorkHoursDAO.save(first);
+
+        TypeOfWorkHours second = TypeOfWorkHours.create(UUID.randomUUID().toString(), prefix + "-2-bbb");
+        second.setDefaultPrice(BigDecimal.TEN);
+        typeOfWorkHoursDAO.save(second);
+
+        List<TypeOfWorkHours> ours = new java.util.ArrayList<>();
+        for (TypeOfWorkHours t : typeOfWorkHoursDAO.hoursTypeByNameAsc()) {
+            if (t.getName().startsWith(prefix)) {
+                ours.add(t);
+            }
+        }
+
+        assertEquals(2, ours.size());
+        assertEquals(first.getId(), ours.get(0).getId());
+        assertEquals(second.getId(), ours.get(1).getId());
+    }
+
+    @Test
+    @Transactional
+    public void testExistsByNameTrueWhenPresent() {
+        TypeOfWorkHours typeOfWorkHours = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(typeOfWorkHours);
+        assertTrue(typeOfWorkHoursDAO.existsByName(typeOfWorkHours));
+    }
+
+    @Test
+    @Transactional
+    public void testExistsByNameFalseWhenAbsent() {
+        TypeOfWorkHours notSaved = TypeOfWorkHours.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        assertFalse(typeOfWorkHoursDAO.existsByName(notSaved));
+    }
+
+    @Test(expected = ValidationException.class)
+    @Transactional
+    public void testCheckIsReferencedByOtherEntitiesThrowsWhenHourCostUsesType() {
+        TypeOfWorkHours type = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(type);
+
+        CostCategory costCategory = CostCategory.create(UUID.randomUUID().toString());
+        HourCost hourCost = HourCost.create(BigDecimal.ONE, new LocalDate(2020, 1, 1));
+        hourCost.setType(type);
+        costCategory.addHourCost(hourCost);
+        costCategoryDAO.save(costCategory);
+
+        typeOfWorkHoursDAO.checkIsReferencedByOtherEntities(type);
+    }
+
+    @Test(expected = ValidationException.class)
+    @Transactional
+    public void testCheckIsReferencedByOtherEntitiesThrowsWhenWorkReportLineUsesType() {
+        TypeOfWorkHours type = createValidTypeOfWorkHours();
+        typeOfWorkHoursDAO.save(type);
+
+        WorkReportLine workReportLine = createValidWorkReportLine();
+        workReportLine.setTypeOfWorkHours(type);
+        workReportLineDAO.save(workReportLine);
+
+        typeOfWorkHoursDAO.checkIsReferencedByOtherEntities(type);
     }
 }

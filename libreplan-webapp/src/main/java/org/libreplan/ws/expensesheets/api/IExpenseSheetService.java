@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2012, WirelessGalicia S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,7 @@
 
 package org.libreplan.ws.expensesheets.api;
 
-import javax.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response;
 
 import org.libreplan.business.expensesheet.entities.ExpenseSheet;
 import org.libreplan.ws.common.api.InstanceConstraintViolationsListDTO;

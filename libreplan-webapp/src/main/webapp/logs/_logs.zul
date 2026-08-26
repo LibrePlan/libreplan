@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2013 St. Antoniusziekenhuis
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -28,34 +29,32 @@
     </zscript>
 
     <div height="100%" style="overflow:visible">
-        <style src="/dashboard/css/dashboard.css" dynamic="true" />
+        <style src="/dashboard/css/dashboard.css" />
 
         <div height="30px" sclass="toolbar-box">
             <hbox id="logsFilter" visible="false" />
         </div>
 
-        <window id="logWindow" apply="${logsController}" vflex="1">
-            <borderlayout sclass="orderslayout" height="100%">
-                <center border="0" sclass="orderslayout-area">
-                    <tabbox id="tabboxLog">
-                        <tabs>
-                            <tab id="tabIssueLogs" label="${i18n:_t('Issue logs')}" selected="true"
-                                 onClick = "logsController.setupIssueLogController();"/>
-                            <tab id="tabRiskLogs" label="${i18n:_t('Risk logs')}"
-                                 onClick = "logsController.setupRiskLogController();"/>
-                        </tabs>
-                        <tabpanels>
-                            <tabpanel sclass="orderelements-tab">
-                                <listIssueLogs id="issueLogs" fulfill="tabIssueLogs.onSelect"/>
-                            </tabpanel>
-                            <tabpanel sclass="orderelements-tab">
-                                <listRiskLogs id="riskLogs" fulfill="tabRiskLogs.onSelect"/>
-                            </tabpanel>
-                        </tabpanels>
-                    </tabbox>
-                </center>
-            </borderlayout>
-        </window>
+        <borderlayout id="logWindow" sclass="orderslayout" apply="${logsController}">
+            <center border="0" sclass="orderslayout-area">
+                <tabbox id="tabboxLog">
+                    <tabs>
+                        <tab id="tabIssueLogs" label="${i18n:_t('Issue logs')}" selected="true"
+                             onClick = "logsController.setupIssueLogController();"/>
+                        <tab id="tabRiskLogs" label="${i18n:_t('Risk logs')}"
+                             onClick = "logsController.setupRiskLogController();"/>
+                    </tabs>
+                    <tabpanels>
+                        <tabpanel sclass="orderelements-tab">
+                            <listIssueLogs id="issueLogs" fulfill="tabIssueLogs.onSelect"/>
+                        </tabpanel>
+                        <tabpanel sclass="orderelements-tab">
+                            <listRiskLogs id="riskLogs" fulfill="tabRiskLogs.onSelect"/>
+                        </tabpanel>
+                    </tabpanels>
+                </tabbox>
+            </center>
+        </borderlayout>
 
     </div>
 

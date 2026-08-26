@@ -1,0 +1,267 @@
+- generic [ref=f271e4]:
+  - generic [ref=f271e5]:
+    - table [ref=f271e6]:
+      - rowgroup [ref=f271e7]:
+        - row [ref=f271e8]:
+          - cell [ref=f271e9]:
+            - link [ref=f271e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f271e12]:
+            - table [ref=f271e13]:
+              - rowgroup [ref=f271e14]:
+                - row [ref=f271e15]:
+                  - cell [ref=f271e16]:
+                    - generic [ref=f271e17]:
+                      - menubar [ref=f271e18]:
+                        - menuitem "Planning" [ref=f271e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f271e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f271e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f271e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f271e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f271e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f271e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f271e33]:
+                        - rowgroup [ref=f271e34]:
+                          - row [ref=f271e35]:
+                            - cell [ref=f271e36]:
+                              - table [ref=f271e37]:
+                                - rowgroup [ref=f271e38]:
+                                  - row [ref=f271e39]:
+                                    - cell [ref=f271e40]
+                                    - cell [ref=f271e41]:
+                                      - strong [ref=f271e42]: START
+                                    - cell [ref=f271e43]
+                                    - cell [ref=f271e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f271e45]:
+                                        - rowgroup [ref=f271e46]:
+                                          - row [ref=f271e47]:
+                                            - cell [ref=f271e48]:
+                                              - table [ref=f271e49]:
+                                                - rowgroup [ref=f271e50]:
+                                                  - row [ref=f271e51]:
+                                                    - cell [ref=f271e52]:
+                                                      - table [ref=f271e53]:
+                                                        - rowgroup [ref=f271e54]:
+                                                          - row [ref=f271e55]:
+                                                            - cell [ref=f271e56]:
+                                                              - table [ref=f271e57]:
+                                                                - rowgroup [ref=f271e58]:
+                                                                  - row [ref=f271e59]:
+                                                                    - cell [ref=f271e60]
+                                                                    - cell [ref=f271e63]
+                                                                    - cell "Personal area" [ref=f271e64]
+                                                    - cell [ref=f271e65]
+                                                    - cell [ref=f271e66]:
+                                                      - table [ref=f271e67]:
+                                                        - rowgroup [ref=f271e68]:
+                                                          - row [ref=f271e69]:
+                                                            - cell [ref=f271e70]:
+                                                              - table [ref=f271e71]:
+                                                                - rowgroup [ref=f271e72]:
+                                                                  - row [ref=f271e73]:
+                                                                    - cell [ref=f271e74]
+                                                                    - cell [ref=f271e77]
+                                                                    - cell "Preferences" [ref=f271e78]
+                            - cell [ref=f271e79]:
+                              - generic [ref=f271e80]:
+                                - link "Help" [ref=f271e81] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f271e83]
+                                - img "Info" [ref=f271e85]
+    - table [ref=f271e87]:
+      - rowgroup [ref=f271e88]:
+        - row [ref=f271e89]:
+          - cell [ref=f271e90]
+          - 'cell "user: admin" [ref=f271e91]'
+          - cell [ref=f271e92]:
+            - link "[Log out]" [ref=f271e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f271e94]:
+    - text:    
+    - generic [ref=f271e95]:
+      - generic [ref=f271e96]: User settings
+      - generic [ref=f271e97]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f271e98]:
+          - tablist [ref=f271e99]:
+            - listitem [ref=f271e100] [cursor=pointer]:
+              - generic [ref=f271e101]: Data
+          - text:  
+          - tabpanel [ref=f271e104]:
+            - generic [ref=f271e105]:
+              - generic [ref=f271e106]: Personal Data
+              - grid [ref=f271e110]:
+                - rowgroup [ref=f271e114]:
+                  - gridcell "Username" [ref=f271e115]
+                  - gridcell [ref=f271e117]:
+                    - textbox [disabled] [ref=f271e119]: admin
+                  - gridcell "First name" [ref=f271e120]
+                  - gridcell [ref=f271e122]:
+                    - textbox [ref=f271e124]: Jan
+                  - gridcell "Last name" [ref=f271e125]
+                  - gridcell [ref=f271e127]:
+                    - textbox [ref=f271e129]: Kowalski
+                  - gridcell "E-mail" [ref=f271e130]
+                  - gridcell [ref=f271e132]:
+                    - textbox [ref=f271e134]: vitorasp.pacheco@gmail.com
+            - generic [ref=f271e135]:
+              - generic [ref=f271e136]: Application settings
+              - grid [ref=f271e140]:
+                - rowgroup [ref=f271e144]:
+                  - gridcell "Select language" [ref=f271e145]
+                  - gridcell [ref=f271e147]:
+                    - combobox [ref=f271e149]:
+                      - option "Use browser language configuration"
+                      - option "Català"
+                      - option "Deutsch"
+                      - option "English" [selected]
+                      - option "Español"
+                      - option "Français"
+                      - option "Galego"
+                      - option "Italiano"
+                      - option "Nederlands"
+                      - option "Norwegian Bokmål"
+                      - option "Polski"
+                      - option "Portugese (Brazil)"
+                      - option "Português"
+                      - option "Pусский"
+                      - option "Svenska"
+                      - option "Čeština"
+                      - option "پﺍﺮﺳی"
+                      - option "中文"
+                      - option "日本語"
+                  - gridcell "Planning charts expanded" [ref=f271e150]
+                  - gridcell [ref=f271e152]:
+                    - grid [ref=f271e154]:
+                      - rowgroup [ref=f271e159]:
+                        - gridcell [ref=f271e160]:
+                          - generic [ref=f271e162]:
+                            - checkbox "Company view" [checked] [ref=f271e163]
+                            - text: Company view
+                        - gridcell [ref=f271e164]:
+                          - generic [ref=f271e166]:
+                            - checkbox "Project view" [checked] [ref=f271e167]
+                            - text: Project view
+                        - gridcell [ref=f271e168]:
+                          - generic [ref=f271e170]:
+                            - checkbox "Resource load view" [checked] [ref=f271e171]
+                            - text: Resource load view
+                  - gridcell "Planning view modes on" [ref=f271e172]
+                  - gridcell [ref=f271e174]:
+                    - grid [ref=f271e176]:
+                      - rowgroup [ref=f271e181]:
+                        - gridcell [ref=f271e182]:
+                          - generic [ref=f271e184]:
+                            - checkbox "Show resources" [checked] [ref=f271e185]
+                            - text: Show resources
+                        - gridcell [ref=f271e186]:
+                          - generic [ref=f271e188]:
+                            - checkbox "Show progress" [checked] [ref=f271e189]
+                            - text: Show progress
+                        - gridcell [ref=f271e190]:
+                          - generic [ref=f271e192]:
+                            - checkbox "Show reported hours" [checked] [ref=f271e193]
+                            - text: Show reported hours
+                        - gridcell [ref=f271e194]:
+                          - generic [ref=f271e196]:
+                            - checkbox "Show labels" [checked] [ref=f271e197]
+                            - text: Show labels
+                        - gridcell [ref=f271e198]:
+                          - generic [ref=f271e200]:
+                            - checkbox "Show money cost bar" [checked] [ref=f271e201]
+                            - text: Show money cost bar
+                  - gridcell "Projects view filtering" [ref=f271e202]
+                  - gridcell [ref=f271e204]:
+                    - table [ref=f271e206]:
+                      - rowgroup [ref=f271e207]:
+                        - row [ref=f271e208]:
+                          - cell [ref=f271e209]:
+                            - table [ref=f271e210]:
+                              - rowgroup [ref=f271e211]:
+                                - row [ref=f271e212]:
+                                  - cell "Label filter" [ref=f271e213]
+                                  - cell [ref=f271e214]
+                                  - cell [ref=f271e215]:
+                                    - combobox [ref=f271e217]:
+                                      - textbox [ref=f271e218]
+                                      - button [ref=f271e219] [cursor=pointer]:
+                                        - generic [ref=f271e220]: 
+                                  - cell [ref=f271e221]
+                                  - cell "Projects since" [ref=f271e222]
+                                  - cell [ref=f271e223]
+                                  - cell [ref=f271e224]:
+                                    - textbox [ref=f271e225]
+                                  - cell [ref=f271e226]
+                                  - cell "months to" [ref=f271e227]
+                                  - cell [ref=f271e228]
+                                  - cell [ref=f271e229]:
+                                    - textbox [ref=f271e230]
+                                  - cell [ref=f271e231]
+                                  - cell [ref=f271e232]:
+                                    - generic [ref=f271e233]:
+                                      - checkbox "Exclude finished projects" [ref=f271e234]
+                                      - text: Exclude finished projects
+                  - gridcell "Resources load filtering" [ref=f271e235]
+                  - gridcell [ref=f271e237]:
+                    - table [ref=f271e239]:
+                      - rowgroup [ref=f271e240]:
+                        - row [ref=f271e241]:
+                          - cell [ref=f271e242]:
+                            - table [ref=f271e243]:
+                              - rowgroup [ref=f271e244]:
+                                - row [ref=f271e245]:
+                                  - cell "Criterion filter" [ref=f271e246]
+                                  - cell [ref=f271e247]
+                                  - cell [ref=f271e248]:
+                                    - combobox [ref=f271e250]:
+                                      - textbox [ref=f271e251]
+                                      - button [ref=f271e252] [cursor=pointer]:
+                                        - generic [ref=f271e253]: 
+                                  - cell [ref=f271e254]
+                                  - cell "Resources load since" [ref=f271e255]
+                                  - cell [ref=f271e256]
+                                  - cell [ref=f271e257]:
+                                    - textbox [ref=f271e258]
+                                  - cell [ref=f271e259]
+                                  - cell "months to" [ref=f271e260]
+                                  - cell [ref=f271e261]
+                                  - cell [ref=f271e262]:
+                                    - textbox [ref=f271e263]
+        - table [ref=f271e264]:
+          - rowgroup [ref=f271e265]:
+            - row [ref=f271e266]:
+              - cell [ref=f271e267]:
+                - table [ref=f271e268]:
+                  - rowgroup [ref=f271e269]:
+                    - row [ref=f271e270]:
+                      - cell [ref=f271e271]:
+                        - button "Save" [ref=f271e272] [cursor=pointer]
+  - table [ref=f271e273]:
+    - rowgroup [ref=f271e274]:
+      - row [ref=f271e275]:
+        - cell [ref=f271e276]:
+          - generic [ref=f271e278]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f271e279] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f271e280]
+  - text:    

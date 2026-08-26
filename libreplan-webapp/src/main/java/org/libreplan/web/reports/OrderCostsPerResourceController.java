@@ -33,6 +33,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 
 import java.util.Collections;
 import java.util.Date;
@@ -107,6 +108,10 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         return Collections.unmodifiableList(orderCostsPerResourceModel.getSelectedOrders());
     }
 
+    public ListitemRenderer getOrdersRenderer() {
+        return ReportListitemRenderers.orderRenderer(this::onRemoveOrder);
+    }
+
     public void onSelectOrder() {
         Order order = (Order) bdOrders.getSelectedElement();
         if (order == null) {
@@ -134,7 +139,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         return endingDate.getValue();
     }
 
-    public Constraint checkConstraintStartingDate() {
+    public Constraint getCheckConstraintStartingDate() {
         return new Constraint() {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {
@@ -149,7 +154,7 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         };
     }
 
-    public Constraint checkConstraintEndingDate() {
+    public Constraint getCheckConstraintEndingDate() {
         return new Constraint() {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {
@@ -190,8 +195,16 @@ public class OrderCostsPerResourceController extends LibrePlanReportController {
         return orderCostsPerResourceModel.getSelectedLabels();
     }
 
+    public ListitemRenderer getLabelsRenderer() {
+        return ReportListitemRenderers.labelRenderer(this::onRemoveLabel);
+    }
+
     public List<Criterion> getSelectedCriterions() {
         return orderCostsPerResourceModel.getSelectedCriterions();
+    }
+
+    public ListitemRenderer getCriterionsRenderer() {
+        return ReportListitemRenderers.criterionRenderer(this::onRemoveCriterion);
     }
 
     public List<Criterion> getAllCriterions() {

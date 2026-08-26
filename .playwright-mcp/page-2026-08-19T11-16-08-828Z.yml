@@ -1,0 +1,190 @@
+- generic [ref=f156e4]:
+  - generic [ref=f156e5]:
+    - table [ref=f156e6]:
+      - rowgroup [ref=f156e7]:
+        - row [ref=f156e8]:
+          - cell [ref=f156e9]:
+            - link [ref=f156e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f156e12]:
+            - table [ref=f156e13]:
+              - rowgroup [ref=f156e14]:
+                - row [ref=f156e15]:
+                  - cell [ref=f156e16]:
+                    - generic [ref=f156e17]:
+                      - menubar [ref=f156e18]:
+                        - menuitem "Planning" [ref=f156e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f156e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f156e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f156e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f156e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f156e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f156e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f156e33]:
+                        - rowgroup [ref=f156e34]:
+                          - row [ref=f156e35]:
+                            - cell [ref=f156e36]:
+                              - table [ref=f156e37]:
+                                - rowgroup [ref=f156e38]:
+                                  - row [ref=f156e39]:
+                                    - cell [ref=f156e40]
+                                    - cell [ref=f156e41]:
+                                      - strong [ref=f156e42]: START
+                                    - cell [ref=f156e43]
+                                    - cell [ref=f156e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f156e45]:
+                                        - rowgroup [ref=f156e46]:
+                                          - row [ref=f156e47]:
+                                            - cell [ref=f156e48]:
+                                              - table [ref=f156e49]:
+                                                - rowgroup [ref=f156e50]:
+                                                  - row [ref=f156e51]:
+                                                    - cell [ref=f156e52]:
+                                                      - table [ref=f156e53]:
+                                                        - rowgroup [ref=f156e54]:
+                                                          - row [ref=f156e55]:
+                                                            - cell [ref=f156e56]:
+                                                              - table [ref=f156e57]:
+                                                                - rowgroup [ref=f156e58]:
+                                                                  - row [ref=f156e59]:
+                                                                    - cell [ref=f156e60]
+                                                                    - cell [ref=f156e63]
+                                                                    - cell "Configuration" [ref=f156e64]
+                                                    - cell [ref=f156e65]
+                                                    - cell [ref=f156e66]:
+                                                      - table [ref=f156e67]:
+                                                        - rowgroup [ref=f156e68]:
+                                                          - row [ref=f156e69]:
+                                                            - cell [ref=f156e70]:
+                                                              - table [ref=f156e71]:
+                                                                - rowgroup [ref=f156e72]:
+                                                                  - row [ref=f156e73]:
+                                                                    - cell [ref=f156e74]
+                                                                    - cell [ref=f156e77]
+                                                                    - cell "Job Scheduling" [ref=f156e78]
+                            - cell [ref=f156e79]:
+                              - generic [ref=f156e80]:
+                                - link "Help" [ref=f156e81] [cursor=pointer]:
+                                  - /url: /help/en/19-scheduler.html
+                                - img "Axuda" [ref=f156e83]
+                                - img "Info" [ref=f156e85]
+    - table [ref=f156e87]:
+      - rowgroup [ref=f156e88]:
+        - row [ref=f156e89]:
+          - cell [ref=f156e90]
+          - 'cell "user: admin" [ref=f156e91]'
+          - cell [ref=f156e92]:
+            - link "[Log out]" [ref=f156e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f156e94]:
+    - text:    
+    - generic [ref=f156e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text:    
+      - generic [ref=f156e134]:
+        - generic [ref=f156e135]: Create Job scheduling
+        - generic [ref=f156e138]:
+          - grid [ref=f156e139]:
+            - rowgroup [ref=f156e143]:
+              - gridcell "Job group" [ref=f156e144]
+              - gridcell [ref=f156e146]:
+                - textbox [ref=f156e148]
+              - gridcell "Job name" [ref=f156e149]
+              - gridcell [ref=f156e151]:
+                - textbox [ref=f156e153]
+              - gridcell "Cron expression" [ref=f156e154]
+              - gridcell [ref=f156e156]:
+                - table [ref=f156e158]:
+                  - rowgroup [ref=f156e159]:
+                    - row [ref=f156e160]:
+                      - cell [ref=f156e161]:
+                        - table [ref=f156e162]:
+                          - rowgroup [ref=f156e163]:
+                            - row [ref=f156e164]:
+                              - cell [ref=f156e165]:
+                                - textbox [disabled] [ref=f156e166]
+                              - cell [ref=f156e167]
+                              - cell [ref=f156e168]:
+                                - button "Edit" [ref=f156e169] [cursor=pointer]
+              - gridcell "Job class name" [ref=f156e171]
+              - gridcell [ref=f156e173]:
+                - combobox [ref=f156e175]:
+                  - textbox [active] [ref=f156e176]
+                  - button [ref=f156e177] [cursor=pointer]:
+                    - generic [ref=f156e178]: 
+              - gridcell "Connector" [ref=f156e179]
+              - gridcell [ref=f156e181]:
+                - combobox [ref=f156e183]:
+                  - textbox [ref=f156e184]
+                  - button [ref=f156e185] [cursor=pointer]:
+                    - generic [ref=f156e186]: 
+              - gridcell "Schedule" [ref=f156e187]
+              - gridcell [ref=f156e189]:
+                - checkbox [ref=f156e192]
+          - button "Save" [ref=f156e193] [cursor=pointer]
+          - button "Save and Continue" [ref=f156e194] [cursor=pointer]
+          - button "Cancel" [ref=f156e195] [cursor=pointer]
+          - generic [ref=f156e197]:
+            - generic [ref=f156e198]: Cron expression format
+            - generic [ref=f156e201]:
+              - grid [ref=f156e202]:
+                - rowgroup [ref=f156e207]:
+                  - columnheader "Field" [ref=f156e208]
+                  - columnheader "Allowed values" [ref=f156e210]
+                  - columnheader "Allowed Special Characters" [ref=f156e212]
+                - rowgroup [ref=f156e218]:
+                  - gridcell "Seconds" [ref=f156e219]
+                  - gridcell "0-59" [ref=f156e221]
+                  - gridcell ", - * /" [ref=f156e223]
+                  - gridcell "Minutes" [ref=f156e225]
+                  - gridcell "0-59" [ref=f156e227]
+                  - gridcell ", - * /" [ref=f156e229]
+                  - gridcell "Hours" [ref=f156e231]
+                  - gridcell "0-23" [ref=f156e233]
+                  - gridcell ", - * /" [ref=f156e235]
+                  - gridcell "Day of month" [ref=f156e237]
+                  - gridcell "1-31" [ref=f156e239]
+                  - gridcell ", - * ? / L W" [ref=f156e241]
+                  - gridcell "Month" [ref=f156e243]
+                  - gridcell "1-12 (or names [JAN-DEC])" [ref=f156e245]
+                  - gridcell ", - *" [ref=f156e248]
+                  - gridcell "Day of week" [ref=f156e250]
+                  - gridcell "1-7 (1 or 7 is Sunday, or use names [SUN-SAT])" [ref=f156e252]
+                  - 'gridcell ", - * ? / L #" [ref=f156e255]'
+                  - gridcell "Year (optional)" [ref=f156e257]
+                  - gridcell "1970-2099" [ref=f156e259]
+                  - gridcell ", - *" [ref=f156e261]
+              - generic [ref=f156e263]:
+                - generic [ref=f156e264]: The '?' character is allowed for the day-of-month and day-of-week fields. It is used to specify “no specific value”.
+                - text: For more details on cron expression click
+                - link "here." [ref=f156e265] [cursor=pointer]:
+                  - /url: http://www.manpagez.com/man/5/crontab/
+  - table [ref=f156e126]:
+    - rowgroup [ref=f156e127]:
+      - row [ref=f156e128]:
+        - cell [ref=f156e129]:
+          - generic [ref=f156e131]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f156e132] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f156e133]
+  - text:    

@@ -1,0 +1,392 @@
+- generic [ref=f925e4]:
+  - generic [ref=f925e5]:
+    - table [ref=f925e6]:
+      - rowgroup [ref=f925e7]:
+        - row [ref=f925e8]:
+          - cell [ref=f925e9]:
+            - link [ref=f925e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f925e12]:
+            - table [ref=f925e13]:
+              - rowgroup [ref=f925e14]:
+                - row [ref=f925e15]:
+                  - cell [ref=f925e16]:
+                    - generic [ref=f925e17]:
+                      - menubar [ref=f925e18]:
+                        - menuitem "Planning" [ref=f925e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f925e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f925e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f925e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f925e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f925e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f925e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f925e33]:
+                        - rowgroup [ref=f925e34]:
+                          - row [ref=f925e35]:
+                            - cell [ref=f925e36]:
+                              - table [ref=f925e37]:
+                                - rowgroup [ref=f925e38]:
+                                  - row [ref=f925e39]:
+                                    - cell [ref=f925e40]
+                                    - cell [ref=f925e41]:
+                                      - strong [ref=f925e42]: START
+                                    - cell [ref=f925e43]
+                                    - cell [ref=f925e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f925e45]:
+                                        - rowgroup [ref=f925e46]:
+                                          - row [ref=f925e47]:
+                                            - cell [ref=f925e48]:
+                                              - table [ref=f925e49]:
+                                                - rowgroup [ref=f925e50]:
+                                                  - row [ref=f925e51]:
+                                                    - cell [ref=f925e52]:
+                                                      - table [ref=f925e53]:
+                                                        - rowgroup [ref=f925e54]:
+                                                          - row [ref=f925e55]:
+                                                            - cell [ref=f925e56]:
+                                                              - table [ref=f925e57]:
+                                                                - rowgroup [ref=f925e58]:
+                                                                  - row [ref=f925e59]:
+                                                                    - cell [ref=f925e60]
+                                                                    - cell [ref=f925e63]
+                                                                    - cell "Resources" [ref=f925e64]
+                                                    - cell [ref=f925e65]
+                                                    - cell [ref=f925e66]:
+                                                      - table [ref=f925e67]:
+                                                        - rowgroup [ref=f925e68]:
+                                                          - row [ref=f925e69]:
+                                                            - cell [ref=f925e70]:
+                                                              - table [ref=f925e71]:
+                                                                - rowgroup [ref=f925e72]:
+                                                                  - row [ref=f925e73]:
+                                                                    - cell [ref=f925e74]
+                                                                    - cell [ref=f925e77]
+                                                                    - cell "Workers" [ref=f925e78]
+                            - cell [ref=f925e79]:
+                              - generic [ref=f925e80]:
+                                - link "Help" [ref=f925e81] [cursor=pointer]:
+                                  - /url: /help/en/05-recursos.html#xesti-n-de-traballadores
+                                - img "Axuda" [ref=f925e83]
+                                - img "Info" [ref=f925e85]
+    - table [ref=f925e87]:
+      - rowgroup [ref=f925e88]:
+        - row [ref=f925e89]:
+          - cell [ref=f925e90]
+          - 'cell "user: admin" [ref=f925e91]'
+          - cell [ref=f925e92]:
+            - link "[Log out]" [ref=f925e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f925e94]:
+    - text:    
+    - generic [ref=f925e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f925e97]:
+        - generic [ref=f925e98]: Workers List
+        - generic [ref=f925e99]:
+          - separator [ref=f925e100]
+          - table [ref=f925e102]:
+            - rowgroup [ref=f925e103]:
+              - row [ref=f925e104]:
+                - cell [ref=f925e105]:
+                  - table [ref=f925e106]:
+                    - rowgroup [ref=f925e107]:
+                      - row [ref=f925e108]:
+                        - cell "Filter by" [ref=f925e109]
+                        - cell [ref=f925e110]
+                        - cell [ref=f925e111]:
+                          - combobox [ref=f925e113]:
+                            - textbox [ref=f925e114]
+                            - button [ref=f925e115] [cursor=pointer]:
+                              - generic [ref=f925e116]: 
+                        - cell [ref=f925e117]
+                        - cell "Personal details" [ref=f925e118]
+                        - cell [ref=f925e119]
+                        - cell [ref=f925e120]:
+                          - textbox [ref=f925e121]
+                        - cell [ref=f925e122]
+                        - cell "More options" [ref=f925e123]:
+                          - generic [ref=f925e124]:
+                            - generic [ref=f925e125]: More options
+                            - text:          
+                        - cell [ref=f925e128]
+                        - cell [ref=f925e129]:
+                          - button "Filter" [ref=f925e130] [cursor=pointer]
+          - separator [ref=f925e131]
+          - grid [ref=f925e132]:
+            - rowgroup [ref=f925e140]:
+              - columnheader [ref=f925e141]:
+                - generic [ref=f925e142] [cursor=pointer]:
+                  - generic [ref=f925e143]: 
+                  - text: Surname
+              - columnheader "First name" [ref=f925e145]
+              - columnheader "ID" [ref=f925e147]
+              - columnheader "Code" [ref=f925e149]
+              - columnheader "Queue-based" [ref=f925e151]
+              - columnheader "Operations" [ref=f925e153]
+            - rowgroup [ref=f925e162]:
+              - gridcell "Azevedo" [ref=f925e163]
+              - gridcell "Sergio" [ref=f925e165]
+              - gridcell "132" [ref=f925e167]
+              - gridcell "WORKER0005" [ref=f925e169]
+              - gridcell "no" [ref=f925e171]
+              - gridcell [ref=f925e173]:
+                - table [ref=f925e175]:
+                  - rowgroup [ref=f925e176]:
+                    - row [ref=f925e177]:
+                      - cell [ref=f925e178]:
+                        - table [ref=f925e179]:
+                          - rowgroup [ref=f925e180]:
+                            - row [ref=f925e181]:
+                              - cell [ref=f925e182]:
+                                - button "Edit" [ref=f925e183] [cursor=pointer]
+                              - cell [ref=f925e185]
+                              - cell [ref=f925e186]:
+                                - button "Remove" [ref=f925e187] [cursor=pointer]
+              - gridcell "D" [ref=f925e189]
+              - gridcell "Charles" [ref=f925e191]
+              - gridcell "484" [ref=f925e193]
+              - gridcell "WORKER0012" [ref=f925e195]
+              - gridcell "no" [ref=f925e197]
+              - gridcell [ref=f925e199]:
+                - table [ref=f925e201]:
+                  - rowgroup [ref=f925e202]:
+                    - row [ref=f925e203]:
+                      - cell [ref=f925e204]:
+                        - table [ref=f925e205]:
+                          - rowgroup [ref=f925e206]:
+                            - row [ref=f925e207]:
+                              - cell [ref=f925e208]:
+                                - button "Edit" [ref=f925e209] [cursor=pointer]
+                              - cell [ref=f925e211]
+                              - cell [ref=f925e212]:
+                                - button "Remove" [ref=f925e213] [cursor=pointer]
+              - gridcell "Dobrota" [ref=f925e215]
+              - gridcell "František" [ref=f925e217]
+              - gridcell "123" [ref=f925e219]
+              - gridcell "WORKER0015" [ref=f925e221]
+              - gridcell "no" [ref=f925e223]
+              - gridcell [ref=f925e225]:
+                - table [ref=f925e227]:
+                  - rowgroup [ref=f925e228]:
+                    - row [ref=f925e229]:
+                      - cell [ref=f925e230]:
+                        - table [ref=f925e231]:
+                          - rowgroup [ref=f925e232]:
+                            - row [ref=f925e233]:
+                              - cell [ref=f925e234]:
+                                - button "Edit" [ref=f925e235] [cursor=pointer]
+                              - cell [ref=f925e237]
+                              - cell [ref=f925e238]:
+                                - button "Remove" [ref=f925e239] [cursor=pointer]
+              - gridcell "H" [ref=f925e241]
+              - gridcell "Tobias" [ref=f925e243]
+              - gridcell "THE" [ref=f925e245]
+              - gridcell "WORKER0018" [ref=f925e247]
+              - gridcell "no" [ref=f925e249]
+              - gridcell [ref=f925e251]:
+                - table [ref=f925e253]:
+                  - rowgroup [ref=f925e254]:
+                    - row [ref=f925e255]:
+                      - cell [ref=f925e256]:
+                        - table [ref=f925e257]:
+                          - rowgroup [ref=f925e258]:
+                            - row [ref=f925e259]:
+                              - cell [ref=f925e260]:
+                                - button "Edit" [ref=f925e261] [cursor=pointer]
+                              - cell [ref=f925e263]
+                              - cell [ref=f925e264]:
+                                - button "Remove" [ref=f925e265] [cursor=pointer]
+              - gridcell "HOLZ" [ref=f925e267]
+              - gridcell "Benoît" [ref=f925e269]
+              - gridcell "12" [ref=f925e271]
+              - gridcell "WORKER0019" [ref=f925e273]
+              - gridcell "no" [ref=f925e275]
+              - gridcell [ref=f925e277]:
+                - table [ref=f925e279]:
+                  - rowgroup [ref=f925e280]:
+                    - row [ref=f925e281]:
+                      - cell [ref=f925e282]:
+                        - table [ref=f925e283]:
+                          - rowgroup [ref=f925e284]:
+                            - row [ref=f925e285]:
+                              - cell [ref=f925e286]:
+                                - button "Edit" [ref=f925e287] [cursor=pointer]
+                              - cell [ref=f925e289]
+                              - cell [ref=f925e290]:
+                                - button "Remove" [ref=f925e291] [cursor=pointer]
+              - gridcell "K" [ref=f925e293]
+              - gridcell "Felix" [ref=f925e295]
+              - gridcell "FkR" [ref=f925e297]
+              - gridcell "WORKER0010" [ref=f925e299]
+              - gridcell "no" [ref=f925e301]
+              - gridcell [ref=f925e303]:
+                - table [ref=f925e305]:
+                  - rowgroup [ref=f925e306]:
+                    - row [ref=f925e307]:
+                      - cell [ref=f925e308]:
+                        - table [ref=f925e309]:
+                          - rowgroup [ref=f925e310]:
+                            - row [ref=f925e311]:
+                              - cell [ref=f925e312]:
+                                - button "Edit" [ref=f925e313] [cursor=pointer]
+                              - cell [ref=f925e315]
+                              - cell [ref=f925e316]:
+                                - button "Remove" [ref=f925e317] [cursor=pointer]
+              - gridcell "K" [ref=f925e319]
+              - gridcell "Julian" [ref=f925e321]
+              - gridcell "999" [ref=f925e323]
+              - gridcell "WORKER0021" [ref=f925e325]
+              - gridcell "no" [ref=f925e327]
+              - gridcell [ref=f925e329]:
+                - table [ref=f925e331]:
+                  - rowgroup [ref=f925e332]:
+                    - row [ref=f925e333]:
+                      - cell [ref=f925e334]:
+                        - table [ref=f925e335]:
+                          - rowgroup [ref=f925e336]:
+                            - row [ref=f925e337]:
+                              - cell [ref=f925e338]:
+                                - button "Edit" [ref=f925e339] [cursor=pointer]
+                              - cell [ref=f925e341]
+                              - cell [ref=f925e342]:
+                                - button "Remove" [ref=f925e343] [cursor=pointer]
+              - gridcell "Kowalski" [ref=f925e345]
+              - gridcell "Jan" [ref=f925e347]
+              - gridcell "K" [ref=f925e349]
+              - gridcell "WORKER0023" [ref=f925e351]
+              - gridcell "no" [ref=f925e353]
+              - gridcell [ref=f925e355]:
+                - table [ref=f925e357]:
+                  - rowgroup [ref=f925e358]:
+                    - row [ref=f925e359]:
+                      - cell [ref=f925e360]:
+                        - table [ref=f925e361]:
+                          - rowgroup [ref=f925e362]:
+                            - row [ref=f925e363]:
+                              - cell [ref=f925e364]:
+                                - button "Edit" [ref=f925e365] [cursor=pointer]
+                              - cell [ref=f925e367]
+                              - cell [ref=f925e368]:
+                                - button "Remove" [ref=f925e369] [cursor=pointer]
+              - gridcell "Legge" [ref=f925e371]
+              - gridcell "Sam" [ref=f925e373]
+              - gridcell "0" [ref=f925e375]
+              - gridcell "SCIENCE00" [ref=f925e377]
+              - gridcell "no" [ref=f925e379]
+              - gridcell [ref=f925e381]:
+                - table [ref=f925e383]:
+                  - rowgroup [ref=f925e384]:
+                    - row [ref=f925e385]:
+                      - cell [ref=f925e386]:
+                        - table [ref=f925e387]:
+                          - rowgroup [ref=f925e388]:
+                            - row [ref=f925e389]:
+                              - cell [ref=f925e390]:
+                                - button "Edit" [ref=f925e391] [cursor=pointer]
+                              - cell [ref=f925e393]
+                              - cell [ref=f925e394]:
+                                - button "Remove" [ref=f925e395] [cursor=pointer]
+              - gridcell "Nowakwsko" [ref=f925e397]
+              - gridcell "Adam" [ref=f925e399]
+              - gridcell "Konstruktor 1" [ref=f925e401]
+              - gridcell "WORKER0022" [ref=f925e403]
+              - gridcell "no" [ref=f925e405]
+              - gridcell [ref=f925e407]:
+                - table [ref=f925e409]:
+                  - rowgroup [ref=f925e410]:
+                    - row [ref=f925e411]:
+                      - cell [ref=f925e412]:
+                        - table [ref=f925e413]:
+                          - rowgroup [ref=f925e414]:
+                            - row [ref=f925e415]:
+                              - cell [ref=f925e416]:
+                                - button "Edit" [ref=f925e417] [cursor=pointer]
+                              - cell [ref=f925e419]
+                              - cell [ref=f925e420]:
+                                - button "Remove" [ref=f925e421] [cursor=pointer]
+              - gridcell "R" [ref=f925e423]
+              - gridcell "Ren" [ref=f925e425]
+              - gridcell "W" [ref=f925e427]
+              - gridcell "WORKER0008" [ref=f925e429]
+              - gridcell "yes" [ref=f925e431]
+              - gridcell [ref=f925e433]:
+                - table [ref=f925e435]:
+                  - rowgroup [ref=f925e436]:
+                    - row [ref=f925e437]:
+                      - cell [ref=f925e438]:
+                        - table [ref=f925e439]:
+                          - rowgroup [ref=f925e440]:
+                            - row [ref=f925e441]:
+                              - cell [ref=f925e442]:
+                                - button "Edit" [ref=f925e443] [cursor=pointer]
+                              - cell [ref=f925e445]
+                              - cell [ref=f925e446]:
+                                - button "Remove" [ref=f925e447] [cursor=pointer]
+              - gridcell "Rossi" [ref=f925e449]
+              - gridcell "Mario" [ref=f925e451]
+              - gridcell "1231" [ref=f925e453]
+              - gridcell "WORKER0017" [ref=f925e455]
+              - gridcell "no" [ref=f925e457]
+              - gridcell [ref=f925e459]:
+                - table [ref=f925e461]:
+                  - rowgroup [ref=f925e462]:
+                    - row [ref=f925e463]:
+                      - cell [ref=f925e464]:
+                        - table [ref=f925e465]:
+                          - rowgroup [ref=f925e466]:
+                            - row [ref=f925e467]:
+                              - cell [ref=f925e468]:
+                                - button "Edit" [ref=f925e469] [cursor=pointer]
+                              - cell [ref=f925e471]
+                              - cell [ref=f925e472]:
+                                - button "Remove" [ref=f925e473] [cursor=pointer]
+              - gridcell "Thomas" [ref=f925e475]
+              - gridcell "Ryan" [ref=f925e477]
+              - gridcell "1" [ref=f925e479]
+              - gridcell "SCIENCE01" [ref=f925e481]
+              - gridcell "no" [ref=f925e483]
+              - gridcell [ref=f925e485]:
+                - table [ref=f925e487]:
+                  - rowgroup [ref=f925e488]:
+                    - row [ref=f925e489]:
+                      - cell [ref=f925e490]:
+                        - table [ref=f925e491]:
+                          - rowgroup [ref=f925e492]:
+                            - row [ref=f925e493]:
+                              - cell [ref=f925e494]:
+                                - button "Edit" [ref=f925e495] [cursor=pointer]
+                              - cell [ref=f925e497]
+                              - cell [ref=f925e498]:
+                                - button "Remove" [ref=f925e499] [cursor=pointer]
+            - generic [ref=f925e501]:    
+          - button "Create" [ref=f925e502] [cursor=pointer]
+      - text:                                                                    
+  - table [ref=f925e503]:
+    - rowgroup [ref=f925e504]:
+      - row [ref=f925e505]:
+        - cell [ref=f925e506]:
+          - generic [ref=f925e508]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f925e509] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f925e510]
+  - text:    

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -19,6 +20,7 @@
 
 package org.libreplan.business.test.planner.daos;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -180,6 +182,12 @@ public class SubcontractorCommunicationDAOTest {
         taskElementDAO.flush();
         sessionFactory.getCurrentSession().evict(task);
         sessionFactory.getCurrentSession().evict(subcontractedTaskData);
+        task.dontPoseAsTransientObjectAnymore();
+        subcontractedTaskData.dontPoseAsTransientObjectAnymore();
+        // cascade="all-delete-orphan" means evicting subcontractedTaskData also evicted these
+        for (SubcontractorDeliverDate deliverDate : subcontractedTaskData.getRequiredDeliveringDates()) {
+            deliverDate.dontPoseAsTransientObjectAnymore();
+        }
 
         subcontractedTaskDataDAO.save(subcontractedTaskData);
 
@@ -243,6 +251,68 @@ public class SubcontractorCommunicationDAOTest {
         } catch (ValidationException ignored) {
             // Ok
         }
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). getAll/getAllNotReviewed had no test coverage before.
+     *
+     * These use a minimal, self-contained SubcontractedTaskData/SubcontractorCommunication
+     * construction rather than reusing createValidSubcontractorCommunication(): that shared
+     * helper's session evict()/dontPoseAsTransientObjectAnymore() dance leaves the session in
+     * a state that breaks on a later auto-flush (e.g. triggered by a Criteria query), which
+     * none of the pre-existing tests happened to exercise.
+     */
+
+    private SubcontractorCommunication createMinimalSubcontractorCommunication(boolean reviewed) {
+        Task task = createValidTask();
+        SubcontractedTaskData subcontractedTaskData = SubcontractedTaskData.create(task);
+        subcontractedTaskData.addRequiredDeliveringDates(
+                SubcontractorDeliverDate.create(new Date(), new Date(), null));
+        ExternalCompany company = ExternalCompanyDAOTest.createValidExternalCompany();
+        company.setSubcontractor(true);
+        externalCompanyDAO.save(company);
+        subcontractedTaskData.setExternalCompany(company);
+
+        task.setSubcontractedTaskData(subcontractedTaskData);
+        taskElementDAO.save(task);
+        subcontractedTaskDataDAO.save(subcontractedTaskData);
+
+        SubcontractorCommunication communication = SubcontractorCommunication.create(
+                subcontractedTaskData, CommunicationType.NEW_PROJECT, new Date(), reviewed);
+        subcontractorCommunicationDAO.save(communication);
+        return communication;
+    }
+
+    @Test
+    @Transactional
+    public void testGetAllIncludesSaved() {
+        SubcontractorCommunication communication = createMinimalSubcontractorCommunication(false);
+
+        boolean found = false;
+        for (SubcontractorCommunication c : subcontractorCommunicationDAO.getAll()) {
+            if (c.getId().equals(communication.getId())) {
+                found = true;
+            }
+        }
+        assertTrue(found);
+    }
+
+    @Test
+    @Transactional
+    public void testGetAllNotReviewedOnlyReturnsUnreviewedOnes() {
+        SubcontractorCommunication notReviewed = createMinimalSubcontractorCommunication(false);
+        SubcontractorCommunication reviewed = createMinimalSubcontractorCommunication(true);
+
+        boolean notReviewedFound = false;
+        for (SubcontractorCommunication c : subcontractorCommunicationDAO.getAllNotReviewed()) {
+            assertFalse(c.getReviewed());
+            if (c.getId().equals(notReviewed.getId())) {
+                notReviewedFound = true;
+            }
+            assertFalse(c.getId().equals(reviewed.getId()));
+        }
+        assertTrue(notReviewedFound);
     }
 
 }

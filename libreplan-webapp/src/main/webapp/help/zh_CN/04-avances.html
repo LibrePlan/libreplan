@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>进度</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">进度</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">管理进度类型</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">按类型输入进度</a></li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-3">比较项目元素的进度</a></li>
+</ul>
+</div>
+<p>项目进度表示项目估计完成时间的达成程度。任务进度表示任务按照其估计完成度完成的程度。</p>
+<p>一般而言，进度无法自动衡量。有经验的工作人员或检查清单必须确定任务或项目的完成程度。</p>
+<p>重要的是要注意工时与任务或项目进度之间的区别。虽然使用的工时可能多于或少于预期，但在监控当天，项目可能提前或落后于其估计完成进度。这两个测量值可能产生几种情况：</p>
+<ul class="simple">
+<li><strong>消耗工时少于预期，但项目落后于排程：</strong> 进度低于监控当天的估计值。</li>
+<li><strong>消耗工时少于预期，且项目超前于排程：</strong> 进度高于监控当天的估计值。</li>
+<li><strong>消耗工时多于预期，且项目落后于排程：</strong> 进度低于监控当天的估计值。</li>
+<li><strong>消耗工时多于预期，但项目超前于排程：</strong> 进度高于监控当天的估计值。</li>
+</ul>
+<p>规划视图允许您使用关于进度和使用工时的信息来比较这些情况。本章将说明如何输入信息以监控进度。</p>
+<p>进度监控背后的理念是基于用户定义他们想要监控其项目的层级。例如，如果用户想要监控项目，他们只需要为第 1 层元素输入信息。如果他们想要在任务层级进行更精确的监控，他们必须在较低层级输入进度信息。系统然后会将数据向上汇总到层次结构中。</p>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">管理进度类型</a></h1>
+<p>各公司在监控项目进度时有不同的需求，特别是所涉及的任务。因此，系统包含「进度类型」。用户可以定义不同的进度类型来衡量任务的进度。例如，一个任务可以以百分比衡量，但这个百分比也可以根据与客户的协议转换为以*吨*为单位的进度。</p>
+<p>进度类型有名称、最大值和精确度值：</p>
+<ul class="simple">
+<li><strong>名称：</strong> 用户在选择进度类型时能够辨识的描述性名称。此名称应清楚地表明正在衡量哪种进度。</li>
+<li><strong>最大值：</strong> 可以为任务或项目设定的最大值，作为总进度测量值。例如，如果您使用*吨*且通常的最大值是 4000 吨，且没有任何任务需要超过 4000 吨的任何材料，那么 4000 将是最大值。</li>
+<li><strong>精确度值：</strong> 进度类型允许的增量值。例如，如果*吨*的进度要以整数衡量，精确度值将为 1。从那时起，只能输入整数作为进度测量值（例如，1、2、300）。</li>
+</ul>
+<p>系统有两种默认的进度类型：</p>
+<ul class="simple">
+<li><strong>百分比：</strong> 一种通用的进度类型，根据估计完成百分比衡量项目或任务的进度。例如，一个任务在特定天估计的 100% 中完成了 30%。</li>
+<li><strong>单位：</strong> 一种通用的进度类型，以单位衡量进度而不指定单位类型。例如，一个任务涉及创建 3000 个单位，而进度是 3000 个总数中的 500 个单位。</li>
+</ul>
+<div class="figure">
+<img alt="images/tipos-avances.png" src="images/tipos-avances.png" style="width: 376.5px; height: 164.5px;" />
+<p class="caption">进度类型管理</p>
+</div>
+<p>用户可以按以下方式创建新的进度类型：</p>
+<ul class="simple">
+<li>前往「管理」部分。</li>
+<li>在第二级菜单中点击「管理进度类型」选项。</li>
+<li>系统将显示现有进度类型的列表。</li>
+<li>对于每种进度类型，用户可以：<ul>
+<li>编辑</li>
+<li>删除</li>
+</ul>
+</li>
+<li>用户然后可以创建新的进度类型。</li>
+<li>在编辑或创建进度类型时，系统显示包含以下信息的表单：<ul>
+<li>进度类型的名称。</li>
+<li>进度类型允许的最大值。</li>
+<li>进度类型的精确度值。</li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">按类型输入进度</a></h1>
+<p>进度是为项目元素输入的，但也可以使用规划任务的快捷方式输入。用户负责决定将哪种进度类型与每个项目元素相关联。</p>
+<p>用户可以为整个项目输入单一默认的进度类型。</p>
+<p>在衡量进度之前，用户必须将所选的进度类型与项目相关联。例如，他们可能选择百分比进度来衡量整个任务的进度，或者如果将来要输入与客户议定的进度测量值，则选择议定的进度率。</p>
+<div class="figure">
+<img alt="images/avance.png" src="images/avance.png" style="width: 424.0px; height: 290.8px;" />
+<p class="caption">带有图形可视化的进度输入界面</p>
+</div>
+<p>要输入进度测量值：</p>
+<ul class="simple">
+<li>选择将添加进度的进度类型。
+*   如果不存在进度类型，必须创建新的进度类型。</li>
+<li>在「值」和「日期」字段下出现的表单中，输入测量的绝对值和测量日期。</li>
+<li>系统自动保存输入的数据。</li>
+</ul>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-3">比较项目元素的进度</a></h1>
+<p>用户可以以图形方式比较项目的进度与所做的测量。所有进度类型都有一个带有核取按钮（「显示」）的列。当选择此按钮时，将显示项目元素的测量进度图表。</p>
+<div class="figure">
+<img alt="images/contraste-avance.png" src="images/contraste-avance.png" style="width: 422.0px; height: 290.0px;" />
+<p class="caption">比较多种进度类型</p>
+</div>
+</div>
+</div>
+</body>
+</html>

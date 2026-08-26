@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,8 +22,10 @@ package org.libreplan.business.common.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.entities.JobSchedulerConfiguration;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -50,18 +53,21 @@ public class JobSchedulerConfigurationDAO extends GenericDAOHibernate<JobSchedul
     @Override
     @Transactional(readOnly = true)
     public JobSchedulerConfiguration findByJobGroupAndJobName(String jobGroup, String jobName) {
-        return (JobSchedulerConfiguration) getSession().createCriteria(JobSchedulerConfiguration.class)
-                .add(Restrictions.eq("jobGroup", jobGroup))
-                .add(Restrictions.eq("jobName", jobName)).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<JobSchedulerConfiguration> cq = cb.createQuery(JobSchedulerConfiguration.class);
+        Root<JobSchedulerConfiguration> root = cq.from(JobSchedulerConfiguration.class);
+        cq.where(cb.equal(root.get("jobGroup"), jobGroup), cb.equal(root.get("jobName"), jobName));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<JobSchedulerConfiguration> findByConnectorName(String connectorName) {
-        Criteria c = getSession().createCriteria(JobSchedulerConfiguration.class)
-                .add(Restrictions.eq("connectorName", connectorName));
-
-        return ((List<JobSchedulerConfiguration>) c.list());
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<JobSchedulerConfiguration> cq = cb.createQuery(JobSchedulerConfiguration.class);
+        Root<JobSchedulerConfiguration> root = cq.from(JobSchedulerConfiguration.class);
+        cq.where(cb.equal(root.get("connectorName"), connectorName));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override

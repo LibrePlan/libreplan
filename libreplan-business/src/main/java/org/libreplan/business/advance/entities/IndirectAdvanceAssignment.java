@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +25,7 @@ package org.libreplan.business.advance.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.libreplan.business.orders.entities.OrderLineGroup;
 import org.libreplan.business.planner.entities.consolidations.CalculatedConsolidation;
 

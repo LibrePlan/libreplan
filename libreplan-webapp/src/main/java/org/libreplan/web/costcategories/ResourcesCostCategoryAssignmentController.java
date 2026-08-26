@@ -45,6 +45,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -81,8 +82,8 @@ public class ResourcesCostCategoryAssignmentController extends GenericForwardCom
         Util.reloadBindings(listResourcesCostCategoryAssignments);
     }
 
-    public List<ResourcesCostCategoryAssignment> getCostCategoryAssignments() {
-        return resourcesCostCategoryAssignmentModel.getCostCategoryAssignments();
+    public org.zkoss.zul.ListModel<ResourcesCostCategoryAssignment> getCostCategoryAssignments() {
+        return new ListModelList<>(resourcesCostCategoryAssignmentModel.getCostCategoryAssignments());
     }
 
     private void removeCostCategoryAssignment(ResourcesCostCategoryAssignment assignment) {

@@ -67,15 +67,6 @@
         <component-name>newdatasortablegrid</component-name>
         <component-class>org.libreplan.web.common.components.NewDataSortableGrid</component-class>
         <extends>grid</extends>
-        <annotation>
-            <annotation-name>default-bind</annotation-name>
-            <property-name>model</property-name>
-            <attribute>
-                <attribute-name>converter</attribute-name>
-                <!-- TODO resolve deprecated -->
-                <attribute-value>org.zkoss.zkplus.databind.ListModelConverter</attribute-value>
-            </attribute>
-        </annotation>
     </component>
 
     <component>
@@ -84,6 +75,26 @@
         <property>
             <property-name>format</property-name>
             <property-value>###,##0.00####</property-value>
+        </property>
+    </component>
+
+    <!-- Datebox hardcodes cols=11 in its own constructor (org.zkoss.zul.Datebox,
+         unchanged across ZK versions), sized for a MEDIUM-style date string of
+         at most 11 characters. That budget only holds for a handful of this
+         app's supported UI languages (e.g. Dutch/Italian/Polish, whose MEDIUM
+         pattern is "d MMM y", max 11 chars in 2026). English ("MMM d, y", up
+         to 12 chars), French/Spanish (up to 13/12), and especially
+         Portuguese/Galician/Catalan (up to 16-18, e.g. "10 de xan. de 2026")
+         all overflow it on the right date. Rather than hand-tune a distinct
+         safe format per language, just give every datebox enough room (20,
+         comfortable margin above the worst case measured across every
+         Language.java locale) for whatever the JVM's own locale data renders. -->
+    <component>
+        <component-name>datebox</component-name>
+        <extends>datebox</extends>
+        <property>
+            <property-name>cols</property-name>
+            <property-value>20</property-value>
         </property>
     </component>
 

@@ -1,0 +1,544 @@
+- generic [ref=f149e4]:
+  - generic:
+    - generic [ref=f149e7]:
+      - table [ref=f149e8]:
+        - rowgroup [ref=f149e9]:
+          - row "Planning Resources Cost Configuration Communications Reports Personal area START Configuration Main Settings Help Axuda Info" [ref=f149e10]:
+            - cell [ref=f149e11]:
+              - link [ref=f149e12] [cursor=pointer]:
+                - /url: /
+                - img [ref=f149e13]
+            - cell "Planning Resources Cost Configuration Communications Reports Personal area START Configuration Main Settings Help Axuda Info" [ref=f149e14]:
+              - table [ref=f149e15]:
+                - rowgroup [ref=f149e16]:
+                  - row "Planning Resources Cost Configuration Communications Reports Personal area START Configuration Main Settings Help Axuda Info" [ref=f149e17]:
+                    - cell "Planning Resources Cost Configuration Communications Reports Personal area START Configuration Main Settings Help Axuda Info" [ref=f149e18]:
+                      - generic [ref=f149e19]:
+                        - list [ref=f149e21]:
+                          - listitem [ref=f149e22]:
+                            - link "Planning" [ref=f149e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e24]: Planning
+                              - text: 
+                            - text:        
+                          - listitem [ref=f149e25]:
+                            - link "Resources" [ref=f149e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e27]: Resources
+                              - text: 
+                            - text:           
+                          - listitem [ref=f149e28]:
+                            - link "Cost" [ref=f149e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e30]: Cost
+                              - text: 
+                            - text:      
+                          - listitem [ref=f149e31]:
+                            - link "Configuration" [ref=f149e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e33]: Configuration
+                              - text: 
+                            - text:     
+                          - listitem [ref=f149e34]:
+                            - link "Communications" [ref=f149e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e36]: Communications
+                              - text: 
+                            - text:     
+                          - listitem [ref=f149e37]:
+                            - link "Reports" [ref=f149e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e39]: Reports
+                              - text: 
+                            - text:         
+                          - listitem [ref=f149e40]:
+                            - link "Personal area" [ref=f149e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - generic [ref=f149e42]: Personal area
+                              - text: 
+                            - text:  
+                        - table [ref=f149e43]:
+                          - rowgroup [ref=f149e44]:
+                            - row "START Configuration Main Settings Help Axuda Info" [ref=f149e45]:
+                              - cell "START Configuration Main Settings" [ref=f149e46]:
+                                - table [ref=f149e47]:
+                                  - rowgroup [ref=f149e48]:
+                                    - row "START Configuration Main Settings" [ref=f149e49]:
+                                      - cell [ref=f149e50]
+                                      - cell "START" [ref=f149e51]:
+                                        - strong [ref=f149e52]: START
+                                      - cell [ref=f149e53]
+                                      - cell "Configuration Main Settings" [ref=f149e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f149e55]:
+                                          - rowgroup [ref=f149e56]:
+                                            - row "Configuration Main Settings" [ref=f149e57]:
+                                              - cell "Configuration Main Settings" [ref=f149e58]:
+                                                - table [ref=f149e59]:
+                                                  - rowgroup [ref=f149e60]:
+                                                    - row "Configuration Main Settings" [ref=f149e61]:
+                                                      - cell "Configuration" [ref=f149e62]:
+                                                        - table [ref=f149e63]:
+                                                          - rowgroup [ref=f149e64]:
+                                                            - row "Configuration" [ref=f149e65]:
+                                                              - cell "Configuration" [ref=f149e66]:
+                                                                - table [ref=f149e67]:
+                                                                  - rowgroup [ref=f149e68]:
+                                                                    - row "Configuration" [ref=f149e69]:
+                                                                      - cell [ref=f149e70]:
+                                                                        - img [ref=f149e72]
+                                                                      - cell [ref=f149e73]:
+                                                                        - img
+                                                                      - cell "Configuration" [ref=f149e74]
+                                                      - cell [ref=f149e75]:
+                                                        - img
+                                                      - cell "Main Settings" [ref=f149e76]:
+                                                        - table [ref=f149e77]:
+                                                          - rowgroup [ref=f149e78]:
+                                                            - row "Main Settings" [ref=f149e79]:
+                                                              - cell "Main Settings" [ref=f149e80]:
+                                                                - table [ref=f149e81]:
+                                                                  - rowgroup [ref=f149e82]:
+                                                                    - row "Main Settings" [ref=f149e83]:
+                                                                      - cell [ref=f149e84]:
+                                                                        - img [ref=f149e86]
+                                                                      - cell [ref=f149e87]:
+                                                                        - img
+                                                                      - cell "Main Settings" [ref=f149e88]
+                              - cell "Help Axuda Info" [ref=f149e89]:
+                                - generic [ref=f149e90]:
+                                  - link "Help" [ref=f149e91] [cursor=pointer]:
+                                    - /url: /help/en/16-ldap-authentication.html
+                                  - img "Axuda" [ref=f149e93]
+                                  - img "Info" [ref=f149e95]
+      - table [ref=f149e97]:
+        - rowgroup [ref=f149e98]:
+          - 'row "user: admin [Log out]" [ref=f149e99]':
+            - cell [ref=f149e100]
+            - 'cell "user: admin" [ref=f149e101]'
+            - cell "[Log out]" [ref=f149e102]:
+              - link "[Log out]" [ref=f149e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:  
+  - generic [ref=f149e106]:
+    - generic:  
+    - generic [ref=f149e109]:
+      - generic [ref=f149e110]: Main Settings
+      - generic [ref=f149e111]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f149e112]:
+          - list [ref=f149e114]:
+            - listitem [ref=f149e115] [cursor=pointer]:
+              - generic [ref=f149e117]: Main preferences
+            - listitem [ref=f149e118] [cursor=pointer]:
+              - generic [ref=f149e120]: Entity sequences
+            - listitem [ref=f149e121] [cursor=pointer]:
+              - generic [ref=f149e123]: LDAP configuration
+            - listitem [ref=f149e124] [cursor=pointer]:
+              - generic [ref=f149e126]: Connectors
+          - generic [ref=f149e127]:
+            - table [ref=f149e132]:
+              - rowgroup [ref=f149e136]:
+                - row "Company code COMPANY_CODE" [ref=f149e137]:
+                  - cell "Company code" [ref=f149e138]:
+                    - generic [ref=f149e139]: Company code
+                  - cell "COMPANY_CODE" [ref=f149e140]:
+                    - textbox [ref=f149e142]: COMPANY_CODE
+                - row "Default calendar Default " [ref=f149e143]:
+                  - cell "Default calendar" [ref=f149e144]:
+                    - generic [ref=f149e145]: Default calendar
+                  - cell "Default " [ref=f149e146]:
+                    - generic [ref=f149e149]:
+                      - textbox [ref=f149e150]: Default
+                      - generic [ref=f149e152] [cursor=pointer]: 
+                - row "Hours type for personal timesheets Default " [ref=f149e153]:
+                  - cell "Hours type for personal timesheets" [ref=f149e154]:
+                    - generic [ref=f149e155]: Hours type for personal timesheets
+                  - cell "Default " [ref=f149e156]:
+                    - generic [ref=f149e159]:
+                      - textbox [ref=f149e160]: Default
+                      - generic [ref=f149e162] [cursor=pointer]: 
+                - row "Personal timesheets peridocity Monthly" [ref=f149e163]:
+                  - cell "Personal timesheets peridocity" [ref=f149e164]:
+                    - generic [ref=f149e165]: Personal timesheets peridocity
+                  - cell "Monthly" [ref=f149e166]:
+                    - combobox [disabled] [ref=f149e168] [cursor=pointer]:
+                      - option "Monthly" [selected]
+                      - option "Twice-monthly"
+                      - option "Weekly"
+                - row "Show progress Spreading progress" [ref=f149e169]:
+                  - cell "Show progress" [ref=f149e170]:
+                    - generic [ref=f149e171]: Show progress
+                  - cell "Spreading progress" [ref=f149e172]:
+                    - combobox [ref=f149e174] [cursor=pointer]:
+                      - option "Spreading progress" [selected]
+                      - option "Progress with all tasks by hours"
+                      - option "Progress with critical path tasks by hours"
+                      - option "Progress with critical path tasks by duration"
+                - row "Company logo URL Upload Choose File Delete image" [ref=f149e175]:
+                  - cell "Company logo URL" [ref=f149e176]:
+                    - generic [ref=f149e177]: Company logo URL
+                  - cell "Upload Choose File Delete image" [ref=f149e178]:
+                    - table [ref=f149e180]:
+                      - rowgroup [ref=f149e181]:
+                        - row "Upload Choose File Delete image" [ref=f149e182]:
+                          - cell "Upload Choose File Delete image" [ref=f149e183]:
+                            - table [ref=f149e184]:
+                              - rowgroup [ref=f149e185]:
+                                - row "Upload Choose File Delete image" [ref=f149e186]:
+                                  - cell [ref=f149e187]:
+                                    - textbox [ref=f149e188]
+                                  - cell [ref=f149e189]:
+                                    - img
+                                  - cell "Upload Choose File" [ref=f149e190]:
+                                    - button "Upload" [ref=f149e191] [cursor=pointer]
+                                    - button "Choose File" [ref=f149e192] [cursor=pointer]
+                                  - cell [ref=f149e193]:
+                                    - img
+                                  - cell [ref=f149e194]:
+                                    - img [ref=f149e195]
+                                  - cell [ref=f149e196]:
+                                    - img
+                                  - cell "Delete image" [ref=f149e197]:
+                                    - button "Delete image" [ref=f149e198] [cursor=pointer]
+                - row "Currency EUR - €" [ref=f149e199]:
+                  - cell "Currency" [ref=f149e200]:
+                    - generic [ref=f149e201]: Currency
+                  - cell "EUR - €" [ref=f149e202]:
+                    - combobox [ref=f149e204] [cursor=pointer]:
+                      - option "AED - د.إ.‏"
+                      - option "AFN - ؋"
+                      - option "ALL - Lekë"
+                      - option "AMD - ֏"
+                      - option "AOA - Kz"
+                      - option "ARS - $"
+                      - option "AUD - $"
+                      - option "AWG - Afl."
+                      - option "AZN - ₼"
+                      - option "BAM - KM"
+                      - option "BBD - $"
+                      - option "BDT - ৳"
+                      - option "BHD - د.ب.‏"
+                      - option "BIF - FBu"
+                      - option "BMD - $"
+                      - option "BND - $"
+                      - option "BOB - Bs"
+                      - option "BRL - R$"
+                      - option "BSD - $"
+                      - option "BTN - Nu."
+                      - option "BWP - P"
+                      - option "BYN - Br"
+                      - option "BZD - $"
+                      - option "CAD - $"
+                      - option "CDF - FC"
+                      - option "CHF - CHF"
+                      - option "CLP - $"
+                      - option "CNY - ￥"
+                      - option "COP - $"
+                      - option "CRC - ₡"
+                      - option "CSD - CSD"
+                      - option "CUP - $"
+                      - option "CVE -"
+                      - option "CZK - Kč"
+                      - option "DJF - Fdj"
+                      - option "DKK - kr."
+                      - option "DOP - RD$"
+                      - option "DZD - د.ج.‏"
+                      - option "EGP - ج.م.‏"
+                      - option "ERN - Nfk"
+                      - option "ETB - Br"
+                      - option "EUR - €" [selected]
+                      - option "FJD - $"
+                      - option "FKP - £"
+                      - option "GBP - £"
+                      - option "GEL - ₾"
+                      - option "GHS - GH₵"
+                      - option "GIP - £"
+                      - option "GMD - D"
+                      - option "GNF - FG"
+                      - option "GTQ - Q"
+                      - option "GYD - $"
+                      - option "HKD - HK$"
+                      - option "HNL - L"
+                      - option "HTG - G"
+                      - option "HUF - Ft"
+                      - option "IDR - Rp"
+                      - option "ILS - ₪"
+                      - option "INR - ₹"
+                      - option "IQD - د.ع.‏"
+                      - option "IRR - IRR"
+                      - option "ISK - ISK"
+                      - option "JMD - $"
+                      - option "JOD - د.أ.‏"
+                      - option "JPY - ￥"
+                      - option "KES - Ksh"
+                      - option "KGS - сом"
+                      - option "KHR - ៛"
+                      - option "KMF - CF"
+                      - option "KPW - KPW"
+                      - option "KRW - ₩"
+                      - option "KWD - د.ك.‏"
+                      - option "KYD - $"
+                      - option "KZT - ₸"
+                      - option "LAK - ₭"
+                      - option "LBP - ل.ل.‏"
+                      - option "LKR - රු."
+                      - option "LRD - $"
+                      - option "LSL - LSL"
+                      - option "LYD - د.ل.‏"
+                      - option "MAD - MAD"
+                      - option "MDL - L"
+                      - option "MGA - Ar"
+                      - option "MKD - ден"
+                      - option "MMK - K"
+                      - option "MNT - ₮"
+                      - option "MOP - MOP$"
+                      - option "MRU - UM"
+                      - option "MUR - Rs"
+                      - option "MWK - MK"
+                      - option "MXN - $"
+                      - option "MYR - RM"
+                      - option "MZN - MTn"
+                      - option "NAD - $"
+                      - option "NGN - ₦"
+                      - option "NIO - C$"
+                      - option "NOK - kr"
+                      - option "NPR - नेरू"
+                      - option "NZD - $"
+                      - option "OMR - ر.ع.‏"
+                      - option "PAB - B/."
+                      - option "PEN - S/"
+                      - option "PGK - K"
+                      - option "PHP - ₱"
+                      - option "PKR - Rs"
+                      - option "PLN - zł"
+                      - option "PYG - Gs."
+                      - option "QAR - ر.ق.‏"
+                      - option "RON - RON"
+                      - option "RSD - RSD"
+                      - option "RUB - ₽"
+                      - option "RWF - RF"
+                      - option "SAR - ر.س.‏"
+                      - option "SBD - $"
+                      - option "SCR - SR"
+                      - option "SDG - SDG"
+                      - option "SEK - kr"
+                      - option "SGD - $"
+                      - option "SHP - £"
+                      - option "SLE - SLE"
+                      - option "SOS - S"
+                      - option "SRD - $"
+                      - option "SSP - £"
+                      - option "STN - Db"
+                      - option "SVC - C"
+                      - option "SYP - LS"
+                      - option "SZL - E"
+                      - option "THB - THB"
+                      - option "TJS - сом."
+                      - option "TMT - TMT"
+                      - option "TND - د.ت.‏"
+                      - option "TOP - T$"
+                      - option "TRY - ₺"
+                      - option "TTD - $"
+                      - option "TWD - $"
+                      - option "TZS - TSh"
+                      - option "UAH - ₴"
+                      - option "UGX - USh"
+                      - option "USD - US$"
+                      - option "UYU - $"
+                      - option "UZS - soʻm"
+                      - option "VES - Bs.S."
+                      - option "VND - ₫"
+                      - option "VUV - VT"
+                      - option "WST - WS$"
+                      - option "XAF - FCFA"
+                      - option "XCD - $"
+                      - option "XCG - XCG"
+                      - option "XOF - CFA"
+                      - option "XPF - FCFP"
+                      - option "YER - ر.ي.‏"
+                      - option "ZAR - R"
+                      - option "ZMW - K"
+                      - option "ZWG - ZWG"
+                - row "Autocomplete login form Enable/Disable" [ref=f149e205]:
+                  - cell "Autocomplete login form" [ref=f149e206]:
+                    - generic [ref=f149e207]: Autocomplete login form
+                  - cell "Enable/Disable" [ref=f149e208]:
+                    - generic "Enable/Disable autocomplete property in login form, if the admin password is still the default one" [ref=f149e210]:
+                      - checkbox "Enable/Disable" [checked] [ref=f149e211] [cursor=pointer]: 
+                      - text: Enable/Disable
+                - row "Check for updates Show a notification when new LibrePlan versions are released Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f149e212]:
+                  - cell "Check for updates" [ref=f149e213]:
+                    - generic [ref=f149e214]: Check for updates
+                  - cell "Show a notification when new LibrePlan versions are released Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f149e215]:
+                    - table [ref=f149e217]:
+                      - rowgroup [ref=f149e218]:
+                        - row "Show a notification when new LibrePlan versions are released Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f149e219]:
+                          - cell "Show a notification when new LibrePlan versions are released Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f149e220]:
+                            - table [ref=f149e221]:
+                              - rowgroup [ref=f149e222]:
+                                - row "Show a notification when new LibrePlan versions are released" [ref=f149e223]:
+                                  - cell "Show a notification when new LibrePlan versions are released" [ref=f149e224]:
+                                    - generic "Enable/Disable warning about new LibrePlan versions available" [ref=f149e225]:
+                                      - checkbox "Show a notification when new LibrePlan versions are released" [checked] [ref=f149e226] [cursor=pointer]: 
+                                      - text: Show a notification when new LibrePlan versions are released
+                                - row [ref=f149e227]:
+                                  - cell [ref=f149e228]:
+                                    - img
+                                - row "Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f149e229]:
+                                  - cell "Allow collection of anonymous statistics to help us improve LibrePlan" [ref=f149e230]:
+                                    - generic "Check this option if you would like to send feedback to LibrePlan developers about program usage" [ref=f149e231]:
+                                      - checkbox "Allow collection of anonymous statistics to help us improve LibrePlan" [checked] [ref=f149e232] [cursor=pointer]: 
+                                      - text: Allow collection of anonymous statistics to help us improve LibrePlan
+                - row "Generate code for Criteria Labels Timesheets Resources Hours Types Material categories Material Units Calendar Timesheet templates Calendar exception days Cost category Expense sheets" [ref=f149e233]:
+                  - cell "Generate code for" [ref=f149e234]:
+                    - generic [ref=f149e235]: Generate code for
+                  - cell "Criteria Labels Timesheets Resources Hours Types Material categories Material Units Calendar Timesheet templates Calendar exception days Cost category Expense sheets" [ref=f149e236]:
+                    - table [ref=f149e241]:
+                      - rowgroup [ref=f149e245]:
+                        - row "Criteria Labels" [ref=f149e246]:
+                          - cell "Criteria" [ref=f149e247]:
+                            - generic [ref=f149e249]:
+                              - checkbox "Criteria" [checked] [ref=f149e250] [cursor=pointer]: 
+                              - text: Criteria
+                          - cell "Labels" [ref=f149e251]:
+                            - generic [ref=f149e253]:
+                              - checkbox "Labels" [checked] [ref=f149e254] [cursor=pointer]: 
+                              - text: Labels
+                        - row "Timesheets Resources" [ref=f149e255]:
+                          - cell "Timesheets" [ref=f149e256]:
+                            - generic [ref=f149e258]:
+                              - checkbox "Timesheets" [checked] [ref=f149e259] [cursor=pointer]: 
+                              - text: Timesheets
+                          - cell "Resources" [ref=f149e260]:
+                            - generic [ref=f149e262]:
+                              - checkbox "Resources" [checked] [ref=f149e263] [cursor=pointer]: 
+                              - text: Resources
+                        - row "Hours Types Material categories" [ref=f149e264]:
+                          - cell "Hours Types" [ref=f149e265]:
+                            - generic [ref=f149e267]:
+                              - checkbox "Hours Types" [checked] [ref=f149e268] [cursor=pointer]: 
+                              - text: Hours Types
+                          - cell "Material categories" [ref=f149e269]:
+                            - generic [ref=f149e271]:
+                              - checkbox "Material categories" [checked] [ref=f149e272] [cursor=pointer]: 
+                              - text: Material categories
+                        - row "Material Units Calendar" [ref=f149e273]:
+                          - cell "Material Units" [ref=f149e274]:
+                            - generic [ref=f149e276]:
+                              - checkbox "Material Units" [checked] [ref=f149e277] [cursor=pointer]: 
+                              - text: Material Units
+                          - cell "Calendar" [ref=f149e278]:
+                            - generic [ref=f149e280]:
+                              - checkbox "Calendar" [checked] [ref=f149e281] [cursor=pointer]: 
+                              - text: Calendar
+                        - row "Timesheet templates Calendar exception days" [ref=f149e282]:
+                          - cell "Timesheet templates" [ref=f149e283]:
+                            - generic [ref=f149e285]:
+                              - checkbox "Timesheet templates" [checked] [ref=f149e286] [cursor=pointer]: 
+                              - text: Timesheet templates
+                          - cell "Calendar exception days" [ref=f149e287]:
+                            - generic [ref=f149e289]:
+                              - checkbox "Calendar exception days" [checked] [ref=f149e290] [cursor=pointer]: 
+                              - text: Calendar exception days
+                        - row "Cost category Expense sheets" [ref=f149e291]:
+                          - cell "Cost category" [ref=f149e292]:
+                            - generic [ref=f149e294]:
+                              - checkbox "Cost category" [checked] [ref=f149e295] [cursor=pointer]: 
+                              - text: Cost category
+                          - cell "Expense sheets" [ref=f149e296]:
+                            - generic [ref=f149e298]:
+                              - checkbox "Expense sheets" [checked] [ref=f149e299] [cursor=pointer]: 
+                              - text: Expense sheets
+                      - rowgroup:
+                        - row
+                - row "Perspectives MonteCarlo method" [ref=f149e300]:
+                  - cell "Perspectives" [ref=f149e301]:
+                    - generic [ref=f149e302]: Perspectives
+                  - cell "MonteCarlo method" [ref=f149e303]:
+                    - generic [ref=f149e305]:
+                      - checkbox "MonteCarlo method" [ref=f149e306] [cursor=pointer]
+                      - text: MonteCarlo method
+                - row "Automatic budget Hours type  calculate based on task criteria and cost categories" [ref=f149e307]:
+                  - cell "Automatic budget" [ref=f149e308]:
+                    - generic [ref=f149e309]: Automatic budget
+                  - cell "Hours type  calculate based on task criteria and cost categories" [ref=f149e310]:
+                    - table [ref=f149e312]:
+                      - rowgroup [ref=f149e313]:
+                        - row "Hours type  calculate based on task criteria and cost categories" [ref=f149e314]:
+                          - cell "Hours type  calculate based on task criteria and cost categories" [ref=f149e315]:
+                            - table [ref=f149e316]:
+                              - rowgroup [ref=f149e317]:
+                                - row "Hours type  calculate based on task criteria and cost categories" [ref=f149e318]:
+                                  - cell "Hours type" [ref=f149e319]
+                                  - cell [ref=f149e320]:
+                                    - img
+                                  - cell "" [ref=f149e321]:
+                                    - generic [ref=f149e323]:
+                                      - textbox [ref=f149e324]
+                                      - generic [ref=f149e326] [cursor=pointer]: 
+                                  - cell [ref=f149e327]:
+                                    - img
+                                  - cell "calculate based on task criteria and cost categories" [ref=f149e328]:
+                                    - generic [ref=f149e329]:
+                                      - checkbox "calculate based on task criteria and cost categories" [ref=f149e330] [cursor=pointer]
+                                      - text: calculate based on task criteria and cost categories
+                - row "Seconds planning warning 30 Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f149e331]:
+                  - cell "Seconds planning warning" [ref=f149e332]:
+                    - generic [ref=f149e333]: Seconds planning warning
+                  - cell "30 Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f149e334]:
+                    - table [ref=f149e336]:
+                      - rowgroup [ref=f149e337]:
+                        - row "30 Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f149e338]:
+                          - cell "30 Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f149e339]:
+                            - table [ref=f149e340]:
+                              - rowgroup [ref=f149e341]:
+                                - row "30 Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f149e342]:
+                                  - cell "30" [ref=f149e343]:
+                                    - textbox [ref=f149e344]: "30"
+                                  - cell [ref=f149e345]:
+                                    - img
+                                  - cell "Defines the time since last saving operation at project planning perspectives after which a warning is raised on leaving. Set to 0 in order to disable the warning." [ref=f149e346]
+                - row "Local document repository location" [ref=f149e347]:
+                  - cell "Local document repository location" [ref=f149e348]:
+                    - generic [ref=f149e349]: Local document repository location
+                  - cell [ref=f149e350]:
+                    - 'textbox "Example: /example/repository/path/" [ref=f149e352]'
+              - rowgroup:
+                - row
+            - text:       
+          - text:  
+        - table [ref=f149e353]:
+          - rowgroup [ref=f149e354]:
+            - row "Save Cancel" [ref=f149e355]:
+              - cell "Save Cancel" [ref=f149e356]:
+                - table [ref=f149e357]:
+                  - rowgroup [ref=f149e358]:
+                    - row "Save Cancel" [ref=f149e359]:
+                      - cell "Save" [ref=f149e360]:
+                        - button "Save" [ref=f149e361] [cursor=pointer]
+                      - cell [ref=f149e362]:
+                        - img
+                      - cell "Cancel" [ref=f149e363]:
+                        - button "Cancel" [ref=f149e364] [cursor=pointer]
+  - generic:
+    - table [ref=f149e367]:
+      - rowgroup [ref=f149e368]:
+        - row "The admin's account password remains the default one. This is insecure. [Change the password]" [ref=f149e369]:
+          - cell "The admin's account password remains the default one. This is insecure. [Change the password]" [ref=f149e370]:
+            - generic [ref=f149e372]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f149e373] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f149e374]
+    - text:  

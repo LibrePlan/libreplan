@@ -43,7 +43,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jgrapht.DirectedGraph;
+import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleDirectedGraph;
 import org.zkoss.ganttz.data.DependencyType.Point;
 import org.zkoss.ganttz.data.ITaskFundamentalProperties.IModifications;
@@ -272,7 +272,7 @@ public class GanttDiagramGraph<V, D extends IDependency<V>> implements ICritical
 
     private final IAdapter<V, D> adapter;
 
-    private final DirectedGraph<V, D> graph;
+    private final Graph<V, D> graph;
 
     private final TopologicalSorter topologicalSorter;
 

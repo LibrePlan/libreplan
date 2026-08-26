@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Agendador</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="agendador">
+<h1 class="title">Agendador</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#vista-de-lista-de-agendamento-de-tarefas" id="toc-entry-1">Vista de Lista de Agendamento de Tarefas</a></li>
+<li><a class="reference internal" href="#adicionar-ou-editar-tarefa" id="toc-entry-2">Adicionar ou Editar Tarefa</a><ul>
+<li><a class="reference internal" href="#janela-pop-up-de-expressao-cron" id="toc-entry-3">Janela Pop-up de Expressão Cron</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#remover-tarefa" id="toc-entry-4">Remover Tarefa</a></li>
+<li><a class="reference internal" href="#iniciar-tarefa-manualmente" id="toc-entry-5">Iniciar Tarefa Manualmente</a></li>
+</ul>
+</div>
+<p>O agendador foi projetado para agendar tarefas de forma dinâmica. É desenvolvido utilizando o <em>Spring Framework Quartz scheduler</em>.</p>
+<p>Para utilizar este agendador de forma eficaz, as tarefas (tarefas Quartz) a agendar devem ser criadas primeiro. Em seguida, essas tarefas podem ser adicionadas ao banco de dados, pois todas as tarefas a agendar são armazenadas no banco de dados.</p>
+<p>Quando o agendador inicia, ele lê as tarefas a agendar ou desagendar do banco de dados e as agenda ou remove adequadamente. Posteriormente, as tarefas podem ser adicionadas, atualizadas ou removidas de forma dinâmica por meio da interface de usuário <tt class="docutils literal">Agendamento de tarefas</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">O agendador inicia quando a aplicação web LibrePlan inicia e para quando a aplicação para.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Este agendador suporta apenas <tt class="docutils literal">expressões cron</tt> para agendar tarefas.</p>
+</div>
+<p>Os critérios que o agendador utiliza para agendar ou remover tarefas quando inicia são os seguintes:</p>
+<p>Para todas as tarefas:</p>
+<ul class="simple">
+<li>Agendar<ul>
+<li>A tarefa tem um <em>Conector</em>, e o <em>Conector</em> está ativado, e a tarefa tem permissão para ser agendada.</li>
+<li>A tarefa não tem <em>Conector</em> e tem permissão para ser agendada.</li>
+</ul>
+</li>
+<li>Remover<ul>
+<li>A tarefa tem um <em>Conector</em>, e o <em>Conector</em> não está ativado.</li>
+<li>A tarefa tem um <em>Conector</em>, e o <em>Conector</em> está ativado, mas a tarefa não tem permissão para ser agendada.</li>
+<li>A tarefa não tem <em>Conector</em> e não tem permissão para ser agendada.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">As tarefas não podem ser reagendadas ou desagendadas se estiverem atualmente em execução.</p>
+</div>
+<div class="section" id="vista-de-lista-de-agendamento-de-tarefas">
+<h1><a class="toc-backref" href="#toc-entry-1">Vista de Lista de Agendamento de Tarefas</a></h1>
+<p>A vista <tt class="docutils literal">Lista de agendamento de tarefas</tt> permite aos usuários:</p>
+<ul class="simple">
+<li>Adicionar uma nova tarefa.</li>
+<li>Editar uma tarefa existente.</li>
+<li>Remover uma tarefa.</li>
+<li>Iniciar um processo manualmente.</li>
+</ul>
+</div>
+<div class="section" id="adicionar-ou-editar-tarefa">
+<h1><a class="toc-backref" href="#toc-entry-2">Adicionar ou Editar Tarefa</a></h1>
+<p>Na vista <tt class="docutils literal">Lista de agendamento de tarefas</tt>, clique em:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Criar</tt> para adicionar uma nova tarefa, ou</li>
+<li><tt class="docutils literal">Editar</tt> para modificar a tarefa selecionada.</li>
+</ul>
+<p>Ambas as ações abrirão um <tt class="docutils literal">formulário de tarefa</tt> de criação/edição. O <tt class="docutils literal">formulário</tt> exibe as seguintes propriedades:</p>
+<ul class="simple">
+<li>Campos:<ul>
+<li><strong>Grupo da tarefa:</strong> O nome do grupo da tarefa.</li>
+<li><strong>Nome da tarefa:</strong> O nome da tarefa.</li>
+<li><strong>Expressão cron:</strong> Um campo somente leitura com um botão <tt class="docutils literal">Editar</tt> para abrir a janela de inserção de <tt class="docutils literal">expressão cron</tt>.</li>
+<li><strong>Nome da classe da tarefa:</strong> Uma <tt class="docutils literal">lista suspensa</tt> para selecionar a tarefa (uma tarefa existente).</li>
+<li><strong>Conector:</strong> Uma <tt class="docutils literal">lista suspensa</tt> para selecionar um conector. Não é obrigatório.</li>
+<li><strong>Agendar:</strong> Uma caixa de seleção para indicar se esta tarefa deve ser agendada.</li>
+</ul>
+</li>
+<li>Botões:<ul>
+<li><strong>Salvar:</strong> Para salvar ou atualizar uma tarefa tanto no banco de dados como no agendador. O usuário é então retornado à <tt class="docutils literal">Vista de lista de agendamento de tarefas</tt>.</li>
+<li><strong>Salvar e continuar:</strong> O mesmo que &quot;Salvar&quot;, mas o usuário não é retornado à <tt class="docutils literal">Vista de lista de agendamento de tarefas</tt>.</li>
+<li><strong>Cancelar:</strong> Nada é salvo e o usuário é retornado à <tt class="docutils literal">Vista de lista de agendamento de tarefas</tt>.</li>
+</ul>
+</li>
+<li>E uma seção de dicas sobre a sintaxe da expressão cron.</li>
+</ul>
+<div class="section" id="janela-pop-up-de-expressao-cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Janela Pop-up de Expressão Cron</a></h2>
+<p>Para inserir corretamente a <tt class="docutils literal">expressão cron</tt>, é utilizado um formulário pop-up de <tt class="docutils literal">expressão cron</tt>. Neste formulário, você pode inserir a <tt class="docutils literal">expressão cron</tt> desejada. Consulte também a dica sobre a <tt class="docutils literal">expressão cron</tt>. Se você inserir uma <tt class="docutils literal">expressão cron</tt> inválida, será notificado imediatamente.</p>
+</div>
+</div>
+<div class="section" id="remover-tarefa">
+<h1><a class="toc-backref" href="#toc-entry-4">Remover Tarefa</a></h1>
+<p>Clique no botão <tt class="docutils literal">Remover</tt> para excluir a tarefa tanto do banco de dados como do agendador. O sucesso ou falha desta ação será exibido.</p>
+</div>
+<div class="section" id="iniciar-tarefa-manualmente">
+<h1><a class="toc-backref" href="#toc-entry-5">Iniciar Tarefa Manualmente</a></h1>
+<p>Como alternativa a aguardar que a tarefa seja executada conforme agendado, você pode clicar neste botão para iniciar o processo diretamente. Posteriormente, as informações de sucesso ou falha serão exibidas em uma <tt class="docutils literal">janela <span class="pre">pop-up</span></tt>.</p>
+</div>
+</div>
+</body>
+</html>

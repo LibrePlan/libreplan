@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,7 +21,7 @@
  */
 
 package org.libreplan.business.requirements.entities;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.orders.entities.HoursGroup;
 import org.libreplan.business.orders.entities.OrderElement;

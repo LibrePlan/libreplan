@@ -1,0 +1,320 @@
+- generic [ref=f264e4]:
+  - generic [ref=f264e5]:
+    - table [ref=f264e6]:
+      - rowgroup [ref=f264e7]:
+        - row [ref=f264e8]:
+          - cell [ref=f264e9]:
+            - link [ref=f264e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f264e12]:
+            - table [ref=f264e13]:
+              - rowgroup [ref=f264e14]:
+                - row [ref=f264e15]:
+                  - cell [ref=f264e16]:
+                    - generic [ref=f264e17]:
+                      - menubar [ref=f264e18]:
+                        - menuitem "Planning" [ref=f264e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f264e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f264e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f264e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f264e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f264e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f264e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f264e33]:
+                        - rowgroup [ref=f264e34]:
+                          - row [ref=f264e35]:
+                            - cell [ref=f264e36]:
+                              - table [ref=f264e37]:
+                                - rowgroup [ref=f264e38]:
+                                  - row [ref=f264e39]:
+                                    - cell [ref=f264e40]
+                                    - cell [ref=f264e41]:
+                                      - strong [ref=f264e42]: START
+                                    - cell [ref=f264e43]
+                                    - cell [ref=f264e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f264e45]:
+                                        - rowgroup [ref=f264e46]:
+                                          - row [ref=f264e47]:
+                                            - cell [ref=f264e48]:
+                                              - table [ref=f264e49]:
+                                                - rowgroup [ref=f264e50]:
+                                                  - row [ref=f264e51]:
+                                                    - cell [ref=f264e52]:
+                                                      - table [ref=f264e53]:
+                                                        - rowgroup [ref=f264e54]:
+                                                          - row [ref=f264e55]:
+                                                            - cell [ref=f264e56]:
+                                                              - table [ref=f264e57]:
+                                                                - rowgroup [ref=f264e58]:
+                                                                  - row [ref=f264e59]:
+                                                                    - cell [ref=f264e60]
+                                                                    - cell [ref=f264e63]
+                                                                    - cell "Configuration" [ref=f264e64]
+                                                    - cell [ref=f264e65]
+                                                    - cell [ref=f264e66]:
+                                                      - table [ref=f264e67]:
+                                                        - rowgroup [ref=f264e68]:
+                                                          - row [ref=f264e69]:
+                                                            - cell [ref=f264e70]:
+                                                              - table [ref=f264e71]:
+                                                                - rowgroup [ref=f264e72]:
+                                                                  - row [ref=f264e73]:
+                                                                    - cell [ref=f264e74]
+                                                                    - cell [ref=f264e77]
+                                                                    - cell "User Accounts" [ref=f264e78]
+                            - cell [ref=f264e79]:
+                              - generic [ref=f264e80]:
+                                - link "Help" [ref=f264e81] [cursor=pointer]:
+                                  - /url: /help/en/13-usuarios.html#administraci-n-de-usuarios
+                                - img "Axuda" [ref=f264e83]
+                                - img "Info" [ref=f264e85]
+    - table [ref=f264e87]:
+      - rowgroup [ref=f264e88]:
+        - row [ref=f264e89]:
+          - cell [ref=f264e90]
+          - 'cell "user: admin" [ref=f264e91]'
+          - cell [ref=f264e92]:
+            - link "[Log out]" [ref=f264e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f264e94]:
+    - text:    
+    - generic [ref=f264e96]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - generic [ref=f264e97]:
+        - generic [ref=f264e98]: Users List
+        - generic [ref=f264e99]:
+          - grid [ref=f264e100]:
+            - rowgroup [ref=f264e108]:
+              - columnheader [ref=f264e109]:
+                - generic [ref=f264e110] [cursor=pointer]:
+                  - generic [ref=f264e111]: 
+                  - text: Username
+              - columnheader "Disabled" [ref=f264e113]
+              - columnheader "Superuser" [ref=f264e115]
+              - columnheader "Authentication type" [ref=f264e117]
+              - columnheader "Bound resource" [ref=f264e119]
+              - columnheader "Actions" [ref=f264e121]
+            - rowgroup [ref=f264e130]:
+              - gridcell "admin" [ref=f264e131]
+              - gridcell "No" [ref=f264e133]
+              - gridcell "Yes" [ref=f264e135]
+              - gridcell "Database" [ref=f264e137]
+              - gridcell [ref=f264e139]
+              - gridcell [ref=f264e142]:
+                - table [ref=f264e144]:
+                  - rowgroup [ref=f264e145]:
+                    - row [ref=f264e146]:
+                      - cell [ref=f264e147]:
+                        - table [ref=f264e148]:
+                          - rowgroup [ref=f264e149]:
+                            - row [ref=f264e150]:
+                              - cell [ref=f264e151]:
+                                - button "Edit" [ref=f264e152] [cursor=pointer]
+                              - cell [ref=f264e154]
+                              - cell [ref=f264e155]:
+                                - button "Default user \"admin\" cannot be removed as it is mandatory" [disabled] [ref=f264e156]
+              - gridcell "asd" [ref=f264e158]
+              - gridcell "No" [ref=f264e160]
+              - gridcell "No" [ref=f264e162]
+              - gridcell "Database" [ref=f264e164]
+              - gridcell "Nowakwsko,Adam (Konstruktor 1)" [ref=f264e166]
+              - gridcell [ref=f264e168]:
+                - table [ref=f264e170]:
+                  - rowgroup [ref=f264e171]:
+                    - row [ref=f264e172]:
+                      - cell [ref=f264e173]:
+                        - table [ref=f264e174]:
+                          - rowgroup [ref=f264e175]:
+                            - row [ref=f264e176]:
+                              - cell [ref=f264e177]:
+                                - button "Edit" [ref=f264e178] [cursor=pointer]
+                              - cell [ref=f264e180]
+                              - cell [ref=f264e181]:
+                                - button "Remove" [ref=f264e182] [cursor=pointer]
+              - gridcell "hresources" [ref=f264e184]
+              - gridcell "No" [ref=f264e186]
+              - gridcell "No" [ref=f264e188]
+              - gridcell "Database" [ref=f264e190]
+              - gridcell [ref=f264e192]
+              - gridcell [ref=f264e195]:
+                - table [ref=f264e197]:
+                  - rowgroup [ref=f264e198]:
+                    - row [ref=f264e199]:
+                      - cell [ref=f264e200]:
+                        - table [ref=f264e201]:
+                          - rowgroup [ref=f264e202]:
+                            - row [ref=f264e203]:
+                              - cell [ref=f264e204]:
+                                - button "Edit" [ref=f264e205] [cursor=pointer]
+                              - cell [ref=f264e207]
+                              - cell [ref=f264e208]:
+                                - button "Remove" [ref=f264e209] [cursor=pointer]
+              - gridcell "manager" [ref=f264e211]
+              - gridcell "No" [ref=f264e213]
+              - gridcell "No" [ref=f264e215]
+              - gridcell "Database" [ref=f264e217]
+              - gridcell [ref=f264e219]
+              - gridcell [ref=f264e222]:
+                - table [ref=f264e224]:
+                  - rowgroup [ref=f264e225]:
+                    - row [ref=f264e226]:
+                      - cell [ref=f264e227]:
+                        - table [ref=f264e228]:
+                          - rowgroup [ref=f264e229]:
+                            - row [ref=f264e230]:
+                              - cell [ref=f264e231]:
+                                - button "Edit" [ref=f264e232] [cursor=pointer]
+                              - cell [ref=f264e234]
+                              - cell [ref=f264e235]:
+                                - button "Remove" [ref=f264e236] [cursor=pointer]
+              - gridcell "outsourcing" [ref=f264e238]
+              - gridcell "No" [ref=f264e240]
+              - gridcell "No" [ref=f264e242]
+              - gridcell "Database" [ref=f264e244]
+              - gridcell [ref=f264e246]
+              - gridcell [ref=f264e249]:
+                - table [ref=f264e251]:
+                  - rowgroup [ref=f264e252]:
+                    - row [ref=f264e253]:
+                      - cell [ref=f264e254]:
+                        - table [ref=f264e255]:
+                          - rowgroup [ref=f264e256]:
+                            - row [ref=f264e257]:
+                              - cell [ref=f264e258]:
+                                - button "Edit" [ref=f264e259] [cursor=pointer]
+                              - cell [ref=f264e261]
+                              - cell [ref=f264e262]:
+                                - button "Remove" [ref=f264e263] [cursor=pointer]
+              - gridcell "qwe" [ref=f264e265]
+              - gridcell "No" [ref=f264e267]
+              - gridcell "No" [ref=f264e269]
+              - gridcell "Database" [ref=f264e271]
+              - gridcell "Kowalski,Jan (K)" [ref=f264e273]
+              - gridcell [ref=f264e275]:
+                - table [ref=f264e277]:
+                  - rowgroup [ref=f264e278]:
+                    - row [ref=f264e279]:
+                      - cell [ref=f264e280]:
+                        - table [ref=f264e281]:
+                          - rowgroup [ref=f264e282]:
+                            - row [ref=f264e283]:
+                              - cell [ref=f264e284]:
+                                - button "Edit" [ref=f264e285] [cursor=pointer]
+                              - cell [ref=f264e287]
+                              - cell [ref=f264e288]:
+                                - button "Remove" [ref=f264e289] [cursor=pointer]
+              - gridcell "reports" [ref=f264e291]
+              - gridcell "No" [ref=f264e293]
+              - gridcell "No" [ref=f264e295]
+              - gridcell "Database" [ref=f264e297]
+              - gridcell [ref=f264e299]
+              - gridcell [ref=f264e302]:
+                - table [ref=f264e304]:
+                  - rowgroup [ref=f264e305]:
+                    - row [ref=f264e306]:
+                      - cell [ref=f264e307]:
+                        - table [ref=f264e308]:
+                          - rowgroup [ref=f264e309]:
+                            - row [ref=f264e310]:
+                              - cell [ref=f264e311]:
+                                - button "Edit" [ref=f264e312] [cursor=pointer]
+                              - cell [ref=f264e314]
+                              - cell [ref=f264e315]:
+                                - button "Remove" [ref=f264e316] [cursor=pointer]
+              - gridcell "testworker" [ref=f264e318]
+              - gridcell "No" [ref=f264e320]
+              - gridcell "No" [ref=f264e322]
+              - gridcell "Database" [ref=f264e324]
+              - gridcell [ref=f264e326]
+              - gridcell [ref=f264e329]:
+                - table [ref=f264e331]:
+                  - rowgroup [ref=f264e332]:
+                    - row [ref=f264e333]:
+                      - cell [ref=f264e334]:
+                        - table [ref=f264e335]:
+                          - rowgroup [ref=f264e336]:
+                            - row [ref=f264e337]:
+                              - cell [ref=f264e338]:
+                                - button "Edit" [ref=f264e339] [cursor=pointer]
+                              - cell [ref=f264e341]
+                              - cell [ref=f264e342]:
+                                - button "Remove" [ref=f264e343] [cursor=pointer]
+              - gridcell "Tobias" [ref=f264e345]
+              - gridcell "No" [ref=f264e347]
+              - gridcell "No" [ref=f264e349]
+              - gridcell "Database" [ref=f264e351]
+              - gridcell "H,Tobias (THE)" [ref=f264e353]
+              - gridcell [ref=f264e355]:
+                - table [ref=f264e357]:
+                  - rowgroup [ref=f264e358]:
+                    - row [ref=f264e359]:
+                      - cell [ref=f264e360]:
+                        - table [ref=f264e361]:
+                          - rowgroup [ref=f264e362]:
+                            - row [ref=f264e363]:
+                              - cell [ref=f264e364]:
+                                - button "Edit" [ref=f264e365] [cursor=pointer]
+                              - cell [ref=f264e367]
+                              - cell [ref=f264e368]:
+                                - button "Remove" [ref=f264e369] [cursor=pointer]
+              - gridcell "wsreader" [ref=f264e371]
+              - gridcell "No" [ref=f264e373]
+              - gridcell "No" [ref=f264e375]
+              - gridcell "Database" [ref=f264e377]
+              - gridcell [ref=f264e379]
+              - gridcell [ref=f264e382]:
+                - table [ref=f264e384]:
+                  - rowgroup [ref=f264e385]:
+                    - row [ref=f264e386]:
+                      - cell [ref=f264e387]:
+                        - table [ref=f264e388]:
+                          - rowgroup [ref=f264e389]:
+                            - row [ref=f264e390]:
+                              - cell [ref=f264e391]:
+                                - button "Edit" [ref=f264e392] [cursor=pointer]
+                              - cell [ref=f264e394]
+                              - cell [ref=f264e395]:
+                                - button "Remove" [ref=f264e396] [cursor=pointer]
+            - navigation [ref=f264e399]:
+              - button "First" [disabled] [ref=f264e400]:
+                - generic [ref=f264e401]: 
+              - button "Prev" [disabled] [ref=f264e402]:
+                - generic [ref=f264e403]: 
+              - textbox "Current" [ref=f264e404]: "1"
+              - text: / 2
+              - button "Next" [ref=f264e405] [cursor=pointer]:
+                - generic [ref=f264e406]: 
+              - button "Last" [ref=f264e407] [cursor=pointer]:
+                - generic [ref=f264e408]: 
+              - generic [ref=f264e409]: "[ 1 - 10 / 12 ]"
+          - button "Create" [ref=f264e410] [cursor=pointer]
+      - text:     
+  - table [ref=f264e411]:
+    - rowgroup [ref=f264e412]:
+      - row [ref=f264e413]:
+        - cell [ref=f264e414]:
+          - generic [ref=f264e416]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f264e417] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f264e418]
+  - text:    

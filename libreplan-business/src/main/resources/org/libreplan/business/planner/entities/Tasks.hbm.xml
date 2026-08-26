@@ -19,20 +19,20 @@
         <property name="notes" type="text" />
 
         <component name="startDate" class="org.libreplan.business.workingday.IntraDayDate">
-            <property  name="date" column="start_date" not-null="true" />
+            <property  name="date" column="start_date" not-null="true" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="start_day_duration"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
         <component name="endDate" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="end_date" not-null="true" />
+            <property name="date" column="end_date" not-null="true" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="end_day_duration"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
         </component>
 
-        <property name="deadline"/>
+        <property name="deadline" type="org.libreplan.business.workingday.hibernate.LocalDateType"/>
 
         <property name="advancePercentage" column="advance_percentage" access="field" scale="4"/>
 
@@ -81,7 +81,7 @@
                 </property>
 
                 <component name="constraintDate" class="org.libreplan.business.workingday.IntraDayDate">
-                    <property name="date" column="constraint_date" />
+                    <property name="date" column="constraint_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
                     <property name="effortDuration" column="constraint_date_effort_duration"
                               type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>
@@ -137,7 +137,7 @@
                 </property>
 
                 <component name="constraintDate" class="org.libreplan.business.workingday.IntraDayDate">
-                    <property name="date" column="constraint_date" />
+                    <property name="date" column="constraint_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
                     <property name="effortDuration" column="constraint_date_effort_duration"
                               type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>

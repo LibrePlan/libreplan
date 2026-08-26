@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Raport godzin przepracowanych według zasobu</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="raport-godzin-przepracowanych-wedlug-zasobu">
+<h1 class="title">Raport godzin przepracowanych według zasobu</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#cel" id="toc-entry-1">Cel</a></li>
+<li><a class="reference internal" href="#parametry-wejsciowe-i-filtry" id="toc-entry-2">Parametry wejściowe i filtry</a></li>
+<li><a class="reference internal" href="#wyniki" id="toc-entry-3">Wyniki</a><ul>
+<li><a class="reference internal" href="#naglowek" id="toc-entry-4">Nagłówek</a></li>
+<li><a class="reference internal" href="#stopka" id="toc-entry-5">Stopka</a></li>
+<li><a class="reference internal" href="#tresc" id="toc-entry-6">Treść</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="cel">
+<h1><a class="toc-backref" href="#toc-entry-1">Cel</a></h1>
+<p>Ten raport wyodrębnia listę zadań i czas, jaki zasoby poświęciły na nie w określonym okresie. Kilka filtrów umożliwia użytkownikom zawężenie zapytania w celu uzyskania tylko żądanych informacji i wykluczenia zbędnych danych.</p>
+</div>
+<div class="section" id="parametry-wejsciowe-i-filtry">
+<h1><a class="toc-backref" href="#toc-entry-2">Parametry wejściowe i filtry</a></h1>
+<ul class="simple">
+<li><dl class="first docutils">
+<dt><strong>Daty</strong>.</dt>
+<dd><ul class="first last">
+<li><em>Typ</em>: Opcjonalny.</li>
+<li><dl class="first docutils">
+<dt><em>Dwa pola daty</em>:</dt>
+<dd><ul class="first last">
+<li><em>Data rozpoczęcia:</em> Jest to najwcześniejsza data raportów pracy do uwzględnienia. Raporty pracy z datami wcześniejszymi niż <em>Data rozpoczęcia</em> są wykluczane. Jeśli ten parametr pozostanie pusty, raporty pracy nie są filtrowane według <em>Daty rozpoczęcia</em>.</li>
+<li><em>Data zakończenia:</em> Jest to najpóźniejsza data raportów pracy do uwzględnienia. Raporty pracy z datami późniejszymi niż <em>Data zakończenia</em> są wykluczane. Jeśli ten parametr pozostanie pusty, raporty pracy nie są filtrowane według <em>Daty zakończenia</em>.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><strong>Filtruj według pracowników:</strong>
+*   <em>Typ:</em> Opcjonalny.
+*   <em>Jak działa:</em> Można wybrać jednego lub więcej pracowników, aby ograniczyć raporty pracy do czasu zarejestrowanego przez tych konkretnych pracowników. Aby dodać pracownika jako filtr, wyszukaj go w selektorze i kliknij przycisk <em>Dodaj</em>. Jeśli filtr ten pozostanie pusty, raporty pracy są pobierane niezależnie od pracownika.</li>
+<li><strong>Filtruj według etykiet:</strong>
+*   <em>Typ:</em> Opcjonalny.
+*   <em>Jak działa:</em> Można dodać jedną lub więcej etykiet jako filtry, wyszukując je w selektorze i klikając przycisk <em>Dodaj</em>. Etykiety te służą do wyboru zadań, które mają być uwzględnione w wynikach przy obliczaniu godzin im poświęconych. Filtr ten można stosować do kart czasu pracy, zadań, obu lub żadnego z nich.</li>
+<li><strong>Filtruj według kryteriów:</strong>
+*   <em>Typ:</em> Opcjonalny.
+*   <em>Jak działa:</em> Można wybrać jedno lub więcej kryteriów, wyszukując je w selektorze, a następnie klikając przycisk <em>Dodaj</em>. Kryteria te służą do wyboru zasobów spełniających co najmniej jedno z nich. Raport pokaże cały czas poświęcony przez zasoby spełniające jedno z wybranych kryteriów.</li>
+</ul>
+</div>
+<div class="section" id="wyniki">
+<h1><a class="toc-backref" href="#toc-entry-3">Wyniki</a></h1>
+<div class="section" id="naglowek">
+<h2><a class="toc-backref" href="#toc-entry-4">Nagłówek</a></h2>
+<p>Nagłówek raportu wyświetla filtry, które zostały skonfigurowane i zastosowane do bieżącego raportu.</p>
+</div>
+<div class="section" id="stopka">
+<h2><a class="toc-backref" href="#toc-entry-5">Stopka</a></h2>
+<p>Data wygenerowania raportu jest podana w stopce.</p>
+</div>
+<div class="section" id="tresc">
+<h2><a class="toc-backref" href="#toc-entry-6">Treść</a></h2>
+<p>Treść raportu składa się z kilku grup informacji.</p>
+<ul>
+<li><p class="first">Pierwszy poziom agregacji jest według zasobu. Cały czas poświęcony przez zasób jest wyświetlany razem poniżej nagłówka. Każdy zasób jest identyfikowany przez:</p>
+<ul class="simple">
+<li><em>Pracownik:</em> Nazwisko, Imię.</li>
+<li><em>Maszyna:</em> Nazwa.</li>
+</ul>
+<p>Wiersz podsumowania pokazuje łączną liczbę godzin przepracowanych przez zasób.</p>
+</li>
+<li><p class="first">Drugi poziom grupowania jest według <em>daty</em>. Wszystkie raporty z konkretnego zasobu z tej samej daty są wyświetlane razem.</p>
+<p>Wiersz podsumowania pokazuje łączną liczbę godzin przepracowanych przez zasób w tej dacie.</p>
+</li>
+<li><p class="first">Ostatni poziom wymienia raporty pracy pracownika z danego dnia. Informacje wyświetlane dla każdego wiersza raportu pracy to:</p>
+<ul class="simple">
+<li><em>Kod zadania:</em> Kod zadania, do którego przypisano śledzony czas.</li>
+<li><em>Nazwa zadania:</em> Nazwa zadania, do którego przypisano śledzony czas.</li>
+<li><em>Czas rozpoczęcia:</em> Jest opcjonalny. Jest to czas, w którym zasób rozpoczął pracę nad zadaniem.</li>
+<li><em>Czas zakończenia:</em> Jest opcjonalny. Jest to czas, w którym zasób zakończył pracę nad zadaniem w określonej dacie.</li>
+<li><em>Pola tekstowe:</em> Jest opcjonalny. Jeśli wiersz raportu pracy zawiera pola tekstowe, wypełnione wartości są tutaj wyświetlane. Format to: &lt;Nazwa pola tekstowego&gt;:&lt;Wartość&gt;</li>
+<li><em>Etykiety:</em> Zależy od tego, czy model raportu pracy ma pole etykiety w swojej definicji. Jeśli etykiet jest kilka, są wyświetlane w tej samej kolumnie. Format to: &lt;Nazwa typu etykiety&gt;:&lt;Wartość etykiety&gt;</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</body>
+</html>

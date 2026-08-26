@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,7 +25,6 @@ package org.libreplan.business.resources.daos;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.Criteria;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.resources.entities.CriterionType;
@@ -71,7 +71,7 @@ public interface ICriterionTypeDAO extends IIntegrationEntityDAO<CriterionType> 
     boolean existsPredefinedType(CriterionType criterionType);
 
     /**
-     * Checks if exists any {@link Criteria} of the {@link CriterionType} has been assigned to any  {@link Resource}.
+     * Checks if exists any criterion of the {@link CriterionType} has been assigned to any resource.
      * @param criterionType
      * @return
      */

@@ -35,8 +35,13 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 
 /**
  * Subcontroller for assigning localizations.
@@ -69,8 +74,35 @@ public class LocalizationsController extends GenericForwardComposer {
         return workerModel.getLocalizationsAssigner().getActiveSatisfactions();
     }
 
+    public ListitemRenderer getActiveSatisfactionsRenderer() {
+        return (Listitem item, Object data, int index) -> {
+            final CriterionSatisfaction satisfaction = (CriterionSatisfaction) data;
+            item.setValue(satisfaction);
+            item.appendChild(new Listcell(satisfaction.getCriterion().getName()));
+            item.appendChild(new Listcell(Util.formatDate(satisfaction.getStartDate())));
+        };
+    }
+
     public List<Criterion> getCriterionsNotAssigned() {
         return workerModel.getLocalizationsAssigner().getCriterionsNotAssigned();
+    }
+
+    public ListitemRenderer getCriterionsNotAssignedRenderer() {
+        return (Listitem item, Object data, int index) -> {
+            final Criterion criterion = (Criterion) data;
+            item.setValue(criterion);
+            item.appendChild(new Listcell(criterion.getName()));
+        };
+    }
+
+    public RowRenderer getLocalizationsHistoryRenderer() {
+        return (Row row, Object data, int index) -> {
+            final CriterionSatisfaction satisfaction = (CriterionSatisfaction) data;
+            row.setValue(satisfaction);
+            row.appendChild(new Label(satisfaction.getCriterion().getName()));
+            row.appendChild(new Label(Util.formatDate(satisfaction.getStartDate())));
+            row.appendChild(new Label(satisfaction.getEndDate() != null ? Util.formatDate(satisfaction.getEndDate()) : ""));
+        };
     }
 
     private void reloadLists() {

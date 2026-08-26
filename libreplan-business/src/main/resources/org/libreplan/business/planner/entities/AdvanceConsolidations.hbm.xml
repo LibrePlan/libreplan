@@ -15,12 +15,12 @@
 
         <version name="version" access="property" type="long" />
 
-        <property name="date" access="field"/>
+        <property name="date" access="field" type="org.libreplan.business.workingday.hibernate.LocalDateType"/>
 
         <property name="value" scale="2" access="field" />
 
         <component name="taskEndDate" class="org.libreplan.business.workingday.IntraDayDate">
-            <property name="date" column="task_end_date" />
+            <property name="date" column="task_end_date" type="org.libreplan.business.workingday.hibernate.LocalDateType" />
 
             <property name="effortDuration" column="task_end_date_effort_duration"
                       type="org.libreplan.business.workingday.hibernate.EffortDurationType"/>

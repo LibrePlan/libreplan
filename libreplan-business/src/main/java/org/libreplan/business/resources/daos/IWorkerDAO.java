@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -38,15 +39,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Diego Pino Garcia <dpino@igalia.com>
  */
 public interface IWorkerDAO extends IIntegrationEntityDAO<Worker> {
-
-    /**
-     * Returns workers which name/NIF partially matches with name
-     *
-     * @param name
-     *            search worker by name(firstname or surname)/NIF
-     *
-     */
-    List<Worker> findByNameSubpartOrNifCaseInsensitive(String name, boolean limitingResource);
 
     /**
      * Finds a {@link Worker} with the NIF param that should be unique.

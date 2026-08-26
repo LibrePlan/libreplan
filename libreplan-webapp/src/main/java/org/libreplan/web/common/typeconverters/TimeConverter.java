@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,8 +24,9 @@ package org.libreplan.web.common.typeconverters;
 
 import org.joda.time.LocalTime;
 import org.libreplan.web.common.Util;
+import org.zkoss.bind.BindContext;
+import org.zkoss.bind.Converter;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zkplus.databind.TypeConverter;
 
 /**
  * Converter for the type java.util.Date
@@ -32,15 +34,15 @@ import org.zkoss.zkplus.databind.TypeConverter;
  * @author Susana Montes Pedreira <smontes@wirelessgalicia.com>
  *
  */
-public class TimeConverter implements TypeConverter {
+public class TimeConverter implements Converter<Object, Object, Component> {
 
     @Override
-    public Object coerceToBean(Object arg0, Component arg1) {
+    public Object coerceToBean(Object value, Component component, BindContext ctx) {
         return null;
     }
 
     @Override
-    public Object coerceToUi(Object object, Component component) {
+    public Object coerceToUi(Object object, Component component, BindContext ctx) {
         return Util.formatTime((LocalTime) object);
     }
 }

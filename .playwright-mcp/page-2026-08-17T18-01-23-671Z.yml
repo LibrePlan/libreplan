@@ -1,0 +1,726 @@
+- generic [ref=f113e1]:
+  - generic [ref=f113e4]:
+    - generic [ref=f113e5]:
+      - table [ref=f113e6]:
+        - rowgroup [ref=f113e7]:
+          - row [ref=f113e8]:
+            - cell [ref=f113e9]:
+              - link [ref=f113e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f113e12]:
+              - table [ref=f113e13]:
+                - rowgroup [ref=f113e14]:
+                  - row [ref=f113e15]:
+                    - cell [ref=f113e16]:
+                      - generic [ref=f113e17]:
+                        - menubar [ref=f113e18]:
+                          - menuitem "Planning" [ref=f113e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f113e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f113e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f113e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f113e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f113e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f113e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f113e33]:
+                          - rowgroup [ref=f113e34]:
+                            - row [ref=f113e35]:
+                              - cell [ref=f113e36]:
+                                - table [ref=f113e37]:
+                                  - rowgroup [ref=f113e38]:
+                                    - row [ref=f113e39]:
+                                      - cell [ref=f113e40]
+                                      - cell [ref=f113e41]:
+                                        - strong [ref=f113e42]: START
+                                      - cell [ref=f113e43]
+                                      - cell [ref=f113e44]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f113e45]:
+                                          - rowgroup [ref=f113e46]:
+                                            - row [ref=f113e47]:
+                                              - cell [ref=f113e48]:
+                                                - table [ref=f113e49]:
+                                                  - rowgroup [ref=f113e50]:
+                                                    - row [ref=f113e51]:
+                                                      - cell [ref=f113e52]:
+                                                        - table [ref=f113e53]:
+                                                          - rowgroup [ref=f113e54]:
+                                                            - row [ref=f113e55]:
+                                                              - cell [ref=f113e56]:
+                                                                - table [ref=f113e57]:
+                                                                  - rowgroup [ref=f113e58]:
+                                                                    - row [ref=f113e59]:
+                                                                      - cell [ref=f113e60]
+                                                                      - cell [ref=f113e63]
+                                                                      - cell "Resources" [ref=f113e64]
+                                                      - cell [ref=f113e65]
+                                                      - cell [ref=f113e66]:
+                                                        - table [ref=f113e67]:
+                                                          - rowgroup [ref=f113e68]:
+                                                            - row [ref=f113e69]:
+                                                              - cell [ref=f113e70]:
+                                                                - table [ref=f113e71]:
+                                                                  - rowgroup [ref=f113e72]:
+                                                                    - row [ref=f113e73]:
+                                                                      - cell [ref=f113e74]
+                                                                      - cell [ref=f113e77]
+                                                                      - cell "Calendars" [ref=f113e78]
+                              - cell [ref=f113e79]:
+                                - generic [ref=f113e80]:
+                                  - link "Help" [ref=f113e81] [cursor=pointer]:
+                                    - /url: /help/en/03-calendarios.html
+                                  - img "Axuda" [ref=f113e83]
+                                  - img "Info" [ref=f113e85]
+      - table [ref=f113e87]:
+        - rowgroup [ref=f113e88]:
+          - row [ref=f113e89]:
+            - cell [ref=f113e90]
+            - 'cell "user: admin" [ref=f113e91]'
+            - cell [ref=f113e92]:
+              - link "[Log out]" [ref=f113e93] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f113e94]:
+      - text:    
+      - generic [ref=f113e96]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - text: 
+        - generic [ref=f113e227]:
+          - generic [ref=f113e228]: "Edit Calendar: Default"
+          - generic [ref=f113e231]:
+            - generic [ref=f113e232]:
+              - tablist [ref=f113e233]:
+                - listitem [ref=f113e234] [cursor=pointer]:
+                  - generic [ref=f113e235]: Calendar data
+              - text:  
+              - tabpanel [ref=f113e238]:
+                - grid [ref=f113e239]:
+                  - rowgroup [ref=f113e243]:
+                    - gridcell "Name" [ref=f113e244]
+                    - gridcell [ref=f113e246]:
+                      - textbox [ref=f113e248]: Default
+                    - gridcell "Type" [ref=f113e249]
+                    - gridcell [ref=f113e251]:
+                      - table [ref=f113e253]:
+                        - rowgroup [ref=f113e254]:
+                          - row [ref=f113e255]:
+                            - cell [ref=f113e256]:
+                              - table [ref=f113e257]:
+                                - rowgroup [ref=f113e258]:
+                                  - row [ref=f113e259]:
+                                    - cell "Root calendar" [ref=f113e260]
+                    - gridcell "Code" [ref=f113e261]
+                    - gridcell [ref=f113e263]:
+                      - table [ref=f113e265]:
+                        - rowgroup [ref=f113e266]:
+                          - row [ref=f113e267]:
+                            - cell [ref=f113e268]:
+                              - table [ref=f113e269]:
+                                - rowgroup [ref=f113e270]:
+                                  - row [ref=f113e271]:
+                                    - cell [ref=f113e272]:
+                                      - textbox [disabled] [ref=f113e273]: CALENDAR0001
+                                    - cell [ref=f113e274]
+                                    - cell [ref=f113e275]:
+                                      - generic [ref=f113e276]:
+                                        - checkbox "Generate code" [checked] [ref=f113e277]
+                                        - text: Generate code
+                - table [ref=f113e278]:
+                  - rowgroup [ref=f113e279]:
+                    - row [ref=f113e280]:
+                      - cell [ref=f113e281]:
+                        - table [ref=f113e282]:
+                          - rowgroup [ref=f113e283]:
+                            - row [ref=f113e284]:
+                              - cell [ref=f113e285]:
+                                - table [ref=f113e286]:
+                                  - rowgroup [ref=f113e287]:
+                                    - row [ref=f113e288]:
+                                      - cell [ref=f113e289]:
+                                        - table [ref=f113e290]:
+                                          - rowgroup [ref=f113e291]:
+                                            - row [ref=f113e292]:
+                                              - cell [ref=f113e293]:
+                                                - generic [ref=f113e294]:
+                                                  - generic [ref=f113e295]:
+                                                    - link "Prev" [ref=f113e296] [cursor=pointer]:
+                                                      - /url: javascript:;
+                                                      - generic "Prev" [ref=f113e297]: 
+                                                    - link "Aug 2026" [ref=f113e298] [cursor=pointer]:
+                                                      - /url: javascript:;
+                                                    - link "Next" [ref=f113e299] [cursor=pointer]:
+                                                      - /url: javascript:;
+                                                      - generic "Next" [ref=f113e300]: 
+                                                  - grid [ref=f113e301]:
+                                                    - rowgroup [ref=f113e302]:
+                                                      - row [ref=f113e303]:
+                                                        - columnheader "Sunday" [ref=f113e304]: Sun
+                                                        - columnheader "Monday" [ref=f113e305]: Mon
+                                                        - columnheader "Tuesday" [ref=f113e306]: Tue
+                                                        - columnheader "Wednesday" [ref=f113e307]: Wed
+                                                        - columnheader "Thursday" [ref=f113e308]: Thu
+                                                        - columnheader "Friday" [ref=f113e309]: Fri
+                                                        - columnheader "Saturday" [ref=f113e310]: Sat
+                                                    - rowgroup [ref=f113e311]:
+                                                      - row [ref=f113e312]:
+                                                        - gridcell "26 July, 2026" [ref=f113e313] [cursor=pointer]: "26"
+                                                        - gridcell "27 July, 2026" [ref=f113e314] [cursor=pointer]: "27"
+                                                        - gridcell "28 July, 2026" [ref=f113e315] [cursor=pointer]: "28"
+                                                        - gridcell "29 July, 2026" [ref=f113e316] [cursor=pointer]: "29"
+                                                        - gridcell "30 July, 2026" [ref=f113e317] [cursor=pointer]: "30"
+                                                        - gridcell "31 July, 2026" [ref=f113e318] [cursor=pointer]: "31"
+                                                        - gridcell "1 August, 2026" [ref=f113e319] [cursor=pointer]: "1"
+                                                      - row [ref=f113e320]:
+                                                        - gridcell "2 August, 2026" [ref=f113e321] [cursor=pointer]: "2"
+                                                        - gridcell "3 August, 2026" [ref=f113e322] [cursor=pointer]: "3"
+                                                        - gridcell "4 August, 2026" [ref=f113e323] [cursor=pointer]: "4"
+                                                        - gridcell "5 August, 2026" [ref=f113e324] [cursor=pointer]: "5"
+                                                        - gridcell "6 August, 2026" [ref=f113e325] [cursor=pointer]: "6"
+                                                        - gridcell "7 August, 2026" [ref=f113e326] [cursor=pointer]: "7"
+                                                        - gridcell "8 August, 2026" [ref=f113e327] [cursor=pointer]: "8"
+                                                      - row [ref=f113e328]:
+                                                        - gridcell "9 August, 2026" [ref=f113e329] [cursor=pointer]: "9"
+                                                        - gridcell "10 August, 2026" [ref=f113e330] [cursor=pointer]: "10"
+                                                        - gridcell "11 August, 2026" [ref=f113e331] [cursor=pointer]: "11"
+                                                        - gridcell "12 August, 2026" [ref=f113e332] [cursor=pointer]: "12"
+                                                        - gridcell "13 August, 2026" [ref=f113e333] [cursor=pointer]: "13"
+                                                        - gridcell "14 August, 2026" [ref=f113e334] [cursor=pointer]: "14"
+                                                        - gridcell "15 August, 2026" [ref=f113e335] [cursor=pointer]: "15"
+                                                      - row [ref=f113e336]:
+                                                        - gridcell "16 August, 2026" [ref=f113e337] [cursor=pointer]: "16"
+                                                        - gridcell "17 August, 2026" [ref=f113e338] [cursor=pointer]: "17"
+                                                        - gridcell "18 August, 2026" [ref=f113e339] [cursor=pointer]: "18"
+                                                        - gridcell "19 August, 2026" [ref=f113e340] [cursor=pointer]: "19"
+                                                        - gridcell "20 August, 2026" [ref=f113e341] [cursor=pointer]: "20"
+                                                        - gridcell "21 August, 2026" [ref=f113e342] [cursor=pointer]: "21"
+                                                        - gridcell "22 August, 2026" [ref=f113e343] [cursor=pointer]: "22"
+                                                      - row [ref=f113e344]:
+                                                        - gridcell "23 August, 2026" [ref=f113e345] [cursor=pointer]: "23"
+                                                        - gridcell "24 August, 2026" [ref=f113e346] [cursor=pointer]: "24"
+                                                        - gridcell "25 August, 2026" [ref=f113e347] [cursor=pointer]: "25"
+                                                        - gridcell "26 August, 2026" [ref=f113e348] [cursor=pointer]: "26"
+                                                        - gridcell "27 August, 2026" [ref=f113e349] [cursor=pointer]: "27"
+                                                        - gridcell "28 August, 2026" [ref=f113e350] [cursor=pointer]: "28"
+                                                        - gridcell "29 August, 2026" [ref=f113e351] [cursor=pointer]: "29"
+                                                      - row [ref=f113e352]:
+                                                        - gridcell "30 August, 2026" [ref=f113e353] [cursor=pointer]: "30"
+                                                        - gridcell "31 August, 2026" [ref=f113e354] [cursor=pointer]: "31"
+                                                        - gridcell "1 September, 2026" [ref=f113e355] [cursor=pointer]: "1"
+                                                        - gridcell "2 September, 2026" [ref=f113e356] [cursor=pointer]: "2"
+                                                        - gridcell "3 September, 2026" [ref=f113e357] [cursor=pointer]: "3"
+                                                        - gridcell "4 September, 2026" [ref=f113e358] [cursor=pointer]: "4"
+                                                        - gridcell "5 September, 2026" [ref=f113e359] [cursor=pointer]: "5"
+                                            - row [ref=f113e360]:
+                                              - cell [ref=f113e361]
+                                            - row [ref=f113e362]:
+                                              - cell [ref=f113e363]:
+                                                - grid [ref=f113e364]:
+                                                  - rowgroup [ref=f113e368]:
+                                                    - row [ref=f113e369]:
+                                                      - columnheader "Day properties" [ref=f113e370]
+                                                  - rowgroup [ref=f113e375]:
+                                                    - gridcell "Day" [ref=f113e376]
+                                                    - gridcell [ref=f113e378]:
+                                                      - combobox [ref=f113e380]:
+                                                        - textbox [disabled] [ref=f113e381]: Aug 17, 2026
+                                                        - text:     
+                                                    - gridcell "Type" [ref=f113e382]
+                                                    - gridcell "Normal" [ref=f113e384]
+                                                    - gridcell "Workable time" [ref=f113e386]
+                                                    - gridcell "7:0" [ref=f113e388]
+                              - cell [ref=f113e390]
+                              - cell [ref=f113e391]:
+                                - generic [ref=f113e392]:
+                                  - tablist [ref=f113e393]:
+                                    - listitem [ref=f113e394] [cursor=pointer]:
+                                      - generic [ref=f113e395]: Exceptions
+                                    - listitem [ref=f113e397] [cursor=pointer]:
+                                      - generic [ref=f113e398]: Work week
+                                  - text:  
+                                  - generic [ref=f113e400]:
+                                    - text:                   
+                                    - tabpanel [ref=f113e609]:
+                                      - table [ref=f113e610]:
+                                        - rowgroup [ref=f113e611]:
+                                          - row [ref=f113e612]:
+                                            - cell [ref=f113e613]:
+                                              - table [ref=f113e614]:
+                                                - rowgroup [ref=f113e615]:
+                                                  - row [ref=f113e616]:
+                                                    - cell [ref=f113e617]:
+                                                      - generic [ref=f113e618]:
+                                                        - table [ref=f113e620]:
+                                                          - rowgroup [ref=f113e626]:
+                                                            - row [ref=f113e627]:
+                                                              - columnheader "Day of week" [ref=f113e628]
+                                                              - columnheader "Normal Effort" [ref=f113e630]
+                                                              - columnheader "Extra Effort" [ref=f113e632]
+                                                              - columnheader "Inherited" [ref=f113e634]
+                                                              - columnheader
+                                                        - table [ref=f113e637]:
+                                                          - rowgroup [ref=f113e643]:
+                                                            - row "Monday 7 0 0 0 Unlimited" [ref=f113e644]:
+                                                              - cell "Monday" [ref=f113e645] [cursor=pointer]
+                                                              - cell [ref=f113e647] [cursor=pointer]:
+                                                                - table [ref=f113e649]:
+                                                                  - rowgroup [ref=f113e650]:
+                                                                    - row [ref=f113e651]:
+                                                                      - cell [ref=f113e652]:
+                                                                        - table [ref=f113e653]:
+                                                                          - rowgroup [ref=f113e654]:
+                                                                            - row [ref=f113e655]:
+                                                                              - cell [ref=f113e656]:
+                                                                                - spinbutton [ref=f113e657]: "7"
+                                                                                - generic [ref=f113e658]:
+                                                                                  - generic [ref=f113e659]: 
+                                                                                  - generic [ref=f113e661]: 
+                                                                              - cell [ref=f113e663]
+                                                                              - cell [ref=f113e664]:
+                                                                                - spinbutton [ref=f113e665]: "0"
+                                                                                - generic [ref=f113e666]:
+                                                                                  - generic [ref=f113e667]: 
+                                                                                  - generic [ref=f113e669]: 
+                                                              - cell [ref=f113e671] [cursor=pointer]:
+                                                                - table [ref=f113e673]:
+                                                                  - rowgroup [ref=f113e674]:
+                                                                    - row [ref=f113e675]:
+                                                                      - cell [ref=f113e676]:
+                                                                        - table [ref=f113e677]:
+                                                                          - rowgroup [ref=f113e678]:
+                                                                            - row [ref=f113e679]:
+                                                                              - cell [ref=f113e680]:
+                                                                                - table [ref=f113e681]:
+                                                                                  - rowgroup [ref=f113e682]:
+                                                                                    - row [ref=f113e683]:
+                                                                                      - cell [ref=f113e684]:
+                                                                                        - table [ref=f113e685]:
+                                                                                          - rowgroup [ref=f113e686]:
+                                                                                            - row [ref=f113e687]:
+                                                                                              - cell [ref=f113e688]:
+                                                                                                - spinbutton [ref=f113e689]: "0"
+                                                                                                - generic [ref=f113e690]:
+                                                                                                  - generic [ref=f113e691]: 
+                                                                                                  - generic [ref=f113e693]: 
+                                                                                              - cell [ref=f113e695]
+                                                                                              - cell [ref=f113e696]:
+                                                                                                - spinbutton [ref=f113e697]: "0"
+                                                                                                - generic [ref=f113e698]:
+                                                                                                  - generic [ref=f113e699]: 
+                                                                                                  - generic [ref=f113e701]: 
+                                                                              - cell [ref=f113e703]
+                                                                              - cell [ref=f113e704]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e705]:
+                                                                                  - checkbox "Unlimited" [ref=f113e706]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e707] [cursor=pointer]
+                                                            - row "Tuesday 7 0 0 0 Unlimited" [ref=f113e709]:
+                                                              - cell "Tuesday" [ref=f113e710] [cursor=pointer]
+                                                              - cell [ref=f113e712] [cursor=pointer]:
+                                                                - table [ref=f113e714]:
+                                                                  - rowgroup [ref=f113e715]:
+                                                                    - row [ref=f113e716]:
+                                                                      - cell [ref=f113e717]:
+                                                                        - table [ref=f113e718]:
+                                                                          - rowgroup [ref=f113e719]:
+                                                                            - row [ref=f113e720]:
+                                                                              - cell [ref=f113e721]:
+                                                                                - spinbutton [ref=f113e722]: "7"
+                                                                                - generic [ref=f113e723]:
+                                                                                  - generic [ref=f113e724]: 
+                                                                                  - generic [ref=f113e726]: 
+                                                                              - cell [ref=f113e728]
+                                                                              - cell [ref=f113e729]:
+                                                                                - spinbutton [ref=f113e730]: "0"
+                                                                                - generic [ref=f113e731]:
+                                                                                  - generic [ref=f113e732]: 
+                                                                                  - generic [ref=f113e734]: 
+                                                              - cell [ref=f113e736] [cursor=pointer]:
+                                                                - table [ref=f113e738]:
+                                                                  - rowgroup [ref=f113e739]:
+                                                                    - row [ref=f113e740]:
+                                                                      - cell [ref=f113e741]:
+                                                                        - table [ref=f113e742]:
+                                                                          - rowgroup [ref=f113e743]:
+                                                                            - row [ref=f113e744]:
+                                                                              - cell [ref=f113e745]:
+                                                                                - table [ref=f113e746]:
+                                                                                  - rowgroup [ref=f113e747]:
+                                                                                    - row [ref=f113e748]:
+                                                                                      - cell [ref=f113e749]:
+                                                                                        - table [ref=f113e750]:
+                                                                                          - rowgroup [ref=f113e751]:
+                                                                                            - row [ref=f113e752]:
+                                                                                              - cell [ref=f113e753]:
+                                                                                                - spinbutton [ref=f113e754]: "0"
+                                                                                                - generic [ref=f113e755]:
+                                                                                                  - generic [ref=f113e756]: 
+                                                                                                  - generic [ref=f113e758]: 
+                                                                                              - cell [ref=f113e760]
+                                                                                              - cell [ref=f113e761]:
+                                                                                                - spinbutton [ref=f113e762]: "0"
+                                                                                                - generic [ref=f113e763]:
+                                                                                                  - generic [ref=f113e764]: 
+                                                                                                  - generic [ref=f113e766]: 
+                                                                              - cell [ref=f113e768]
+                                                                              - cell [ref=f113e769]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e770]:
+                                                                                  - checkbox "Unlimited" [ref=f113e771]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e772] [cursor=pointer]
+                                                            - row "Wednesday 7 0 0 0 Unlimited" [ref=f113e774]:
+                                                              - cell "Wednesday" [ref=f113e775] [cursor=pointer]
+                                                              - cell [ref=f113e777] [cursor=pointer]:
+                                                                - table [ref=f113e779]:
+                                                                  - rowgroup [ref=f113e780]:
+                                                                    - row [ref=f113e781]:
+                                                                      - cell [ref=f113e782]:
+                                                                        - table [ref=f113e783]:
+                                                                          - rowgroup [ref=f113e784]:
+                                                                            - row [ref=f113e785]:
+                                                                              - cell [ref=f113e786]:
+                                                                                - spinbutton [ref=f113e787]: "7"
+                                                                                - generic [ref=f113e788]:
+                                                                                  - generic [ref=f113e789]: 
+                                                                                  - generic [ref=f113e791]: 
+                                                                              - cell [ref=f113e793]
+                                                                              - cell [ref=f113e794]:
+                                                                                - spinbutton [ref=f113e795]: "0"
+                                                                                - generic [ref=f113e796]:
+                                                                                  - generic [ref=f113e797]: 
+                                                                                  - generic [ref=f113e799]: 
+                                                              - cell [ref=f113e801] [cursor=pointer]:
+                                                                - table [ref=f113e803]:
+                                                                  - rowgroup [ref=f113e804]:
+                                                                    - row [ref=f113e805]:
+                                                                      - cell [ref=f113e806]:
+                                                                        - table [ref=f113e807]:
+                                                                          - rowgroup [ref=f113e808]:
+                                                                            - row [ref=f113e809]:
+                                                                              - cell [ref=f113e810]:
+                                                                                - table [ref=f113e811]:
+                                                                                  - rowgroup [ref=f113e812]:
+                                                                                    - row [ref=f113e813]:
+                                                                                      - cell [ref=f113e814]:
+                                                                                        - table [ref=f113e815]:
+                                                                                          - rowgroup [ref=f113e816]:
+                                                                                            - row [ref=f113e817]:
+                                                                                              - cell [ref=f113e818]:
+                                                                                                - spinbutton [ref=f113e819]: "0"
+                                                                                                - generic [ref=f113e820]:
+                                                                                                  - generic [ref=f113e821]: 
+                                                                                                  - generic [ref=f113e823]: 
+                                                                                              - cell [ref=f113e825]
+                                                                                              - cell [ref=f113e826]:
+                                                                                                - spinbutton [ref=f113e827]: "0"
+                                                                                                - generic [ref=f113e828]:
+                                                                                                  - generic [ref=f113e829]: 
+                                                                                                  - generic [ref=f113e831]: 
+                                                                              - cell [ref=f113e833]
+                                                                              - cell [ref=f113e834]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e835]:
+                                                                                  - checkbox "Unlimited" [ref=f113e836]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e837] [cursor=pointer]
+                                                            - row "Thursday 7 0 0 0 Unlimited" [ref=f113e839]:
+                                                              - cell "Thursday" [ref=f113e840] [cursor=pointer]
+                                                              - cell [ref=f113e842] [cursor=pointer]:
+                                                                - table [ref=f113e844]:
+                                                                  - rowgroup [ref=f113e845]:
+                                                                    - row [ref=f113e846]:
+                                                                      - cell [ref=f113e847]:
+                                                                        - table [ref=f113e848]:
+                                                                          - rowgroup [ref=f113e849]:
+                                                                            - row [ref=f113e850]:
+                                                                              - cell [ref=f113e851]:
+                                                                                - spinbutton [ref=f113e852]: "7"
+                                                                                - generic [ref=f113e853]:
+                                                                                  - generic [ref=f113e854]: 
+                                                                                  - generic [ref=f113e856]: 
+                                                                              - cell [ref=f113e858]
+                                                                              - cell [ref=f113e859]:
+                                                                                - spinbutton [ref=f113e860]: "0"
+                                                                                - generic [ref=f113e861]:
+                                                                                  - generic [ref=f113e862]: 
+                                                                                  - generic [ref=f113e864]: 
+                                                              - cell [ref=f113e866] [cursor=pointer]:
+                                                                - table [ref=f113e868]:
+                                                                  - rowgroup [ref=f113e869]:
+                                                                    - row [ref=f113e870]:
+                                                                      - cell [ref=f113e871]:
+                                                                        - table [ref=f113e872]:
+                                                                          - rowgroup [ref=f113e873]:
+                                                                            - row [ref=f113e874]:
+                                                                              - cell [ref=f113e875]:
+                                                                                - table [ref=f113e876]:
+                                                                                  - rowgroup [ref=f113e877]:
+                                                                                    - row [ref=f113e878]:
+                                                                                      - cell [ref=f113e879]:
+                                                                                        - table [ref=f113e880]:
+                                                                                          - rowgroup [ref=f113e881]:
+                                                                                            - row [ref=f113e882]:
+                                                                                              - cell [ref=f113e883]:
+                                                                                                - spinbutton [ref=f113e884]: "0"
+                                                                                                - generic [ref=f113e885]:
+                                                                                                  - generic [ref=f113e886]: 
+                                                                                                  - generic [ref=f113e888]: 
+                                                                                              - cell [ref=f113e890]
+                                                                                              - cell [ref=f113e891]:
+                                                                                                - spinbutton [ref=f113e892]: "0"
+                                                                                                - generic [ref=f113e893]:
+                                                                                                  - generic [ref=f113e894]: 
+                                                                                                  - generic [ref=f113e896]: 
+                                                                              - cell [ref=f113e898]
+                                                                              - cell [ref=f113e899]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e900]:
+                                                                                  - checkbox "Unlimited" [ref=f113e901]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e902] [cursor=pointer]
+                                                            - row "Friday 7 0 0 0 Unlimited" [ref=f113e904]:
+                                                              - cell "Friday" [ref=f113e905] [cursor=pointer]
+                                                              - cell [ref=f113e907] [cursor=pointer]:
+                                                                - table [ref=f113e909]:
+                                                                  - rowgroup [ref=f113e910]:
+                                                                    - row [ref=f113e911]:
+                                                                      - cell [ref=f113e912]:
+                                                                        - table [ref=f113e913]:
+                                                                          - rowgroup [ref=f113e914]:
+                                                                            - row [ref=f113e915]:
+                                                                              - cell [ref=f113e916]:
+                                                                                - spinbutton [ref=f113e917]: "7"
+                                                                                - generic [ref=f113e918]:
+                                                                                  - generic [ref=f113e919]: 
+                                                                                  - generic [ref=f113e921]: 
+                                                                              - cell [ref=f113e923]
+                                                                              - cell [ref=f113e924]:
+                                                                                - spinbutton [ref=f113e925]: "0"
+                                                                                - generic [ref=f113e926]:
+                                                                                  - generic [ref=f113e927]: 
+                                                                                  - generic [ref=f113e929]: 
+                                                              - cell [ref=f113e931] [cursor=pointer]:
+                                                                - table [ref=f113e933]:
+                                                                  - rowgroup [ref=f113e934]:
+                                                                    - row [ref=f113e935]:
+                                                                      - cell [ref=f113e936]:
+                                                                        - table [ref=f113e937]:
+                                                                          - rowgroup [ref=f113e938]:
+                                                                            - row [ref=f113e939]:
+                                                                              - cell [ref=f113e940]:
+                                                                                - table [ref=f113e941]:
+                                                                                  - rowgroup [ref=f113e942]:
+                                                                                    - row [ref=f113e943]:
+                                                                                      - cell [ref=f113e944]:
+                                                                                        - table [ref=f113e945]:
+                                                                                          - rowgroup [ref=f113e946]:
+                                                                                            - row [ref=f113e947]:
+                                                                                              - cell [ref=f113e948]:
+                                                                                                - spinbutton [ref=f113e949]: "0"
+                                                                                                - generic [ref=f113e950]:
+                                                                                                  - generic [ref=f113e951]: 
+                                                                                                  - generic [ref=f113e953]: 
+                                                                                              - cell [ref=f113e955]
+                                                                                              - cell [ref=f113e956]:
+                                                                                                - spinbutton [ref=f113e957]: "0"
+                                                                                                - generic [ref=f113e958]:
+                                                                                                  - generic [ref=f113e959]: 
+                                                                                                  - generic [ref=f113e961]: 
+                                                                              - cell [ref=f113e963]
+                                                                              - cell [ref=f113e964]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e965]:
+                                                                                  - checkbox "Unlimited" [ref=f113e966]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e967] [cursor=pointer]
+                                                            - row "Saturday 0 0 0 0 Unlimited" [ref=f113e969]:
+                                                              - cell "Saturday" [ref=f113e970] [cursor=pointer]
+                                                              - cell [ref=f113e972] [cursor=pointer]:
+                                                                - table [ref=f113e974]:
+                                                                  - rowgroup [ref=f113e975]:
+                                                                    - row [ref=f113e976]:
+                                                                      - cell [ref=f113e977]:
+                                                                        - table [ref=f113e978]:
+                                                                          - rowgroup [ref=f113e979]:
+                                                                            - row [ref=f113e980]:
+                                                                              - cell [ref=f113e981]:
+                                                                                - spinbutton [ref=f113e982]: "0"
+                                                                                - generic [ref=f113e983]:
+                                                                                  - generic [ref=f113e984]: 
+                                                                                  - generic [ref=f113e986]: 
+                                                                              - cell [ref=f113e988]
+                                                                              - cell [ref=f113e989]:
+                                                                                - spinbutton [ref=f113e990]: "0"
+                                                                                - generic [ref=f113e991]:
+                                                                                  - generic [ref=f113e992]: 
+                                                                                  - generic [ref=f113e994]: 
+                                                              - cell [ref=f113e996] [cursor=pointer]:
+                                                                - table [ref=f113e998]:
+                                                                  - rowgroup [ref=f113e999]:
+                                                                    - row [ref=f113e1000]:
+                                                                      - cell [ref=f113e1001]:
+                                                                        - table [ref=f113e1002]:
+                                                                          - rowgroup [ref=f113e1003]:
+                                                                            - row [ref=f113e1004]:
+                                                                              - cell [ref=f113e1005]:
+                                                                                - table [ref=f113e1006]:
+                                                                                  - rowgroup [ref=f113e1007]:
+                                                                                    - row [ref=f113e1008]:
+                                                                                      - cell [ref=f113e1009]:
+                                                                                        - table [ref=f113e1010]:
+                                                                                          - rowgroup [ref=f113e1011]:
+                                                                                            - row [ref=f113e1012]:
+                                                                                              - cell [ref=f113e1013]:
+                                                                                                - spinbutton [ref=f113e1014]: "0"
+                                                                                                - generic [ref=f113e1015]:
+                                                                                                  - generic [ref=f113e1016]: 
+                                                                                                  - generic [ref=f113e1018]: 
+                                                                                              - cell [ref=f113e1020]
+                                                                                              - cell [ref=f113e1021]:
+                                                                                                - spinbutton [ref=f113e1022]: "0"
+                                                                                                - generic [ref=f113e1023]:
+                                                                                                  - generic [ref=f113e1024]: 
+                                                                                                  - generic [ref=f113e1026]: 
+                                                                              - cell [ref=f113e1028]
+                                                                              - cell [ref=f113e1029]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e1030]:
+                                                                                  - checkbox "Unlimited" [ref=f113e1031]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e1032] [cursor=pointer]
+                                                            - row "Sunday 0 0 0 0 Unlimited" [ref=f113e1034]:
+                                                              - cell "Sunday" [ref=f113e1035] [cursor=pointer]
+                                                              - cell [ref=f113e1037] [cursor=pointer]:
+                                                                - table [ref=f113e1039]:
+                                                                  - rowgroup [ref=f113e1040]:
+                                                                    - row [ref=f113e1041]:
+                                                                      - cell [ref=f113e1042]:
+                                                                        - table [ref=f113e1043]:
+                                                                          - rowgroup [ref=f113e1044]:
+                                                                            - row [ref=f113e1045]:
+                                                                              - cell [ref=f113e1046]:
+                                                                                - spinbutton [ref=f113e1047]: "0"
+                                                                                - generic [ref=f113e1048]:
+                                                                                  - generic [ref=f113e1049]: 
+                                                                                  - generic [ref=f113e1051]: 
+                                                                              - cell [ref=f113e1053]
+                                                                              - cell [ref=f113e1054]:
+                                                                                - spinbutton [ref=f113e1055]: "0"
+                                                                                - generic [ref=f113e1056]:
+                                                                                  - generic [ref=f113e1057]: 
+                                                                                  - generic [ref=f113e1059]: 
+                                                              - cell [ref=f113e1061] [cursor=pointer]:
+                                                                - table [ref=f113e1063]:
+                                                                  - rowgroup [ref=f113e1064]:
+                                                                    - row [ref=f113e1065]:
+                                                                      - cell [ref=f113e1066]:
+                                                                        - table [ref=f113e1067]:
+                                                                          - rowgroup [ref=f113e1068]:
+                                                                            - row [ref=f113e1069]:
+                                                                              - cell [ref=f113e1070]:
+                                                                                - table [ref=f113e1071]:
+                                                                                  - rowgroup [ref=f113e1072]:
+                                                                                    - row [ref=f113e1073]:
+                                                                                      - cell [ref=f113e1074]:
+                                                                                        - table [ref=f113e1075]:
+                                                                                          - rowgroup [ref=f113e1076]:
+                                                                                            - row [ref=f113e1077]:
+                                                                                              - cell [ref=f113e1078]:
+                                                                                                - spinbutton [ref=f113e1079]: "0"
+                                                                                                - generic [ref=f113e1080]:
+                                                                                                  - generic [ref=f113e1081]: 
+                                                                                                  - generic [ref=f113e1083]: 
+                                                                                              - cell [ref=f113e1085]
+                                                                                              - cell [ref=f113e1086]:
+                                                                                                - spinbutton [ref=f113e1087]: "0"
+                                                                                                - generic [ref=f113e1088]:
+                                                                                                  - generic [ref=f113e1089]: 
+                                                                                                  - generic [ref=f113e1091]: 
+                                                                              - cell [ref=f113e1093]
+                                                                              - cell [ref=f113e1094]:
+                                                                                - generic "Infinitely Over Assignable" [ref=f113e1095]:
+                                                                                  - checkbox "Unlimited" [ref=f113e1096]
+                                                                                  - text: Unlimited
+                                                              - cell [ref=f113e1097] [cursor=pointer]
+                                                          - rowgroup:
+                                                            - row
+                                                  - row [ref=f113e1099]:
+                                                    - cell [ref=f113e1100]
+                                                  - row [ref=f113e1101]:
+                                                    - cell [ref=f113e1102]:
+                                                      - button "Create new Workweek" [active] [ref=f113e1103] [cursor=pointer]
+                                                  - row [ref=f113e1104]:
+                                                    - cell [ref=f113e1105]
+                                                  - row [ref=f113e1106]:
+                                                    - cell "Work weeks list Parent Valid from Valid until Summary Op. 7:0 [0:0] - 7:0 [0:0] - 7:0 [0:0] - 7:0 [0:0] - 7:0 [0:0] - 0:0 [0:0] - 0:0 [0:0]" [ref=f113e1107]:
+                                                      - generic [ref=f113e1108]:
+                                                        - generic [ref=f113e1109]: Work weeks list
+                                                        - generic [ref=f113e1113]:
+                                                          - table [ref=f113e1115]:
+                                                            - rowgroup [ref=f113e1121]:
+                                                              - row "Parent Valid from Valid until Summary Op." [ref=f113e1122]:
+                                                                - columnheader "Parent"
+                                                                - columnheader "Valid from" [ref=f113e1124]
+                                                                - columnheader "Valid until" [ref=f113e1126]
+                                                                - columnheader "Summary" [ref=f113e1128]
+                                                                - columnheader "Op." [ref=f113e1130]
+                                                                - columnheader
+                                                          - table [ref=f113e1133]:
+                                                            - rowgroup [ref=f113e1139]:
+                                                              - row [ref=f113e1140]:
+                                                                - cell:
+                                                                  - generic [ref=f113e1141] [cursor=pointer]
+                                                                - cell [ref=f113e1143] [cursor=pointer]:
+                                                                  - combobox [ref=f113e1145]:
+                                                                    - textbox [disabled] [ref=f113e1146]
+                                                                    - button [ref=f113e1147]:
+                                                                      - generic [ref=f113e1148]: 
+                                                                    - text:    
+                                                                - cell [ref=f113e1149] [cursor=pointer]:
+                                                                  - combobox [ref=f113e1151]:
+                                                                    - textbox [disabled] [ref=f113e1152]
+                                                                    - button [ref=f113e1153]:
+                                                                      - generic [ref=f113e1154]: 
+                                                                    - text:    
+                                                                - cell "7:0 [0:0] - 7:0 [0:0] - 7:0 [0:0] - 7:0 [0:0] - 7:0 [0:0] - 0:0 [0:0] - 0:0 [0:0]" [ref=f113e1155] [cursor=pointer]
+                                                                - cell [ref=f113e1157] [cursor=pointer]:
+                                                                  - button "Delete" [disabled] [ref=f113e1159]
+                                                            - rowgroup:
+                                                              - row
+            - table [ref=f113e594]:
+              - rowgroup [ref=f113e595]:
+                - row [ref=f113e596]:
+                  - cell [ref=f113e597]:
+                    - table [ref=f113e598]:
+                      - rowgroup [ref=f113e599]:
+                        - row [ref=f113e600]:
+                          - cell [ref=f113e601]:
+                            - button "Save" [ref=f113e602] [cursor=pointer]
+                          - cell [ref=f113e603]
+                          - cell [ref=f113e604]:
+                            - button "Save and Continue" [ref=f113e605] [cursor=pointer]
+                          - cell [ref=f113e606]
+                          - cell [ref=f113e607]:
+                            - button "Cancel" [ref=f113e608] [cursor=pointer]
+    - table [ref=f113e219]:
+      - rowgroup [ref=f113e220]:
+        - row [ref=f113e221]:
+          - cell [ref=f113e222]:
+            - generic [ref=f113e224]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f113e225] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f113e226]
+    - text:    
+  - text:            

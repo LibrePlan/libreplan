@@ -1,0 +1,272 @@
+- generic [ref=f960e1]:
+  - generic [ref=f960e4]:
+    - generic [ref=f960e5]:
+      - table [ref=f960e6]:
+        - rowgroup [ref=f960e7]:
+          - row [ref=f960e8]:
+            - cell [ref=f960e9]:
+              - link [ref=f960e10] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f960e12]:
+              - table [ref=f960e13]:
+                - rowgroup [ref=f960e14]:
+                  - row [ref=f960e15]:
+                    - cell [ref=f960e16]:
+                      - generic [ref=f960e17]:
+                        - menubar [ref=f960e18]:
+                          - menuitem "Planning" [ref=f960e19] [cursor=pointer]: 
+                          - text:        
+                          - menuitem "Resources" [ref=f960e21] [cursor=pointer]: 
+                          - text:           
+                          - menuitem "Cost" [ref=f960e23] [cursor=pointer]: 
+                          - text:      
+                          - menuitem "Configuration" [ref=f960e25] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Communications" [ref=f960e27] [cursor=pointer]: 
+                          - text:     
+                          - menuitem "Reports" [ref=f960e29] [cursor=pointer]: 
+                          - text:         
+                          - menuitem "Personal area" [ref=f960e31] [cursor=pointer]: 
+                          - text:  
+                        - table [ref=f960e33]:
+                          - rowgroup [ref=f960e34]:
+                            - row [ref=f960e35]:
+                              - cell [ref=f960e36]:
+                                - table [ref=f960e37]:
+                                  - rowgroup [ref=f960e38]:
+                                    - row [ref=f960e39]:
+                                      - cell [ref=f960e40]
+                                      - cell [ref=f960e41]:
+                                        - strong [ref=f960e42]: START
+                                      - cell [ref=f960e43]
+                                      - cell [ref=f960e44]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f960e45]:
+                                          - rowgroup [ref=f960e46]:
+                                            - row [ref=f960e47]:
+                                              - cell [ref=f960e48]:
+                                                - table [ref=f960e49]:
+                                                  - rowgroup [ref=f960e50]:
+                                                    - row [ref=f960e51]:
+                                                      - cell [ref=f960e52]:
+                                                        - table [ref=f960e53]:
+                                                          - rowgroup [ref=f960e54]:
+                                                            - row [ref=f960e55]:
+                                                              - cell [ref=f960e56]:
+                                                                - table [ref=f960e57]:
+                                                                  - rowgroup [ref=f960e58]:
+                                                                    - row [ref=f960e59]:
+                                                                      - cell [ref=f960e60]
+                                                                      - cell [ref=f960e63]
+                                                                      - cell "Resources" [ref=f960e64]
+                                                      - cell [ref=f960e65]
+                                                      - cell [ref=f960e66]:
+                                                        - table [ref=f960e67]:
+                                                          - rowgroup [ref=f960e68]:
+                                                            - row [ref=f960e69]:
+                                                              - cell [ref=f960e70]:
+                                                                - table [ref=f960e71]:
+                                                                  - rowgroup [ref=f960e72]:
+                                                                    - row [ref=f960e73]:
+                                                                      - cell [ref=f960e74]
+                                                                      - cell [ref=f960e77]
+                                                                      - cell "Machines" [ref=f960e78]
+                              - cell [ref=f960e79]:
+                                - generic [ref=f960e80]:
+                                  - link "Help" [ref=f960e81] [cursor=pointer]:
+                                    - /url: /help/en/05-recursos.html#xesti-n-de-m-quinas
+                                  - img "Axuda" [ref=f960e83]
+                                  - img "Info" [ref=f960e85]
+      - table [ref=f960e87]:
+        - rowgroup [ref=f960e88]:
+          - row [ref=f960e89]:
+            - cell [ref=f960e90]
+            - 'cell "user: admin" [ref=f960e91]'
+            - cell [ref=f960e92]:
+              - link "[Log out]" [ref=f960e93] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+    - generic [ref=f960e94]:
+      - text:    
+      - generic [ref=f960e96]:
+        - table:
+          - rowgroup:
+            - row:
+              - cell:
+                - table
+        - generic [ref=f960e97]:
+          - generic [ref=f960e98]: Machines List
+          - generic [ref=f960e99]:
+            - separator [ref=f960e100]
+            - table [ref=f960e102]:
+              - rowgroup [ref=f960e103]:
+                - row [ref=f960e104]:
+                  - cell [ref=f960e105]:
+                    - table [ref=f960e106]:
+                      - rowgroup [ref=f960e107]:
+                        - row [ref=f960e108]:
+                          - cell "Filter by" [ref=f960e109]
+                          - cell [ref=f960e110]
+                          - cell [ref=f960e111]:
+                            - combobox [ref=f960e113]:
+                              - textbox [ref=f960e114]
+                              - button [ref=f960e115] [cursor=pointer]:
+                                - generic [ref=f960e116]: 
+                          - cell [ref=f960e117]
+                          - cell "Personal details" [ref=f960e118]
+                          - cell [ref=f960e119]
+                          - cell [ref=f960e120]:
+                            - textbox [ref=f960e121]
+                          - cell [ref=f960e122]
+                          - cell "More options" [ref=f960e123]:
+                            - generic [ref=f960e124]:
+                              - generic [ref=f960e125]: More options
+                              - text:          
+                          - cell [ref=f960e128]
+                          - cell [ref=f960e129]:
+                            - button "Filter" [ref=f960e130] [cursor=pointer]
+            - separator [ref=f960e131]
+            - grid [ref=f960e132]:
+              - rowgroup [ref=f960e139]:
+                - columnheader [ref=f960e140]:
+                  - generic [ref=f960e141] [cursor=pointer]:
+                    - generic [ref=f960e142]: 
+                    - text: Name
+                - columnheader "Description" [ref=f960e144]
+                - columnheader "Code" [ref=f960e146]
+                - columnheader "Queue-based" [ref=f960e148]
+                - columnheader "Operations" [ref=f960e150]
+              - rowgroup [ref=f960e158]:
+                - gridcell "Druckmaschine01" [ref=f960e159] [cursor=pointer]
+                - gridcell "eine druckmaschine" [ref=f960e161] [cursor=pointer]
+                - gridcell "MACHINE0001" [ref=f960e163] [cursor=pointer]
+                - gridcell "no" [ref=f960e165] [cursor=pointer]
+                - gridcell [ref=f960e167] [cursor=pointer]:
+                  - table [ref=f960e169]:
+                    - rowgroup [ref=f960e170]:
+                      - row [ref=f960e171]:
+                        - cell [ref=f960e172]:
+                          - table [ref=f960e173]:
+                            - rowgroup [ref=f960e174]:
+                              - row [ref=f960e175]:
+                                - cell [ref=f960e176]:
+                                  - button "Edit" [ref=f960e177]
+                                - cell [ref=f960e179]
+                                - cell [ref=f960e180]:
+                                  - button "Remove" [ref=f960e181]
+                - gridcell "TE0001 Prüfstand 1 - Elektromotor 90 kW" [ref=f960e183]
+                - gridcell "." [ref=f960e185]
+                - gridcell "MACHINE0011" [ref=f960e187]
+                - gridcell "no" [ref=f960e189]
+                - gridcell [ref=f960e191]:
+                  - table [ref=f960e193]:
+                    - rowgroup [ref=f960e194]:
+                      - row [ref=f960e195]:
+                        - cell [ref=f960e196]:
+                          - table [ref=f960e197]:
+                            - rowgroup [ref=f960e198]:
+                              - row [ref=f960e199]:
+                                - cell [ref=f960e200]:
+                                  - button "Edit" [ref=f960e201] [cursor=pointer]
+                                - cell [ref=f960e203]
+                                - cell [ref=f960e204]:
+                                  - button "Remove" [ref=f960e205] [cursor=pointer]
+                - gridcell "TE0002 Prüfstand 2 - Elektromotor 43 kW" [ref=f960e207]
+                - gridcell "." [ref=f960e209]
+                - gridcell "MACHINE0012" [ref=f960e211]
+                - gridcell "no" [ref=f960e213]
+                - gridcell [ref=f960e215]:
+                  - table [ref=f960e217]:
+                    - rowgroup [ref=f960e218]:
+                      - row [ref=f960e219]:
+                        - cell [ref=f960e220]:
+                          - table [ref=f960e221]:
+                            - rowgroup [ref=f960e222]:
+                              - row [ref=f960e223]:
+                                - cell [ref=f960e224]:
+                                  - button "Edit" [ref=f960e225] [cursor=pointer]
+                                - cell [ref=f960e227]
+                                - cell [ref=f960e228]:
+                                  - button "Remove" [ref=f960e229] [cursor=pointer]
+                - gridcell "TE0033 1 / 12 12-fach Prüfstand" [ref=f960e231]
+                - gridcell "." [ref=f960e233]
+                - gridcell "MACHINE0013" [ref=f960e235]
+                - gridcell "no" [ref=f960e237]
+                - gridcell [ref=f960e239]:
+                  - table [ref=f960e241]:
+                    - rowgroup [ref=f960e242]:
+                      - row [ref=f960e243]:
+                        - cell [ref=f960e244]:
+                          - table [ref=f960e245]:
+                            - rowgroup [ref=f960e246]:
+                              - row [ref=f960e247]:
+                                - cell [ref=f960e248]:
+                                  - button "Edit" [ref=f960e249] [cursor=pointer]
+                                - cell [ref=f960e251]
+                                - cell [ref=f960e252]:
+                                  - button "Remove" [ref=f960e253] [cursor=pointer]
+                - gridcell "TE0033 2 / 12 12-fach Prüfstand" [ref=f960e255]
+                - gridcell "." [ref=f960e257]
+                - gridcell "MACHINE0014" [ref=f960e259]
+                - gridcell "no" [ref=f960e261]
+                - gridcell [ref=f960e263]:
+                  - table [ref=f960e265]:
+                    - rowgroup [ref=f960e266]:
+                      - row [ref=f960e267]:
+                        - cell [ref=f960e268]:
+                          - table [ref=f960e269]:
+                            - rowgroup [ref=f960e270]:
+                              - row [ref=f960e271]:
+                                - cell [ref=f960e272]:
+                                  - button "Edit" [ref=f960e273] [cursor=pointer]
+                                - cell [ref=f960e275]
+                                - cell [ref=f960e276]:
+                                  - button "Remove" [ref=f960e277] [cursor=pointer]
+              - generic [ref=f960e279]:    
+            - button "Create" [ref=f960e280] [cursor=pointer]
+        - text:                                                                 
+    - table [ref=f960e281]:
+      - rowgroup [ref=f960e282]:
+        - row [ref=f960e283]:
+          - cell [ref=f960e284]:
+            - generic [ref=f960e286]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f960e287] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f960e288]
+    - text:    
+  - generic [ref=f960e289]:
+    - generic [ref=f960e290]: "LibrePlan: Runtime Error"
+    - generic [ref=f960e292]:
+      - generic [ref=f960e293]: Message - Cannot invoke "org.zkoss.zul.ext.Sortable.sort(java.util.Comparator, boolean)" because "model" is null
+      - generic [ref=f960e296]:
+        - grid [ref=f960e297]:
+          - rowgroup [ref=f960e301]:
+            - gridcell "Exception type" [ref=f960e302]
+            - gridcell "class java.lang.NullPointerException" [ref=f960e304]
+            - gridcell "Status code" [ref=f960e306]
+            - gridcell "500" [ref=f960e308]
+            - gridcell "Stacktrace" [ref=f960e310]
+            - gridcell [ref=f960e312]:
+              - textbox [active] [ref=f960e314]: "java.lang.NullPointerException: Cannot invoke \"org.zkoss.zul.ext.Sortable.sort(java.util.Comparator, boolean)\" because \"model\" is null at org.libreplan.web.resources.worker.CriterionsMachineController.forceSortGridSatisfaction(CriterionsMachineController.java:143) at org.libreplan.web.resources.worker.CriterionsMachineController.reload(CriterionsMachineController.java:136) at org.libreplan.web.resources.worker.CriterionsMachineController.prepareForEdit(CriterionsMachineController.java:103) at org.libreplan.web.resources.machine.MachineCRUDController.prepareCriterionsForEdit(MachineCRUDController.java:239) at org.libreplan.web.resources.machine.MachineCRUDController.initEdit(MachineCRUDController.java:226) at org.libreplan.web.resources.machine.MachineCRUDController.initEdit(MachineCRUDController.java:84) at org.libreplan.web.common.BaseCRUDController.goToEditForm(BaseCRUDController.java:191) at org.libreplan.web.resources.machine.MachineCRUDController.lambda$getMachinesRenderer$1(MachineCRUDController.java:601) at org.zkoss.zk.ui.AbstractComponent.onEvent(AbstractComponent.java:3171) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3141) at org.zkoss.zk.ui.AbstractComponent.service(AbstractComponent.java:3083) at org.zkoss.zk.ui.impl.EventProcessor.process(EventProcessor.java:138) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.process0(EventProcessingThreadImpl.java:545) at org.zkoss.zk.ui.impl.EventProcessingThreadImpl.run(EventProcessingThreadImpl.java:470)"
+        - table [ref=f960e315]:
+          - rowgroup [ref=f960e316]:
+            - row [ref=f960e317]:
+              - cell [ref=f960e318]:
+                - table [ref=f960e319]:
+                  - rowgroup [ref=f960e320]:
+                    - row [ref=f960e321]:
+                      - cell [ref=f960e322]:
+                        - button "Continue" [ref=f960e323] [cursor=pointer]
+                      - cell [ref=f960e324]
+                      - cell [ref=f960e325]:
+                        - button "Reload" [ref=f960e326] [cursor=pointer]
+                      - cell [ref=f960e327]
+                      - cell [ref=f960e328]:
+                        - button "Exit session" [ref=f960e329] [cursor=pointer]

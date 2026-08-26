@@ -33,6 +33,7 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 
 import java.util.Date;
 import java.util.List;
@@ -152,8 +153,16 @@ public class CompletedEstimatedHoursPerTaskController extends LibrePlanReportCon
         return completedEstimatedHoursPerTaskModel.getSelectedLabels();
     }
 
+    public ListitemRenderer getLabelsRenderer() {
+        return ReportListitemRenderers.labelRenderer(this::onRemoveLabel);
+    }
+
     public List<Criterion> getSelectedCriterions() {
         return completedEstimatedHoursPerTaskModel.getSelectedCriterions();
+    }
+
+    public ListitemRenderer getCriterionsRenderer() {
+        return ReportListitemRenderers.criterionRenderer(this::onRemoveCriterion);
     }
 
     public List<Criterion> getAllCriterions() {

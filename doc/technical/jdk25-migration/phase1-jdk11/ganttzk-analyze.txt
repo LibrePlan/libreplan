@@ -1,0 +1,280 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< org.libreplan:ganttzk >------------------------
+[INFO] Building LibrePlan ZK Components Module 1.6.0
+[INFO]   from pom.xml
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> dependency:3.7.0:analyze (default-cli) > test-compile @ ganttzk >>>
+[WARNING] 1 problem was encountered while building the effective model for org.javassist:javassist:jar:3.18.2-GA during dependency collection step for project (use -X to see details)
+[INFO] 
+[INFO] --- resources:3.4.0:resources (default-resources) @ ganttzk ---
+[INFO] Copying 0 resource from src/main/resources to target/classes
+[INFO] Copying 114 resources from src/main/resources to target/classes
+[INFO] Copying 1 resource from ../src/main/jetty to target/jetty
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/workingArrangementsPerOrder_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/completedEstimatedHours_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/hoursWorkedPerWorker_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/hoursWorkedPerWorkerInAMonth_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/orderCostsPerResource_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/schedulingProgressPerOrder_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/timeLineRequiredMaterial_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/workingProgressPerTask_Bundle to target/classes
+[INFO] Copying 19 resources from ../libreplan-webapp/src/main/jasper/projectStatus_Bundle to target/classes
+[INFO] 
+[INFO] --- compiler:3.15.0:compile (default-compile) @ ganttzk ---
+[INFO] Nothing to compile - all classes are up to date.
+[INFO] 
+[INFO] --- gettext:1.2.4:dist (default) @ ganttzk ---
+[INFO] Processing pl.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_pl.class
+[INFO] Processing es.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_es.class
+[INFO] Processing nb.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_nb.class
+[INFO] Processing ca.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_ca.class
+[INFO] Processing zh.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_zh.class
+[INFO] Processing cs.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_cs.class
+[INFO] Processing ja.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_ja.class
+[INFO] Processing fr.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_fr.class
+[INFO] Processing gl.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_gl.class
+[INFO] Processing pt_BR.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_pt_BR.class
+[INFO] Processing sv_SE.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_sv_SE.class
+[INFO] Processing pt.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_pt.class
+[INFO] Processing de.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_de.class
+[INFO] Processing uk.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_uk.class
+[INFO] Processing nl.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_nl.class
+[INFO] Processing ru.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_ru.class
+[INFO] Processing zh_CN.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_zh_CN.class
+[INFO] Processing it.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_it.class
+[INFO] Processing fa_IR.po
+[INFO] Not compiling, target is up-to-date: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/app/i18n/Messages_fa_IR.class
+[INFO] Creating resource bundle for source locale
+[INFO] Creating default resource bundle
+[INFO] 
+[INFO] --- resources:3.4.0:testResources (default-testResources) @ ganttzk ---
+[INFO] skip non existing resourceDirectory /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/resources
+[INFO] skip non existing resourceDirectory /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/resources
+[INFO] 
+[INFO] --- compiler:3.15.0:testCompile (default-testCompile) @ ganttzk ---
+[INFO] Recompiling the module because of changed source code.
+[INFO] Compiling 8 source files with javac [debug verbose release 8] to target/test-classes
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/constraint/ConstraintOnComparableValuesTest.java]]
+[parsing completed 12ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/constraint/ConstraintTest.java]]
+[parsing completed 4ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/criticalpath/CriticalPathCalculatorTest.java]]
+[parsing completed 38ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/resourceload/LoadLevelTest.java]]
+[parsing completed 1ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/resourceload/LoadPeriodTest.java]]
+[parsing completed 2ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/resourceload/LoadTimelineTest.java]]
+[parsing completed 0ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/timetracker/OnColumnsRowRendererTest.java]]
+[parsing completed 2ms]
+[parsing started SimpleFileObject[/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/util/MutableTreeModelTest.java]]
+[parsing completed 4ms]
+[search path for source files: /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java]
+[search path for class files: /usr/lib/jvm/java-11-openjdk-amd64/lib/modules,/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes,/home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes,/home/jeroen/.m2/repository/com/googlecode/gettext-commons/gettext-commons/0.9.8/gettext-commons-0.9.8.jar,/home/jeroen/.m2/repository/org/apache/commons/commons-math3/3.6.1/commons-math3-3.6.1.jar,/home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar,/home/jeroen/.m2/repository/commons-logging/commons-logging/1.2/commons-logging-1.2.jar,/home/jeroen/.m2/repository/org/apache/commons/commons-lang3/3.4/commons-lang3-3.4.jar,/home/jeroen/.m2/repository/org/apache/commons/commons-collections4/4.1/commons-collections4-4.1.jar,/home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar,/home/jeroen/.m2/repository/org/zkoss/zk/zkplus/8.6.0.1/zkplus-8.6.0.1.jar,/home/jeroen/.m2/repository/org/zkoss/zk/zk/8.6.0.1/zk-8.6.0.1.jar,/home/jeroen/.m2/repository/org/zkoss/common/zweb/8.6.0.1/zweb-8.6.0.1.jar,/home/jeroen/.m2/repository/org/zkoss/common/zcommon/8.6.0.1/zcommon-8.6.0.1.jar,/home/jeroen/.m2/repository/commons-fileupload/commons-fileupload/1.6.0/commons-fileupload-1.6.0.jar,/home/jeroen/.m2/repository/commons-io/commons-io/2.19.0/commons-io-2.19.0.jar,/home/jeroen/.m2/repository/org/zkoss/common/zel/8.6.0.1/zel-8.6.0.1.jar,/home/jeroen/.m2/repository/org/javassist/javassist/3.18.2-GA/javassist-3.18.2-GA.jar,/home/jeroen/.m2/repository/org/apache-extras/beanshell/bsh/2.0b6/bsh-2.0b6.jar,/home/jeroen/.m2/repository/org/slf4j/slf4j-api/1.7.5/slf4j-api-1.7.5.jar,/home/jeroen/.m2/repository/commons-codec/commons-codec/1.8/commons-codec-1.8.jar,/home/jeroen/.m2/repository/com/google/javascript/closure-compiler-unshaded/v20170626/closure-compiler-unshaded-v20170626.jar,/home/jeroen/.m2/repository/com/google/javascript/closure-compiler-externs/v20170626/closure-compiler-externs-v20170626.jar,/home/jeroen/.m2/repository/args4j/args4j/2.33/args4j-2.33.jar,/home/jeroen/.m2/repository/com/google/errorprone/error_prone_annotations/2.0.18/error_prone_annotations-2.0.18.jar,/home/jeroen/.m2/repository/com/google/guava/guava/20.0/guava-20.0.jar,/home/jeroen/.m2/repository/com/google/protobuf/protobuf-java/3.0.2/protobuf-java-3.0.2.jar,/home/jeroen/.m2/repository/com/google/code/gson/gson/2.7/gson-2.7.jar,/home/jeroen/.m2/repository/com/google/code/findbugs/jsr305/3.0.1/jsr305-3.0.1.jar,/home/jeroen/.m2/repository/com/google/jsinterop/jsinterop-annotations/1.0.0/jsinterop-annotations-1.0.0.jar,/home/jeroen/.m2/repository/org/zkoss/zk/zkwebfragment/8.6.0.1/zkwebfragment-8.6.0.1.jar,/home/jeroen/.m2/repository/org/jgrapht/jgrapht-core/0.9.2/jgrapht-core-0.9.2.jar,/home/jeroen/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar,/home/jeroen/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar,/home/jeroen/.m2/repository/org/easymock/easymock/3.4/easymock-3.4.jar,/home/jeroen/.m2/repository/org/objenesis/objenesis/2.2/objenesis-2.2.jar,/home/jeroen/.m2/repository/org/easymock/easymockclassextension/3.2/easymockclassextension-3.2.jar,/home/jeroen/.m2/repository/org/jfree/jfreechart/1.0.19/jfreechart-1.0.19.jar,/home/jeroen/.m2/repository/org/jfree/jcommon/1.0.23/jcommon-1.0.23.jar,/home/jeroen/.m2/repository/javax/servlet/javax.servlet-api/3.1.0/javax.servlet-api-3.1.0.jar,.]
+[loading /home/jeroen/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(/org/hamcrest/CoreMatchers.class)]
+[loading /home/jeroen/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar(/org/junit/Assert.class)]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/constraint/ConstraintOnComparableValues.class]
+[loading /89A/java/util/Date.sig]
+[loading /home/jeroen/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar(/org/junit/Test.class)]
+[loading /876/java/lang/Object.sig]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/constraint/Constraint.class]
+[loading /home/jeroen/.m2/repository/org/easymock/easymock/3.4/easymock-3.4.jar(/org/easymock/EasyMock.class)]
+[loading /89A/java/util/ArrayList.sig]
+[loading /8/java/util/List.sig]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/constraint/Constraint$IConstraintViolationListener.class]
+[loading /8/java/lang/Integer.sig]
+[loading /8/java/util/Arrays.sig]
+[loading /89A/java/util/Collections.sig]
+[loading /89/java/util/HashSet.sig]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/Days.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/LocalDate.class)]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/DependencyType.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/GanttDate.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/IDependency.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/ITaskFundamentalProperties.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/criticalpath/ICriticalPathCalculable.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/criticalpath/CriticalPathCalculator.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/resourceload/LoadLevel.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/resourceload/LoadLevel$Category.class]
+[loading /8769A/java/util/ListIterator.sig]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/resourceload/LoadPeriod.class]
+[loading /8/java/lang/String.sig]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/resourceload/LoadTimeLine.class]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/DateTime.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/Period.class)]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/timetracker/zoom/DetailItem.class]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zk/8.6.0.1/zk-8.6.0.1.jar(/org/zkoss/zk/ui/Component.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/Row.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/Label.class)]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/timetracker/OnColumnsRowRenderer.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/timetracker/ICellForDetailItemRenderer.class]
+[loading /879A/java/lang/Exception.sig]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/util/MutableTreeModel.class]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/util/MutableTreeModel$IChildrenExtractor.class]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/TreeModel.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/event/TreeDataEvent.class)]
+[loading /8769A/java/lang/annotation/Retention.sig]
+[loading /8769A/java/lang/annotation/RetentionPolicy.sig]
+[loading /8769A/java/lang/annotation/Target.sig]
+[loading /8/java/lang/annotation/ElementType.sig]
+[loading /8769A/java/lang/annotation/Annotation.sig]
+[loading /876/java/lang/SuppressWarnings.sig]
+[loading /8/java/lang/Class.sig]
+[loading /8769A/java/lang/IllegalArgumentException.sig]
+[loading /879A/java/lang/RuntimeException.sig]
+[loading /8769A/java/lang/NullPointerException.sig]
+[loading /8769A/java/lang/Override.sig]
+[checking org.zkoss.ganttz.data.constraint.ConstraintOnComparableValuesTest]
+[loading /8769A/java/io/Serializable.sig]
+[loading /879A/java/lang/AutoCloseable.sig]
+[loading /8769A/java/lang/Comparable.sig]
+[loading /8769A/java/lang/Cloneable.sig]
+[loading /home/jeroen/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(/org/hamcrest/Matcher.class)]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintOnComparableValuesTest.class]
+[checking org.zkoss.ganttz.data.constraint.ConstraintTest]
+[loading /89A/java/util/Collection.sig]
+[loading /8769A/java/lang/Number.sig]
+[loading /8/java/lang/Byte.sig]
+[loading /8/java/lang/Character.sig]
+[loading /8/java/lang/Short.sig]
+[loading /8/java/lang/Long.sig]
+[loading /8/java/lang/Float.sig]
+[loading /8/java/lang/Math.sig]
+[loading /8769A/java/util/AbstractList.sig]
+[loading /8769A/java/util/AbstractCollection.sig]
+[loading /89A/java/lang/Iterable.sig]
+[loading /home/jeroen/.m2/repository/org/easymock/easymock/3.4/easymock-3.4.jar(/org/easymock/IExpectationSetters.class)]
+[loading /8/java/lang/Boolean.sig]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/constraint/Constraint$ConstraintBuilder.class]
+[loading /8/java/lang/Double.sig]
+[loading /8769A/java/lang/Void.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintTest$1.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintTest$2.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintTest$3.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintTest$4.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintTest$5.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/constraint/ConstraintTest.class]
+[checking org.zkoss.ganttz.data.criticalpath.CriticalPathCalculatorTest]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/ReadablePartial.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/BaseLocal.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/AbstractPartial.class)]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/GanttDate$LocalDateBased.class]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/ReadableInstant.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/BaseSingleFieldPeriod.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/ReadablePeriod.class)]
+[loading /8/java/util/Set.sig]
+[loading /8769A/java/util/AbstractSet.sig]
+[loading /home/jeroen/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(/org/hamcrest/core/AnyOf.class)]
+[loading /home/jeroen/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(/org/hamcrest/core/ShortcutCombination.class)]
+[loading /home/jeroen/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar(/org/hamcrest/BaseMatcher.class)]
+[loading /89A/java/util/Iterator.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/criticalpath/CriticalPathCalculatorTest.class]
+[checking org.zkoss.ganttz.data.resourceload.LoadLevelTest]
+[loading /8769A/java/lang/Enum.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/resourceload/LoadLevelTest.class]
+[checking org.zkoss.ganttz.data.resourceload.LoadPeriodTest]
+[loading /879A/java/lang/Error.sig]
+[loading /879A/java/lang/Throwable.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/resourceload/LoadPeriodTest.class]
+[checking org.zkoss.ganttz.data.resourceload.LoadTimelineTest]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/data/resourceload/TimeLineRole.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/data/resourceload/LoadTimelineTest.class]
+[checking org.zkoss.ganttz.timetracker.OnColumnsRowRendererTest]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/RowRenderer.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/ReadableDateTime.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/BaseDateTime.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/AbstractDateTime.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/AbstractInstant.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/BasePeriod.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/base/AbstractPeriod.class)]
+[loading /home/jeroen/.m2/repository/joda-time/joda-time/2.9.3/joda-time-2.9.3.jar(/org/joda/time/ReadableDuration.class)]
+[loading /8769A/java/util/RandomAccess.sig]
+[loading /8/java/util/Comparator.sig]
+[loading /8/java/util/function/UnaryOperator.sig]
+[loading /8/java/util/function/Predicate.sig]
+[loading /8/java/util/Spliterator.sig]
+[loading /8/java/util/function/Consumer.sig]
+[loading /8/java/util/stream/Stream.sig]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/impl/XulElement.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zk/8.6.0.1/zk-8.6.0.1.jar(/org/zkoss/zk/ui/HtmlBasedComponent.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zk/8.6.0.1/zk-8.6.0.1.jar(/org/zkoss/zk/ui/AbstractComponent.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zk/8.6.0.1/zk-8.6.0.1.jar(/org/zkoss/zk/ui/ext/Scope.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zk/8.6.0.1/zk-8.6.0.1.jar(/org/zkoss/zk/ui/sys/ComponentCtrl.class)]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/timetracker/OnColumnsRowRendererTest$Data.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/timetracker/OnColumnsRowRendererTest$CellRenderer.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/timetracker/OnColumnsRowRendererTest$CellRendererNotInferable.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/timetracker/OnColumnsRowRendererTest$1.class]
+[loading /876/java/lang/StringBuilder.sig]
+[loading /8/java/lang/CharSequence.sig]
+[loading /876/java/lang/AbstractStringBuilder.sig]
+[loading /8769A/java/lang/Appendable.sig]
+[loading /8/java/lang/StringBuffer.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/timetracker/OnColumnsRowRendererTest.class]
+[checking org.zkoss.ganttz.util.MutableTreeModelTest]
+[loading /89A/java/lang/reflect/GenericDeclaration.sig]
+[loading /8/java/lang/reflect/AnnotatedElement.sig]
+[loading /89A/java/lang/reflect/Type.sig]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/AbstractTreeModel.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/ext/TreeSelectableModel.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/ext/TreeOpenableModel.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/ext/Selectable.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/ext/Openable.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/PageableModel.class)]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/ext/Pageable.class)]
+[loading /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/classes/org/zkoss/ganttz/util/MutableTreeModel$Node.class]
+[loading /home/jeroen/.m2/repository/org/zkoss/zk/zul/8.6.0.1/zul-8.6.0.1.jar(/org/zkoss/zul/event/TreeDataListener.class)]
+[loading /8/java/lang/invoke/LambdaMetafactory.sig]
+[loading /8/java/lang/invoke/MethodHandles.sig]
+[loading /8/java/lang/invoke/MethodHandles$Lookup.sig]
+[loading /879/java/lang/invoke/MethodType.sig]
+[loading /87/java/lang/invoke/MethodHandle.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/util/MutableTreeModelTest$Prueba.class]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/util/MutableTreeModelTest$1.class]
+[loading /87/java/lang/invoke/CallSite.sig]
+[wrote /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/target/test-classes/org/zkoss/ganttz/util/MutableTreeModelTest.class]
+[total 1127ms]
+[INFO] /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/constraint/ConstraintOnComparableValuesTest.java: Some input files use or override a deprecated API.
+[INFO] /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/constraint/ConstraintOnComparableValuesTest.java: Recompile with -Xlint:deprecation for details.
+[INFO] /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/constraint/ConstraintTest.java: Some input files use unchecked or unsafe operations.
+[INFO] /home/jeroen/src/libreplan-vibe-cli/claude/libreplan/ganttzk/src/test/java/org/zkoss/ganttz/data/constraint/ConstraintTest.java: Recompile with -Xlint:unchecked for details.
+[INFO] 
+[INFO] <<< dependency:3.7.0:analyze (default-cli) < test-compile @ ganttzk <<<
+[INFO] 
+[INFO] 
+[INFO] --- dependency:3.7.0:analyze (default-cli) @ ganttzk ---
+[WARNING] Used undeclared dependencies found:
+[WARNING]    org.hamcrest:hamcrest-core:jar:1.3:test
+[WARNING]    org.zkoss.common:zcommon:jar:8.6.0.1:compile
+[WARNING] Unused declared dependencies found:
+[WARNING]    org.apache.commons:commons-math3:jar:3.6.1:compile
+[WARNING]    org.zkoss.zk:zkplus:jar:8.6.0.1:compile
+[WARNING]    org.easymock:easymockclassextension:jar:3.2:test
+[WARNING]    org.jfree:jfreechart:jar:1.0.19:compile
+[WARNING]    org.jfree:jcommon:jar:1.0.23:compile
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.565 s
+[INFO] Finished at: 2026-08-11T17:31:32+02:00
+[INFO] ------------------------------------------------------------------------

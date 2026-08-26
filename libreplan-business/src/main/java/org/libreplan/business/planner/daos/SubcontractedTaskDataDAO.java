@@ -6,6 +6,7 @@
  * Copyright (C) 2010-2011 Igalia, S.L.
  *
  * Copyright (C) 2011 WirelessGalicia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,11 +27,17 @@ package org.libreplan.business.planner.daos;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderElement;
+import org.libreplan.business.orders.entities.SchedulingDataForVersion;
+import org.libreplan.business.orders.entities.TaskSource;
 import org.libreplan.business.planner.entities.SubcontractedTaskData;
 import org.libreplan.business.planner.entities.Task;
 import org.libreplan.business.planner.entities.TaskElement;
@@ -106,12 +113,13 @@ public class SubcontractedTaskDataDAO
     public SubcontractedTaskData getSubcontractedTaskDataByOrderElement(OrderElement orderElement)
             throws InstanceNotFoundException {
 
-        TaskElement taskElement = (TaskElement) getSession()
-                .createCriteria(TaskElement.class)
-                .createCriteria("taskSource", "ts")
-                .createCriteria("schedulingData", "data")
-                .add(Restrictions.eq("data.orderElement", orderElement))
-                .uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<TaskElement> cq = cb.createQuery(TaskElement.class);
+        Root<TaskElement> root = cq.from(TaskElement.class);
+        Join<TaskElement, TaskSource> ts = root.join("taskSource");
+        Join<TaskSource, SchedulingDataForVersion> data = ts.join("schedulingData");
+        cq.where(cb.equal(data.get("orderElement"), orderElement));
+        TaskElement taskElement = getSession().createQuery(cq).uniqueResult();
 
         return (taskElement != null && taskElement.isSubcontracted())
                 ? ((Task) taskElement).getSubcontractedTaskData()

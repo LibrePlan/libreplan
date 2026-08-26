@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,9 +28,9 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.hibernate.NonUniqueResultException;
-import javax.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.libreplan.business.calendars.daos.ICalendarExceptionTypeDAO;
 import org.libreplan.business.common.IHumanIdentifiable;
 import org.libreplan.business.common.IntegrationEntity;

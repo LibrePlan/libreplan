@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +34,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.Session;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
@@ -571,12 +572,17 @@ public class ResourceAllocationDAO
             return "join " + taskAlias
                     + ".taskSource.schedulingData as schedulingData "
                     + "join schedulingData.orderElement as orderElement "
-                    + ", OrderVersion as version ";
+                    + "join orderElement.schedulingDataForVersion as versionEntry ";
         }
 
         @Override
         public String wherePart() {
-            return "orderElement.schedulingDataForVersion[version] = schedulingData and version.ownerScenario = :scenario";
+            // versionEntry is a map entry (OrderVersion -> SchedulingDataForVersion); the bracket
+            // index form orderElement.schedulingDataForVersion[version] used to express this same
+            // condition, but Hibernate 6's HQL translator desugars a map-index expression whose key
+            // is itself a from-clause alias into an implicit join reusing that alias, which then
+            // collides with the alias declared explicitly for it - regardless of what it's named.
+            return "versionEntry = schedulingData and KEY(versionEntry).ownerScenario = :scenario";
         }
 
         @Override

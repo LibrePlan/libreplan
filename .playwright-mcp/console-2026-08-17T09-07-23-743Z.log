@@ -1,0 +1,10 @@
+[     250ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) @ http://127.0.0.1:8080/common/layout/login.zul:0
+[     817ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[     902ms] [WARNING] Ignoring Event: exclusion rule @ https://opencollective.com/_next/static/chunks/appCommon-53fbc04c2cc03803.js:13
+[    8607ms] [LOG] LegendResize @ http://127.0.0.1:8080/zkau/web/_zv1.6.0/js/ganttz.wpd:665
+[   17298ms] Unknown stub jSJT1h
+[   17298ms] TypeError: Cannot read properties of undefined (reading 'indexOf')
+    at zk.scriptErrorHandlerEnabled.zk.scriptErrorHandler (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:1092323)
+    at p (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:165255)
+    at dispatch (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:168437)
+    at l.handle (http://127.0.0.1:8080/zkau/web/c6953168/js/zk.wpd:5:166367)

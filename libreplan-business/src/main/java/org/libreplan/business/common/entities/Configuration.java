@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2012 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -22,10 +23,10 @@
 package org.libreplan.business.common.entities;
 
 import org.apache.commons.lang3.StringUtils;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotNull;
 import org.libreplan.business.calendars.entities.BaseCalendar;
 import org.libreplan.business.common.BaseEntity;
 import org.libreplan.business.costcategories.entities.TypeOfWorkHours;

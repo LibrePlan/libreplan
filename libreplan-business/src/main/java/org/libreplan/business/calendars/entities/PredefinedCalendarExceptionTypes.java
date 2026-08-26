@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -45,18 +46,33 @@ public enum PredefinedCalendarExceptionTypes {
     NOT_WORKING_DAY("NOT_WORKING_DAY", CalendarExceptionTypeColor.GREEN, true,
             EffortDuration.zero(),false);
 
-    private CalendarExceptionType calendarExceptionType;
+    private final String name;
+    private final CalendarExceptionTypeColor color;
+    private final Boolean notAssignable;
+    private final EffortDuration duration;
+    private final Boolean updatable;
 
     private PredefinedCalendarExceptionTypes(String name,
             CalendarExceptionTypeColor color, Boolean notAssignable,
             EffortDuration duration, Boolean updatable) {
-        // Using the name as code in order to be more human friendly
-        calendarExceptionType = CalendarExceptionType.create(name, name, color,
-                notAssignable, updatable);
-        calendarExceptionType.setDuration(duration);
+        this.name = name;
+        this.color = color;
+        this.notAssignable = notAssignable;
+        this.duration = duration;
+        this.updatable = updatable;
     }
 
+    /**
+     * Builds a fresh, never-persisted {@link CalendarExceptionType} matching this predefined
+     * type. Returns a new instance on every call rather than a cached one: {@link CalendarBootstrap}
+     * saves the result, and a shared instance would keep the id/version it got from its first
+     * save across later, independent bootstrap runs (e.g. one per test transaction).
+     */
     public CalendarExceptionType getCalendarExceptionType() {
+        // Using the name as code in order to be more human friendly
+        CalendarExceptionType calendarExceptionType = CalendarExceptionType.create(name, name, color,
+                notAssignable, updatable);
+        calendarExceptionType.setDuration(duration);
         return calendarExceptionType;
     }
 

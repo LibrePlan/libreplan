@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Pracovní výkazy</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="pracovni-vykazy">
+<h1 class="title">Pracovní výkazy</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#typy-pracovnich-vykazu" id="toc-entry-1">Typy pracovních výkazů</a></li>
+<li><a class="reference internal" href="#seznam-pracovnich-vykazu" id="toc-entry-2">Seznam pracovních výkazů</a></li>
+</ul>
+</div>
+<p>Pracovní výkazy umožňují sledování hodin, které zdroje věnují úkolům, ke kterým jsou přiřazeny.</p>
+<p>Program umožňuje uživatelům konfigurovat nové formuláře pro zadávání věnovaných hodin a specifikovat pole, která chtějí v těchto formulářích zobrazit. To umožňuje začlenění výkazů z úkolů provedených pracovníky a sledování jejich aktivity.</p>
+<p>Než mohou uživatelé přidat položky pro zdroje, musí definovat alespoň jeden typ pracovního výkazu. Tento typ definuje strukturu výkazu včetně všech řádků, které se do něj přidávají. Uživatelé mohou v systému vytvářet libovolný počet typů pracovních výkazů.</p>
+<div class="section" id="typy-pracovnich-vykazu">
+<h1><a class="toc-backref" href="#toc-entry-1">Typy pracovních výkazů</a></h1>
+<p>Pracovní výkaz se skládá z řady polí, která jsou společná pro celý výkaz, a ze sady řádků pracovního výkazu se specifickými hodnotami pro pole definovaná v každém řádku. Například zdroje a úkoly jsou společné pro všechny výkazy. Mohou však existovat jiná nová pole, například „incidenty&quot;, která nejsou vyžadována u všech typů výkazů.</p>
+<p>Uživatelé mohou konfigurovat různé typy pracovních výkazů, aby si společnost mohla navrhnout své výkazy tak, aby vyhovovaly jejím specifickým potřebám:</p>
+<div class="figure">
+<img alt="images/work-report-types.png" src="images/work-report-types.png" style="width: 326.8px; height: 91.60000000000001px;" />
+<p class="caption">Typy pracovních výkazů</p>
+</div>
+<p>Správa typů pracovních výkazů umožňuje uživatelům konfigurovat tyto typy a přidávat nová textová pole nebo volitelné značky. Na první záložce pro úpravu typů pracovních výkazů je možné konfigurovat typ povinných atributů (zda se vztahují na celý výkaz nebo jsou specifikovány na úrovni řádků) a přidávat nová volitelná pole.</p>
+<p>Povinná pole, která musí být ve všech pracovních výkazech, jsou následující:</p>
+<ul class="simple">
+<li><strong>Název a kód:</strong> Identifikační pole pro název typu pracovního výkazu a jeho kód.</li>
+<li><strong>Datum:</strong> Pole pro datum výkazu.</li>
+<li><strong>Zdroj:</strong> Pracovník nebo stroj uvedený ve výkazu nebo řádku pracovního výkazu.</li>
+<li><strong>Prvek objednávky:</strong> Kód prvku objednávky, ke kterému je přiřazena provedená práce.</li>
+<li><strong>Správa hodin:</strong> Určuje politiku přiřazování hodin, která se má použít:<ul>
+<li><strong>Podle přiřazených hodin:</strong> Hodiny jsou přiřazeny na základě přiřazených hodin.</li>
+<li><strong>Podle začátku a konce pracovní doby:</strong> Hodiny jsou vypočítány na základě začátku a konce pracovní doby.</li>
+<li><strong>Podle počtu hodin a rozsahu začátku a konce:</strong> Jsou povoleny odchylky a počet hodin má přednost.</li>
+</ul>
+</li>
+</ul>
+<p>Uživatelé mohou do výkazů přidávat nová pole:</p>
+<ul class="simple">
+<li><strong>Typ značky:</strong> Uživatelé mohou požádat systém, aby při vyplňování pracovního výkazu zobrazil značku. Například typ značky klienta, pokud uživatel chce do každého výkazu zadat klienta, pro kterého byla práce provedena.</li>
+<li><strong>Volná pole:</strong> Pole, do kterých lze do pracovního výkazu volně zadávat text.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Vytvoření typu pracovního výkazu s personalizovanými poli</p>
+</div>
+<p>Uživatelé mohou konfigurovat pole data, zdroje a prvku objednávky tak, aby se zobrazovala v záhlaví výkazu, což znamená, že se vztahují na celý výkaz, nebo je lze přidat do každého z řádků.</p>
+<p>Nakonec lze do záhlaví pracovního výkazu nebo do každého řádku pomocí polí „Doplňkový text&quot; a „Typ značky&quot; přidávat nová doplňková textová pole nebo značky k existujícím. Uživatelé mohou konfigurovat pořadí, ve kterém mají být tyto prvky zadávány, na záložce „Správa doplňkových polí a značek&quot;.</p>
+</div>
+<div class="section" id="seznam-pracovnich-vykazu">
+<h1><a class="toc-backref" href="#toc-entry-2">Seznam pracovních výkazů</a></h1>
+<p>Po nakonfigurování formátu výkazů, které mají být začleněny do systému, mohou uživatelé zadat podrobnosti do vytvořeného formuláře podle struktury definované v příslušném typu pracovního výkazu. K tomu musí uživatelé postupovat takto:</p>
+<ul class="simple">
+<li>Kliknout na tlačítko „Nový pracovní výkaz&quot; přidružené k požadovanému výkazu ze seznamu typů pracovních výkazů.</li>
+<li>Program poté zobrazí výkaz na základě konfigurací daných pro daný typ. Viz následující obrázek.</li>
+</ul>
+<div class="figure">
+<img alt="images/work-report-type.png" src="images/work-report-type.png" style="width: 397.5px; height: 227.0px;" />
+<p class="caption">Struktura pracovního výkazu na základě typu</p>
+</div>
+<ul class="simple">
+<li>Vybrat všechna pole zobrazená pro výkaz:<ul>
+<li><strong>Zdroj:</strong> Pokud bylo vybráno záhlaví, zdroj se zobrazí pouze jednou. Alternativně je pro každý řádek výkazu nutné zvolit zdroj.</li>
+<li><strong>Kód úkolu:</strong> Kód úkolu, ke kterému je pracovní výkaz přiřazen. Podobně jako u ostatních polí, pokud je pole v záhlaví, hodnota se zadá jednou nebo tolikrát, kolikrát je potřeba na řádcích výkazu.</li>
+<li><strong>Datum:</strong> Datum výkazu nebo každého řádku v závislosti na tom, zda je konfigurováno záhlaví nebo řádek.</li>
+<li><strong>Počet hodin:</strong> Počet pracovních hodin v projektu.</li>
+<li><strong>Čas začátku a konce:</strong> Čas začátku a konce práce pro výpočet konečných pracovních hodin. Toto pole se zobrazí pouze v případě politik přiřazování hodin „Podle začátku a konce pracovní doby&quot; a „Podle počtu hodin a rozsahu začátku a konce.&quot;</li>
+<li><strong>Typ hodin:</strong> Umožňuje uživatelům zvolit typ hodiny, např. „Standardní&quot;, „Přesčas&quot; atd.</li>
+</ul>
+</li>
+<li>Kliknout na „Uložit&quot; nebo „Uložit a pokračovat.&quot;</li>
+</ul>
+</div>
+</div>
+</body>
+</html>

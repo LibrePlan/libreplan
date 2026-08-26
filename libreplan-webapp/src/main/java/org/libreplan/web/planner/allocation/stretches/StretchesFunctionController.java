@@ -46,6 +46,8 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Decimalbox;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
@@ -145,8 +147,8 @@ public class StretchesFunctionController extends GenericForwardComposer {
         close();
     }
 
-    public List<Stretch> getStretches() {
-        return stretchesFunctionModel.getAllStretches();
+    public ListModel<Stretch> getStretches() {
+        return new ListModelList<>(stretchesFunctionModel.getAllStretches());
     }
 
     public StretchesRenderer getStretchesRenderer() {

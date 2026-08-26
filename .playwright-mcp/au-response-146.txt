@@ -1,0 +1,352 @@
+{"rs":[["rm",["pPOCfl"]],["rm",["pPOCgl"]],["rm",["pPOChl"]],["rm",["pPOCil"]],["addChd",["pPOCt4",[
+['ganttz.Planner','pPOC95',{id:'planner',sclass:'parentPlanner scroll\-collapse',style:'display: block; height: 100%;',prolog:' '},{},[
+['zul.layout.Borderlayout','pPOCa5',{width:'auto',sclass:'plannerlayout'},{},[
+['zul.layout.North','pPOCb5',{$$0onSize:true,height:'30px',sclass:'toolbar\-box',border:'none'},{},[
+['zul.box.Box','pPOCc5',{id:'toolbar',sclass:'filtering\-area',cssflex:false,align:'center'},{},[
+['zul.wgt.Separator','pPOCd5',{orient:'horizontal'},{},[]],
+['zul.wgt.Button','pPOCe5',{visible:false,$onClick:true,tooltiptext:'Refresh',image:'\/common\/img\/ico_refresh.png'},{},[],'trendy'],
+['zul.box.Box','pPOCf5',{id:'plannerButtonsInsertionPoint',cssflex:false},{},[],'horizontal'],
+['zul.wgt.Button','pPOCg5',{id:'btnPrint',$onClick:true,style:'background: none; box\-shadow: none;',tooltiptext:'Print',image:'\/common\/img\/ico_print.png'},{},[],'trendy'],
+['zul.wgt.Separator','pPOCh5',{orient:'horizontal'},{},[]],
+['zul.wgt.Space','pPOCi5',{orient:'vertical',bar:true},{},[]],
+['zul.sel.Select','pPOCj5',{id:'listZoomLevels',$$0onDataLoading:true,$$0onAnchorPos:true,$$0onCheckSelectAll:true,$onSelect:true,$$0onInnerWidth:true,$$0onAcrossPage:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,rows:1},{},[
+['zul.sel.Option','pPOCtr',{_loaded:true,_index:0},{},[
+['zul.sel.Listcell','pPOCss',{label:'Year'},{},[]]],'select'],
+['zul.sel.Option','pPOCvr',{_loaded:true,_index:1},{},[
+['zul.sel.Listcell','pPOCts',{label:'Quarter'},{},[]]],'select'],
+['zul.sel.Option','pPOCxr',{_loaded:true,_index:2},{},[
+['zul.sel.Listcell','pPOCus',{label:'Month'},{},[]]],'select'],
+['zul.sel.Option','pPOCzr',{_loaded:true,_index:3},{},[
+['zul.sel.Listcell','pPOCvs',{label:'Week'},{},[]]],'select'],
+['zul.sel.Option','pPOC0s',{_loaded:true,_index:4},{},[
+['zul.sel.Listcell','pPOCws',{label:'Day'},{},[]]],'select']],'select'],
+['zul.wgt.Button','pPOCu5',{id:'showCriticalPath',visible:false,$onClick:true,tooltiptext:'Show\/Hide critical path',image:'\/common\/img\/ico_criticalpath.png'},{},[],'trendy'],
+['zul.wgt.Button','pPOCv5',{id:'showAllLabels',$onClick:true,sclass:'planner\-command show\-labels clicked',tooltiptext:'Show\/Hide labels',image:'\/common\/img\/ico_labels.png'},{},[],'trendy'],
+['zul.wgt.Button','pPOCw5',{id:'showAllResources',visible:false,$onClick:true,sclass:'planner\-command show\-resources',tooltiptext:'Show\/Hide resources',image:'\/common\/img\/ico_resources.png'},{},[],'trendy'],
+['zul.wgt.Button','pPOCx5',{id:'expandAll',visible:false,$onClick:true,sclass:'planner\-command',tooltiptext:'Expand\/Collapse all',image:'\/common\/img\/ico_expand.png'},{},[],'trendy'],
+['zul.wgt.Button','pPOCy5',{id:'flattenTree',visible:false,$onClick:true,sclass:'planner\-command',tooltiptext:'Flatten\/Unflatten tree',image:'\/common\/img\/ico_flatten.png'},{},[],'trendy'],
+['zul.box.Box','pPOCz5',{sclass:'show\-advances',cssflex:false,align:'center'},{},[
+['zul.wgt.Button','pPOC_6',{id:'showAdvances',$onClick:true,sclass:'planner\-command clicked',style:'width:46px; margin\-right: \-5px;',tooltiptext:'Hide progress',image:'\/common\/img\/ico_progress.png'},{},[],'trendy'],
+['zul.inp.Combobox','pPOC06',{id:'cbProgressTypes',$$0onError:true,$$1onChange:true,$onSelect:true,$$0onSelect:true,$$0onOpen:true,width:'1px',sclass:'progress\-types',_value:'Progress with all tasks by hours',selectedItemUuid_:'pPOCys'},{},[
+['zul.inp.Comboitem','pPOCxs',{label:'Spreading progress'},{},[]],
+['zul.inp.Comboitem','pPOCys',{label:'Progress with all tasks by hours'},{},[]],
+['zul.inp.Comboitem','pPOCzs',{label:'Progress with critical path tasks by hours'},{},[]],
+['zul.inp.Comboitem','pPOC_t',{label:'Progress with critical path tasks by duration'},{},[]]]]],'horizontal'],
+['zul.wgt.Button','pPOC16',{id:'showReportedHours',$onClick:true,sclass:'planner\-command clicked',tooltiptext:'Hide reported hours',image:'\/common\/img\/ico_costs.png'},{},[],'trendy'],
+['zul.wgt.Separator','pPOC26',{orient:'horizontal'},{},[]],
+['zul.wgt.Button','pPOC36',{id:'showMoneyCostBar',visible:false,$onClick:true,sclass:'planner\-command',tooltiptext:'Show\/Hide money cost bar',image:'\/common\/img\/ico_money_cost_bar.png'},{},[],'trendy'],
+['zul.wgt.Separator','pPOC46',{orient:'horizontal'},{},[]],
+['zul.box.Box','pPOC56',{id:'orderFilter',cssflex:false},{},[
+['zul.box.Box','pPOCk6',{sclass:'filtering\-area',cssflex:false,align:'center'},{},[
+['zul.wgt.Label','pPOCl6',{tooltiptext:'Select required criteria set and press filter button',value:'Project'},{},[]],
+['zul.inp.Textbox','pPOCm6',{id:'filterProjectName',$$0onError:true,$onChange:true,$$1onChange:true,$onOK:true,width:'100px'},{},[]],
+['zul.wgt.Label','pPOCn6',{value:' with'},{},[]],
+['zk.Macro','pPOCo6',{id:'bdFilters'},{},[
+['zul.inp.Bandbox','pPOCp6',{id:'bandbox',$$0onError:true,$$1onChange:true,$onCtrlKey:true,$$0onOpen:true,$onChanging:true,$$0onChanging:true,width:'260px',ctrlKeys:'#down',autodrop:true},{},[
+['zul.inp.Bandpopup','pPOCq6',{},{},[
+['zul.box.Box','pPOCr6',{height:'170px',prolog:' ',cssflex:false},{},[
+['zul.sel.Listbox','pPOCs6',{id:'listbox',$$0onDataLoading:true,$$0onAnchorPos:true,$$0onCheckSelectAll:true,$onOK:true,$$0onInnerWidth:true,$$0onAcrossPage:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,listeners:{onClick:function(event){
+closeBandbox(this.$f('bandbox').parent);
+}},width:'550px',height:'150px',sclass:'bandbox\-search',model:true,_topPad:0,_totalSize:11,_offset:0},{},[
+['zul.sel.Listhead','pPOCt6',{id:'listhead'},{},[]],
+['zul.sel.Listitem','pPOC2s',{_loaded:true,_index:0},{},[
+['zul.sel.Listcell','pPOC0t',{label:'1 ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOC1t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOC4s',{_loaded:true,_index:1},{},[
+['zul.sel.Listcell','pPOC2t',{label:'Medium urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOC3t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOC6s',{_loaded:true,_index:2},{},[
+['zul.sel.Listcell','pPOC4t',{label:'Low urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOC5t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOC8s',{_loaded:true,_index:3},{},[
+['zul.sel.Listcell','pPOC6t',{label:'High urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOC7t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOCas',{_loaded:true,_index:4},{},[
+['zul.sel.Listcell','pPOC8t',{label:'2 ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOC9t',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOCcs',{_loaded:true,_index:5},{},[
+['zul.sel.Listcell','pPOCat',{label:'Very Low urgency ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOCbt',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOCes',{_loaded:true,_index:6},{},[
+['zul.sel.Listcell','pPOCct',{label:'3 ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOCdt',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOCgs',{_loaded:true,_index:7},{},[
+['zul.sel.Listcell','pPOCet',{label:'Welding Machine  ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOCft',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOCis',{_loaded:true,_index:8},{},[
+['zul.sel.Listcell','pPOCgt',{label:'Grinnding Machine ( Priority )'},{},[]],
+['zul.sel.Listcell','pPOCht',{label:'Label'},{},[]]]],
+['zul.sel.Listitem','pPOCks',{_loaded:true,_index:9},{},[
+['zul.sel.Listcell','pPOCit',{label:'Junior worker ( CATEGORY )'},{},[]],
+['zul.sel.Listcell','pPOCjt',{label:'Criterion ( worker )'},{},[]]]],
+['zul.sel.Listitem','pPOCms',{_loaded:true,_index:10},{},[
+['zul.sel.Listcell','pPOCkt',{label:'...'},{},[]],
+['zul.sel.Listcell','pPOClt',{label:'...'},{},[]]]]]]],'vertical']]]]]]],
+['zul.wgt.Label','pPOCf7',{value:'from'},{},[]],
+['zul.db.Datebox','pPOCg7',{format:'MMM d, y',id:'filterStartDate',$$0onError:true,$onChange:true,$$1onChange:true,$$0onTimeZoneChange:true,_value:jq.j2d('2025.12.31.23.0.0.0'),cols:11,timeZone:'Europe\/Amsterdam',position:'after_start',localizedFormat:'MMM d, y',todayLinkLabel:'Today'},{},[]],
+['zul.wgt.Label','pPOCh7',{value:'to'},{},[]],
+['zul.db.Datebox','pPOCi7',{format:'MMM d, y',id:'filterFinishDate',$$0onError:true,$onChange:true,$$1onChange:true,$$0onTimeZoneChange:true,_value:jq.j2d('2027.6.25.22.0.0.0'),cols:11,timeZone:'Europe\/Amsterdam',position:'after_start',localizedFormat:'MMM d, y',todayLinkLabel:'Today'},{},[]],
+['zul.wgt.Label','pPOCj7',{value:' Exclude finished projects'},{},[]],
+['zul.wgt.Checkbox','pPOCk7',{id:'filterExcludeFinishedProject',$$1onCheck:true},{},[]],
+['zul.wgt.Button','pPOCl7',{$onClick:true,style:'margin\-top: \-4px',tooltiptext:'Apply filtering to tasks satisfying required criteria',image:'\/common\/img\/ico_filter.png'},{},[],'trendy']],'horizontal']],'vertical'],
+['zul.box.Box','pPOC66',{id:'orderElementFilter',cssflex:false},{},[],'vertical'],
+['zul.wgt.Separator','pPOC76',{orient:'horizontal'},{},[]]],'horizontal']]],
+['zul.layout.Center','pPOC86',{$$0onSize:true,border:'none'},{},[
+['zul.layout.Borderlayout','pPOC96',{height:'100%',sclass:'plannerlayout_center'},{},[
+['zul.layout.West','pPOCa6',{id:'taskdetailsContainer',$onSize:true,$$0onSize:true,width:'375px',vflex:'0',sclass:'taskdetailsContainer',splittable:true,collapsible:true},{},[
+['zul.wgt.Div','pPOCb6',{id:'insertionPointLeftPanel',sclass:'leftpanelgap'},{},[
+['zk.Macro','pPOC78',{},{},[
+['zul.wgt.Div','pPOC88',{id:'listdetails_container'},{},[
+['zk.Macro','pPOC98',{sclass:'listdetails'},{},[
+['zul.wgt.Div','pPOCa8',{},{},[
+['zul.sel.Tree','pPOCb8',{id:'tasksTree',$$0onAnchorPos:true,$$0onCheckSelectAll:true,$$0onSelect:true,$$0onInnerWidth:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,hflex:'1',sclass:'taskTreeCols',prolog:' ',model:true,z$rod0:false},{},[
+['zul.sel.Treecols','pPOCc8',{height:'33px'},{},[
+['zul.sel.Treecol','pPOCd8',{$onSort:true,$$0onSort:true,sclass:'tree\-text',label:'Name'},{},[]],
+['zul.sel.Treecol','pPOCe8',{$onSort:true,$$0onSort:true,width:'60px',label:'Start'},{},[]],
+['zul.sel.Treecol','pPOCf8',{$onSort:true,$$0onSort:true,width:'60px',label:'End'},{},[]],
+['zul.sel.Treecol','pPOCg8',{$onSort:true,$$0onSort:true,width:'55px',label:'T \/ M'},{},[]]]],
+['zul.sel.Treechildren','pPOCgc',{},{},[
+['zul.sel.Treeitem','pPOCmt',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCnt',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCot',{},{},[
+['zul.wgt.Label','pPOCpt',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'THE_Testproject #2',prolog:' ',value:'THE_Testproject #2'},{},[]]]],
+['zul.sel.Treecell','pPOCqt',{},{},[
+['zul.wgt.Label','pPOCrt',{sclass:'order\-startdate',prolog:' ',value:'1\/1\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCst',{},{},[
+['zul.wgt.Label','pPOCtt',{sclass:'order\-enddate',prolog:' ',value:'1\/6\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCut',{},{},[
+['zul.box.Hlayout','pPOCvt',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCwt',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCxt',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCyt',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCzt',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOC_u',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOC0u',{},{},[
+['zul.wgt.Label','pPOC1u',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'Test project Libre Palan',prolog:' ',value:'Test project Libre Palan'},{},[]]]],
+['zul.sel.Treecell','pPOC2u',{},{},[
+['zul.wgt.Label','pPOC3u',{sclass:'order\-startdate',prolog:' ',value:'5\/18\/26'},{},[]]]],
+['zul.sel.Treecell','pPOC4u',{},{},[
+['zul.wgt.Label','pPOC5u',{sclass:'order\-enddate',prolog:' ',value:'5\/19\/26'},{},[]]]],
+['zul.sel.Treecell','pPOC6u',{},{},[
+['zul.box.Hlayout','pPOC7u',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOC8u',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOC9u',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCau',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCbu',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCcu',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCdu',{},{},[
+['zul.wgt.Label','pPOCeu',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'miniGrav prototype',prolog:' ',value:'miniGrav prototype'},{},[]]]],
+['zul.sel.Treecell','pPOCfu',{},{},[
+['zul.wgt.Label','pPOCgu',{sclass:'order\-startdate',prolog:' ',value:'5\/18\/26'},{},[]]]],
+['zul.sel.Treecell','pPOChu',{},{},[
+['zul.wgt.Label','pPOCiu',{sclass:'order\-enddate',prolog:' ',value:'7\/14\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCju',{},{},[
+['zul.box.Hlayout','pPOCku',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOClu',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCmu',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCnu',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCou',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCpu',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCqu',{},{},[
+['zul.wgt.Label','pPOCru',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'new test project',prolog:' ',value:'new test project'},{},[]]]],
+['zul.sel.Treecell','pPOCsu',{},{},[
+['zul.wgt.Label','pPOCtu',{sclass:'order\-startdate',prolog:' ',value:'5\/19\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCuu',{},{},[
+['zul.wgt.Label','pPOCvu',{sclass:'order\-enddate',prolog:' ',value:'5\/19\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCwu',{},{},[
+['zul.box.Hlayout','pPOCxu',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCyu',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCzu',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOC_v',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOC0v',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOC1v',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOC2v',{},{},[
+['zul.wgt.Label','pPOC3v',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'GAS stations',prolog:' ',value:'GAS stations'},{},[]]]],
+['zul.sel.Treecell','pPOC4v',{},{},[
+['zul.wgt.Label','pPOC5v',{sclass:'order\-startdate',prolog:' ',value:'5\/24\/26'},{},[]]]],
+['zul.sel.Treecell','pPOC6v',{},{},[
+['zul.wgt.Label','pPOC7v',{sclass:'order\-enddate',prolog:' ',value:'8\/24\/26'},{},[]]]],
+['zul.sel.Treecell','pPOC8v',{},{},[
+['zul.box.Hlayout','pPOC9v',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCav',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCbv',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCcv',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCdv',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCev',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCfv',{},{},[
+['zul.wgt.Label','pPOCgv',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'OpenWeb',prolog:' ',value:'OpenWeb'},{},[]]]],
+['zul.sel.Treecell','pPOChv',{},{},[
+['zul.wgt.Label','pPOCiv',{sclass:'order\-startdate',prolog:' ',value:'5\/26\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCjv',{},{},[
+['zul.wgt.Label','pPOCkv',{sclass:'order\-enddate',prolog:' ',value:'6\/26\/27'},{},[]]]],
+['zul.sel.Treecell','pPOClv',{},{},[
+['zul.box.Hlayout','pPOCmv',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCnv',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCov',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCpv',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCqv',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCrv',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCsv',{},{},[
+['zul.wgt.Label','pPOCtv',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'Projet UT',prolog:' ',value:'Projet UT'},{},[]]]],
+['zul.sel.Treecell','pPOCuv',{},{},[
+['zul.wgt.Label','pPOCvv',{sclass:'order\-startdate',prolog:' ',value:'5\/27\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCwv',{},{},[
+['zul.wgt.Label','pPOCxv',{sclass:'order\-enddate',prolog:' ',value:'5\/27\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCyv',{},{},[
+['zul.box.Hlayout','pPOCzv',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOC_w',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOC0w',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOC1w',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOC2w',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOC3w',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOC4w',{},{},[
+['zul.wgt.Label','pPOC5w',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'rebuild motor',prolog:' ',value:'rebuild motor'},{},[]]]],
+['zul.sel.Treecell','pPOC6w',{},{},[
+['zul.wgt.Label','pPOC7w',{sclass:'order\-startdate',prolog:' ',value:'6\/4\/26'},{},[]]]],
+['zul.sel.Treecell','pPOC8w',{},{},[
+['zul.wgt.Label','pPOC9w',{sclass:'order\-enddate',prolog:' ',value:'6\/11\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCaw',{},{},[
+['zul.box.Hlayout','pPOCbw',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCcw',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCdw',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCew',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCfw',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCgw',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOChw',{},{},[
+['zul.wgt.Label','pPOCiw',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'test1',prolog:' ',value:'test1'},{},[]]]],
+['zul.sel.Treecell','pPOCjw',{},{},[
+['zul.wgt.Label','pPOCkw',{sclass:'order\-startdate',prolog:' ',value:'6\/8\/26'},{},[]]]],
+['zul.sel.Treecell','pPOClw',{},{},[
+['zul.wgt.Label','pPOCmw',{sclass:'order\-enddate',prolog:' ',value:'6\/10\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCnw',{},{},[
+['zul.box.Hlayout','pPOCow',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCpw',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCqw',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCrw',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOCsw',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCtw',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCuw',{},{},[
+['zul.wgt.Label','pPOCvw',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'THE_Testproject #1',prolog:' ',value:'THE_Testproject #1'},{},[]]]],
+['zul.sel.Treecell','pPOCww',{},{},[
+['zul.wgt.Label','pPOCxw',{sclass:'order\-startdate',prolog:' ',value:'6\/9\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCyw',{},{},[
+['zul.wgt.Label','pPOCzw',{sclass:'order\-enddate',prolog:' ',value:'6\/16\/26'},{},[]]]],
+['zul.sel.Treecell','pPOC_x',{},{},[
+['zul.box.Hlayout','pPOC0x',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOC1x',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOC2x',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOC3x',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOC4x',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOC5x',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOC6x',{},{},[
+['zul.wgt.Label','pPOC7x',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'stadium',prolog:' ',value:'stadium'},{},[]]]],
+['zul.sel.Treecell','pPOC8x',{},{},[
+['zul.wgt.Label','pPOC9x',{sclass:'order\-startdate',prolog:' ',value:'6\/19\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCax',{},{},[
+['zul.wgt.Label','pPOCbx',{sclass:'order\-enddate',prolog:' ',value:'10\/19\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCcx',{},{},[
+['zul.box.Hlayout','pPOCdx',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCex',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCfx',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCgx',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]],
+['zul.sel.Treeitem','pPOChx',{_loadedChildren:true,_loaded:true},{},[
+['zul.sel.Treerow','pPOCix',{sclass:'taskdetail\-grid taskdetail\-company\-view'},{},[
+['zul.sel.Treecell','pPOCjx',{},{},[
+['zul.wgt.Label','pPOCkx',{$onClick:true,sclass:'clickable\-rows',tooltiptext:'Konstrukca',prolog:' ',value:'Konstrukca'},{},[]]]],
+['zul.sel.Treecell','pPOClx',{},{},[
+['zul.wgt.Label','pPOCmx',{sclass:'order\-startdate',prolog:' ',value:'8\/12\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCnx',{},{},[
+['zul.wgt.Label','pPOCox',{sclass:'order\-enddate',prolog:' ',value:'8\/18\/26'},{},[]]]],
+['zul.sel.Treecell','pPOCpx',{},{},[
+['zul.box.Hlayout','pPOCqx',{sclass:'projectstatus\-layout',prolog:' '},{},[
+['zul.wgt.Div','pPOCrx',{$onClick:true,sclass:'status\-green'},{},[]],
+['zul.wgt.Label','pPOCsx',{value:'\/'},{},[]],
+['zul.wgt.Div','pPOCtx',{$onClick:true,sclass:'status\-green'},{},[]]]]]]]]]]]]]]]]]]]]]]]]]],
+['zul.layout.Center','pPOCc6',{$$0onSize:true,sclass:'taskspanel'},{},[
+['zul.layout.Borderlayout','pPOCd6',{},{},[
+['zul.layout.North','pPOCe6',{$$0onSize:true,height:'32px',vflex:'min',border:'none'},{},[
+['zul.wgt.Div','pPOCf6',{id:'insertionPointTimetracker',sclass:'timetrackergap'},{},[
+['ganttz.TimeTracker','pPOCja',{},{},[
+['zul.wgt.Div','pPOC0h',{},{},[
+['zk.Native','pPOC1h',{id:'timetrackerheader',prolog:' <div> ',epilog:' <\/div>'},{},[
+['zul.box.Box','pPOC2h',{cssflex:false},{},[
+['zul.grid.Grid','pPOC3h',{id:'firstleveldetails',$$0onDataLoading:true,$$0onInnerWidth:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,width:'1800px;',_topPad:0,emptyMessage:null,_totalSize:0,_offset:0},{},[
+['zul.grid.Columns','pPOC4h',{},{},[
+['zul.grid.Column','pPOC5h',{$onSort:true,$$0onSort:true,width:'300px',label:'2025,H2'},{},[]],
+['zul.grid.Column','pPOC6h',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H1'},{},[]],
+['zul.grid.Column','pPOC7h',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H2'},{},[]],
+['zul.grid.Column','pPOC8h',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H1'},{},[]],
+['zul.grid.Column','pPOC9h',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H2'},{},[]],
+['zul.grid.Column','pPOCah',{$onSort:true,$$0onSort:true,width:'300px',label:'2028,H1'},{},[]]]]]],
+['zk.Native','pPOCbh',{prolog:'<div class=\x22z\-grid\-header\x22> <table style=\x22width: 1802px;\x22 class=\x22second_level_\x22> <tr class=\x22z\-columns\x22> <td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jul\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Aug\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Sep\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Oct\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Nov\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Dec\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jan\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Feb\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Mar\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Apr\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    May\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jun\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jul\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Aug\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Sep\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Oct\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Nov\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Dec\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jan\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Feb\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Mar\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Apr\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    May\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jun\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jul\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Aug\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Sep\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Oct\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Nov\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Dec\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jan\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Feb\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Mar\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Apr\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    May\n                <\/td><td class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jun\n                <\/td> <\/tr> <\/table> ',epilog:'<\/div>'},{},[]]],'vertical']]]]]]]]]]],
+['zul.layout.Center','pPOCg6',{$$0onSize:true,sclass:'rightpanel\-layout',border:'none',autoscroll:true},{},[
+['zul.wgt.Div','pPOCh6',{id:'insertionPointRightPanel',sclass:'taskspanel\-gap'},{},[
+['ganttz.GanttPanel','pPOCh8',{},{},[
+['ganttz.TimeTracker','pPOCi8',{},{},[
+['zul.wgt.Div','pPOCpg',{},{},[
+['zk.Native','pPOCqg',{id:'timetracker',prolog:' <div> ',epilog:' <\/div>'},{},[
+['zul.box.Box','pPOCrg',{cssflex:false},{},[
+['zul.grid.Grid','pPOCsg',{id:'firstleveldetails',$$0onDataLoading:true,$$0onInnerWidth:true,$$0onRender:true,$$0onScrollPos:true,$$0onPageSize:true,width:'1800px;',_topPad:0,emptyMessage:null,_totalSize:0,_offset:0},{},[
+['zul.grid.Columns','pPOCtg',{},{},[
+['zul.grid.Column','pPOCug',{$onSort:true,$$0onSort:true,width:'300px',label:'2025,H2'},{},[]],
+['zul.grid.Column','pPOCvg',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H1'},{},[]],
+['zul.grid.Column','pPOCwg',{$onSort:true,$$0onSort:true,width:'300px',label:'2026,H2'},{},[]],
+['zul.grid.Column','pPOCxg',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H1'},{},[]],
+['zul.grid.Column','pPOCyg',{$onSort:true,$$0onSort:true,width:'300px',label:'2027,H2'},{},[]],
+['zul.grid.Column','pPOCzg',{$onSort:true,$$0onSort:true,width:'300px',label:'2028,H1'},{},[]]]]]],
+['zk.Native','pPOC_h',{prolog:'<div class=\x22z\-grid\-header timetracker\-secondlevel\x22> <table style=\x22width: 1798px;\x22 class=\x22second_level_\x22> <tr class=\x22z\-columns\x22> <th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jul\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Aug\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Sep\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Oct\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Nov\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Dec\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jan\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Feb\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Mar\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Apr\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    May\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jun\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jul\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Aug\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Sep\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Oct\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Nov\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Dec\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jan\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Feb\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Mar\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Apr\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    May\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jun\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jul\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Aug\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Sep\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Oct\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Nov\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Dec\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jan\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Feb\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Mar\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Apr\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    May\n                <\/th><th class=\x22z\-column\x22 style=\x22width: 50px\x22>\n                    Jun\n                <\/th> <\/tr> <tr id=\x22watermark\x22> <td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,32px 0,40px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,8px 0,16px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,24px 0,32px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: 0px 0,8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,16px 0,24px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: 0px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: 0px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,24px 0,32px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,8px 0,16px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,24px 0,32px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: 0px 0,8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>  <div class=\x22timetracker_column_today\x22 style=\x22background\-position: 27px; width:auto;height:100%\x22><\/div>   <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,32px 0,40px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,16px 0,24px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: 0px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,32px 0,40px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,8px 0,16px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,16px 0,24px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: 0px 0,8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,32px 0,40px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,16px 0,24px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: 0px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,24px 0,32px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,8px 0,16px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,24px 0,32px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: 0px 0,8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,32px 0,40px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,24px 0,32px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: 0px 0,8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td><td class=\x22 timetracker_column\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,\-8px 0,\-8px 0,\-8px 0,40px 0,48px 0; \x22>     <\/td><td class=\x22 timetracker_column_even\x22 style=\x22width: 50px;background\-position: \-8px 0,\-8px 0,16px 0,24px 0,\-8px 0,\-8px 0,\-8px 0; \x22>     <\/td> <\/tr> <\/table> ',epilog:'<\/div>'},{},[]]],'vertical']]]]]]],
+['ganttz.TaskList','pPOCj8',{},{},[
+['ganttz.TaskRow','pPOCl8',{},{},[
+['ganttz.TaskComponent','pPOCm8',{style:'position : absolute',_tooltipText:'<strong>THE_Testproject #2<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 1000 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'09919c7b\-a163\-46d1\-a62c\-68654d88918b',$onDoubleClick:true,width:'9px',height:'10px',left:'302px',sclass:'box standard\-task assigned',context:'uuid(pPOCn8)'},{},[]]]],
+['ganttz.TaskRow','pPOCq8',{},{},[
+['ganttz.TaskComponent','pPOCr8',{style:'position : absolute',_tooltipText:'<strong>Test project Libre Palan<\/strong><br\/>Progress: 0.00% , Hours invested: 44.00% <br\/>Budget: 500 €, Consumed: 240 € (48%)<br\/>Hours cost: 240 €, Expenses cost: 0 €',id:'ec6e8ac5\-e13a\-4397\-b40b\-25f1249ee8a7',$onDoubleClick:true,width:'1px',height:'10px',left:'527px',sclass:'box standard\-task unassigned',context:'uuid(pPOCs8)'},{},[]]]],
+['ganttz.TaskRow','pPOCv8',{},{},[
+['ganttz.TaskComponent','pPOCw8',{style:'position : absolute',_tooltipText:'<strong>miniGrav prototype<\/strong><br\/>Progress: 0.00% , Hours invested: 3.00% <br\/>Budget: 0 €, Consumed: 490 € (0%)<br\/>Hours cost: 490 €, Expenses cost: 0 €',id:'dee01268\-4c20\-423a\-85b7\-b0e9c9b58e99',$onDoubleClick:true,width:'94px',height:'10px',left:'527px',sclass:'box standard\-task assigned',context:'uuid(pPOCx8)'},{},[]]]],
+['ganttz.TaskRow','pPOC_9',{},{},[
+['ganttz.TaskComponent','pPOC09',{style:'position : absolute',_tooltipText:'<strong>new test project<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'cc92469b\-0023\-40c6\-acf6\-5d47be3dae97',$onDoubleClick:true,width:'0px',height:'10px',left:'528px',sclass:'box standard\-task unassigned',context:'uuid(pPOC19)'},{},[]]]],
+['ganttz.TaskRow','pPOC49',{},{},[
+['ganttz.TaskComponent','pPOC59',{style:'position : absolute',_tooltipText:'<strong>GAS stations<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'e3adbd80\-e297\-4f2a\-8ce7\-87d4ec5cac3b',$onDoubleClick:true,width:'151px',height:'10px',left:'537px',sclass:'box standard\-task unassigned',context:'uuid(pPOC69)'},{},[]]]],
+['ganttz.TaskRow','pPOC99',{},{},[
+['ganttz.TaskComponent','pPOCa9',{style:'position : absolute',_tooltipText:'<strong>OpenWeb<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'ae5df5b0\-182a\-4e6c\-9878\-2e3017b930a7',$onDoubleClick:true,width:'650px',height:'10px',left:'540px',sclass:'box standard\-task unassigned',context:'uuid(pPOCb9)'},{},[]]]],
+['ganttz.TaskRow','pPOCe9',{},{},[
+['ganttz.TaskComponent','pPOCf9',{style:'position : absolute',_tooltipText:'<strong>Projet UT<\/strong><br\/>Progress: 0.00% , Hours invested: 0% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'3c1e31f1\-89aa\-4d5d\-96ff\-89a012b330b6',$onDoubleClick:true,width:'0px',height:'10px',left:'541px',sclass:'box standard\-task unassigned',context:'uuid(pPOCg9)'},{},[]]]],
+['ganttz.TaskRow','pPOCj9',{},{},[
+['ganttz.TaskComponent','pPOCk9',{style:'position : absolute',_tooltipText:'<strong>rebuild motor<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'4bdb9d04\-90d4\-4b73\-a49b\-2c2a554dc1ca',$onDoubleClick:true,width:'11px',height:'10px',left:'555px',sclass:'box standard\-task unassigned',context:'uuid(pPOCl9)'},{},[]]]],
+['ganttz.TaskRow','pPOCo9',{},{},[
+['ganttz.TaskComponent','pPOCp9',{style:'position : absolute',_tooltipText:'<strong>test1<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'da2e62b7\-5f62\-4aff\-a06f\-d0399fb26a37',$onDoubleClick:true,width:'4px',height:'10px',left:'561px',sclass:'box standard\-task unassigned',context:'uuid(pPOCq9)'},{},[]]]],
+['ganttz.TaskRow','pPOCt9',{},{},[
+['ganttz.TaskComponent','pPOCu9',{style:'position : absolute',_tooltipText:'<strong>THE_Testproject #1<\/strong><br\/>Progress: 0.00% , Hours invested: 113.00% <br\/>Budget: 3000 €, Consumed: 540 € (18%)<br\/>Hours cost: 540 €, Expenses cost: 0 €',id:'e675f25d\-6f80\-467b\-9e4b\-040dc4eb79f0',$onDoubleClick:true,width:'12px',height:'10px',left:'563px',sclass:'box standard\-task assigned',context:'uuid(pPOCv9)'},{},[]]]],
+['ganttz.TaskRow','pPOCy9',{},{},[
+['ganttz.TaskComponent','pPOCz9',{style:'position : absolute',_tooltipText:'<strong>stadium<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'13c0e792\-5567\-4299\-8cb1\-b3f3810c5bca',$onDoubleClick:true,width:'201px',height:'10px',left:'579px',sclass:'box standard\-task unassigned',context:'uuid(pPOC_a)'},{},[]]]],
+['ganttz.TaskRow','pPOC2a',{},{},[
+['ganttz.TaskComponent','pPOC3a',{style:'position : absolute',_tooltipText:'<strong>Konstrukca<\/strong><br\/>Progress: 0.00% , Hours invested: 0.00% <br\/>Budget: 0 €, Consumed: 0 € (0%)<br\/>Hours cost: 0 €, Expenses cost: 0 €',id:'85781458\-22c2\-4d9f\-a9f2\-3314aec70898',$onDoubleClick:true,width:'10px',height:'10px',left:'668px',sclass:'box standard\-task unassigned',context:'uuid(pPOC4a)'},{},[]]]]]],
+['ganttz.DependencyList','pPOCk8',{},{},[]]]]]]]]]]]]]]]],
+['zul.layout.South','pPOCi6',{id:'graphics',$onOpen:true,$$0onSize:true,height:'200px',sclass:'scheduling\-graphics',title:'Graphics',collapsible:true},{},[
+['zul.wgt.Div','pPOCj6',{id:'insertionPointChart'},{},[
+['zul.tab.Tabbox','pPOCwa',{height:'240px',orient:'left'},{},[
+['zul.tab.Tabs','pPOCxa',{width:'124px'},{},[
+['zul.tab.Tab','pPOCya',{$onSelect:false,$onClose:true,label:'Load',selected:true},{},[]],
+['zul.tab.Tab','pPOCza',{$onSelect:true,$onClose:true,label:'Earned value'},{},[]]]],
+['zul.tab.Tabpanels','pPOC_b',{},{},[
+['zul.tab.Tabpanel','pPOC0b',{},{},[
+['zul.box.Box','pPOC1b',{cssflex:false},{},[
+['zul.box.Box','pPOC2b',{sclass:'legend\-container',cssflex:false,align:'center',pack:'center'},{},[
+['zul.box.Box','pPOC3b',{sclass:'legend',cssflex:false},{},[
+['zul.box.Box','pPOC4b',{sclass:'legend\-row',cssflex:false,pack:'center'},{},[
+['#stub','pPOC5b',{},{},[]],
+['#stub','pPOC6b',{},{},[]]],'horizontal'],
+['zul.box.Box','pPOC7b',{sclass:'legend\-row resources\-full\-load',cssflex:false,pack:'center'},{},[
+['#stub','pPOC8b',{},{},[]],
+['#stub','pPOC9b',{},{},[]]],'horizontal'],
+['zul.box.Box','pPOCab',{sclass:'legend\-row',cssflex:false,pack:'center'},{},[
+['#stub','pPOCbb',{},{},[]],
+['#stub','pPOCcb',{},{},[]]],'horizontal'],
+['zul.box.Box','pPOCdb',{sclass:'legend\-row',cssflex:false,pack:'center'},{},[
+['#stub','pPOCeb',{},{},[]],
+['#stub','pPOCfb',{},{},[]]],'horizontal']],'vertical']],'horizontal'],
+['zul.wgt.Div','pPOCgb',{sclass:'plannergraph'},{},[
+['zul.wgt.Div','pPOChb',{width:'1800px',height:'190px'},{},[]]]]],'horizontal']]]]]]]]]]]]]]]]]],["addChd",["pPOCj3",[
+['zul.wgt.Image','pPOCos',{src:'\/common\/img\/migas_separacion.gif'},{},[]]],[
+['zul.wgt.Label','pPOCps',{value:'Planning'},{},[]]],[
+['zul.wgt.Image','pPOCqs',{src:'\/common\/img\/migas_separacion.gif'},{},[]]],[
+['zul.wgt.Label','pPOCrs',{value:'Projects Planning'},{},[]]]]],["clearBusy",null]],"rid":4}

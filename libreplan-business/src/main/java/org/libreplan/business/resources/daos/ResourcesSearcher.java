@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,12 +22,6 @@
 
 package org.libreplan.business.resources.daos;
 
-import static org.hibernate.criterion.Restrictions.eq;
-import static org.hibernate.criterion.Restrictions.ilike;
-import static org.hibernate.criterion.Restrictions.in;
-import static org.hibernate.criterion.Restrictions.like;
-import static org.hibernate.criterion.Restrictions.or;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -35,10 +30,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.libreplan.business.common.IAdHocTransactionService;
@@ -118,48 +118,59 @@ public class ResourcesSearcher implements IResourcesSearcher {
         public List<T> execute() {
             return adHocTransactionService.runOnReadOnlyTransaction(() -> {
                 Session session = sessionFactory.getCurrentSession();
-                List<T> resources = buildCriteria(session).list();
+                List<T> resources = runQuery(session);
 
                 return restrictToSatisfyAllCriteria(resources);
             });
         }
 
-        private Criteria buildCriteria(Session session) {
-            Criteria result = session.createCriteria(klass);
-            result.add(eq("resourceType", type));
-            addQueryByName(result);
-            addFindRelatedWithSomeOfTheCriterions(result);
-            result.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+        private List<T> runQuery(Session session) {
+            CriteriaBuilder cb = session.getCriteriaBuilder();
+            CriteriaQuery<T> cq = cb.createQuery(klass);
+            Root<T> root = cq.from(klass);
+            cq.distinct(true);
 
-            return result;
+            List<Predicate> predicates = new ArrayList<>();
+            predicates.add(cb.equal(root.get("resourceType"), type));
+            addQueryByName(cb, root, predicates);
+            addFindRelatedWithSomeOfTheCriterions(cb, root, predicates);
+            cq.where(predicates.toArray(new Predicate[0]));
+
+            return session.createQuery(cq).getResultList();
         }
 
-        private void addFindRelatedWithSomeOfTheCriterions(Criteria criteria) {
+        private void addFindRelatedWithSomeOfTheCriterions(
+                CriteriaBuilder cb, Root<T> root, List<Predicate> predicates) {
+
             if ( !criteriaSpecified() ) {
                 return;
             }
-            criteria.createCriteria("criterionSatisfactions")
-                    .add(in("criterion", Criterion.withAllDescendants(this.criteria)));
+            Join<T, ?> satisfactions = root.join("criterionSatisfactions");
+            predicates.add(satisfactions.get("criterion").in(Criterion.withAllDescendants(this.criteria)));
         }
 
         private boolean criteriaSpecified() {
             return this.criteria != null && !this.criteria.isEmpty();
         }
 
-        private void addQueryByName(Criteria criteria) {
+        private void addQueryByName(CriteriaBuilder cb, Root<T> root, List<Predicate> predicates) {
             if ( name == null ) {
                 return;
             }
 
-            final String nameWithWildcards = "%" + name + "%";
+            final String nameWithWildcards = "%" + name.toLowerCase() + "%";
             if ( klass.equals(Worker.class) ) {
 
-                criteria.add(or(or(
-                        ilike("firstName", nameWithWildcards), ilike("surname", nameWithWildcards)),
-                        like("nif", nameWithWildcards)));
+                predicates.add(cb.or(
+                        cb.or(
+                                cb.like(cb.lower(root.get("firstName")), nameWithWildcards),
+                                cb.like(cb.lower(root.get("surname")), nameWithWildcards)),
+                        cb.like(cb.lower(root.get("nif")), nameWithWildcards)));
 
             } else if ( klass.equals(Machine.class) ) {
-                criteria.add(or(ilike("name", nameWithWildcards), ilike("code", nameWithWildcards)));
+                predicates.add(cb.or(
+                        cb.like(cb.lower(root.get("name")), nameWithWildcards),
+                        cb.like(cb.lower(root.get("code")), nameWithWildcards)));
             } else {
                 LOG.warn("can't handle " + klass);
             }

@@ -1,0 +1,355 @@
+- generic [ref=f636e4]:
+  - generic:
+    - generic [ref=f636e7]:
+      - table [ref=f636e8]:
+        - rowgroup [ref=f636e9]:
+          - row [ref=f636e10]:
+            - cell [ref=f636e11]:
+              - link [ref=f636e12] [cursor=pointer]:
+                - /url: /
+            - cell [ref=f636e14]:
+              - table [ref=f636e15]:
+                - rowgroup [ref=f636e16]:
+                  - row [ref=f636e17]:
+                    - cell [ref=f636e18]:
+                      - generic [ref=f636e19]:
+                        - list [ref=f636e21]:
+                          - listitem [ref=f636e22]:
+                            - link "Planning" [ref=f636e23] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:        
+                          - listitem [ref=f636e25]:
+                            - link "Resources" [ref=f636e26] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:           
+                          - listitem [ref=f636e28]:
+                            - link "Cost" [ref=f636e29] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:      
+                          - listitem [ref=f636e31]:
+                            - link "Configuration" [ref=f636e32] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f636e34]:
+                            - link "Communications" [ref=f636e35] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:     
+                          - listitem [ref=f636e37]:
+                            - link "Reports" [ref=f636e38] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:         
+                          - listitem [ref=f636e40]:
+                            - link "Personal area" [ref=f636e41] [cursor=pointer]:
+                              - /url: javascript:;
+                              - text: 
+                            - text:  
+                        - table [ref=f636e43]:
+                          - rowgroup [ref=f636e44]:
+                            - row [ref=f636e45]:
+                              - cell [ref=f636e46]:
+                                - table [ref=f636e47]:
+                                  - rowgroup [ref=f636e48]:
+                                    - row [ref=f636e49]:
+                                      - cell [ref=f636e50]
+                                      - cell [ref=f636e51]:
+                                        - strong [ref=f636e52]: START
+                                      - cell [ref=f636e53]
+                                      - cell [ref=f636e54]:
+                                        - table:
+                                          - rowgroup:
+                                            - row:
+                                              - cell:
+                                                - table:
+                                                  - rowgroup:
+                                                    - row
+                                        - table [ref=f636e55]:
+                                          - rowgroup [ref=f636e56]:
+                                            - row [ref=f636e57]:
+                                              - cell [ref=f636e58]:
+                                                - table [ref=f636e59]:
+                                                  - rowgroup [ref=f636e60]:
+                                                    - row [ref=f636e61]:
+                                                      - cell [ref=f636e62]:
+                                                        - table [ref=f636e63]:
+                                                          - rowgroup [ref=f636e64]:
+                                                            - row [ref=f636e65]:
+                                                              - cell [ref=f636e66]:
+                                                                - table [ref=f636e67]:
+                                                                  - rowgroup [ref=f636e68]:
+                                                                    - row [ref=f636e69]:
+                                                                      - cell [ref=f636e70]
+                                                                      - cell [ref=f636e73]
+                                                                      - cell "Resources" [ref=f636e74]
+                                                      - cell [ref=f636e75]
+                                                      - cell [ref=f636e76]:
+                                                        - table [ref=f636e77]:
+                                                          - rowgroup [ref=f636e78]:
+                                                            - row [ref=f636e79]:
+                                                              - cell [ref=f636e80]:
+                                                                - table [ref=f636e81]:
+                                                                  - rowgroup [ref=f636e82]:
+                                                                    - row [ref=f636e83]:
+                                                                      - cell [ref=f636e84]
+                                                                      - cell [ref=f636e87]
+                                                                      - cell "Criteria" [ref=f636e88]
+                              - cell [ref=f636e89]:
+                                - generic [ref=f636e90]:
+                                  - link "Help" [ref=f636e91] [cursor=pointer]:
+                                    - /url: /help/en/02-criterios.html#id1
+                                  - img "Axuda" [ref=f636e93]
+                                  - img "Info" [ref=f636e95]
+      - table [ref=f636e97]:
+        - rowgroup [ref=f636e98]:
+          - row [ref=f636e99]:
+            - cell [ref=f636e100]
+            - 'cell "user: admin" [ref=f636e101]'
+            - cell [ref=f636e102]:
+              - link "[Log out]" [ref=f636e103] [cursor=pointer]:
+                - /url: /j_spring_security_logout
+    - text:    
+  - generic [ref=f636e106]:
+    - generic:    
+    - generic [ref=f636e110]:
+      - table:
+        - rowgroup:
+          - row:
+            - cell:
+              - table
+      - text: 
+      - generic [ref=f636e239]:
+        - generic [ref=f636e240]: "Edit Criterion Type: LOCATION"
+        - generic [ref=f636e243]:
+          - generic [ref=f636e244]:
+            - list [ref=f636e246]:
+              - listitem [ref=f636e247] [cursor=pointer]:
+                - generic [ref=f636e248]: Edit
+            - generic [ref=f636e251]:
+              - table [ref=f636e255]:
+                - rowgroup [ref=f636e259]:
+                  - row [ref=f636e260]:
+                    - cell "Name" [ref=f636e261]
+                    - cell [ref=f636e263]:
+                      - textbox [ref=f636e265]: LOCATION
+                  - row [ref=f636e266]:
+                    - cell "Type" [ref=f636e267]
+                    - cell "WORKER " [ref=f636e269]:
+                      - generic [ref=f636e271]:
+                        - textbox [ref=f636e272]: WORKER
+                        - generic [ref=f636e273] [cursor=pointer]: 
+                  - row [ref=f636e275]:
+                    - cell "Multiple values per resource" [ref=f636e276]
+                    - cell [ref=f636e278]:
+                      - checkbox [checked] [ref=f636e281] [cursor=pointer]
+                  - row [ref=f636e282]:
+                    - cell "Hierarchy" [ref=f636e283]
+                    - cell [ref=f636e285]:
+                      - checkbox [ref=f636e288] [cursor=pointer]
+                  - row [ref=f636e289]:
+                    - cell "Enabled" [ref=f636e290]
+                    - cell [ref=f636e292]:
+                      - checkbox [checked] [ref=f636e295] [cursor=pointer]
+                  - row [ref=f636e296]:
+                    - cell "Description" [ref=f636e297]
+                    - cell [ref=f636e299]:
+                      - textbox [ref=f636e301]: Worker location
+                  - row [ref=f636e302]:
+                    - cell "Code" [ref=f636e303]
+                    - cell [ref=f636e305]:
+                      - table [ref=f636e307]:
+                        - rowgroup [ref=f636e308]:
+                          - row [ref=f636e309]:
+                            - cell [ref=f636e310]:
+                              - table [ref=f636e311]:
+                                - rowgroup [ref=f636e312]:
+                                  - row [ref=f636e313]:
+                                    - cell [ref=f636e314]:
+                                      - textbox [disabled] [ref=f636e315]: CRITERION0002
+                                    - cell [ref=f636e316]
+                                    - cell [ref=f636e317]:
+                                      - generic [ref=f636e318]:
+                                        - checkbox "Generate code" [checked] [ref=f636e319] [cursor=pointer]
+                                        - text: Generate code
+                - rowgroup:
+                  - row
+              - generic [ref=f636e321]:
+                - generic [ref=f636e322]: Criteria list
+                - table [ref=f636e326]:
+                  - rowgroup [ref=f636e327]:
+                    - row [ref=f636e328]:
+                      - cell [ref=f636e329]:
+                        - table [ref=f636e330]:
+                          - rowgroup [ref=f636e331]:
+                            - row [ref=f636e332]:
+                              - cell [ref=f636e333]:
+                                - table [ref=f636e334]:
+                                  - rowgroup [ref=f636e335]:
+                                    - row [ref=f636e336]:
+                                      - cell [ref=f636e337]:
+                                        - table [ref=f636e338]:
+                                          - rowgroup [ref=f636e339]:
+                                            - row [ref=f636e340]:
+                                              - cell [ref=f636e341]:
+                                                - table [ref=f636e342]:
+                                                  - rowgroup [ref=f636e343]:
+                                                    - row [ref=f636e344]:
+                                                      - cell [ref=f636e345]:
+                                                        - table [ref=f636e346]:
+                                                          - rowgroup [ref=f636e347]:
+                                                            - row [ref=f636e348]:
+                                                              - cell "New criterion" [ref=f636e349]
+                                                              - cell [ref=f636e350]
+                                                              - cell [ref=f636e351]:
+                                                                - textbox [ref=f636e352]
+                                                              - cell [ref=f636e353]
+                                                              - cell [ref=f636e354]:
+                                                                - button "Add" [ref=f636e355] [cursor=pointer]
+                            - row [ref=f636e356]:
+                              - cell [ref=f636e357]
+                            - row [ref=f636e358]:
+                              - cell [ref=f636e359]:
+                                - table [ref=f636e360]:
+                                  - rowgroup [ref=f636e361]:
+                                    - row [ref=f636e362]:
+                                      - cell [ref=f636e363]:
+                                        - table [ref=f636e364]:
+                                          - rowgroup [ref=f636e365]:
+                                            - row [ref=f636e366]:
+                                              - cell "Name Cost category Code Active Operations Africa  CRITERION0002-0001 America  CRITERION0002-0002 Asia  CRITERION0002-0003 Australia  CRITERION0002-0004 Europe  CRITERION0002-0005" [ref=f636e367]:
+                                                - generic [ref=f636e368]:
+                                                  - table [ref=f636e370]:
+                                                    - rowgroup [ref=f636e377]:
+                                                      - row [ref=f636e378]:
+                                                        - columnheader "Name" [ref=f636e379]
+                                                        - columnheader "Cost category" [ref=f636e381]
+                                                        - columnheader "Code" [ref=f636e383]
+                                                        - columnheader "Active" [ref=f636e385]
+                                                        - columnheader "Operations" [ref=f636e387]
+                                                        - columnheader
+                                                  - generic [ref=f636e390]:
+                                                    - table [ref=f636e391]:
+                                                      - rowgroup [ref=f636e398]:
+                                                        - row [ref=f636e399]:
+                                                          - cell "Africa" [ref=f636e400] [cursor=pointer]:
+                                                            - textbox [ref=f636e403]: Africa
+                                                          - cell "" [ref=f636e404] [cursor=pointer]:
+                                                            - generic [ref=f636e406]:
+                                                              - textbox [ref=f636e407]
+                                                              - generic [ref=f636e408]: 
+                                                          - cell [ref=f636e410] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f636e412]: CRITERION0002-0001
+                                                          - cell [ref=f636e413] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f636e416]
+                                                          - cell [ref=f636e417] [cursor=pointer]:
+                                                            - generic [ref=f636e418]:
+                                                              - button [ref=f636e419]
+                                                              - button [ref=f636e421]
+                                                              - button "Not indentable" [ref=f636e423]
+                                                              - button "Not indentable" [ref=f636e425]
+                                                              - button "Delete" [ref=f636e427]
+                                                        - row [ref=f636e429]:
+                                                          - cell "America" [ref=f636e430] [cursor=pointer]:
+                                                            - textbox [ref=f636e433]: America
+                                                          - cell "" [ref=f636e434] [cursor=pointer]:
+                                                            - generic [ref=f636e436]:
+                                                              - textbox [ref=f636e437]
+                                                              - generic [ref=f636e438]: 
+                                                          - cell [ref=f636e440] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f636e442]: CRITERION0002-0002
+                                                          - cell [ref=f636e443] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f636e446]
+                                                          - cell [ref=f636e447] [cursor=pointer]:
+                                                            - generic [ref=f636e448]:
+                                                              - button [ref=f636e449]
+                                                              - button [ref=f636e451]
+                                                              - button "Not indentable" [ref=f636e453]
+                                                              - button "Not indentable" [ref=f636e455]
+                                                              - button "Delete" [ref=f636e457]
+                                                        - row [ref=f636e459]:
+                                                          - cell "Asia" [ref=f636e460] [cursor=pointer]:
+                                                            - textbox [ref=f636e463]: Asia
+                                                          - cell "" [ref=f636e464] [cursor=pointer]:
+                                                            - generic [ref=f636e466]:
+                                                              - textbox [ref=f636e467]
+                                                              - generic [ref=f636e468]: 
+                                                          - cell [ref=f636e470] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f636e472]: CRITERION0002-0003
+                                                          - cell [ref=f636e473] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f636e476]
+                                                          - cell [ref=f636e477] [cursor=pointer]:
+                                                            - generic [ref=f636e478]:
+                                                              - button [ref=f636e479]
+                                                              - button [ref=f636e481]
+                                                              - button "Not indentable" [ref=f636e483]
+                                                              - button "Not indentable" [ref=f636e485]
+                                                              - button "Delete" [ref=f636e487]
+                                                        - row [ref=f636e489]:
+                                                          - cell "Australia" [ref=f636e490] [cursor=pointer]:
+                                                            - textbox [ref=f636e493]: Australia
+                                                          - cell "" [ref=f636e494] [cursor=pointer]:
+                                                            - generic [ref=f636e496]:
+                                                              - textbox [ref=f636e497]
+                                                              - generic [ref=f636e498]: 
+                                                          - cell [ref=f636e500] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f636e502]: CRITERION0002-0004
+                                                          - cell [ref=f636e503] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f636e506]
+                                                          - cell [ref=f636e507] [cursor=pointer]:
+                                                            - generic [ref=f636e508]:
+                                                              - button [ref=f636e509]
+                                                              - button [ref=f636e511]
+                                                              - button "Not indentable" [ref=f636e513]
+                                                              - button "Not indentable" [ref=f636e515]
+                                                              - button "Delete" [ref=f636e517]
+                                                        - row [ref=f636e519]:
+                                                          - cell "Europe" [ref=f636e520] [cursor=pointer]:
+                                                            - textbox [ref=f636e523]: Europe
+                                                          - cell "" [ref=f636e524] [cursor=pointer]:
+                                                            - generic [ref=f636e526]:
+                                                              - textbox [ref=f636e527]
+                                                              - generic [ref=f636e528]: 
+                                                          - cell [ref=f636e530] [cursor=pointer]:
+                                                            - textbox [disabled] [ref=f636e532]: CRITERION0002-0005
+                                                          - cell [ref=f636e533] [cursor=pointer]:
+                                                            - checkbox [checked] [ref=f636e536]
+                                                          - cell [ref=f636e537] [cursor=pointer]:
+                                                            - generic [ref=f636e538]:
+                                                              - button [ref=f636e539]
+                                                              - button [ref=f636e541]
+                                                              - button "Not indentable" [ref=f636e543]
+                                                              - button "Not indentable" [ref=f636e545]
+                                                              - button "Delete" [ref=f636e547]
+                                                    - button [ref=f636e549] [cursor=pointer]
+                                                  - generic [ref=f636e550]:    
+            - text:  
+          - table [ref=f636e552]:
+            - rowgroup [ref=f636e553]:
+              - row [ref=f636e554]:
+                - cell [ref=f636e555]:
+                  - table [ref=f636e556]:
+                    - rowgroup [ref=f636e557]:
+                      - row [ref=f636e558]:
+                        - cell [ref=f636e559]:
+                          - button "Save" [ref=f636e560] [cursor=pointer]
+                        - cell [ref=f636e561]
+                        - cell [ref=f636e562]:
+                          - button "Save & Continue" [ref=f636e563] [cursor=pointer]
+                        - cell [ref=f636e564]
+                        - cell [ref=f636e565]:
+                          - button "Cancel" [ref=f636e566] [cursor=pointer]
+  - generic:
+    - table [ref=f636e231]:
+      - rowgroup [ref=f636e232]:
+        - row [ref=f636e233]:
+          - cell [ref=f636e234]:
+            - generic [ref=f636e236]:
+              - text: The admin's account password remains the default one. This is insecure.
+              - link "[Change the password]" [ref=f636e237] [cursor=pointer]:
+                - /url: /users/users.zul#edit%3D1
+          - cell [ref=f636e238]
+    - text:    

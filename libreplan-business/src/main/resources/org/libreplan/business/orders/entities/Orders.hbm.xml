@@ -117,7 +117,16 @@
 
                 <property name="customerReference" column="customer_reference" access="field" />
 
-                <property name="externalCode" column="external_code" access="field" />
+                <!--
+                    externalCode is deliberately NOT mapped here; it is a single field on
+                    OrderElement, mapped above to order_element.external_code. Order briefly had
+                    its own field in 2010, but 332d9a55d deleted it and left this mapping behind,
+                    so both mappings resolved to the same inherited field and every save wrote the
+                    value into two columns. Hibernate 6 counts the duplicate twice when computing
+                    fetchable-index offsets while building only one attribute mapping, which shifts
+                    the following subclasses' indexes and trips assertFetchableIndexes(). The
+                    order_table.external_code column is left in place, unmapped. Do not re-add.
+                -->
 
                 <property name="state" access="field" >
                     <type name="org.hibernate.type.EnumType">

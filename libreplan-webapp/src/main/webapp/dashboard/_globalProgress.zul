@@ -19,7 +19,7 @@
 
 <!-- Configure the parameters for the 'global progress' chart. The object contains a method 'render' that
     is called from the Java file once all objects in the view have been created -->
-<script type="text/javascript" defer="true">
+<script defer="true">
 <![CDATA[
 
     global_progress = {

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +24,10 @@ package org.libreplan.business.costcategories.daos;
 
 import java.util.List;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.costcategories.entities.CostCategory;
@@ -57,8 +61,10 @@ public class ResourcesCostCategoryAssignmentDAO
     @Override
     public List<ResourcesCostCategoryAssignment> getResourcesCostCategoryAssignmentsByCostCategory(
             CostCategory costCategory) {
-        return (List<ResourcesCostCategoryAssignment>)getSession().
-            createCriteria(ResourcesCostCategoryAssignment.class)
-            .add(Restrictions.eq("costCategory", costCategory)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<ResourcesCostCategoryAssignment> cq = cb.createQuery(ResourcesCostCategoryAssignment.class);
+        Root<ResourcesCostCategoryAssignment> root = cq.from(ResourcesCostCategoryAssignment.class);
+        cq.where(cb.equal(root.get("costCategory"), costCategory));
+        return getSession().createQuery(cq).getResultList();
     }
 }

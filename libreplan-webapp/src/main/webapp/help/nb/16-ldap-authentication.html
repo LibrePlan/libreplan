@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>LDAP-konfigurasjon</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="ldap-konfigurasjon">
+<h1 class="title">LDAP-konfigurasjon</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#aktivering" id="toc-entry-1">Aktivering</a></li>
+<li><a class="reference internal" href="#konfigurasjon" id="toc-entry-2">Konfigurasjon</a></li>
+<li><a class="reference internal" href="#autentisering" id="toc-entry-3">Autentisering</a></li>
+<li><a class="reference internal" href="#autorisasjon" id="toc-entry-4">Autorisasjon</a><ul>
+<li><a class="reference internal" href="#gruppestrategi" id="toc-entry-5">Gruppestrategi</a></li>
+<li><a class="reference internal" href="#egenskapsstrategi" id="toc-entry-6">Egenskapsstrategi</a></li>
+<li><a class="reference internal" href="#rollesamsvar" id="toc-entry-7">Rollesamsvar</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Denne skjermen lar deg etablere en forbindelse med LDAP for å delegere
+autentisering og/eller autorisasjon.</p>
+<p>Den er delt inn i fire forskjellige områder, som forklares nedenfor:</p>
+<div class="section" id="aktivering">
+<h1><a class="toc-backref" href="#toc-entry-1">Aktivering</a></h1>
+<p>Dette området brukes til å angi egenskapene som bestemmer hvordan <em>LibrePlan</em> bruker
+LDAP.</p>
+<p>Hvis feltet <em>Aktiver LDAP-autentisering</em> er merket av, vil <em>LibrePlan</em> spørre
+LDAP hver gang en bruker forsøker å logge inn på applikasjonen.</p>
+<p>Feltet <em>Bruk LDAP-roller</em> merket av betyr at det etableres en kartlegging mellom LDAP-roller og
+LibrePlan-roller. Følgelig vil tillatelsene for en bruker i
+LibrePlan avhenge av rollene brukeren har i LDAP.</p>
+</div>
+<div class="section" id="konfigurasjon">
+<h1><a class="toc-backref" href="#toc-entry-2">Konfigurasjon</a></h1>
+<p>Denne seksjonen inneholder parameterverdiene for tilgang til LDAP. <em>Base</em>, <em>UserDN</em> og
+<em>Password</em> er parametere som brukes til å koble til LDAP og søke etter brukere. Derfor
+må den angitte brukeren ha tillatelse til å utføre denne operasjonen i LDAP. Nederst
+i denne seksjonen er det en knapp for å kontrollere om en LDAP-tilkobling er
+mulig med de gitte parameterne. Det anbefales å teste tilkoblingen før
+du fortsetter konfigurasjonen.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Hvis LDAP er konfigurert til å arbeide med anonym autentisering, kan du
+la <em>UserDN</em>- og <em>Password</em>-attributtene stå tomme.</p>
+</div>
+<div class="admonition tip">
+<p class="first admonition-title">Tip</p>
+<p>Angående konfigurasjon av <em>Active Directory (AD)</em>, må <em>Base</em>-feltet være den
+nøyaktige plasseringen der den bundne brukeren befinner seg i AD.</p>
+<p class="last">Eksempel: <tt class="docutils literal">ou=organizational_unit,dc=example,dc=org</tt></p>
+</div>
+</div>
+<div class="section" id="autentisering">
+<h1><a class="toc-backref" href="#toc-entry-3">Autentisering</a></h1>
+<p>Her kan du konfigurere egenskapen i LDAP-noder der det gitte brukernavnet
+skal finnes. Egenskapen <em>UserId</em> må fylles ut med navnet på
+egenskapen der brukernavnet er lagret i LDAP.</p>
+<p>Avmerkingsboksen <em>Lagre passord i database</em>, når den er merket av, betyr at
+passordet også lagres i LibrePlan-databasen. På denne måten, hvis LDAP er
+frakoblet eller utilgjengelig, kan LDAP-brukere autentisere seg mot LibrePlan-databasen.
+Hvis den ikke er merket av, kan LDAP-brukere kun autentiseres mot LDAP.</p>
+</div>
+<div class="section" id="autorisasjon">
+<h1><a class="toc-backref" href="#toc-entry-4">Autorisasjon</a></h1>
+<p>Denne seksjonen lar deg definere en strategi for å matche LDAP-roller med
+LibrePlan-roller. Det første valget er strategien som skal brukes, avhengig av
+LDAP-implementasjonen.</p>
+<div class="section" id="gruppestrategi">
+<h2><a class="toc-backref" href="#toc-entry-5">Gruppestrategi</a></h2>
+<p>Når denne strategien brukes, indikerer det at LDAP har en rolle-gruppestrategi.
+Dette betyr at brukere i LDAP er noder som er direkte under en gren som
+representerer gruppen.</p>
+<p>Det neste eksempelet representerer en gyldig LDAP-struktur for bruk av gruppestrategien.</p>
+<ul>
+<li><p class="first">LDAP-struktur:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=groups
+   |- cn=admins
+   |- cn=itpeople
+   |- cn=workers
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p>I dette tilfellet vil hver gruppe ha et attributt, for eksempel kalt <tt class="docutils literal">member</tt>,
+med listen over brukere som tilhører gruppen:</p>
+<ul class="simple">
+<li><tt class="docutils literal">cn=admins</tt>:<ul>
+<li><tt class="docutils literal">member: uid=admin1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=itpeople</tt>:<ul>
+<li><tt class="docutils literal">member: uid=it1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=it2,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">cn=workers</tt>:<ul>
+<li><tt class="docutils literal">member: uid=worker1,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker2,ou=people,dc=example,dc=org</tt></li>
+<li><tt class="docutils literal">member: uid=worker3,ou=people,dc=example,dc=org</tt></li>
+</ul>
+</li>
+</ul>
+<p>Konfigurasjonen for dette tilfellet er som følger:</p>
+<ul class="simple">
+<li>Rollesøkstrategi: <tt class="docutils literal">Group strategy</tt></li>
+<li>Gruppebane: <tt class="docutils literal">ou=groups</tt></li>
+<li>Rollegenskap: <tt class="docutils literal">member</tt></li>
+<li>Rollesøkspørring: <tt class="docutils literal"><span class="pre">uid=[USER_ID],ou=people,dc=example,dc=org</span></tt></li>
+</ul>
+<p>Og for eksempel, hvis du ønsker å matche noen roller:</p>
+<ul class="simple">
+<li>Administrasjon: <tt class="docutils literal">cn=admins;cn=itpeople</tt></li>
+<li>Webtjenestelese: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Webtjenesteskrive: <tt class="docutils literal">cn=itpeople</tt></li>
+<li>Alle prosjekter lesetilgang: <tt class="docutils literal">cn=admins</tt></li>
+<li>Alle prosjekter redigeringstilgang: <tt class="docutils literal">cn=admins</tt></li>
+<li>Prosjektopprettelse tillatt: <tt class="docutils literal">cn=workers</tt></li>
+</ul>
+</div>
+<div class="section" id="egenskapsstrategi">
+<h2><a class="toc-backref" href="#toc-entry-6">Egenskapsstrategi</a></h2>
+<p>Når en administrator bestemmer seg for å bruke denne strategien, indikerer det at hver bruker
+er en LDAP-node, og innenfor noden eksisterer det en egenskap som representerer
+gruppen(e) for brukeren. I dette tilfellet krever ikke konfigurasjonen parameteren <em>Gruppebane</em>.</p>
+<p>Det neste eksempelet representerer en gyldig LDAP-struktur for bruk av egenskapsstrategien.</p>
+<ul>
+<li><p class="first">LDAP-struktur:</p>
+<pre class="literal-block">
+dc=example,dc=org
+|- ou=people
+   |- uid=admin1
+   |- uid=it1
+   |- uid=it2
+   |- uid=worker1
+   |- uid=worker2
+   |- uid=worker3
+</pre>
+</li>
+</ul>
+<p><strong>Med attributt</strong></p>
+<p>I dette tilfellet vil hver bruker ha et attributt, for eksempel kalt <tt class="docutils literal">group</tt>,
+med navnet på gruppen de tilhører:</p>
+<ul class="simple">
+<li><tt class="docutils literal">uid=admin1</tt>:<ul>
+<li><tt class="docutils literal">group: admins</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it1</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=it2</tt>:<ul>
+<li><tt class="docutils literal">group: itpeople</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker1</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker2</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+<li><tt class="docutils literal">uid=worker3</tt>:<ul>
+<li><tt class="docutils literal">group: workers</tt></li>
+</ul>
+</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Denne strategien har en begrensning: hver bruker kan kun tilhøre én gruppe.</p>
+</div>
+<p>Konfigurasjonen for dette tilfellet er som følger:</p>
+<ul class="simple">
+<li>Rollesøkstrategi: <tt class="docutils literal">Property strategy</tt></li>
+<li>Gruppebane:</li>
+<li>Rollegenskap: <tt class="docutils literal">group</tt></li>
+<li>Rollesøkspørring: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>Og for eksempel, hvis du ønsker å matche noen roller:</p>
+<ul class="simple">
+<li>Administrasjon: <tt class="docutils literal">admins;itpeople</tt></li>
+<li>Webtjenestelese: <tt class="docutils literal">itpeople</tt></li>
+<li>Webtjenesteskrive: <tt class="docutils literal">itpeople</tt></li>
+<li>Alle prosjekter lesetilgang: <tt class="docutils literal">admins</tt></li>
+<li>Alle prosjekter redigeringstilgang: <tt class="docutils literal">admins</tt></li>
+<li>Prosjektopprettelse tillatt: <tt class="docutils literal">workers</tt></li>
+</ul>
+<p><strong>Etter brukeridentifikator</strong></p>
+<p>Du kan også bruke en omvei for å angi LibrePlan-roller direkte til brukere
+uten å ha et attributt i hver LDAP-bruker.</p>
+<p>I dette tilfellet angir du hvilke brukere som har de ulike LibrePlan-rollene
+ved hjelp av <tt class="docutils literal">uid</tt>.</p>
+<p>Konfigurasjonen for dette tilfellet er som følger:</p>
+<ul class="simple">
+<li>Rollesøkstrategi: <tt class="docutils literal">Property strategy</tt></li>
+<li>Gruppebane:</li>
+<li>Rollegenskap: <tt class="docutils literal">uid</tt></li>
+<li>Rollesøkspørring: <tt class="docutils literal">[USER_ID]</tt></li>
+</ul>
+<p>Og for eksempel, hvis du ønsker å matche noen roller:</p>
+<ul class="simple">
+<li>Administrasjon: <tt class="docutils literal">admin1;it1</tt></li>
+<li>Webtjenestelese: <tt class="docutils literal">it1;it2</tt></li>
+<li>Webtjenesteskrive: <tt class="docutils literal">it1;it2</tt></li>
+<li>Alle prosjekter lesetilgang: <tt class="docutils literal">admin1</tt></li>
+<li>Alle prosjekter redigeringstilgang: <tt class="docutils literal">admin1</tt></li>
+<li>Prosjektopprettelse tillatt: <tt class="docutils literal">worker1;worker2;worker3</tt></li>
+</ul>
+</div>
+<div class="section" id="rollesamsvar">
+<h2><a class="toc-backref" href="#toc-entry-7">Rollesamsvar</a></h2>
+<p>Nederst i denne seksjonen er det en tabell med alle LibrePlan-rollene
+og et tekstfelt ved siden av hver av dem. Dette er for rollematching. For eksempel,
+hvis en administrator bestemmer at <em>Administrasjon</em>-rollen i LibrePlan samsvarer med
+<em>admin</em>- og <em>administrators</em>-rollene i LDAP, bør tekstfeltet inneholde:
+&quot;<tt class="docutils literal">admin;administrators</tt>&quot;. Tegnet for å skille roller er &quot;<tt class="docutils literal">;</tt>&quot;.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Hvis du vil angi at alle brukere eller alle grupper har én tillatelse, kan
+du bruke en stjerne (<tt class="docutils literal">*</tt>) som jokertegn for å referere til dem. For eksempel, hvis
+du vil at alle skal ha rollen <em>Prosjektopprettelse tillatt</em>, konfigurerer du rollesamsvaret
+som følger:</p>
+<ul class="last simple">
+<li>Prosjektopprettelse tillatt: <tt class="docutils literal">*</tt></li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>

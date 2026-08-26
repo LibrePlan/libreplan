@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -32,6 +33,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import org.joda.time.LocalDate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.libreplan.business.common.IAdHocTransactionService;
@@ -39,12 +41,16 @@ import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
 import org.libreplan.business.resources.daos.ICriterionDAO;
+import org.libreplan.business.resources.daos.ICriterionSatisfactionDAO;
 import org.libreplan.business.resources.daos.ICriterionTypeDAO;
+import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Criterion;
+import org.libreplan.business.resources.entities.CriterionSatisfaction;
 import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.resources.entities.ICriterion;
 import org.libreplan.business.resources.entities.ICriterionType;
 import org.libreplan.business.resources.entities.Resource;
+import org.libreplan.business.resources.entities.Worker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.InvalidDataAccessApiUsageException;
@@ -69,6 +75,12 @@ public class CriterionDAOTest {
 
     @Autowired
     private IAdHocTransactionService transactionService;
+
+    @Autowired
+    private IWorkerDAO workerDAO;
+
+    @Autowired
+    private ICriterionSatisfactionDAO satisfactionDAO;
 
     private Criterion criterion;
 
@@ -287,6 +299,75 @@ public class CriterionDAOTest {
                 return false;
             }
         };
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). getAllSorted/existsPredefinedCriterion/numberOfRelatedRequirements/
+     * numberOfRelatedSatisfactions had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void getAllSortedOrdersCriterionsByNameAscending() {
+        CriterionType type = ensureTypeExists(CriterionTypeDAOTest.createValidCriterionType());
+        Criterion first = Criterion.withNameAndType("aaa-" + UUID.randomUUID(), type);
+        Criterion second = Criterion.withNameAndType("zzz-" + UUID.randomUUID(), type);
+        criterionDAO.save(second);
+        criterionDAO.save(first);
+
+        List<Criterion> sorted = criterionDAO.getAllSorted();
+        int firstIndex = sorted.indexOf(first);
+        int secondIndex = sorted.indexOf(second);
+        assertTrue(firstIndex >= 0);
+        assertTrue(secondIndex >= 0);
+        assertTrue(firstIndex < secondIndex);
+    }
+
+    @Test
+    @Transactional
+    public void existsPredefinedCriterionTrueAfterSaving() {
+        CriterionType type = ensureTypeExists(CriterionTypeDAOTest.createValidCriterionType());
+        String name = "predefined-" + UUID.randomUUID();
+        Criterion predefined = Criterion.createPredefined(name, type);
+        criterionDAO.save(predefined);
+
+        Criterion lookup = Criterion.createPredefined(name, type);
+        assertTrue(criterionDAO.existsPredefinedCriterion(lookup));
+    }
+
+    @Test
+    @Transactional
+    public void existsPredefinedCriterionFalseWhenNotSaved() {
+        CriterionType type = ensureTypeExists(CriterionTypeDAOTest.createValidCriterionType());
+        Criterion lookup = Criterion.createPredefined("does-not-exist-" + UUID.randomUUID(), type);
+        assertFalse(criterionDAO.existsPredefinedCriterion(lookup));
+    }
+
+    @Test
+    @Transactional
+    public void numberOfRelatedRequirementsIsZeroWhenNoneExist() {
+        Criterion c = givenASavedCriterionWithAnExistentType();
+        assertEquals(0, criterionDAO.numberOfRelatedRequirements(c));
+    }
+
+    @Test
+    @Transactional
+    public void numberOfRelatedSatisfactionsIsZeroWhenNoneExist() {
+        Criterion c = givenASavedCriterionWithAnExistentType();
+        assertEquals(0, criterionDAO.numberOfRelatedSatisfactions(c));
+    }
+
+    @Test
+    @Transactional
+    public void numberOfRelatedSatisfactionsCountsSavedSatisfactions() {
+        Criterion c = givenASavedCriterionWithAnExistentType();
+        Worker worker = Worker.create("firstname", "surname", "nif-" + UUID.randomUUID());
+        workerDAO.save(worker);
+        CriterionSatisfaction satisfaction = CriterionSatisfaction.create(new LocalDate(2020, 1, 1), c, worker);
+        satisfactionDAO.save(satisfaction);
+
+        assertEquals(1, criterionDAO.numberOfRelatedSatisfactions(c));
     }
 
 }

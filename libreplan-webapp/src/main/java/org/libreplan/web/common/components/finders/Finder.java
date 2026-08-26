@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -110,8 +111,9 @@ public abstract class Finder implements IFinder {
          *            Number of rows (maximum 10, see {@link SimpleListModel}
          */
         public ListModel getSubModel(Object value, int nRows) {
-            // TODO resolve deprecated
-            final String idx = value == null ? "" : objectToString(value);
+            // SimpleListModel.objectToString(Object) was removed in ZK 10; it was just a
+            // null-safe String conversion of the search value here.
+            final String idx = value == null ? "" : String.valueOf(value);
 
             if ( nRows < 0 ) {
                 nRows = 10;

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -20,16 +21,19 @@
  */
 package org.libreplan.business.test.scenarios.daos;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.business.test.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_TEST_FILE;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,6 +42,7 @@ import org.libreplan.business.IDataBootstrap;
 import org.libreplan.business.common.IAdHocTransactionService;
 import org.libreplan.business.common.IOnTransaction;
 import org.libreplan.business.common.daos.IConfigurationDAO;
+import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.orders.daos.IOrderDAO;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.scenarios.daos.IScenarioDAO;
@@ -46,6 +51,7 @@ import org.libreplan.business.scenarios.entities.Scenario;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Óscar González Fernández <ogonzalez@igalia.com>
@@ -129,6 +135,89 @@ public class ScenarioDAOTest {
                 return false;
             }
         });
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). findByName/existsByName/getAllExcept/findByPredecessor/
+     * thereIsOtherWithSameName had no test coverage before.
+     */
+
+    @Test
+    @Transactional
+    public void findByNameMatchesTrimmedAndCaseInsensitive() throws InstanceNotFoundException {
+        String name = "Zqn" + UUID.randomUUID().toString().replace("-", "");
+        Scenario scenario = Scenario.create(name);
+        scenarioDAO.save(scenario);
+
+        Scenario found = scenarioDAO.findByName("  " + name.toLowerCase() + "  ");
+        assertEquals(scenario.getId(), found.getId());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void findByNameThrowsWhenBlank() throws InstanceNotFoundException {
+        scenarioDAO.findByName("   ");
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void findByNameThrowsWhenNotFound() throws InstanceNotFoundException {
+        scenarioDAO.findByName("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test
+    @Transactional
+    public void existsByNameReflectsSavedScenarios() {
+        String name = "Zqe" + UUID.randomUUID().toString().replace("-", "");
+        assertFalse(scenarioDAO.existsByName(name));
+        scenarioDAO.save(Scenario.create(name));
+        assertTrue(scenarioDAO.existsByName(name));
+    }
+
+    @Test
+    @Transactional
+    public void getAllExceptExcludesScenariosWithThatName() {
+        Scenario excluded = Scenario.create("Zqx" + UUID.randomUUID().toString().replace("-", ""));
+        Scenario other = Scenario.create("Zqy" + UUID.randomUUID().toString().replace("-", ""));
+        scenarioDAO.save(excluded);
+        scenarioDAO.save(other);
+
+        List<Scenario> result = scenarioDAO.getAllExcept(excluded);
+
+        assertTrue(result.stream().anyMatch(s -> s.getId().equals(other.getId())));
+        assertFalse(result.stream().anyMatch(s -> s.getId().equals(excluded.getId())));
+    }
+
+    @Test
+    @Transactional
+    public void findByPredecessorReturnsEmptyForNullScenario() {
+        assertTrue(scenarioDAO.findByPredecessor(null).isEmpty());
+    }
+
+    @Test
+    @Transactional
+    public void findByPredecessorOnlyReturnsDirectChildren() {
+        Scenario parent = Scenario.create("Zqp" + UUID.randomUUID().toString().replace("-", ""));
+        scenarioDAO.save(parent);
+
+        Scenario child = new Scenario("Zqc" + UUID.randomUUID().toString().replace("-", ""), parent);
+        scenarioDAO.save(child);
+
+        Scenario unrelated = Scenario.create("Zqu" + UUID.randomUUID().toString().replace("-", ""));
+        scenarioDAO.save(unrelated);
+
+        List<Scenario> result = scenarioDAO.findByPredecessor(parent);
+
+        assertEquals(1, result.size());
+        assertEquals(child.getId(), result.get(0).getId());
+    }
+
+    @Test
+    @Transactional
+    public void thereIsOtherWithSameNameFalseWhenUnique() {
+        Scenario scenario = Scenario.create("Zqt" + UUID.randomUUID().toString().replace("-", ""));
+        assertFalse(scenarioDAO.thereIsOtherWithSameName(scenario));
     }
 
 }

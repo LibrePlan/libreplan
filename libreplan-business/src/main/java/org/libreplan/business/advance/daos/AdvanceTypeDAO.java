@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,9 +25,10 @@ package org.libreplan.business.advance.daos;
 import java.util.Collection;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.MatchMode;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.advance.entities.AdvanceAssignment;
 import org.libreplan.business.advance.entities.AdvanceType;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
@@ -46,21 +48,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
         implements IAdvanceTypeDAO {
     public boolean existsNameAdvanceType(String unitName) {
-        return getSession().createCriteria(AdvanceType.class).add(
-                Restrictions.eq("unitName", unitName)).uniqueResult() != null;
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<AdvanceType> cq = cb.createQuery(AdvanceType.class);
+        Root<AdvanceType> root = cq.from(AdvanceType.class);
+        cq.where(cb.equal(root.get("unitName"), unitName));
+        return getSession().createQuery(cq).uniqueResult() != null;
     }
 
     @Override
     @Transactional(readOnly = true)
     public AdvanceType findByName(String name) {
-        return (AdvanceType) getSession().createCriteria(AdvanceType.class)
-                .add(Restrictions.eq("unitName", name)).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<AdvanceType> cq = cb.createQuery(AdvanceType.class);
+        Root<AdvanceType> root = cq.from(AdvanceType.class);
+        cq.where(cb.equal(root.get("unitName"), name));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override
     public List<AdvanceType> findActivesAdvanceTypes() {
-        return getSession().createCriteria(AdvanceType.class).add(
-                Restrictions.eq("active", Boolean.TRUE)).list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<AdvanceType> cq = cb.createQuery(AdvanceType.class);
+        Root<AdvanceType> root = cq.from(AdvanceType.class);
+        cq.where(cb.equal(root.get("active"), Boolean.TRUE));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -70,17 +81,24 @@ public class AdvanceTypeDAO extends GenericDAOHibernate<AdvanceType, Long>
 
     @Override
     public boolean isAlreadyInUse(AdvanceType advanceType) {
-        return !getSession().createCriteria(AdvanceAssignment.class).add(
-                Restrictions.eq("advanceType", advanceType)).list().isEmpty();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<AdvanceAssignment> cq = cb.createQuery(AdvanceAssignment.class);
+        Root<AdvanceAssignment> root = cq.from(AdvanceAssignment.class);
+        cq.where(cb.equal(root.get("advanceType"), advanceType));
+        return !getSession().createQuery(cq).getResultList().isEmpty();
     }
 
     @Override
     @Transactional(readOnly=true)
     public AdvanceType findByNameCaseInsensitive(String name)
             throws InstanceNotFoundException {
-        Criteria c = getSession().createCriteria(AdvanceType.class);
-        c.add(Restrictions.ilike("unitName", name, MatchMode.EXACT));
-        AdvanceType result = (AdvanceType) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<AdvanceType> cq = cb.createQuery(AdvanceType.class);
+        Root<AdvanceType> root = cq.from(AdvanceType.class);
+        // Restrictions.ilike(..., MatchMode.EXACT) is a case-insensitive equals, not a
+        // wildcard LIKE match.
+        cq.where(cb.equal(cb.lower(root.get("unitName")), name.toLowerCase()));
+        AdvanceType result = getSession().createQuery(cq).uniqueResult();
 
         if (result == null) {
             throw new InstanceNotFoundException(name,

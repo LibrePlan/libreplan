@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2011 ComtecSF, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -141,11 +142,11 @@ public class PasswordModel implements IPasswordModel {
     @Override
     public boolean validateCurrentPassword(String value)
     {
-        String currentPasswordEncoded = dbPasswordEncoderService.encodePassword((String)value, user.getLoginName());
-        if(!(currentPasswordEncoded).equals(user.getPassword())) {
-            return false;
-        }
-        return true;
+        // No need to rehash a legacy-scheme match here even though authentication does
+        // (see LDAPCustomAuthenticationProvider): whenever this check passes, the caller's
+        // very next step is always to set a new password, which encodePassword() already
+        // writes with the current scheme regardless.
+        return dbPasswordEncoderService.matches((String) value, user.getLoginName(), user.getPassword());
     }
 
     @Transactional(readOnly = true)

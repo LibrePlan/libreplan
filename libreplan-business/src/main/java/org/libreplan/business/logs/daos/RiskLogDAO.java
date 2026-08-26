@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,10 @@ package org.libreplan.business.logs.daos;
 
 import java.util.List;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.IntegrationEntityDAO;
 import org.libreplan.business.logs.entities.RiskLog;
 import org.libreplan.business.orders.entities.Order;
@@ -47,10 +51,11 @@ public class RiskLogDAO extends IntegrationEntityDAO<RiskLog> implements
 
     @Override
     public List<RiskLog> getByParent(Order order) {
-        return getSession()
-                .createCriteria(RiskLog.class)
-                .add(Restrictions.eq("project", order))
-                .list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<RiskLog> cq = cb.createQuery(RiskLog.class);
+        Root<RiskLog> root = cq.from(RiskLog.class);
+        cq.where(cb.equal(root.get("project"), order));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

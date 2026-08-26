@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +27,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
-import javax.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.AssertTrue;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.libreplan.business.common.daos.IIntegrationEntityDAO;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;

@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -24,10 +25,11 @@ package org.libreplan.business.users.daos;
 import java.util.Collections;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.common.exceptions.InstanceNotFoundException;
 import org.libreplan.business.common.exceptions.ValidationException;
@@ -70,9 +72,11 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
     public Profile findByProfileName(String profileName)
         throws InstanceNotFoundException{
 
-        Criteria c = getSession().createCriteria(Profile.class);
-        c.add(Restrictions.eq("profileName", profileName).ignoreCase());
-        Profile profile = (Profile) c.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Profile> cq = cb.createQuery(Profile.class);
+        Root<Profile> root = cq.from(Profile.class);
+        cq.where(cb.equal(cb.lower(root.get("profileName")), profileName.toLowerCase()));
+        Profile profile = getSession().createQuery(cq).uniqueResult();
 
         if (profile == null) {
             throw new InstanceNotFoundException(profileName,
@@ -92,10 +96,16 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
 
     @Override
     public List<OrderAuthorization> getOrderAuthorizationsByProfile(Profile profile) {
-        List orderAuthorizations = getSession()
-                .createCriteria(ProfileOrderAuthorization.class)
-                .add(Restrictions.eq("profile", profile)).list();
-        return orderAuthorizations;
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        // Query typed as the supertype OrderAuthorization (the DAO's declared return type),
+        // selecting from its subtype ProfileOrderAuthorization - mirrors the original
+        // Criteria query, which also implicitly returned ProfileOrderAuthorization rows
+        // as a List<OrderAuthorization>.
+        CriteriaQuery<OrderAuthorization> cq = cb.createQuery(OrderAuthorization.class);
+        Root<ProfileOrderAuthorization> root = cq.from(ProfileOrderAuthorization.class);
+        cq.where(cb.equal(root.get("profile"), profile));
+        cq.select(root);
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -124,9 +134,11 @@ public class ProfileDAO extends GenericDAOHibernate<Profile, Long> implements
 
     @Override
     public List<Profile> listSorted() {
-        Criteria c = getSession().createCriteria(Profile.class).addOrder(
-                Order.asc("profileName"));
-        return c.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<Profile> cq = cb.createQuery(Profile.class);
+        Root<Profile> root = cq.from(Profile.class);
+        cq.orderBy(cb.asc(root.get("profileName")));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

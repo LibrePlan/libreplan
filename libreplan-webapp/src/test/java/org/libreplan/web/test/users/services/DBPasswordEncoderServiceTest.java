@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,8 @@
 
 package org.libreplan.web.test.users.services;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_CONFIG_FILE;
 import static org.libreplan.web.WebappGlobalNames.WEBAPP_SPRING_SECURITY_CONFIG_FILE;
@@ -84,14 +86,50 @@ public class DBPasswordEncoderServiceTest {
 
         for (PredefinedUsers u : PredefinedUsers.values()) {
 
-            String encodedPassword = dbPasswordEncoderService.encodePassword(
-                u.getClearPassword(), u.getLoginName());
+            // Not asserting encodePassword(...).equals(user.getPassword()): the current
+            // scheme (BCrypt) embeds a fresh random salt on every call, so encoding the same
+            // clear password twice never produces the same string twice. matches() is the
+            // right check - see jdk25-migration-baseline/CHANGES-and-WHY.md.
             User user = userDAO.findByLoginName(u.getLoginName());
 
-            assertEquals(user.getPassword(), encodedPassword);
+            assertTrue(dbPasswordEncoderService.matches(
+                u.getClearPassword(), u.getLoginName(), user.getPassword()));
 
         }
 
+    }
+
+    /**
+     * Independently computed offline (Python's hashlib, not this codebase) as
+     * sha512("secret123{testuser}").hexdigest() - i.e. reproducing what a real password
+     * stored before the migration to BCrypt would look like for clear password "secret123"
+     * and login name "testuser". See jdk25-migration-baseline/CHANGES-and-WHY.md for how the
+     * legacy "password{loginName}" merge format and SHA-512/hex encoding were verified
+     * byte-for-byte against the actual pre-migration Spring Security source.
+     */
+    private static final String LEGACY_HASH_OF_secret123_FOR_testuser =
+        "8bd62d877242d1ac746b2f9a7d897aac2033694ab486a7fe419ee50bc49eae02f941fc77b7e731659fa03d70064b8df890f7806e3c5751757401267dc710f287";
+
+    @Test
+    public void testMatchesAcceptsLegacyHash() {
+        assertTrue(dbPasswordEncoderService.matches(
+            "secret123", "testuser", LEGACY_HASH_OF_secret123_FOR_testuser));
+
+        assertFalse(dbPasswordEncoderService.matches(
+            "wrongpassword", "testuser", LEGACY_HASH_OF_secret123_FOR_testuser));
+
+        // The salt is derived from the login name, so the same clear password verified
+        // under a different login name must NOT match.
+        assertFalse(dbPasswordEncoderService.matches(
+            "secret123", "otheruser", LEGACY_HASH_OF_secret123_FOR_testuser));
+    }
+
+    @Test
+    public void testNeedsRehashDistinguishesLegacyFromCurrentHashes() {
+        assertTrue(dbPasswordEncoderService.needsRehash(LEGACY_HASH_OF_secret123_FOR_testuser));
+
+        String currentHash = dbPasswordEncoderService.encodePassword("secret123", "testuser");
+        assertFalse(dbPasswordEncoderService.needsRehash(currentHash));
     }
 
 }

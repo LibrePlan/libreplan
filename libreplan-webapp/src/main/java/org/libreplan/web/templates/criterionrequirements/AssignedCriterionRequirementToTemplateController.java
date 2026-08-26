@@ -90,7 +90,7 @@ public class AssignedCriterionRequirementToTemplateController
         assignedCriterionRequirementToTemplateModel.confirm();
     }
 
-    public List<CriterionRequirementWrapper> criterionRequirementWrappers() {
+    public List<CriterionRequirementWrapper> getCriterionRequirementWrappers() {
         return assignedCriterionRequirementToTemplateModel.getCriterionRequirementWrappers();
     }
 
@@ -129,7 +129,7 @@ public class AssignedCriterionRequirementToTemplateController
     }
 
     protected CriterionRequirementWrapper validateWrappers(List<CriterionRequirementWrapper> list) {
-        return assignedCriterionRequirementToTemplateModel.validateWrappers(criterionRequirementWrappers());
+        return assignedCriterionRequirementToTemplateModel.validateWrappers(getCriterionRequirementWrappers());
     }
 
     protected CriterionRequirementWrapper validateHoursGroupWrappers() {

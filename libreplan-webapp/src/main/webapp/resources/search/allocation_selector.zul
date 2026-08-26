@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -33,7 +34,7 @@
 
                     <tree id="criterionsTree" width="420px"
                           height="459px" multiple="true"
-                          model="@{selectorController.criterions}"
+                          model="@load(selectorController.criterions)"
                           sclass="allocationTreeCol"
                           zclass="z-dottree" style="margin-top:5px;margin-bottom:5px;">
                         <treecols>
@@ -48,7 +49,7 @@
                 <vbox>
                     <label value="${i18n:_t('Load ratios calculated between')}:"/>
                     <separator/>
-                    <grid fixedLayout="true">
+                    <grid>
                         <columns>
                             <column/>
                             <column/>
@@ -101,8 +102,8 @@
                         }
                     </style>
                     <listbox id="listBoxResources" hflex="1" height="340px"
-                             multiple="@{selectorController.allowSelectMultipleResources}" style="margin:5px;"
-                             itemRenderer="@{selectorController.listitemRenderer}" >
+                             multiple="@load(selectorController.allowSelectMultipleResources)" style="margin:5px;"
+                             itemRenderer="@load(selectorController.listitemRenderer)" >
                         <listhead>
                             <listheader label="${i18n:_t('Found resources')}"
                                         tooltiptext="${i18n:_t('Resources matching selected criteria')}"
@@ -118,7 +119,7 @@
 
             <!-- Assignment Type -->
             <vbox width="100%">
-                <grid fixedLayout="true" span="1" width="100%">
+                <grid span="1" width="100%">
                     <columns>
                         <column width="200px" />
                         <column  />

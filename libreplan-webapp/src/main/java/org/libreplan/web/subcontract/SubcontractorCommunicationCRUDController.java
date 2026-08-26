@@ -38,6 +38,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
 import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
@@ -80,6 +81,28 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
 
         injectsObjects();
         messagesForUser = new MessagesForUser(messagesContainer);
+
+        listingValues.setRowRenderer(getListingValuesRenderer());
+
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
+    }
+
+    /**
+     * The rows used to be declared with a ZUML "each" template (self="@{each=...}") - under this
+     * app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. This applies even though the model itself is already set imperatively
+     * (appendLabelWithTooltip(), below) rather than through a ZUML model= binding - the "each"
+     * clone-per-item bug is in the row template mechanism, not the model wiring. Building rows
+     * programmatically via RowRenderer sidesteps it entirely.
+     */
+    private RowRenderer getListingValuesRenderer() {
+        return (Row row, Object data, int i) -> {
+            final SubcontractorCommunicationValue value = (SubcontractorCommunicationValue) data;
+            row.setValue(value);
+            row.appendChild(new Label(String.valueOf(value.getProgress())));
+            row.appendChild(new Label(Util.formatDate(value.getDate())));
+        };
     }
 
     private void injectsObjects() {
@@ -102,8 +125,8 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
         }
     }
 
-    public FilterCommunicationEnum[] getFilterItems(){
-        return FilterCommunicationEnum.values();
+    public ListModel<FilterCommunicationEnum> getFilterItems(){
+        return new SimpleListModel<>(FilterCommunicationEnum.values());
     }
 
     public FilterCommunicationEnum getCurrentFilterItem() {
@@ -117,7 +140,7 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
 
     private void refreshSubcontractorCommunicationsList() {
         // Update the subcontractor communication list
-        listing.setModel(new SimpleListModel<>(getSubcontractorCommunications()));
+        listing.setModel(getSubcontractorCommunications());
         listing.invalidate();
     }
 
@@ -125,15 +148,15 @@ public class SubcontractorCommunicationCRUDController extends GenericForwardComp
         subcontractorCommunicationModel.confirmSave(subcontractorCommunication);
     }
 
-    public List<SubcontractorCommunication> getSubcontractorCommunications() {
+    public ListModel<SubcontractorCommunication> getSubcontractorCommunications() {
         FilterCommunicationEnum currentFilter = subcontractorCommunicationModel.getCurrentFilter();
         switch(currentFilter) {
             case NOT_REVIEWED:
-                return subcontractorCommunicationModel.getSubcontractorCommunicationWithoutReviewed();
+                return new SimpleListModel<>(subcontractorCommunicationModel.getSubcontractorCommunicationWithoutReviewed());
 
             case ALL:
             default:
-                return subcontractorCommunicationModel.getSubcontractorAllCommunications();
+                return new SimpleListModel<>(subcontractorCommunicationModel.getSubcontractorAllCommunications());
         }
     }
 

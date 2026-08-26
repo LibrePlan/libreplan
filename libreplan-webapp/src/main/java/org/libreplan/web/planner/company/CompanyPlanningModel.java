@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -67,6 +68,7 @@ import org.libreplan.web.common.components.finders.TaskGroupFilterEnum;
 import org.libreplan.web.planner.TaskElementAdapter;
 import org.libreplan.web.planner.TaskGroupPredicate;
 import org.libreplan.web.planner.chart.Chart;
+import org.libreplan.web.planner.chart.ChartFiller;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller;
 import org.libreplan.web.planner.chart.EarnedValueChartFiller.EarnedValueType;
 import org.libreplan.web.planner.chart.IChartFiller;
@@ -81,8 +83,6 @@ import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import org.zkforge.timeplot.Plotinfo;
-import org.zkforge.timeplot.Timeplot;
 import org.zkoss.ganttz.IChartVisibilityChangedListener;
 import org.zkoss.ganttz.Planner;
 import org.zkoss.ganttz.adapters.IStructureNavigator;
@@ -211,7 +211,10 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         final Tabbox chartComponent = new Tabbox();
         chartComponent.setOrient("vertical");
-        chartComponent.setHeight("200px");
+        // Tab bar + panel padding/borders on top of the chart's own height - keep in sync with
+        // ChartFiller.CHART_HEIGHT_PX rather than an independently-tuned magic number, since a
+        // mismatch here clips the tab content (e.g. the Earned Value legend) via overflow:hidden.
+        chartComponent.setHeight((ChartFiller.CHART_HEIGHT_PX + 50) + "px");
         appendTabs(chartComponent);
         appendTabpanels(chartComponent);
 
@@ -297,7 +300,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void setupChartAndItsContent(final Planner planner, final Tabbox chartComponent) {
-        Timeplot chartLoadTimeplot = createEmptyTimeplot();
+        Div chartLoadTimeplot = createEmptyTimeplot();
 
         appendTab(chartComponent, appendLoadChartAndLegend(new Tabpanel(), chartLoadTimeplot));
 
@@ -314,7 +317,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
     private void createOnDemandEarnedValueTimePlot(final Tabbox chartComponent, final Planner planner){
         transactionService.runOnReadOnlyTransaction((IOnTransaction<Void>) () -> {
-            Timeplot chartEarnedValueTimeplot = createEmptyTimeplot();
+            Div chartEarnedValueTimeplot = createEmptyTimeplot();
             CompanyEarnedValueChartFiller earnedValueChartFiller = new CompanyEarnedValueChartFiller();
             earnedValueChartFiller.calculateValues(planner.getTimeTracker().getRealInterval());
             Tabpanel earnedValueTabpanel = new Tabpanel();
@@ -336,10 +339,8 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
 
-    private Timeplot createEmptyTimeplot() {
-        Timeplot timeplot = new Timeplot();
-        timeplot.appendChild(new Plotinfo());
-        return timeplot;
+    private Div createEmptyTimeplot() {
+        return new Div();
     }
 
     private void appendTabs(Tabbox chartComponent) {
@@ -389,16 +390,16 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         }
     }
 
-    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPanel, Timeplot loadChart) {
+    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPanel, Div loadChart) {
         return appendLoadChartAndLegend(loadChartPanel, Emitter.withInitial(loadChart));
     }
 
-    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPanel, Emitter<Timeplot> loadChartEmitter) {
+    public static Tabpanel appendLoadChartAndLegend(Tabpanel loadChartPanel, Emitter<Div> loadChartEmitter) {
         Hbox hbox = new Hbox();
         hbox.appendChild(getLoadChartLegend());
 
         final Div div = new Div();
-        Timeplot timePlot = loadChartEmitter.getLastValue();
+        Div timePlot = loadChartEmitter.getLastValue();
 
         if (timePlot != null) {
             div.appendChild(timePlot);
@@ -430,7 +431,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
     }
 
     private void appendEarnedValueChartAndLegend(Tabpanel earnedValueChartPanel,
-                                                 Timeplot chartEarnedValueTimeplot,
+                                                 Div chartEarnedValueTimeplot,
                                                  CompanyEarnedValueChartFiller earnedValueChartFiller) {
 
         Vbox vbox = new Vbox();
@@ -443,6 +444,9 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
 
         LocalDate initialDate = earnedValueChartFiller.initialDateForIndicatorValues();
         Datebox datebox = new Datebox(initialDate.toDateTimeAtStartOfDay().toDate());
+        // No width was ever set here, so the box shrinks to ZK's own default (~90px) - too narrow
+        // to show a full "MMM d, yyyy" date (e.g. "Aug 25, 2026") without clipping.
+        datebox.setWidth("110px");
         dateHbox.appendChild(datebox);
 
         appendEventListenerToDateboxIndicators(earnedValueChartFiller, vbox, datebox);
@@ -630,7 +634,7 @@ public class CompanyPlanningModel implements ICompanyPlanningModel {
         });
     }
 
-    private Chart setupChart(Timeplot chartComponent, IChartFiller loadChartFiller, Planner planner) {
+    private Chart setupChart(Div chartComponent, IChartFiller loadChartFiller, Planner planner) {
         TimeTracker timeTracker = planner.getTimeTracker();
         Chart loadChart = new Chart(chartComponent, loadChartFiller, timeTracker);
         loadChart.setZoomLevel(planner.getZoomLevel());

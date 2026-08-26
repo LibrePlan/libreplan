@@ -35,9 +35,16 @@ import org.zkoss.ganttz.TaskComponent;
 import org.zkoss.ganttz.extensions.IContextWithPlannerTask;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.spring.SpringUtil;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Window;
 
 /**
@@ -110,8 +117,37 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
                 : _t("Progress measurements") + ": " + infoAdvanceAssignment;
     }
 
-    public List<AdvanceConsolidationDTO> getAdvances() {
-        return advanceConsolidationModel.getConsolidationDTOs();
+    public ListModel<AdvanceConsolidationDTO> getAdvances() {
+        return new ListModelList<>(advanceConsolidationModel.getConsolidationDTOs());
+    }
+
+    /**
+     * The rows used to be declared with a ZUML "each" template (self="@{each=...}") - under this
+     * app's AnnotateBinder/ZK 10 stack that only ever clones the row's FIRST child for each
+     * iteration. Building rows programmatically via RowRenderer sidesteps that "each" bug entirely
+     * (same fix pattern as elsewhere in this sweep, e.g. WorkerCRUDController.getWorkersRenderer()).
+     */
+    public RowRenderer getAdvancesRenderer() {
+        return (Row row, Object data, int i) -> {
+            final AdvanceConsolidationDTO dto = (AdvanceConsolidationDTO) data;
+            row.setValue(dto);
+
+            Label units = new Label(dto.getLabelUnits());
+            units.setVisible(isUnitType());
+            row.appendChild(units);
+
+            row.appendChild(new Label(dto.getLabelPercentage()));
+            row.appendChild(new Label(Util.formatDate(dto.getDate())));
+
+            Checkbox consolidated = new Checkbox();
+            consolidated.setChecked(dto.isConsolidated());
+            consolidated.setDisabled(Boolean.TRUE.equals(dto.isCanNotBeConsolidated()));
+            consolidated.addEventListener(Events.ON_CHECK, event -> {
+                dto.setConsolidated(consolidated.isChecked());
+                reloadAdvanceGrid();
+            });
+            row.appendChild(consolidated);
+        };
     }
 
     public void reloadAdvanceGrid() {
@@ -128,7 +164,7 @@ public class AdvanceConsolidationController extends GenericForwardComposer {
         return advanceConsolidationModel.isVisibleMessages();
     }
 
-    public String infoMessages() {
+    public String getInfoMessages() {
         return advanceConsolidationModel.infoMessages();
     }
 

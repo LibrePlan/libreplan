@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +24,10 @@ package org.libreplan.business.planner.limiting.daos;
 
 import java.util.List;
 
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.resources.entities.LimitingResourceQueue;
 import org.libreplan.business.resources.entities.Resource;
@@ -43,9 +47,11 @@ public class LimitingResourceQueueDAO extends
         ILimitingResourceQueueDAO {
 
     public LimitingResourceQueue findQueueByResource(Resource resource) {
-        return (LimitingResourceQueue) getSession().createCriteria(
-                LimitingResourceQueue.class).add(
-                Restrictions.eq("resource", resource)).uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<LimitingResourceQueue> cq = cb.createQuery(LimitingResourceQueue.class);
+        Root<LimitingResourceQueue> root = cq.from(LimitingResourceQueue.class);
+        cq.where(cb.equal(root.get("resource"), resource));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override

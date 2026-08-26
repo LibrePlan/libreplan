@@ -1,0 +1,158 @@
+- generic [ref=f456e4]:
+  - generic [ref=f456e5]:
+    - table [ref=f456e6]:
+      - rowgroup [ref=f456e7]:
+        - row [ref=f456e8]:
+          - cell [ref=f456e9]:
+            - link [ref=f456e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f456e12]:
+            - table [ref=f456e13]:
+              - rowgroup [ref=f456e14]:
+                - row [ref=f456e15]:
+                  - cell [ref=f456e16]:
+                    - generic [ref=f456e17]:
+                      - menubar [ref=f456e18]:
+                        - menuitem "Planning" [ref=f456e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f456e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f456e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f456e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f456e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f456e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f456e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f456e33]:
+                        - rowgroup [ref=f456e34]:
+                          - row [ref=f456e35]:
+                            - cell [ref=f456e36]:
+                              - table [ref=f456e37]:
+                                - rowgroup [ref=f456e38]:
+                                  - row [ref=f456e39]:
+                                    - cell [ref=f456e40]
+                                    - cell [ref=f456e41]:
+                                      - strong [ref=f456e42]: START
+                                    - cell [ref=f456e43]
+                                    - cell [ref=f456e44]:
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                                      - table [ref=f456e45]:
+                                        - rowgroup [ref=f456e46]:
+                                          - row [ref=f456e47]:
+                                            - cell [ref=f456e48]:
+                                              - table [ref=f456e49]:
+                                                - rowgroup [ref=f456e50]:
+                                                  - row [ref=f456e51]:
+                                                    - cell [ref=f456e52]:
+                                                      - table [ref=f456e53]:
+                                                        - rowgroup [ref=f456e54]:
+                                                          - row [ref=f456e55]:
+                                                            - cell [ref=f456e56]:
+                                                              - table [ref=f456e57]:
+                                                                - rowgroup [ref=f456e58]:
+                                                                  - row [ref=f456e59]:
+                                                                    - cell [ref=f456e60]
+                                                                    - cell [ref=f456e63]
+                                                                    - cell "Resources" [ref=f456e64]
+                                                    - cell [ref=f456e65]
+                                                    - cell [ref=f456e66]:
+                                                      - table [ref=f456e67]:
+                                                        - rowgroup [ref=f456e68]:
+                                                          - row [ref=f456e69]:
+                                                            - cell [ref=f456e70]:
+                                                              - table [ref=f456e71]:
+                                                                - rowgroup [ref=f456e72]:
+                                                                  - row [ref=f456e73]:
+                                                                    - cell [ref=f456e74]
+                                                                    - cell [ref=f456e77]
+                                                                    - cell "Quality Forms" [ref=f456e78]
+                            - cell [ref=f456e79]:
+                              - generic [ref=f456e80]:
+                                - link "Help" [ref=f456e81] [cursor=pointer]:
+                                  - /url: /help/en/12-formularios-calidad.html#administraci-n-de-formularios-de-calidade
+                                - img "Axuda" [ref=f456e83]
+                                - img "Info" [ref=f456e85]
+    - table [ref=f456e87]:
+      - rowgroup [ref=f456e88]:
+        - row [ref=f456e89]:
+          - cell [ref=f456e90]
+          - 'cell "user: admin" [ref=f456e91]'
+          - cell [ref=f456e92]:
+            - link "[Log out]" [ref=f456e93] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f456e94]:
+    - text:    
+    - generic [ref=f456e96]:
+      - table [ref=f456e252]:
+        - rowgroup [ref=f456e253]:
+          - row [ref=f456e254]:
+            - cell [ref=f456e255]:
+              - table [ref=f456e256]:
+                - rowgroup [ref=f456e257]:
+                  - row [ref=f456e258]:
+                    - cell "Quality Form \"Test Quality Form\" saved" [ref=f456e259]
+      - generic [ref=f456e97]:
+        - generic [ref=f456e98]: Quality Forms List
+        - generic [ref=f456e99]:
+          - table [ref=f456e101]:
+            - rowgroup [ref=f456e102]:
+              - row [ref=f456e103]:
+                - cell [ref=f456e104]:
+                  - table [ref=f456e105]:
+                    - rowgroup [ref=f456e106]:
+                      - row [ref=f456e107]:
+                        - cell "Filter quality forms by:" [ref=f456e108]
+                        - cell [ref=f456e109]
+                        - cell "name" [ref=f456e110]
+                        - cell [ref=f456e111]
+                        - cell [ref=f456e112]:
+                          - textbox [ref=f456e113]
+                        - cell [ref=f456e114]
+                        - cell [ref=f456e115]:
+                          - button "Filter" [ref=f456e116] [cursor=pointer]
+          - separator [ref=f456e117]
+          - grid [ref=f456e262]:
+            - rowgroup [ref=f456e267]:
+              - columnheader "Name" [ref=f456e268]
+              - columnheader "Description" [ref=f456e270]
+              - columnheader "Operations" [ref=f456e272]
+            - rowgroup [ref=f456e278]:
+              - gridcell "Test Quality Form" [ref=f456e279]
+              - gridcell [ref=f456e281]
+              - gridcell [ref=f456e284]:
+                - table [ref=f456e286]:
+                  - rowgroup [ref=f456e287]:
+                    - row [ref=f456e288]:
+                      - cell [ref=f456e289]:
+                        - table [ref=f456e290]:
+                          - rowgroup [ref=f456e291]:
+                            - row [ref=f456e292]:
+                              - cell [ref=f456e293]:
+                                - button "Edit" [ref=f456e294] [cursor=pointer]
+                              - cell [ref=f456e296]
+                              - cell [ref=f456e297]:
+                                - button "Remove" [ref=f456e298] [cursor=pointer]
+            - generic [ref=f456e300]:    
+          - button "Create" [ref=f456e137] [cursor=pointer]
+      - text:  
+  - table [ref=f456e138]:
+    - rowgroup [ref=f456e139]:
+      - row [ref=f456e140]:
+        - cell [ref=f456e141]:
+          - generic [ref=f456e143]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f456e144] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f456e145]
+  - text:    

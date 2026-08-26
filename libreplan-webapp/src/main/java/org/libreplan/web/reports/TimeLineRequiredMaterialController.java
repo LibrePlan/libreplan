@@ -36,6 +36,7 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.ListitemRenderer;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.TreeModel;
 import org.zkoss.zul.Treecell;
@@ -99,6 +100,10 @@ public class TimeLineRequiredMaterialController extends LibrePlanReportControlle
 
     public List<Order> getSelectedOrders() {
         return Collections.unmodifiableList(timeLineRequiredMaterialModel.getSelectedOrders());
+    }
+
+    public ListitemRenderer getOrdersRenderer() {
+        return ReportListitemRenderers.orderRenderer(this::onRemoveOrder);
     }
 
     public void onSelectOrder() {

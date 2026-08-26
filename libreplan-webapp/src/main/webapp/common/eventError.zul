@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -23,7 +24,7 @@
         width="800px" border="normal" mode="modal"
         apply="org.libreplan.web.error.PageForErrorOnEvent">
 
-    <panel title="${i18n:__t('Message - {0}', requestScope['javax.servlet.error.message'])}"
+    <panel title="${i18n:__t('Message - {0}', requestScope['jakarta.servlet.error.message'])}"
            border="normal" style="overflow:auto">
 
         <panelchildren>
@@ -37,12 +38,12 @@
                 <rows>
                     <row>
                         <label value="${i18n:_t('Exception type')}" />
-                        <label value="${requestScope['javax.servlet.error.exception_type']}" />
+                        <label value="${requestScope['jakarta.servlet.error.exception_type']}" />
                     </row>
 
                     <row>
                         <label value="${i18n:_t('Status code')}" />
-                        <label value="${requestScope['javax.servlet.error.status_code']}" />
+                        <label value="${requestScope['jakarta.servlet.error.status_code']}" />
                     </row>
 
                     <row>

@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2013 St. Antoniusziekenhuis
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -21,7 +22,7 @@
 
     <caption id="caption" sclass="caption-title" />
 
-    <grid id="jobSchedulerGrid" fixedLayout="true">
+    <grid id="jobSchedulerGrid">
 
         <columns>
             <column width="200px" />
@@ -33,21 +34,21 @@
                 <label value="${i18n:_t('Job group')}" />
                 <textbox id="jobGroupTextBox" width="400px"
                          constraint="no empty:${i18n:_t('cannot be empty')}"
-                         value="@{controller.jobSchedulerConfiguration.jobGroup}"/>
+                         value="@load(controller.jobSchedulerConfiguration.jobGroup)@save(controller.jobSchedulerConfiguration.jobGroup)"/>
             </row>
 
             <row>
                 <label value="${i18n:_t('Job name')}" />
                 <textbox id="jobNameTextBox" width="400px"
                          constraint="no empty:${i18n:_t('cannot be empty')}"
-                         value="@{controller.jobSchedulerConfiguration.jobName}"/>
+                         value="@load(controller.jobSchedulerConfiguration.jobName)@save(controller.jobSchedulerConfiguration.jobName)"/>
             </row>
 
             <row>
                 <label value="${i18n:_t('Cron expression')}" />
                 <hbox>
                     <textbox id="cronExpressionTextBox"
-                             value="@{controller.jobSchedulerConfiguration.cronExpression}"
+                             value="@load(controller.jobSchedulerConfiguration.cronExpression)@save(controller.jobSchedulerConfiguration.cronExpression)"
                              constraint="no empty:${i18n:_t('cannot be empty')}"
                              width="400px" disabled="true"/>
                     <button sclass="icono" image="/common/img/ico_editar1.png"
@@ -61,30 +62,24 @@
                 <label value="${i18n:_t('Job class name')}" />
                 <combobox id="jobCombo" autodrop="true" width="400px"
                           constraint="no empty:${i18n:_t('cannot be empty')}"
-                          model="@{controller.jobNames}"
-                          selectedItem="@{controller.jobSchedulerConfiguration.jobClassName}">
-
-                    <comboitem self="@{each=jobNames}"
-                               label="@{jobNames.name}"
-                               value="@{jobNames}" />
+                          model="@load(controller.jobNamesModel)"
+                          itemRenderer="@load(controller.jobNamesRenderer)"
+                          selectedItem="@load(controller.jobSchedulerConfiguration.jobClassName)@save(controller.jobSchedulerConfiguration.jobClassName)">
                 </combobox>
             </row>
 
             <row>
                 <label value="${i18n:_t('Connector')}" />
                 <combobox id="connectorCombo" autodrop="true" width="400px"
-                          model="@{controller.connectorNames}"
-                          selectedItem="@{controller.jobSchedulerConfiguration.connectorName}">
-
-                    <comboitem self="@{each=connectorNames}"
-                               label="@{connectorNames.name}"
-                               value="@{connectorNames}" />
+                          model="@load(controller.connectorNames)"
+                          itemRenderer="@load(controller.connectorNamesRenderer)"
+                          selectedItem="@load(controller.jobSchedulerConfiguration.connectorName)@save(controller.jobSchedulerConfiguration.connectorName)">
                 </combobox>
             </row>
 
             <row>
                 <label value="${i18n:_t('Schedule')}" />
-                <checkbox checked="@{controller.jobSchedulerConfiguration.schedule}" />
+                <checkbox checked="@load(controller.jobSchedulerConfiguration.schedule)@save(controller.jobSchedulerConfiguration.schedule)" />
             </row>
         </rows>
 
@@ -179,8 +174,8 @@
     </div>
 
     <popup id="cronExpressionInputPopup" width="569px">
-        <label id="jobGroup" value="@{jobSchedulerController.jobGroup}"/>
-        <label id="jobName" value="@{jobSchedulerController.jobName}"/>
+        <label id="jobGroup"/>
+        <label id="jobName"/>
 
         <grid id="cronExpressionGrid" style="margin: 5px 0 5px 0;">
             <columns>

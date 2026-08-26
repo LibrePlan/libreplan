@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -41,7 +42,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.UUID;
 
-import javax.annotation.Resource;
+import jakarta.annotation.Resource;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,10 +79,16 @@ import org.libreplan.business.resources.entities.CriterionType;
 import org.libreplan.business.scenarios.IScenarioManager;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
 import org.libreplan.business.scenarios.entities.OrderVersion;
+import org.libreplan.business.templates.daos.IOrderElementTemplateDAO;
+import org.libreplan.business.templates.entities.OrderLineTemplate;
 import org.libreplan.business.test.calendars.entities.BaseCalendarTest;
 import org.libreplan.business.test.orders.entities.OrderElementTest;
 import org.libreplan.business.test.planner.daos.ResourceAllocationDAOTest;
 import org.libreplan.business.workingday.EffortDuration;
+import org.libreplan.business.workreports.daos.IWorkReportDAO;
+import org.libreplan.business.workreports.entities.WorkReport;
+import org.libreplan.business.workreports.entities.WorkReportType;
+import org.libreplan.business.workreports.daos.IWorkReportTypeDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -123,6 +130,15 @@ public class OrderElementDAOTest {
 
     @Autowired
     private ICriterionTypeDAO criterionTypeDAO;
+
+    @Autowired
+    private IOrderElementTemplateDAO orderElementTemplateDAO;
+
+    @Autowired
+    private IWorkReportDAO workReportDAO;
+
+    @Autowired
+    private IWorkReportTypeDAO workReportTypeDAO;
 
     @Before
     public void loadRequiredData() {
@@ -702,6 +718,168 @@ public class OrderElementDAOTest {
 
         assertEquals(1, orderElements.size());
         assertEquals(orderLine3.getId(), orderElements.get(0).getId());
+    }
+
+    /*
+     * Characterization tests added for the Hibernate Criteria -> JPA Criteria API migration
+     * (Jakarta EE / Hibernate 6). findWithoutParent/findAll/findByCode/findByTemplate/
+     * findOrderElementsWithExternalCode/findByExternalCode/isAlreadyInUse had no test coverage
+     * before.
+     */
+
+    @Test
+    @Transactional
+    public void testFindWithoutParentOnlyReturnsRoots() {
+        OrderLineGroup orderLineGroup = createValidOrderLineGroup();
+        orderElementDAO.save(orderLineGroup.getOrder());
+        orderElementDAO.flush();
+
+        // orderLineGroup is itself a child of its Order (the actual root of the tree), and
+        // has one child line of its own.
+        OrderElement root = orderLineGroup.getOrder();
+        OrderElement child = orderLineGroup.getChildren().get(0);
+
+        boolean rootFound = false;
+        for (OrderElement e : orderElementDAO.findWithoutParent()) {
+            if (e.getId().equals(root.getId())) {
+                rootFound = true;
+            }
+            assertFalse(e.getId().equals(orderLineGroup.getId()));
+            assertFalse(e.getId().equals(child.getId()));
+        }
+        assertTrue(rootFound);
+    }
+
+    @Test
+    @Transactional
+    public void testFindAllIsOrderedByCode() {
+        String prefix = UUID.randomUUID().toString();
+        OrderLine first = createValidOrderLine(prefix + "-a", prefix + "-1");
+        orderElementDAO.save(first);
+        OrderLine second = createValidOrderLine(prefix + "-b", prefix + "-2");
+        orderElementDAO.save(second);
+
+        List<OrderElement> ours = new java.util.ArrayList<>();
+        for (OrderElement e : orderElementDAO.findAll()) {
+            if (e.getCode() != null && e.getCode().startsWith(prefix)) {
+                ours.add(e);
+            }
+        }
+
+        assertEquals(2, ours.size());
+        assertEquals(first.getId(), ours.get(0).getId());
+        assertEquals(second.getId(), ours.get(1).getId());
+    }
+
+    @Test
+    @Transactional
+    public void testFindByCodePublicIsCaseInsensitiveAndTrims() throws InstanceNotFoundException {
+        String mixedCaseCode = "MiXeD-" + UUID.randomUUID();
+        OrderLine orderLine = createValidOrderLine(UUID.randomUUID().toString(), mixedCaseCode);
+        orderElementDAO.save(orderLine);
+
+        assertEquals(orderLine.getId(), orderElementDAO.findByCode(mixedCaseCode).getId());
+        assertEquals(orderLine.getId(), orderElementDAO.findByCode(mixedCaseCode.toLowerCase()).getId());
+        assertEquals(orderLine.getId(), orderElementDAO.findByCode("  " + mixedCaseCode + "  ").getId());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void testFindByCodePublicThrowsWhenNotFound() throws InstanceNotFoundException {
+        orderElementDAO.findByCode("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test
+    @Transactional
+    public void testFindByTemplateReturnsMatch() {
+        OrderLine orderLine = createValidOrderLine();
+        OrderLineTemplate template = OrderLineTemplate.create(orderLine);
+        orderElementTemplateDAO.save(template);
+        orderLine.initializeTemplate(template);
+        orderElementDAO.save(orderLine);
+
+        List<OrderElement> result = orderElementDAO.findByTemplate(template);
+        assertEquals(1, result.size());
+        assertEquals(orderLine.getId(), result.get(0).getId());
+    }
+
+    @Test
+    @Transactional
+    public void testFindOrderElementsWithExternalCodeExcludesNull() {
+        OrderLine withExternalCode = createValidOrderLine();
+        withExternalCode.setExternalCode("ext-" + UUID.randomUUID());
+        orderElementDAO.save(withExternalCode);
+
+        OrderLine withoutExternalCode = createValidOrderLine();
+        orderElementDAO.save(withoutExternalCode);
+
+        boolean found = false;
+        for (OrderElement e : orderElementDAO.findOrderElementsWithExternalCode()) {
+            if (e.getId().equals(withExternalCode.getId())) {
+                found = true;
+            }
+            assertFalse(e.getId().equals(withoutExternalCode.getId()));
+        }
+        assertTrue(found);
+    }
+
+    @Test
+    @Transactional
+    public void testFindByExternalCodeIsCaseInsensitiveAndTrims() throws InstanceNotFoundException {
+        String mixedCaseExternalCode = "MiXeD-" + UUID.randomUUID();
+        OrderLine orderLine = createValidOrderLine();
+        orderLine.setExternalCode(mixedCaseExternalCode);
+        orderElementDAO.save(orderLine);
+
+        assertEquals(orderLine.getId(), orderElementDAO.findByExternalCode(mixedCaseExternalCode).getId());
+        assertEquals(orderLine.getId(),
+                orderElementDAO.findByExternalCode(mixedCaseExternalCode.toLowerCase()).getId());
+    }
+
+    @Test(expected = InstanceNotFoundException.class)
+    @Transactional
+    public void testFindByExternalCodeThrowsWhenNotFound() throws InstanceNotFoundException {
+        orderElementDAO.findByExternalCode("does-not-exist-" + UUID.randomUUID());
+    }
+
+    @Test
+    @Transactional
+    public void testIsAlreadyInUseFalseForNewObject() {
+        OrderLine notSaved = createStandAloneLine();
+        assertFalse(orderElementDAO.isAlreadyInUse(notSaved));
+    }
+
+    @Test
+    @Transactional
+    public void testIsAlreadyInUseFalseWhenUnused() {
+        OrderLine orderLine = createValidOrderLine();
+        orderElementDAO.save(orderLine);
+        orderLine.dontPoseAsTransientObjectAnymore();
+        assertFalse(orderElementDAO.isAlreadyInUse(orderLine));
+    }
+
+    @Test
+    @Transactional
+    public void testIsAlreadyInUseTrueWhenUsedInWorkReport() {
+        OrderLine orderLine = createValidOrderLine();
+        orderElementDAO.save(orderLine);
+        // OrderLine.create() marks the object new, and save() never clears that flag;
+        // isAlreadyInUse() short-circuits to false for isNewObject()==true, so this must be
+        // unmarked to actually exercise the query logic.
+        orderLine.dontPoseAsTransientObjectAnymore();
+
+        WorkReportType workReportType =
+                WorkReportType.create(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        // setOrderElement() silently discards the value (sets it back to null) unless the
+        // WorkReportType says the order element is shared by lines - see WorkReport.setOrderElement().
+        workReportType.setOrderElementIsSharedInLines(true);
+        workReportTypeDAO.save(workReportType);
+        WorkReport workReport = WorkReport.create(workReportType);
+        workReport.setOrderElement(orderLine);
+        workReport.setCode(UUID.randomUUID().toString());
+        workReportDAO.save(workReport);
+
+        assertTrue(orderElementDAO.isAlreadyInUse(orderLine));
     }
 
 }

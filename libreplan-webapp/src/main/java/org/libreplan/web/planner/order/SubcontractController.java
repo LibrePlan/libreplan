@@ -50,9 +50,12 @@ import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.ComboitemRenderer;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.ListModel;
+import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Datebox;
@@ -109,8 +112,21 @@ public class SubcontractController extends GenericForwardComposer {
         subcontractModel.cancel();
     }
 
-    public List<ExternalCompany> getSubcontractorExternalCompanies() {
-        return subcontractModel.getSubcontractorExternalCompanies();
+    public ListModel<ExternalCompany> getSubcontractorExternalCompanies() {
+        return new ListModelList<>(subcontractModel.getSubcontractorExternalCompanies());
+    }
+
+    /**
+     * The comboitems used to be declared with a ZUML "each" template (self="@{each=...}") - under
+     * this app's AnnotateBinder/ZK 10 stack that only ever clones the FIRST child for each
+     * iteration. A ComboitemRenderer sidesteps that "each" bug entirely.
+     */
+    public ComboitemRenderer getExternalCompanyRenderer() {
+        return (item, data, i) -> {
+            final ExternalCompany externalCompany = (ExternalCompany) data;
+            item.setValue(externalCompany);
+            item.setLabel(externalCompany.getName());
+        };
     }
 
     public SubcontractedTaskData getSubcontractedTaskData() {
@@ -130,8 +146,8 @@ public class SubcontractController extends GenericForwardComposer {
         subcontractModel.removeSubcontractedTaskData();
     }
 
-    public SortedSet<SubcontractorDeliverDate> getDeliverDates() {
-        return subcontractModel.getDeliverDates();
+    public ListModel<SubcontractorDeliverDate> getDeliverDates() {
+        return new ListModelList<>(subcontractModel.getDeliverDates());
     }
 
     public void addDeliverDate(Datebox newDeliverDate){
@@ -228,15 +244,15 @@ public class SubcontractController extends GenericForwardComposer {
         return !isNotSent();
     }
 
-    private boolean isNotSent() {
+    public boolean isNotSent() {
         return this.getSubcontractedTaskData() != null &&
                 this.getSubcontractedTaskData().getState() != null &&
                 ((this.getSubcontractedTaskData().getState().equals(SubcontractState.PENDING_INITIAL_SEND)) ||
                         (this.getSubcontractedTaskData().getState().equals(SubcontractState.FAILED_SENT)));
     }
 
-    public SortedSet<EndDateCommunication> getAskedEndDates() {
-        return subcontractModel.getAskedEndDates();
+    public ListModel<EndDateCommunication> getAskedEndDates() {
+        return new ListModelList<>(subcontractModel.getAskedEndDates());
     }
 
     public EndDatesRenderer getEndDatesRenderer() {

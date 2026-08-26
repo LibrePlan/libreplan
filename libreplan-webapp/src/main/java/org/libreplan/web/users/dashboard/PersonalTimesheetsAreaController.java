@@ -26,8 +26,6 @@ import org.zkoss.zkplus.spring.SpringUtil;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.RowRenderer;
 
-import java.util.List;
-
 /**
  * Controller for "Personal timesheets" area in the user dashboard window.
  *
@@ -67,6 +65,10 @@ public class PersonalTimesheetsAreaController extends GenericForwardComposer {
         comp.setAttribute("controller", this);
 
         injectObjects();
+
+        // AnnotateBinderInit's page-level pass only registers bindings, never loads them.
+        Util.createBindingsFor(comp);
+        Util.reloadBindings(comp);
     }
 
     private void injectObjects() {
@@ -83,8 +85,8 @@ public class PersonalTimesheetsAreaController extends GenericForwardComposer {
         }
     }
 
-    public List<PersonalTimesheetDTO> getPersonalTimesheets() {
-        return personalTimesheetsAreaModel.getPersonalTimesheets();
+    public org.zkoss.zul.ListModel getPersonalTimesheets() {
+        return new org.zkoss.zul.ListModelList<>(personalTimesheetsAreaModel.getPersonalTimesheets());
     }
 
     public RowRenderer getPersonalTimesheetsRenderer() {

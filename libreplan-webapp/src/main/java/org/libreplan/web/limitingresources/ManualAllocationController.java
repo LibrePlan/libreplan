@@ -518,6 +518,11 @@ public class ManualAllocationController extends GenericForwardComposer {
             getLimitingResourceQueueModel().init(element);
             Util.reloadBindings(gridLimitingOrderElementHours);
             Util.reloadBindings(gridCurrentQueue);
+            // listCandidateGaps.setModel(...) is called imperatively elsewhere (setAssignableQueues
+            // et al.), which only re-renders using whatever itemRenderer is already assigned - if
+            // the itemRenderer binding was never loaded, it'd stay null and rows would fall back to
+            // raw toString(). Reload it here too, once, before that happens.
+            Util.reloadBindings(listCandidateGaps);
             ((Window) self).doModal();
             ((Window) self).setTitle(_t("Manual assignment"));
         } catch (SuspendNotAllowedException e) {

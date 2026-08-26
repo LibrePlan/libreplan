@@ -4,6 +4,7 @@
   Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
                           Desenvolvemento Tecnolóxico de Galicia
   Copyright (C) 2010-2011 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as published by
@@ -19,7 +20,7 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 
-<window visible="@{calendarController.editionController.creatingNewVersion}"
+<window visible="@load(calendarController.editionController.creatingNewVersion)"
         id="createNewVersion" title="${i18n:_t('Create new Workweek')}" width="452px"
         closable="true" border="normal"
         onClose = "calendarController.editionController.cancelNewVersion();">
@@ -35,22 +36,22 @@
                 <label value="${i18n:_t('Base calendar type')}" />
                 <hbox align="right">
                     <combobox id="parentCalendars"
-                              model="@{calendarController.editionController.parentCalendars}"
-                              disabled="@{calendarController.editionController.isNotDerived}"
-                              itemRenderer = "@{calendarController.editionController.parentCalendarsComboitemRenderer}" />
+                              model="@load(calendarController.editionController.parentCalendars)"
+                              disabled="@load(calendarController.editionController.notDerived)"
+                              itemRenderer = "@load(calendarController.editionController.parentCalendarsComboitemRenderer)" />
                 </hbox>
             </row>
 
             <row>
                 <label value="${i18n:_t('From date')}" />
                 <datebox id="startDateValidFromNewVersion"
-                         value="@{calendarController.editionController.dateValidFromNewVersion}"/>
+                         value="@load(calendarController.editionController.dateValidFromNewVersion)@save(calendarController.editionController.dateValidFromNewVersion)"/>
             </row>
 
             <row>
                 <label value="${i18n:_t('Up to date')}" />
                 <datebox id="expiringDateValidFromNewVersion"
-                         value="@{calendarController.editionController.dateValidToNewVersion}"/>
+                         value="@load(calendarController.editionController.dateValidToNewVersion)@save(calendarController.editionController.dateValidToNewVersion)"/>
             </row>
         </rows>
     </grid>

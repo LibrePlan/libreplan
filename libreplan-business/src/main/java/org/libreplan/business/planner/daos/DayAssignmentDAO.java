@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,9 +27,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.Query;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+
+import org.hibernate.query.Query;
 import org.joda.time.LocalDate;
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.planner.entities.DayAssignment;
@@ -162,20 +166,24 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long> i
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public List<DayAssignment> listFilteredByDate(LocalDate init, LocalDate end) {
-        Criteria criteria  = getSession().createCriteria(DayAssignment.class);
-        addDateRestrictionsToDayAssignmentQuery(criteria, init, end);
-        return criteria.list();
-    }
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<DayAssignment> cq = cb.createQuery(DayAssignment.class);
+        Root<DayAssignment> root = cq.from(DayAssignment.class);
 
-    private void addDateRestrictionsToDayAssignmentQuery(Criteria criteria, LocalDate init, LocalDate end) {
+        // Both restrictions (when present) must be ANDed together - matching the original
+        // Criteria.add()/add() cumulative-AND behavior.
+        List<Predicate> predicates = new ArrayList<>();
         if (init != null) {
-            criteria.add(Restrictions.ge("day", init));
+            predicates.add(cb.greaterThanOrEqualTo(root.get("day"), init));
         }
         if (end != null) {
-            criteria.add(Restrictions.le("day", end));
+            predicates.add(cb.lessThanOrEqualTo(root.get("day"), end));
         }
+        if (!predicates.isEmpty()) {
+            cq.where(predicates.toArray(new Predicate[0]));
+        }
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
@@ -186,12 +194,14 @@ public class DayAssignmentDAO extends GenericDAOHibernate<DayAssignment, Long> i
 
     @Override
     public List<DayAssignment> findByResources(List<Resource> resources) {
-        return resources.isEmpty()
-                ? Collections.emptyList()
-                : getSession()
-                    .createCriteria(DayAssignment.class)
-                    .add(Restrictions.in("resource", resources))
-                    .list();
+        if (resources.isEmpty()) {
+            return Collections.emptyList();
+        }
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<DayAssignment> cq = cb.createQuery(DayAssignment.class);
+        Root<DayAssignment> root = cq.from(DayAssignment.class);
+        cq.where(root.get("resource").in(resources));
+        return getSession().createQuery(cq).getResultList();
     }
 
 }

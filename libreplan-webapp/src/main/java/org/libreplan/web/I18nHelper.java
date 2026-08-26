@@ -5,6 +5,7 @@
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
  * Copyright (C) 2011 ComtecSF, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -25,7 +26,7 @@ package org.libreplan.web;
 import java.util.HashMap;
 import java.util.Locale;
 
-import javax.servlet.http.HttpSession;
+import jakarta.servlet.http.HttpSession;
 
 import org.libreplan.business.users.entities.User;
 import org.xnap.commons.i18n.I18n;

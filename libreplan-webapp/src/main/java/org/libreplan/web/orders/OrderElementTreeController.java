@@ -738,7 +738,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
     /**
      * Operations to filter the orders by multiple filters.
      */
-    public Constraint checkConstraintFinishDate() {
+    public Constraint getCheckConstraintFinishDate() {
         return (comp, value) -> {
             Date finishDate = (Date) value;
 
@@ -752,7 +752,7 @@ public class OrderElementTreeController extends TreeController<OrderElement> {
         };
     }
 
-    public Constraint checkConstraintStartDate() {
+    public Constraint getCheckConstraintStartDate() {
         return (comp, value) -> {
             Date startDate = (Date) value;
 

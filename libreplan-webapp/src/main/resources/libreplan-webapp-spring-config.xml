@@ -5,8 +5,8 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:jaxrs="http://cxf.apache.org/jaxrs"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
        http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
     <!-- For enabling annotation-based configuration (in particular, required for "@Autowired") -->

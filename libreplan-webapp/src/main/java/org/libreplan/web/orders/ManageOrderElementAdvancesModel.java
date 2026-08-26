@@ -440,7 +440,11 @@ public class ManageOrderElementAdvancesModel implements IManageOrderElementAdvan
     }
 
     @Override
-    @Transactional(readOnly = true)
+    // Not readOnly: same bug shape as findIndirectConsolidation() above - reattachmentOrderElement()
+    // is session.saveOrUpdate(orderElement), and validateBasicData() below (via addAdvanceAssignment())
+    // adds newly-created AdvanceAssignment/AdvanceMeasurement entities to orderElement's graph, both
+    // using the legacy <generator class="increment">. Marking this readOnly let the id-generator burn
+    // a real id for a new assignment/measurement while discarding the resulting INSERT.
     public void confirmSave() throws InstanceNotFoundException,
             DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException {
@@ -490,7 +494,8 @@ public class ManageOrderElementAdvancesModel implements IManageOrderElementAdvan
         return null;
     }
 
-    @Transactional(readOnly = true)
+    // private: only ever called from confirmSave() above, whose own transaction already applies -
+    // a private method's own @Transactional is inert (Spring's proxy can't intercept self-invocation).
     private void addAdvanceAssignment(DirectAdvanceAssignment newAdvanceAssignment)
             throws DuplicateAdvanceAssignmentForOrderElementException,
             DuplicateValueTrueReportGlobalAdvanceException {
@@ -737,10 +742,20 @@ public class ManageOrderElementAdvancesModel implements IManageOrderElementAdvan
 
     @Override
     @Transactional(readOnly = true)
+    // orderElement is already attached (initEdit()/openWindow() reattached it when this dialog
+    // opened, and this bean's conversation keeps the same Hibernate session alive throughout).
+    // Do NOT call orderElementDAO.reattach() here: reattach() is session.saveOrUpdate(), which
+    // cascade-persists any newly-added, still-transient AdvanceMeasurement reachable from
+    // orderElement's graph (legacy <generator class="increment">) - and Hibernate's id generator
+    // burns a real id on the entity the moment that cascade touches it, permanently, even if the
+    // surrounding transaction never actually commits a matching INSERT. This method runs on every
+    // re-render of the progress measurements listbox - i.e. many times per edit - so a redundant
+    // reattach() here repeatedly re-triggered that cascade, leaving a freshly-added measurement
+    // with a burned-but-never-inserted id; the real save then issued a wrong UPDATE instead of an
+    // INSERT for it, matching 0 rows and throwing StaleObjectStateException.
     public boolean findIndirectConsolidation(AdvanceMeasurement advanceMeasurement) {
         AdvanceAssignment advance = advanceMeasurement.getAdvanceAssignment();
         if ((orderElement != null) && (orderElement.getParent() != null) && (advance instanceof DirectAdvanceAssignment)) {
-            orderElementDAO.reattach(orderElement);
             Set<IndirectAdvanceAssignment> indirects = getSpreadIndirectAdvanceAssignmentWithSameType(
                     orderElement, advance);
 

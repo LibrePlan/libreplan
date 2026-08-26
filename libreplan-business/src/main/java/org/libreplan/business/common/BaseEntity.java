@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -27,10 +28,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -88,8 +89,20 @@ public abstract class BaseEntity implements INewObject {
         return id;
     }
 
+    /**
+     * Returns null while {@link #isNewObject()}, UNLESS Hibernate has already assigned a real id
+     * to this instance within the current session (e.g. during the first cascade pass of the very
+     * save() call that will eventually call {@link #dontPoseAsTransientObjectAnymore()}). Without
+     * this id-based escape hatch, Hibernate's own later flush-time re-check of this entity's
+     * transient/detached state - which reads the identifier via getId() and the version via this
+     * getter, both through property-access reflection - sees a non-null id together with a null
+     * version and throws "Detached entity with generated id 'N' has an uninitialized version
+     * value 'null'". That happens because setId()/setVersion() are called directly by Hibernate's
+     * id-generation step (bypassing this getter), so the real version value already reflects
+     * reality; only the getter's blanket "newObject -> null" override was lying about it.
+     */
     public Long getVersion() {
-        if ( isNewObject() ) {
+        if ( isNewObject() && id == null ) {
             return null;
         }
 

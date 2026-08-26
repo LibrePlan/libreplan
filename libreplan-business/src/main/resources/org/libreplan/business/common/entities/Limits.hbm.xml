@@ -4,7 +4,7 @@
 
 <hibernate-mapping package="org.libreplan.business.common.entities" default-access="field">
 
-    <class name="Limits" abstract="true" table="limits">
+    <class name="Limits" table="limits">
 
         <id name="id" access="property" type="long">
             <generator class="increment" >

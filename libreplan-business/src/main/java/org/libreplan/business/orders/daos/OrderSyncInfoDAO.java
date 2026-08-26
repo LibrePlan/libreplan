@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -21,8 +22,10 @@ package org.libreplan.business.orders.daos;
 
 import java.util.List;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Restrictions;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import org.libreplan.business.common.daos.GenericDAOHibernate;
 import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderSyncInfo;
@@ -43,6 +46,15 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
         implements IOrderSyncInfoDAO {
 
     @Override
+    public List<OrderSyncInfo> findByOrder(Order order) {
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderSyncInfo> cq = cb.createQuery(OrderSyncInfo.class);
+        Root<OrderSyncInfo> root = cq.from(OrderSyncInfo.class);
+        cq.where(cb.equal(root.get("order"), order));
+        return getSession().createQuery(cq).getResultList();
+    }
+
+    @Override
     public OrderSyncInfo findLastSynchronizedInfoByOrderAndConnectorName(
             Order order, String connectorName) {
         List<OrderSyncInfo> orderSyncInfoList = findLastSynchronizedInfosByOrderAndConnectorName(
@@ -57,28 +69,34 @@ public class OrderSyncInfoDAO extends GenericDAOHibernate<OrderSyncInfo, Long>
     @SuppressWarnings("unchecked")
     public List<OrderSyncInfo> findLastSynchronizedInfosByOrderAndConnectorName(
             Order order, String connectorName) {
-        Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
-        criteria.add(Restrictions.eq("order", order));
-        criteria.add(Restrictions.eq("connectorName", connectorName));
-        criteria.addOrder(org.hibernate.criterion.Order.desc("lastSyncDate"));
-        return criteria.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderSyncInfo> cq = cb.createQuery(OrderSyncInfo.class);
+        Root<OrderSyncInfo> root = cq.from(OrderSyncInfo.class);
+        cq.where(cb.equal(root.get("order"), order), cb.equal(root.get("connectorName"), connectorName));
+        cq.orderBy(cb.desc(root.get("lastSyncDate")));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override
     public OrderSyncInfo findByKeyOrderAndConnectorName(String key,
             Order order, String connectorName) {
-        Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
-        criteria.add(Restrictions.eq("key", key));
-        criteria.add(Restrictions.eq("order", order));
-        criteria.add(Restrictions.eq("connectorName", connectorName));
-        return (OrderSyncInfo) criteria.uniqueResult();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderSyncInfo> cq = cb.createQuery(OrderSyncInfo.class);
+        Root<OrderSyncInfo> root = cq.from(OrderSyncInfo.class);
+        cq.where(
+                cb.equal(root.get("key"), key),
+                cb.equal(root.get("order"), order),
+                cb.equal(root.get("connectorName"), connectorName));
+        return getSession().createQuery(cq).uniqueResult();
     }
 
     @Override
     public List<OrderSyncInfo> findByConnectorName(String connectorName) {
-        Criteria criteria = getSession().createCriteria(OrderSyncInfo.class);
-        criteria.add(Restrictions.eq("connectorName", connectorName));
-        return criteria.list();
+        CriteriaBuilder cb = getSession().getCriteriaBuilder();
+        CriteriaQuery<OrderSyncInfo> cq = cb.createQuery(OrderSyncInfo.class);
+        Root<OrderSyncInfo> root = cq.from(OrderSyncInfo.class);
+        cq.where(cb.equal(root.get("connectorName"), connectorName));
+        return getSession().createQuery(cq).getResultList();
     }
 
     @Override

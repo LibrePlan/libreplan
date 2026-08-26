@@ -1,3 +1,23 @@
+/*
+ * This file is part of LibrePlan
+ *
+ * Copyright (C) 2016 Vova Perebykivskyi <vova@libreplan-enterprise.com>
+ *
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.libreplan.web.test.ws.email;
 
 
@@ -23,7 +43,6 @@ import org.libreplan.business.orders.entities.Order;
 import org.libreplan.business.orders.entities.OrderLine;
 import org.libreplan.business.orders.entities.SchedulingDataForVersion;
 import org.libreplan.business.orders.entities.TaskSource;
-import org.libreplan.business.orders.entities.OrderElement;
 
 import org.libreplan.business.planner.daos.ITaskElementDAO;
 import org.libreplan.business.planner.entities.Task;
@@ -31,6 +50,7 @@ import org.libreplan.business.planner.entities.TaskGroup;
 import org.libreplan.business.resources.daos.IWorkerDAO;
 import org.libreplan.business.resources.entities.Worker;
 import org.libreplan.business.scenarios.bootstrap.IScenariosBootstrap;
+import org.libreplan.business.scenarios.bootstrap.PredefinedScenarios;
 import org.libreplan.business.scenarios.entities.OrderVersion;
 
 import org.libreplan.business.settings.entities.Language;
@@ -48,15 +68,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 
-import javax.mail.MessagingException;
+import jakarta.mail.MessagingException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
-import static org.easymock.EasyMock.createNiceMock;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.expect;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.libreplan.business.BusinessGlobalNames.BUSINESS_SPRING_CONFIG_FILE;
@@ -103,6 +121,18 @@ public class EmailTest {
 
     @Autowired
     private ITaskElementDAO taskElementDAO;
+
+    @Autowired
+    private org.libreplan.business.planner.daos.ITaskSourceDAO taskSourceDAO;
+
+    @Autowired
+    private org.libreplan.business.orders.daos.IHoursGroupDAO hoursGroupDAO;
+
+    @Autowired
+    private org.libreplan.business.orders.daos.IOrderElementDAO orderElementDAO;
+
+    @Autowired
+    private org.libreplan.business.scenarios.daos.IOrderVersionDAO orderVersionDAO;
 
     @Autowired
     private IUserDAO userDAO;
@@ -234,67 +264,125 @@ public class EmailTest {
 
         parent.addTaskElement(child);
 
+        // TaskElement.taskSource is NOT cascade="save-update" - plain taskElementDAO.save(parent)
+        // leaves both TaskSources genuinely unpersisted (id stays null). Production code always
+        // goes through TaskSource.persistTaskSources()/RealPersistence.save() for this. TaskSource
+        // uses a "foreign" id generator keyed off its own task association, so the TaskElement
+        // must be saved (and get a real id) FIRST, and only then can the TaskSource itself be
+        // saved. Without the explicit save+dontPoseAsTransientObjectAnymore() pair, a later query
+        // in this same @Transactional test's session auto-flushes into a TransientObjectException
+        // on the still-"new" TaskSource.
         taskElementDAO.save(parent);
+
+        persistTaskSource(parent.getTaskSource());
+        persistTaskSource(child.getTaskSource());
 
         return parent;
     }
 
+    private void persistTaskSource(TaskSource taskSource) {
+        // TaskSource.hoursGroups is mapped cascade="none" (Orders.hbm.xml) - HoursGroup's real
+        // persistence owner is OrderLine.hoursGroups (cascade="all,delete-orphan"), which this
+        // minimal fixture never populates, so it needs its own explicit save here.
+        for (HoursGroup hoursGroup : taskSource.getHoursGroups()) {
+            hoursGroupDAO.saveWithoutValidating(hoursGroup);
+            hoursGroup.dontPoseAsTransientObjectAnymore();
+        }
+
+        taskSourceDAO.saveWithoutValidating(taskSource);
+        taskSource.dontPoseAsTransientObjectAnymore();
+    }
+
     private TaskGroup createTaskGroup() {
         HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setCode(UUID.randomUUID().toString());
         hoursGroup.setWorkingHours(6);
         Order order = new Order();
-        order.useSchedulingDataFor(mockOrderVersion());
+        OrderVersion orderVersion = realOrderVersion();
+        order.useSchedulingDataFor(orderVersion);
         order.setInitDate(new Date());
 
         OrderLine orderLine = OrderLine.create();
         orderLine.setName("Project: Send Email");
         order.add(orderLine);
+        // order.add() happens after order.useSchedulingDataFor() above, so the recursive cascade
+        // never reached this line - it needs its own scheduling data set up explicitly.
+        orderLine.useSchedulingDataFor(orderVersion);
 
-        SchedulingDataForVersion version = mockSchedulingDataForVersion(orderLine);
+        persistOrderGraph(order, orderLine);
+
+        SchedulingDataForVersion version = orderLine.getCurrentSchedulingDataForVersion();
         TaskSource taskSource = TaskSource.create(version, Collections.singletonList(hoursGroup));
 
-        TaskGroup result = TaskGroup.create(taskSource);
+        // TaskGroup.create(taskSource) only sets the TaskElement -> TaskSource direction
+        // (TaskElement.create()); it never reciprocally sets TaskSource.task, which is private and
+        // only set by TaskSource's own linking factory methods below. Without that reverse link,
+        // TaskSource's "foreign" id generator (keyed off its task) has nothing to derive an id
+        // from once actually saved.
+        TaskGroup result = taskSource.createTaskGroupWithoutDatesInitializedAndLinkItToTaskSource();
         result.setIntraDayEndDate(IntraDayDate.startOfDay(result.getIntraDayStartDate().getDate().plusDays(10)));
 
         return result;
     }
 
-    private OrderVersion mockOrderVersion() {
-        OrderVersion result = createNiceMock(OrderVersion.class);
-        replay(result);
+    // TaskSource.orderElement is mapped cascade="save-update" - saving a TaskGroup/Task built on
+    // top of an EasyMock SchedulingDataForVersion/OrderVersion (as this used to do) cascades onto
+    // the mock, which Hibernate 6 now validates strictly enough to throw
+    // TransientObjectException/PropertyValueException on. Needs a genuine, if minimal, entity
+    // graph instead - same established pattern as OrderElementTreeModelTest.givenOrder().
+    private OrderVersion realOrderVersion() {
+        // Used as a map key in OrderElement.schedulingDataForVersion - Hibernate needs the key
+        // entity itself to already have an id before that map gets flushed.
+        OrderVersion orderVersion = OrderVersion.createInitialVersion(PredefinedScenarios.MASTER.getScenario());
+        orderVersionDAO.save(orderVersion);
+        orderVersion.dontPoseAsTransientObjectAnymore();
 
-        return result;
+        return orderVersion;
     }
 
-    private SchedulingDataForVersion mockSchedulingDataForVersion(OrderElement orderElement) {
-        SchedulingDataForVersion result = createNiceMock(SchedulingDataForVersion.class);
-        TaskSource taskSource = createNiceMock(TaskSource.class);
+    // OrderElement.schedulingDataForVersion is the association actually mapped
+    // cascade="all-delete-orphan" (Orders.hbm.xml) - TaskSource.schedulingData itself is
+    // cascade="none", so the SchedulingDataForVersion can only become genuinely persisted by
+    // saving it through its real owner, the OrderElement/Order tree.
+    private void persistOrderGraph(Order order, OrderLine orderLine) {
+        order.setName("Order " + UUID.randomUUID());
+        order.setCode(UUID.randomUUID().toString());
+        orderLine.setCode(UUID.randomUUID().toString());
 
-        expect(result.getOrderElement()).andReturn(orderElement).anyTimes();
-        expect(taskSource.getOrderElement()).andReturn(orderElement).anyTimes();
-        expect(result.getTaskSource()).andReturn(taskSource).anyTimes();
-
-        replay(result, taskSource);
-
-        return result;
+        orderElementDAO.saveWithoutValidating(order);
+        order.dontPoseAsTransientObjectAnymore();
+        orderLine.dontPoseAsTransientObjectAnymore();
+        orderLine.getCurrentSchedulingDataForVersion().dontPoseAsTransientObjectAnymore();
     }
 
     private Task createTask() {
         HoursGroup hoursGroup = new HoursGroup();
+        hoursGroup.setCode(UUID.randomUUID().toString());
         hoursGroup.setWorkingHours(5);
 
         OrderLine orderLine = OrderLine.create();
         orderLine.setName("Task: use Quartz");
 
         Order order = new Order();
-        order.useSchedulingDataFor(mockOrderVersion());
+        OrderVersion orderVersion = realOrderVersion();
+        order.useSchedulingDataFor(orderVersion);
         order.setInitDate(new Date());
         order.add(orderLine);
+        orderLine.useSchedulingDataFor(orderVersion);
 
-        SchedulingDataForVersion version = mockSchedulingDataForVersion(orderLine);
+        persistOrderGraph(order, orderLine);
+
+        SchedulingDataForVersion version = orderLine.getCurrentSchedulingDataForVersion();
         TaskSource taskSource = TaskSource.create(version, Collections.singletonList(hoursGroup));
 
-        return Task.createTask(taskSource);
+        // Same reciprocal-link requirement as createTaskGroup() above. This skips the
+        // Task-specific initializeDates() override that Task.createTask(taskSource) would have
+        // called (protected, inaccessible from here) - set intraDayEndDate the same way
+        // createTaskGroup() already does for the parent.
+        Task result = taskSource.createTaskWithoutDatesInitializedAndLinkItToTaskSource();
+        result.setIntraDayEndDate(IntraDayDate.startOfDay(result.getIntraDayStartDate().getDate().plusDays(1)));
+
+        return result;
     }
 
     private void createEmailConnector() {

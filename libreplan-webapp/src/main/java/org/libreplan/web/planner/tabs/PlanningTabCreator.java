@@ -195,6 +195,9 @@ public class PlanningTabCreator {
 
         };
         return new CreatedOnDemandTab(_t("Projects Planning"), "company-scheduling", componentCreator) {
+
+            private boolean configured = false;
+
             @Override
             protected void beforeShowAction() {
                 if (!SecurityUtils.isSuperuserOrRolePlanningOrHasAnyAuthorization()) {
@@ -212,12 +215,20 @@ public class PlanningTabCreator {
 
             @Override
             protected void afterShowAction() {
-                if (checkFiltersChanged()) {
+                boolean filtersChanged = checkFiltersChanged();
+                if (filtersChanged) {
                     companyPlanningController.readSessionVariablesIntoComponents();
                     setFiltersUnchanged();
                 }
 
-                companyPlanningController.setConfigurationForPlanner();
+                // DEBUG TEST: only rebuild the planner's whole configuration (which tears down
+                // and recreates the entire Gantt widget tree client-side) on the tab's first
+                // show, or when filters actually changed - not on every plain tab reshow.
+                if (!configured || filtersChanged) {
+                    companyPlanningController.setConfigurationForPlanner();
+                    configured = true;
+                }
+
                 breadcrumbs.getChildren().clear();
                 breadcrumbs.appendChild(new Image(BREADCRUMBS_SEPARATOR));
                 breadcrumbs.appendChild(new Label(getSchedulingLabel()));

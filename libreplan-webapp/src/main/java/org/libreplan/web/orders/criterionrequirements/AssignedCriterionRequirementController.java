@@ -47,14 +47,23 @@ import org.libreplan.web.orders.HoursGroupWrapper;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.KeyEvent;
 import org.zkoss.zk.ui.event.MouseEvent;
 import org.zkoss.zk.ui.util.GenericForwardComposer;
 import org.zkoss.zul.Bandbox;
+import org.zkoss.zul.Bandpopup;
+import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Column;
 import org.zkoss.zul.Combobox;
+import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Columns;
 import org.zkoss.zul.Constraint;
+import org.zkoss.zul.Decimalbox;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.ListModel;
@@ -62,11 +71,17 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Panel;
+import org.zkoss.zul.Panelchildren;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.RowRenderer;
 import org.zkoss.zul.Rows;
+import org.zkoss.zul.Separator;
 import org.zkoss.zul.SimpleListModel;
+import org.zkoss.zul.Textbox;
 
 import com.libreplan.java.zk.components.customdetailrowcomponent.Detail;
 
@@ -121,7 +136,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
     }
 
     private boolean showInvalidValues() {
-        CriterionRequirementWrapper invalidWrapper = validateWrappers(criterionRequirementWrappers());
+        CriterionRequirementWrapper invalidWrapper = validateWrappers(getCriterionRequirementWrappers());
         if (invalidWrapper != null) {
             showInvalidValues(invalidWrapper);
 
@@ -138,7 +153,16 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
         return false;
     }
 
-    public abstract List<CriterionRequirementWrapper> criterionRequirementWrappers();
+    public abstract List<CriterionRequirementWrapper> getCriterionRequirementWrappers();
+
+    /**
+     * NewDataSortableGrid.setModel(ListModel) is a strict, non-generic override - unlike plain
+     * Grid/Combobox/Listbox, ZK Bind's List-&gt;ListModel auto-wrap does not kick in for it, so the
+     * ZUML "model=" binding needs an already-wrapped ListModel explicitly.
+     */
+    public ListModel<CriterionRequirementWrapper> getCriterionRequirementWrappersModel() {
+        return new SimpleListModel<>(getCriterionRequirementWrappers());
+    }
 
     public abstract List<CriterionWithItsType> getCriterionWithItsTypes();
 
@@ -284,8 +308,21 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
         }
     }
 
+    /**
+     * listingRequirements' own model="@load(...)" binding gets its first (empty) value pushed
+     * eagerly during this page's whole-window tab pre-composition, before openWindow()/init()
+     * ever runs - same root cause as AssignedLabelsController's directLabels bug.
+     * Util.reloadBindings(listingRequirements) alone never updates the client after that point,
+     * so bypass the binder and set the wrapped ListModel directly.
+     *
+     * rowRenderer="@load(...)" on the same tag is bypassed the same way and for the same reason -
+     * setting only the model without also re-asserting the renderer leaves rows falling back to
+     * their raw toString() in composition contexts where that binding never fired (see
+     * ManageOrderElementAdvancesController's identical editAdvances fix for the confirmed symptom).
+     */
     public void reload() {
-        Util.reloadBindings(listingRequirements);
+        listingRequirements.setRowRenderer(getListingRequirementsRowRenderer());
+        listingRequirements.setModel(getCriterionRequirementWrappersModel());
         Util.reloadBindings(orderElementTotalHours);
         if (isReadOnly()) {
             Util.reloadBindings(hoursGroupsInOrderLineGroup);
@@ -372,11 +409,11 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
 
     private Rows getRequirementRows(Row row) {
         Panel panel = (Panel) row.getFirstChild().getChildren().get(1);
-        return ((NewDataSortableGrid) panel.getFirstChild().getFirstChild()).getRows();
+        return ((Grid) panel.getFirstChild().getFirstChild()).getRows();
     }
 
     private HoursGroupWrapper getHoursGroupOfRequirementWrapper(Row rowRequirement) {
-        NewDataSortableGrid grid = (NewDataSortableGrid) rowRequirement.getParent().getParent();
+        Grid grid = (Grid) rowRequirement.getParent().getParent();
         Panel panel = (Panel) grid.getParent().getParent();
 
         return (HoursGroupWrapper) ((Row) panel.getParent().getParent()).getValue();
@@ -393,6 +430,10 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
     public abstract boolean isEditableHoursGroup();
 
     public abstract List<HoursGroupWrapper> getHoursGroupWrappers();
+
+    public ListModel<HoursGroupWrapper> getHoursGroupWrappersModel() {
+        return new SimpleListModel<>(getHoursGroupWrappers());
+    }
 
     /**
      * Adds a new {@link HoursGroup} to the current {@link OrderElement}.
@@ -513,7 +554,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
 
     public abstract void recalculateHoursGroup();
 
-    public Constraint validateTotalHours() {
+    public Constraint getValidateTotalHours() {
         return (comp, value) -> {
             if (value == null) {
                 orderElementTotalHours.setValue(0);
@@ -532,7 +573,7 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
         };
     }
 
-    public Constraint validatePercentage() {
+    public Constraint getValidatePercentage() {
         return (comp, value) -> {
             HoursGroupWrapper hoursGroupWrapper = ((Row) comp.getParent()).getValue();
             try {
@@ -583,6 +624,10 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
             map.put(key, hoursGroupAggregation);
         }
         return new ArrayList<>(map.values());
+    }
+
+    public ListModel<HoursGroup> getHoursGroupsModel() {
+        return new SimpleListModel<>(getHoursGroups());
     }
 
     protected abstract List<HoursGroup> getHoursGroups(T orderElement);
@@ -715,6 +760,305 @@ public abstract class AssignedCriterionRequirementController<T, M> extends Gener
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /*
+     * The row/listitem templates below (self="@{each=...}") never registered under this app's
+     * AnnotateBinder shim (see project_zk_annotate_binder_bug memory) - replaced with equivalent
+     * RowRenderer/imperative Java construction, preserving the exact child-index structure that
+     * getBandType()/getRequirementRows()/getHoursGroupOfRequirementWrapper()/
+     * getHoursGroupDetailsGrid() above rely on (row.getChildren().get(0) is always the hbox
+     * holding the bandbox(es), detailrow is always the row's first child with
+     * [separator, panel, separator] as its own children).
+     */
+
+    private final transient ListitemRenderer criterionWithItsTypeRenderer = (item, data, index) -> {
+        CriterionWithItsType criterionWithItsType = (CriterionWithItsType) data;
+        item.setValue(criterionWithItsType);
+        new Listcell(criterionWithItsType.getType().getName()).setParent(item);
+        new Listcell(criterionWithItsType.getNameHierarchy()).setParent(item);
+        item.addEventListener(Events.ON_CLICK, event -> onClick((MouseEvent) event));
+    };
+
+    public ListitemRenderer getCriterionWithItsTypeRenderer() {
+        return criterionWithItsTypeRenderer;
+    }
+
+    private Listbox buildCriterionWithItsTypeListbox(List<CriterionWithItsType> items) {
+        Listbox listbox = new Listbox();
+        listbox.setWidth("500px");
+        listbox.setHeight("150px");
+        listbox.setModel(new SimpleListModel<>(items));
+        listbox.setItemRenderer(getCriterionWithItsTypeRenderer());
+
+        Listhead listhead = new Listhead();
+        listhead.setParent(listbox);
+        new Listheader("Type").setParent(listhead);
+        new Listheader("Criterion").setParent(listhead);
+
+        return listbox;
+    }
+
+    public RowRenderer getListingRequirementsRowRenderer() {
+        return (row, data, index) -> {
+            final CriterionRequirementWrapper wrapper = (CriterionRequirementWrapper) data;
+            row.setValue(wrapper);
+
+            Hbox hbox = new Hbox();
+            hbox.setParent(row);
+
+            final Bandbox bandbox = new Bandbox();
+            bandbox.setWidth("400px");
+            bandbox.setVisible(wrapper.isUpdatable());
+            bandbox.setValue(wrapper.getCriterionAndType());
+            bandbox.setCtrlKeys("#down");
+            bandbox.addEventListener(Events.ON_CHANGING, this::onChangingText);
+            bandbox.addEventListener(Events.ON_CTRL_KEY, this::onCtrlKey);
+            bandbox.addEventListener(Events.ON_OK, event -> onOK((KeyEvent) event));
+            bandbox.setParent(hbox);
+
+            Bandpopup bandpopup = new Bandpopup();
+            bandpopup.setParent(bandbox);
+
+            Listbox listbox = buildCriterionWithItsTypeListbox(getCriterionWithItsTypes());
+            listbox.addEventListener(Events.ON_SELECT,
+                    event -> selectCriterionAndType(listbox.getSelectedItem(), bandbox, wrapper));
+            listbox.setParent(bandpopup);
+
+            Label assignedLabel = new Label(wrapper.getCriterionAndType());
+            assignedLabel.setVisible(wrapper.isUnmodifiable());
+            assignedLabel.setParent(hbox);
+
+            new Label(wrapper.getType()).setParent(row);
+
+            Hbox operations = new Hbox();
+            operations.setParent(row);
+
+            Button delete = Util.createRemoveButton(event -> remove(wrapper));
+            delete.setVisible(wrapper.isDirect());
+            delete.setParent(operations);
+
+            Button validateButton = new Button();
+            validateButton.setLabel(_t("Validate"));
+            validateButton.setVisible(wrapper.isIndirectInvalid());
+            validateButton.addEventListener(Events.ON_CLICK, event -> validate(wrapper));
+            validateButton.setParent(operations);
+
+            Button invalidateButton = new Button();
+            invalidateButton.setLabel(_t("Invalidate"));
+            invalidateButton.setVisible(wrapper.isIndirectValid());
+            invalidateButton.addEventListener(Events.ON_CLICK, event -> invalidate(wrapper));
+            invalidateButton.setParent(operations);
+        };
+    }
+
+    private Bandbox buildHoursGroupBandbox(final CriterionRequirementWrapper wrapper, boolean visible,
+                                            List<CriterionWithItsType> items) {
+        final Bandbox bandbox = new Bandbox();
+        bandbox.setWidth("480px");
+        bandbox.setVisible(visible);
+        bandbox.setValue(wrapper.getCriterionAndType());
+        bandbox.addEventListener(Events.ON_CHANGING, this::onChangingText);
+
+        Bandpopup bandpopup = new Bandpopup();
+        bandpopup.setParent(bandbox);
+
+        Listbox listbox = buildCriterionWithItsTypeListbox(items);
+        listbox.addEventListener(Events.ON_SELECT,
+                event -> selectCriterionToHoursGroup(listbox.getSelectedItem(), bandbox, wrapper));
+        listbox.setParent(bandpopup);
+
+        return bandbox;
+    }
+
+    private RowRenderer getCriterionRequirementInHoursGroupRowRenderer(final HoursGroupWrapper hoursGroupWrapper) {
+        return (row, data, index) -> {
+            final CriterionRequirementWrapper wrapper = (CriterionRequirementWrapper) data;
+            row.setValue(wrapper);
+
+            Hbox hbox = new Hbox();
+            hbox.setParent(row);
+
+            buildHoursGroupBandbox(wrapper, wrapper.isNewDirectAndItsHoursGroupIsWorker(),
+                    getCriterionWithItsTypesWorker()).setParent(hbox);
+
+            buildHoursGroupBandbox(wrapper, wrapper.isNewDirectAndItsHoursGroupIsMachine(),
+                    getCriterionWithItsTypesMachine()).setParent(hbox);
+
+            buildHoursGroupBandbox(wrapper, wrapper.isNewException(),
+                    hoursGroupWrapper.getValidCriterions()).setParent(hbox);
+
+            Label assignedLabel = new Label(wrapper.getCriterionAndType());
+            assignedLabel.setVisible(wrapper.isOldDirectOrException());
+            assignedLabel.setParent(hbox);
+
+            new Label(wrapper.getTypeToHoursGroup()).setParent(row);
+
+            Hbox operations = new Hbox();
+            operations.setParent(row);
+
+            final Button delete = new Button();
+            delete.setVisible(isEditableHoursGroup());
+            delete.setSclass("icono");
+            delete.setImage("/common/img/ico_borrar1.png");
+            delete.setHoverImage("/common/img/ico_borrar.png");
+            delete.setTooltiptext(_t("Delete"));
+            delete.addEventListener(Events.ON_CLICK, event -> removeCriterionToHoursGroup(delete));
+            delete.setParent(operations);
+
+            Button disabledDelete = new Button();
+            disabledDelete.setVisible(isReadOnly());
+            disabledDelete.setSclass("icono");
+            disabledDelete.setImage("/common/img/ico_borrar_out.png");
+            disabledDelete.setTooltiptext(_t("Disable Delete"));
+            disabledDelete.setParent(operations);
+        };
+    }
+
+    private Panel buildCriterionRequirementsPanel(final HoursGroupWrapper hoursGroupWrapper) {
+        Panel panel = new Panel();
+        panel.setTitle(_t("Criteria Requirement"));
+        panel.setBorder("normal");
+
+        Panelchildren panelchildren = new Panelchildren();
+        panelchildren.setParent(panel);
+
+        Grid grid = new Grid();
+        grid.setMold("paging");
+        grid.setPageSize(5);
+        grid.setEmptyMessage(_t("No criterions"));
+        grid.setParent(panelchildren);
+
+        Columns columns = new Columns();
+        columns.setParent(grid);
+
+        Column nameColumn = new Column();
+        nameColumn.setLabel(_t("Criterion name"));
+        nameColumn.setParent(columns);
+
+        Column typeColumn = new Column();
+        typeColumn.setLabel(_t("Type"));
+        typeColumn.setWidth("120px");
+        typeColumn.setAlign("center");
+        typeColumn.setParent(columns);
+
+        Column operationsColumn = new Column();
+        operationsColumn.setLabel(_t("Operations"));
+        operationsColumn.setWidth("90px");
+        operationsColumn.setAlign("center");
+        operationsColumn.setParent(columns);
+
+        grid.setModel(new SimpleListModel<>(hoursGroupWrapper.getCriterionRequirementWrappersView()));
+        grid.setRowRenderer(getCriterionRequirementInHoursGroupRowRenderer(hoursGroupWrapper));
+
+        return panel;
+    }
+
+    public RowRenderer getHoursGroupsRowRenderer() {
+        return (row, data, index) -> {
+            final HoursGroupWrapper hoursGroupWrapper = (HoursGroupWrapper) data;
+            row.setValue(hoursGroupWrapper);
+
+            Detail detail = new Detail();
+            detail.setOpen(true);
+            detail.setParent(row);
+
+            Separator topSeparator = new Separator();
+            topSeparator.setBar(false);
+            topSeparator.setSpacing("40px");
+            topSeparator.setOrient("vertical");
+            topSeparator.setParent(detail);
+
+            buildCriterionRequirementsPanel(hoursGroupWrapper).setParent(detail);
+
+            Separator bottomSeparator = new Separator();
+            bottomSeparator.setBar(false);
+            bottomSeparator.setSpacing("40px");
+            bottomSeparator.setOrient("vertical");
+            bottomSeparator.setParent(detail);
+
+            final Textbox code = new Textbox(hoursGroupWrapper.getCode());
+            code.setReadonly(isReadOnly());
+            code.setDisabled(isCodeAutogenerated());
+            code.addEventListener(Events.ON_CHANGE, event -> hoursGroupWrapper.setCode(code.getValue()));
+            code.setParent(row);
+
+            final Combobox comboboxType = new Combobox();
+            comboboxType.setWidth("90px");
+            comboboxType.setDisabled(isReadOnly());
+            Comboitem selectedItem = null;
+            for (ResourceEnum resourceEnum : getResourceTypes()) {
+                Comboitem comboitem = new Comboitem(resourceEnum.toString());
+                comboitem.setValue(resourceEnum);
+                comboitem.setParent(comboboxType);
+                if (resourceEnum.equals(hoursGroupWrapper.getResourceType())) {
+                    selectedItem = comboitem;
+                }
+            }
+            if (selectedItem != null) {
+                comboboxType.setSelectedItem(selectedItem);
+            }
+            comboboxType.addEventListener(Events.ON_CHANGE, event -> {
+                try {
+                    selectResourceType(comboboxType);
+                } catch (InterruptedException ignored) {}
+            });
+            comboboxType.setParent(row);
+
+            final Intbox workingHours = new Intbox();
+            workingHours.setValue(hoursGroupWrapper.getWorkingHours());
+            workingHours.setReadonly(hoursGroupWrapper.isWorkingHoursReadOnly());
+            workingHours.addEventListener(Events.ON_CHANGE, event -> {
+                hoursGroupWrapper.setWorkingHours(workingHours.getValue());
+                recalculateHoursGroup();
+            });
+            workingHours.setParent(row);
+
+            final Decimalbox percentage = new Decimalbox();
+            percentage.setScale(2);
+            percentage.setValue(hoursGroupWrapper.getPercentage());
+            percentage.setConstraint(getValidatePercentage());
+            percentage.setReadonly(hoursGroupWrapper.isPercentageReadOnly());
+            percentage.addEventListener(Events.ON_CHANGE, event -> recalculateHoursGroup());
+            percentage.setParent(row);
+
+            final Checkbox fixedPercentage = new Checkbox();
+            fixedPercentage.setChecked(Boolean.TRUE.equals(hoursGroupWrapper.getFixedPercentage()));
+            fixedPercentage.addEventListener(Events.ON_CHECK, event -> {
+                hoursGroupWrapper.setFixedPercentage(fixedPercentage.isChecked());
+                recalculateHoursGroup();
+            });
+            fixedPercentage.setParent(row);
+
+            Hbox operations = new Hbox();
+            operations.setStyle("margin-left: 35px");
+            operations.setParent(row);
+
+            final Button deleteHoursGroup = new Button();
+            deleteHoursGroup.setSclass("icono");
+            deleteHoursGroup.setImage("/common/img/ico_borrar1.png");
+            deleteHoursGroup.setHoverImage("/common/img/ico_borrar.png");
+            deleteHoursGroup.setTooltiptext(_t("Delete"));
+            deleteHoursGroup.addEventListener(Events.ON_CLICK, event -> {
+                try {
+                    deleteHoursGroups(deleteHoursGroup);
+                } catch (InterruptedException ignored) {}
+            });
+            deleteHoursGroup.setParent(operations);
+
+            final Button addCriterion = new Button();
+            addCriterion.setLabel(_t("Add Criterion"));
+            addCriterion.setSclass("add-button");
+            addCriterion.addEventListener(Events.ON_CLICK, event -> addCriterionToHoursGroup(addCriterion));
+            addCriterion.setParent(operations);
+
+            final Button addException = new Button();
+            addException.setLabel(_t("Add Exception"));
+            addException.setSclass("add-button");
+            addException.setDisabled(hoursGroupWrapper.isDontExistValidCriterions());
+            addException.addEventListener(Events.ON_CLICK, event -> addExceptionToHoursGroups(addException));
+            addException.setParent(operations);
+        };
     }
 
 }

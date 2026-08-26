@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.20.1: https://docutils.sourceforge.io/" />
+<title>Планувальник</title>
+<link rel="stylesheet" href="lsr.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="section-1">
+<h1 class="title">Планувальник</h1>
+
+<div class="contents topic" id="contents">
+<p class="topic-title">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#section-2" id="toc-entry-1">Вид списку планування завдань</a></li>
+<li><a class="reference internal" href="#section-3" id="toc-entry-2">Додавання або редагування завдання</a><ul>
+<li><a class="reference internal" href="#cron" id="toc-entry-3">Спливаюче вікно виразу cron</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#section-4" id="toc-entry-4">Видалення завдання</a></li>
+<li><a class="reference internal" href="#section-5" id="toc-entry-5">Запуск завдання вручну</a></li>
+</ul>
+</div>
+<p>Планувальник призначений для динамічного планування завдань. Він розроблений з використанням <em>планувальника Spring Framework Quartz</em>.</p>
+<p>Щоб ефективно використовувати цей планувальник, спочатку необхідно створити завдання (завдання Quartz), які потрібно планувати. Потім ці завдання можна додати до бази даних, оскільки всі завдання для планування зберігаються в базі даних.</p>
+<p>Коли планувальник запускається, він зчитує завдання для планування або скасування планування з бази даних та відповідно планує або видаляє їх. Після цього завдання можна динамічно додавати, оновлювати або видаляти за допомогою інтерфейсу <tt class="docutils literal">Планування завдань</tt>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Планувальник запускається при запуску вебзастосунку LibrePlan і зупиняється при зупинці застосунку.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Цей планувальник підтримує лише <tt class="docutils literal">вирази cron</tt> для планування завдань.</p>
+</div>
+<p>Критерії, які планувальник використовує для планування або видалення завдань при запуску:</p>
+<p>Для всіх завдань:</p>
+<ul class="simple">
+<li>Планування<ul>
+<li>Завдання має <em>Конектор</em>, і <em>Конектор</em> активований, і завдання дозволено планувати.</li>
+<li>Завдання не має <em>Конектора</em> і дозволено планувати.</li>
+</ul>
+</li>
+<li>Видалення<ul>
+<li>Завдання має <em>Конектор</em>, і <em>Конектор</em> не активований.</li>
+<li>Завдання має <em>Конектор</em>, і <em>Конектор</em> активований, але завдання не дозволено планувати.</li>
+<li>Завдання не має <em>Конектора</em> і не дозволено планувати.</li>
+</ul>
+</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Завдання не можна перепланувати або скасувати плановане, якщо вони наразі виконуються.</p>
+</div>
+<div class="section" id="section-2">
+<h1><a class="toc-backref" href="#toc-entry-1">Вид списку планування завдань</a></h1>
+<p>Вид <tt class="docutils literal">Список планування завдань</tt> дозволяє користувачам:</p>
+<ul class="simple">
+<li>Додавати нове завдання.</li>
+<li>Редагувати наявне завдання.</li>
+<li>Видаляти завдання.</li>
+<li>Запускати процес вручну.</li>
+</ul>
+</div>
+<div class="section" id="section-3">
+<h1><a class="toc-backref" href="#toc-entry-2">Додавання або редагування завдання</a></h1>
+<p>У виді <tt class="docutils literal">Список планування завдань</tt> натисніть:</p>
+<ul class="simple">
+<li><tt class="docutils literal">Створити</tt> для додавання нового завдання, або</li>
+<li><tt class="docutils literal">Редагувати</tt> для зміни вибраного завдання.</li>
+</ul>
+<p>Обидві дії відкриють форму створення/редагування <tt class="docutils literal">завдання</tt>. <tt class="docutils literal">Форма</tt> відображає такі властивості:</p>
+<ul class="simple">
+<li>Поля:<ul>
+<li><strong>Група завдань:</strong> Назва групи завдань.</li>
+<li><strong>Назва завдання:</strong> Назва завдання.</li>
+<li><strong>Вираз cron:</strong> Поле лише для читання з кнопкою <tt class="docutils literal">Редагувати</tt> для відкриття вікна введення <tt class="docutils literal">виразу cron</tt>.</li>
+<li><strong>Назва класу завдання:</strong> <tt class="docutils literal">Спадний список</tt> для вибору завдання (наявного завдання).</li>
+<li><strong>Конектор:</strong> <tt class="docutils literal">Спадний список</tt> для вибору конектора. Не є обов'язковим.</li>
+<li><strong>Розклад:</strong> Прапорець для вказівки, чи планувати це завдання.</li>
+</ul>
+</li>
+<li>Кнопки:<ul>
+<li><strong>Зберегти:</strong> Для збереження або оновлення завдання як у базі даних, так і в планувальнику. Після цього користувач повертається до <tt class="docutils literal">Виду списку планування завдань</tt>.</li>
+<li><strong>Зберегти і продовжити:</strong> Те саме, що «Зберегти», але користувач не повертається до <tt class="docutils literal">Виду списку планування завдань</tt>.</li>
+<li><strong>Скасувати:</strong> Нічого не зберігається, і користувач повертається до <tt class="docutils literal">Виду списку планування завдань</tt>.</li>
+</ul>
+</li>
+<li>І розділ підказки про синтаксис виразу cron.</li>
+</ul>
+<div class="section" id="cron">
+<h2><a class="toc-backref" href="#toc-entry-3">Спливаюче вікно виразу cron</a></h2>
+<p>Для правильного введення <tt class="docutils literal">виразу cron</tt> використовується спливаюча форма <tt class="docutils literal">виразу cron</tt>. У цій формі можна ввести потрібний <tt class="docutils literal">вираз cron</tt>. Дивіться також підказку про <tt class="docutils literal">вираз cron</tt>. Якщо ввести недійсний <tt class="docutils literal">вираз cron</tt>, ви отримаєте негайне сповіщення.</p>
+</div>
+</div>
+<div class="section" id="section-4">
+<h1><a class="toc-backref" href="#toc-entry-4">Видалення завдання</a></h1>
+<p>Натисніть кнопку <tt class="docutils literal">Видалити</tt>, щоб видалити завдання як із бази даних, так і з планувальника. Успіх або невдача цієї дії відобразяться.</p>
+</div>
+<div class="section" id="section-5">
+<h1><a class="toc-backref" href="#toc-entry-5">Запуск завдання вручну</a></h1>
+<p>Як альтернатива очікуванню виконання завдання за розкладом, можна натиснути цю кнопку для безпосереднього запуску процесу. Після цього інформація про успіх або невдачу відобразиться у <tt class="docutils literal">спливаючому вікні</tt>.</p>
+</div>
+</div>
+</body>
+</html>

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -26,7 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.ws.rs.WebApplicationException;
+import jakarta.ws.rs.WebApplicationException;
 
 import org.apache.commons.logging.LogFactory;
 import org.libreplan.business.common.daos.IConnectorDAO;
@@ -300,8 +301,9 @@ public class JiraSynchronizationController extends GenericForwardComposer {
         }
 
         public ListModel getSubModel(Object value, int nRows) {
-            //TODO change deprecated method
-            final String idx = value == null ? "" : objectToString(value);
+            // SimpleListModel.objectToString(Object) was removed in ZK 10; it was just a
+            // null-safe String conversion of the search value here.
+            final String idx = value == null ? "" : String.valueOf(value);
 
             if ( nRows < 0 ) {
                 nRows = 10;

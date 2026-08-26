@@ -1,0 +1,35 @@
+- generic [ref=f234e4]:
+  - table:
+    - rowgroup:
+      - row:
+        - cell:
+          - table
+  - generic [ref=f234e5]:
+    - generic [ref=f234e6]: Issue logs List
+    - generic [ref=f234e7]:
+      - generic [ref=f234e8]:
+        - table [ref=f234e10]:
+          - rowgroup [ref=f234e26]:
+            - row [ref=f234e27]:
+              - columnheader "Code" [ref=f234e28]
+              - columnheader "Projectname" [ref=f234e30]
+              - columnheader "Type" [ref=f234e32]
+              - columnheader "Status" [ref=f234e34]
+              - columnheader "Description" [ref=f234e36]
+              - columnheader "Priority" [ref=f234e38]
+              - columnheader "Severity" [ref=f234e40]
+              - columnheader "Date raised" [ref=f234e42]
+              - columnheader "Created By" [ref=f234e44]
+              - columnheader "Assigned To" [ref=f234e46]
+              - columnheader "Deadline" [ref=f234e48]
+              - columnheader "Date Resolved" [ref=f234e50]
+              - columnheader "Notes" [ref=f234e52]
+              - columnheader "Operations" [ref=f234e54]
+              - columnheader
+        - table [ref=f234e58]:
+          - rowgroup [ref=f234e74]:
+            - row [ref=f234e75]:
+              - cell [ref=f234e76]
+        - generic [ref=f234e77]:    
+      - button "Create" [ref=f234e78] [cursor=pointer]
+  - text:                 

@@ -2,6 +2,7 @@
   This file is part of LibrePlan
 
   Copyright (C) 2012 Igalia, S.L.
+  Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
 
   This program is free software: you can redistribute it and/or modify
   it under the terms of the GNU Affero General Public License as
@@ -21,8 +22,8 @@
 <groupbox apply="org.libreplan.web.users.dashboard.PersonalTimesheetsAreaController">
     <caption label="${i18n:_t('Personal timesheets')}" />
 
-    <grid model="@{controller.personalTimesheets}" mold="paging"
-        pageSize="10" rowRenderer="@{controller.personalTimesheetsRenderer}"
+    <grid model="@load(controller.personalTimesheets)" mold="paging"
+        pageSize="10" rowRenderer="@load(controller.personalTimesheetsRenderer)"
          sclass="clickable-rows">
         <columns sizable="true">
             <column label="${i18n:_t('Date')}"

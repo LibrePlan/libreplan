@@ -105,7 +105,7 @@ public class DetailsOrderElementController extends GenericForwardComposer {
      * Should be public!
      * Used in _orderElementDetails.zul
      */
-    public Constraint checkConstraintStartDate() {
+    public Constraint getCheckConstraintStartDate() {
         return new Constraint() {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {
@@ -127,7 +127,7 @@ public class DetailsOrderElementController extends GenericForwardComposer {
      * Should be public!
      * Used in _orderElementDetails.zul
      */
-    public Constraint checkConstraintFinishDate() {
+    public Constraint getCheckConstraintFinishDate() {
         return new Constraint() {
             @Override
             public void validate(Component comp, Object value) throws WrongValueException {

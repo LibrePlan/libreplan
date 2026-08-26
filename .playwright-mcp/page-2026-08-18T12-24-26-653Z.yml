@@ -1,0 +1,247 @@
+- generic [ref=f718e4]:
+  - generic [ref=f718e5]:
+    - table [ref=f718e6]:
+      - rowgroup [ref=f718e7]:
+        - row [ref=f718e895]:
+          - cell [ref=f718e9]:
+            - link [ref=f718e10] [cursor=pointer]:
+              - /url: /
+          - cell [ref=f718e896]:
+            - table [ref=f718e13]:
+              - rowgroup [ref=f718e14]:
+                - row [ref=f718e897]:
+                  - cell [ref=f718e898]:
+                    - generic [ref=f718e17]:
+                      - menubar [ref=f718e18]:
+                        - menuitem "Planning" [ref=f718e19] [cursor=pointer]: 
+                        - text:        
+                        - menuitem "Resources" [ref=f718e21] [cursor=pointer]: 
+                        - text:           
+                        - menuitem "Cost" [ref=f718e23] [cursor=pointer]: 
+                        - text:      
+                        - menuitem "Configuration" [ref=f718e25] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Communications" [ref=f718e27] [cursor=pointer]: 
+                        - text:     
+                        - menuitem "Reports" [ref=f718e29] [cursor=pointer]: 
+                        - text:         
+                        - menuitem "Personal area" [ref=f718e31] [cursor=pointer]: 
+                        - text:  
+                      - table [ref=f718e33]:
+                        - rowgroup [ref=f718e34]:
+                          - row [ref=f718e899]:
+                            - cell [ref=f718e900]:
+                              - table [ref=f718e37]:
+                                - rowgroup [ref=f718e38]:
+                                  - row [ref=f718e901]:
+                                    - cell [ref=f718e40]
+                                    - cell [ref=f718e41]:
+                                      - strong [ref=f718e42]: START
+                                    - cell [ref=f718e43]
+                                    - cell [ref=f718e902]:
+                                      - table [ref=f718e45]:
+                                        - rowgroup [ref=f718e46]:
+                                          - row [ref=f718e903]:
+                                            - cell [ref=f718e904]:
+                                              - table [ref=f718e49]:
+                                                - rowgroup [ref=f718e50]:
+                                                  - row [ref=f718e905]:
+                                                    - cell [ref=f718e906]
+                                                    - cell [ref=f718e908]
+                                                    - cell "Planning" [ref=f718e909]
+                                                    - cell [ref=f718e910]
+                                                    - cell [ref=f718e911]
+                                                    - cell [ref=f718e913]
+                                                    - cell "Logs" [ref=f718e914]
+                                      - table:
+                                        - rowgroup:
+                                          - row:
+                                            - cell:
+                                              - table:
+                                                - rowgroup:
+                                                  - row
+                            - cell [ref=f718e61]:
+                              - generic [ref=f718e62]:
+                                - link "Help" [ref=f718e63] [cursor=pointer]:
+                                  - /url: /help/en/index.html
+                                - img "Axuda" [ref=f718e65]
+                                - img "Info" [ref=f718e67]
+    - table [ref=f718e69]:
+      - rowgroup [ref=f718e70]:
+        - row [ref=f718e71]:
+          - cell [ref=f718e72]
+          - 'cell "user: admin" [ref=f718e73]'
+          - cell [ref=f718e74]:
+            - link "[Log out]" [ref=f718e75] [cursor=pointer]:
+              - /url: /j_spring_security_logout
+  - text:    
+  - generic [ref=f718e76]:
+    - table [ref=f718e77]:
+      - rowgroup [ref=f718e78]:
+        - row [ref=f718e79]:
+          - cell [ref=f718e80]:
+            - table [ref=f718e81]:
+              - rowgroup [ref=f718e82]:
+                - row [ref=f718e83]:
+                  - cell [ref=f718e84]:
+                    - table [ref=f718e85]:
+                      - rowgroup [ref=f718e86]:
+                        - row [ref=f718e87]:
+                          - cell [ref=f718e88]:
+                            - table [ref=f718e89]:
+                              - rowgroup [ref=f718e90]:
+                                - row [ref=f718e91]:
+                                  - cell [ref=f718e92]:
+                                    - button "Create New Project" [ref=f718e93] [cursor=pointer]
+                - row [ref=f718e95]:
+                  - cell [ref=f718e96]
+                - row [ref=f718e97]:
+                  - cell [ref=f718e98]:
+                    - table [ref=f718e99]:
+                      - rowgroup [ref=f718e100]:
+                        - row [ref=f718e101]:
+                          - cell [ref=f718e102]:
+                            - table [ref=f718e103]:
+                              - rowgroup [ref=f718e104]:
+                                - row [ref=f718e105]:
+                                  - cell [ref=f718e106]:
+                                    - button "Projects Planning" [ref=f718e107] [cursor=pointer]
+                                - row [ref=f718e108]:
+                                  - cell [ref=f718e109]
+                                - row:
+                                  - cell
+                                - row [ref=f718e110]:
+                                  - cell [ref=f718e111]
+                                - row [ref=f718e112]:
+                                  - cell [ref=f718e113]:
+                                    - button "Projects List" [ref=f718e114] [cursor=pointer]
+                                - row [ref=f718e115]:
+                                  - cell [ref=f718e116]
+                                - row:
+                                  - cell
+                                - row [ref=f718e117]:
+                                  - cell [ref=f718e118]
+                                - row [ref=f718e119]:
+                                  - cell [ref=f718e120]:
+                                    - button "Resources Load" [ref=f718e121] [cursor=pointer]
+                                - row [ref=f718e122]:
+                                  - cell [ref=f718e123]
+                                - row:
+                                  - cell
+                                - row [ref=f718e124]:
+                                  - cell [ref=f718e125]
+                                - row [ref=f718e126]:
+                                  - cell [ref=f718e127]:
+                                    - button "Queue-based Resources Planning" [ref=f718e128] [cursor=pointer]
+                                - row [ref=f718e129]:
+                                  - cell [ref=f718e130]
+                                - row:
+                                  - cell
+                                - row [ref=f718e131]:
+                                  - cell [ref=f718e132]
+                                - row [ref=f718e133]:
+                                  - cell [ref=f718e134]:
+                                    - button "Logs" [active] [ref=f718e135] [cursor=pointer]
+                                - row [ref=f718e136]:
+                                  - cell [ref=f718e137]
+                                - row:
+                                  - cell
+                                - row [ref=f718e138]:
+                                  - cell [ref=f718e139]
+                                - row [ref=f718e140]:
+                                  - cell [ref=f718e141]:
+                                    - button "Pipeline" [ref=f718e142] [cursor=pointer]
+                                - row [ref=f718e143]:
+                                  - cell [ref=f718e144]
+                                - row:
+                                  - cell
+    - text:    
+    - generic [ref=f718e919]:
+      - tablist [ref=f718e920]:
+        - listitem [ref=f718e921] [cursor=pointer]:
+          - generic [ref=f718e922]: Issue logs
+        - listitem [ref=f718e924] [cursor=pointer]:
+          - generic [ref=f718e925]: Risk logs
+      - text:  
+      - generic [ref=f718e927]:
+        - tabpanel [ref=f718e928]:
+          - generic [ref=f718e930]:
+            - table:
+              - rowgroup:
+                - row:
+                  - cell:
+                    - table
+            - generic [ref=f718e932]:
+              - grid [ref=f718e933]:
+                - rowgroup [ref=f718e949]:
+                  - columnheader "Code" [ref=f718e950]
+                  - columnheader "Projectname" [ref=f718e952]
+                  - columnheader "Type" [ref=f718e954]
+                  - columnheader "Status" [ref=f718e956]
+                  - columnheader "Description" [ref=f718e958]
+                  - columnheader "Priority" [ref=f718e960]
+                  - columnheader "Severity" [ref=f718e962]
+                  - columnheader "Date raised" [ref=f718e964]
+                  - columnheader "Created By" [ref=f718e966]
+                  - columnheader "Assigned To" [ref=f718e968]
+                  - columnheader "Deadline" [ref=f718e970]
+                  - columnheader "Date Resolved" [ref=f718e972]
+                  - columnheader "Notes" [ref=f718e974]
+                  - columnheader "Operations" [ref=f718e976]
+                - rowgroup [ref=f718e993]:
+                  - text: ISSUE_LOG0002 Test project Libre Palan PROBLEM_OR_CONCERN Minor Bob Low High May 19, 2026 admin Ren May 7, 2026
+                  - gridcell [ref=f718e996]:
+                    - table [ref=f718e998]:
+                      - rowgroup [ref=f718e999]:
+                        - row [ref=f718e1000]:
+                          - cell [ref=f718e1001]:
+                            - table [ref=f718e1002]:
+                              - rowgroup [ref=f718e1003]:
+                                - row [ref=f718e1004]:
+                                  - cell [ref=f718e1005]:
+                                    - button "Edit" [ref=f718e1006] [cursor=pointer]
+                                  - cell [ref=f718e1008]
+                                  - cell [ref=f718e1009]:
+                                    - button "Remove" [ref=f718e1010] [cursor=pointer]
+                  - text: ISSUE_LOG0004 ERP-Systemtest OFF_SPECIFICATION Verification Pending aaqwqeqqwe Medium Medium May 19, 2026 admin eleccon May 20, 2026 May 20, 2026 qweqwe
+                  - gridcell [ref=f718e1012]:
+                    - table [ref=f718e1014]:
+                      - rowgroup [ref=f718e1015]:
+                        - row [ref=f718e1016]:
+                          - cell [ref=f718e1017]:
+                            - table [ref=f718e1018]:
+                              - rowgroup [ref=f718e1019]:
+                                - row [ref=f718e1020]:
+                                  - cell [ref=f718e1021]:
+                                    - button "Edit" [ref=f718e1022] [cursor=pointer]
+                                  - cell [ref=f718e1024]
+                                  - cell [ref=f718e1025]:
+                                    - button "Remove" [ref=f718e1026] [cursor=pointer]
+                  - text: "ISSUE_LOG0006 THE_Testproject #1 OFF_SPECIFICATION Identified Ein Testissue Low Low Jun 9, 2026 admin"
+                  - gridcell [ref=f718e1032]:
+                    - table [ref=f718e1034]:
+                      - rowgroup [ref=f718e1035]:
+                        - row [ref=f718e1036]:
+                          - cell [ref=f718e1037]:
+                            - table [ref=f718e1038]:
+                              - rowgroup [ref=f718e1039]:
+                                - row [ref=f718e1040]:
+                                  - cell [ref=f718e1041]:
+                                    - button "Edit" [ref=f718e1042] [cursor=pointer]
+                                  - cell [ref=f718e1044]
+                                  - cell [ref=f718e1045]:
+                                    - button "Remove" [ref=f718e1046] [cursor=pointer]
+                - generic [ref=f718e1048]:    
+              - button "Create" [ref=f718e1049] [cursor=pointer]
+            - text:                 
+        - text:                
+  - table [ref=f718e744]:
+    - rowgroup [ref=f718e745]:
+      - row [ref=f718e746]:
+        - cell [ref=f718e747]:
+          - generic [ref=f718e749]:
+            - text: The admin's account password remains the default one. This is insecure.
+            - link "[Change the password]" [ref=f718e750] [cursor=pointer]:
+              - /url: /users/users.zul#edit%3D1
+        - cell [ref=f718e751]
+  - text:    

@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -350,7 +351,7 @@ public class JiraTimesheetSynchronizer implements IJiraTimesheetSynchronizer {
      */
     private Worker getWorker(String nif) {
         for (Worker worker : workers) {
-            if (worker.getNif().equals(nif)) {
+            if (nif.equals(worker.getNif())) {
                 return worker;
             }
         }

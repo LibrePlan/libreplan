@@ -50,6 +50,10 @@ public interface IAssignedLabelsModel<T> {
 
     public abstract boolean isAssigned(Label label);
 
+    // DEAD CODE START - getAllLabels() has no remaining caller since
+    // _listOrderElementLabels.zul's bandboxSearch stopped binding model= to it (see the comment
+    // there). Left in place pending Jeroen's decision on whether to remove it.
     public abstract List<Label> getAllLabels();
+    // DEAD CODE END
 
 }

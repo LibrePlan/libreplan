@@ -2,6 +2,7 @@
  * This file is part of LibrePlan
  *
  * Copyright (C) 2013 St. Antoniusziekenhuis
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -31,6 +32,19 @@ import org.libreplan.business.orders.entities.OrderSyncInfo;
  * @author Miciele Ghiorghis <m.ghiorghis@antoniusziekenhuis.nl>
  */
 public interface IOrderSyncInfoDAO extends IGenericDAO<OrderSyncInfo, Long> {
+
+    /**
+     * Finds every {@link OrderSyncInfo} for the specified {@link Order}, regardless of connector.
+     * Needed before deleting an {@link Order}: {@code order_sync_info.order_element_id} has a
+     * foreign key back to {@code order_table} with no cascade, so any {@link OrderSyncInfo} rows
+     * left behind will make the delete fail with a constraint violation.
+     *
+     * @param order
+     *            the order to search for
+     *
+     * @return every {@link OrderSyncInfo} referencing this order
+     */
+    List<OrderSyncInfo> findByOrder(Order order);
 
     /**
      * Search last synchronized info for the specified

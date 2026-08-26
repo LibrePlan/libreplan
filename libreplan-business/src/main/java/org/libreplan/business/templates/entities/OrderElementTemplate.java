@@ -4,6 +4,7 @@
  * Copyright (C) 2009-2010 Fundación para o Fomento da Calidade Industrial e
  *                         Desenvolvemento Tecnolóxico de Galicia
  * Copyright (C) 2010-2011 Igalia, S.L.
+ * Copyright (C) 2014-2026 Jeroen Baten <jeroen@libreplan.dev>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -33,10 +34,10 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.NonUniqueResultException;
-import javax.validation.constraints.AssertTrue;
-import javax.validation.constraints.Min;
+import jakarta.validation.constraints.AssertTrue;
+import jakarta.validation.constraints.Min;
 import org.hibernate.validator.constraints.NotEmpty;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.LocalDate;

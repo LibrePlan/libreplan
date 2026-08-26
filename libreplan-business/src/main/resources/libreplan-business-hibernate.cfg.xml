@@ -20,15 +20,30 @@
          -->
         <property name="javax.persistence.validation.mode">none</property>
 
-        <property name="jadira.usertype.autoRegisterUserTypes">true</property>
-        <property name="jadira.usertype.databaseZone">jvm</property>
-        <property name="jadira.usertype.javaZone">jvm</property>
+        <!--
+            org.jadira.usertype:usertype.core (which the jadira.usertype.* properties configured)
+            was removed - Hibernate-6-incompatible. Its explicit usages were replaced with
+            hand-written UserTypes (see the .workingday.hibernate package); its implicit global
+            auto-registration of Joda-Time types has no Hibernate 6 equivalent, so every previously
+            bare (no explicit type=) LocalDate/DateTime .hbm.xml property now sets one explicitly
+            instead.
+        -->
 
-        <!-- Configure second level cache -->
-        <property name="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</property>
-        <property name="hibernate.cache.use_second_level_cache">true</property>
+        <!--
+            Second level cache disabled. It was previously on via hibernate-jcache's
+            JCacheRegionFactory (hibernate-ehcache/EhCacheRegionFactory never reached GA for
+            Hibernate 6 - see the dependency comment in the root pom.xml), falling back to a
+            default-tuned JCache CacheManager since the old ehcache.xml is 2.x-schema and
+            unreadable by JCacheRegionFactory. That combination was found to silently hand back
+            hollow entities (every field null, not just lazy associations) on a second read of the
+            same nonstrict-read-write-cached rows within one request - e.g. LabelTypeModel.getLabels()
+            reads the same Label rows twice per edit-form load and the second read came back empty,
+            confirmed via direct DEBUG logging of the fetched entities. Silent data corruption is a
+            materially worse failure mode than a bit of lost read performance, so caching is off
+            entirely until this is properly root-caused and reconfigured.
+        -->
+        <property name="hibernate.cache.use_second_level_cache">false</property>
         <property name="hibernate.cache.use_query_cache">false</property>
-        <property name="hibernate.cache.provider_configuration_file_resource_path">classpath:ehcache.xml</property>
 
     </session-factory>
 </hibernate-configuration>
