@@ -710,7 +710,7 @@
             <dependency>
                 <groupId>net.sf.mpxj</groupId>
                 <artifactId>mpxj</artifactId>
-                <version>9.0.0</version>
+                <version>16.5.0</version>
             </dependency>
 
             <!-- ZK fileupload -->
